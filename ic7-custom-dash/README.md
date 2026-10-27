@@ -4,12 +4,14 @@ A standalone Qt/QML dash you fully own: live engine gauges, a map, GPS lap
 timing, and a clock. It runs on a PC with simulated data (no hardware needed),
 then targets the iC-7's SoM (Variscite VAR-SOM-MX6, i.MX6) or any Linux board.
 
-> Status (2026-10-26): **rebuilt for Linux desktop and ARMv7 hard-float**.
-> Both builds ran the screenshot workflow, including ARM under QEMU with the
-> stock Qt 5.9.6 runtime. Bundle: `build-arm/ic7dash-arm-bundle.tar.gz`.
-> Not tested on physical hardware or flashed. See [build results](../README.md)
-> for reproducible commands and emulation limitations. Set IC7_SHOT=<dir>
-> to grab page PNGs and exit.
+> Status (2026-10-27): **ARMv7 hard-float build re-run from source** with
+> `deploy/wsl-build.sh` against the stock Qt 5.9.6 sysroot, and checked under
+> QEMU user-mode (offscreen) with `deploy/qemu-smoke-test.sh`: map from local
+> tiles, GIF background and MP4 background all pass (19/19 checks). Packaged
+> only as a SCRATCH-TEST bundle (`dist-scratch/ic7dash-scratch-test-<date>.tar.gz`,
+> see "Scratch test bundle" below). This is a standalone app, not firmware and
+> not a flash image; it has **never run on real iC-7 hardware**. Set
+> IC7_SHOT=<dir> to grab page PNGs and exit.
 
 ## What's inside
 ```
@@ -70,7 +72,13 @@ The second screen's background is selectable with the `IC7_BG` env var:
   The dash image ships GStreamer, so hardware-friendly H.264 is the safe choice.
 In every mode the lap-timing panel and clock stay on top, and GPS lap timing
 keeps running. Drop your own `bg.gif` / `bg.mp4` beside `ic7dash`. (The bundled
-`bg.gif` is a bright placeholder — replace it with yours.)
+`bg.gif` is a placeholder and has a **single frame**, so it does not animate —
+replace it with your own animated GIF.)
+
+The backgrounds print one-line `qml: ic7bg: ...` diagnostics (GIF ready/frame
+count/frame advanced, video status/playing/position/error) so a headless or
+on-target run can confirm they actually loaded. `IC7_TILE_LOG=1` makes the
+built-in tile server log each request (`tileserver: 200 /z/x/y.png`).
 
 The stock-resource `HalImage.qml` candidate also supports muted looping MP4.
 Its QML tests generate a small H.264 fixture with `ffmpeg`:
@@ -91,6 +99,37 @@ The app ships a tiny loopback tile server (`src/tileserver.cpp`) that serves
 your area with `deploy/seed-tiles.ps1`, put them in `tiles/` next to the exe, and
 run. (Verified on desktop with ESRI street tiles; see the page-2 screenshot.)
 If `tiles/` is empty the map falls back to online OSM.
+
+## ARM build, QEMU test and scratch bundle
+Inside the `ic7build` WSL distro (Ubuntu 22.04: `g++-11-arm-linux-gnueabihf`,
+Qt 5.9.9 host moc/rcc in `~/ic7build/qt59`, stock Qt 5.9.6 armhf sysroot in
+`~/ic7build/sysroot`, `qemu-user`, `ffmpeg`), from this folder:
+
+```sh
+SKIP_INSTALL=1 bash deploy/wsl-build.sh               # -> build-arm/ic7dash
+arm-linux-gnueabihf-strip build-arm/ic7dash
+IC7_SYSROOT=~/ic7build/sysroot bash deploy/qemu-smoke-test.sh   # map/gif/video
+bash deploy/bundle-scratch-test.sh build-arm/ic7dash [your-video.mp4]
+```
+
+`qemu-smoke-test.sh` runs the ARM binary under `qemu-arm` (offscreen, software
+Quick backend) once per background mode and checks: clean exit, both page PNGs,
+CAN map loaded, no QML errors; for **map** that tiles were served by the local
+tile server and every tile QtLocation cached is byte-identical to `tiles/`; for
+**gif** Ready with >1 frame and frame advance (generated 10-frame fixture — the
+shipped `bg.gif` has one frame); for **video** no MediaPlayer error, PlayingState
+and advancing position (generated 160x90 H.264 fixture or a file you pass).
+QEMU captures are vertically flipped and do not show the GIF/video pixels or page
+backgrounds, so pass/fail relies on the logged status, not on the PNGs.
+
+`bundle-scratch-test.sh` writes `dist-scratch/ic7dash-scratch-test-<date>.tar.gz`
+(+ `.sha256`): `SCRATCH-TEST-NOT-FIRMWARE.txt` at the top level and
+`ic7dash-scratch/` with the binary, CAN map, `bg.gif`, optional `bg.mp4`,
+`tiles/`, `run-scratch.sh`, `PROVENANCE.txt` and `SHA256SUMS`. It refuses to
+include `.nex/.swu/.img/.service` files, and leaves out `bringup-can.sh`,
+`ic7-mode.sh` and `ic7-overlay.service` because they change system state.
+`run-scratch.sh selftest` is a headless offscreen check that writes only to its
+own folder (`tilecache/`) and `/tmp/ic7dash-scratch`. See `deploy/ON-DASH-TEST.md`.
 
 ## Getting it onto the dash (when you're ready — separate step)
 This repo is just the app. Flashing is deliberate and done by you, not here.

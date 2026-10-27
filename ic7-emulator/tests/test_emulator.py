@@ -15,7 +15,7 @@ import zlib
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, request, resource_descriptor
 from ic7_emulator import serve_stream, UpdateSandbox
-from workbench import SessionOptions, configured_nsp_port, virtual_ports
+from workbench import SessionOptions, configured_nsp_port, preferred_first, virtual_ports
 from viewer import start_viewer, render_layout, scene_state
 from stock_renderer import get, install_component_override, pe_machine, pipe_message, renderer_environment
 from stock_renderer import stage_windows_platform_plugin, validate_ack
@@ -49,6 +49,11 @@ class ProtocolTests(unittest.TestCase):
                  Mock(device="COM3", description="Haltech iC-7")]
         self.assertEqual(configured_nsp_port(ports), "COM10")
         self.assertIsNone(configured_nsp_port(ports[1:]))
+
+    def test_workbench_offers_the_configured_pair_end_first(self):
+        self.assertEqual(preferred_first(["COM10", "COM11", "COM12"], "COM11"), ["COM11", "COM10", "COM12"])
+        self.assertEqual(preferred_first(["COM10", "COM11"], None), ["COM10", "COM11"])
+        self.assertEqual(preferred_first(["COM10"], "COM20"), ["COM10"])
 
     def test_missing_sandbox_package_has_actionable_error(self):
         with tempfile.TemporaryDirectory() as temporary:

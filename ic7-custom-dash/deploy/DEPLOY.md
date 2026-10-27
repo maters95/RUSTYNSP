@@ -75,14 +75,40 @@ path and a recovery method demonstrated on the exact unit.
   U-Boot console). The update path isn't signature-checked, but confirm before
   trusting any modified boot chain.
 
-## Status
-The app has now been freshly cross-compiled against the extracted Qt 5.9.6
-sysroot and ARM hard-float toolchain in an isolated temporary tree. It starts
-under QEMU and produces nonblank page captures; the offscreen captures are
-vertically flipped, so they do not verify physical display orientation. The
-reproducible app/test bundle is linked from the repository README.
+## Status (2026-10-27)
+The current deliverable is a **SCRATCH-TEST bundle**, not an installation:
+`dist-scratch/ic7dash-scratch-test-<date>.tar.gz`, built by
+`deploy/bundle-scratch-test.sh`. It runs from any scratch folder (e.g. `/tmp`)
+and is removed with `rm -rf`. The stock firmware and the stock/NSP workflow are
+unchanged; nothing in sections 2–4 above was performed.
 
-This remains a standalone app test bundle, not a complete custom firmware: no
+Prerequisites, as built and tested:
+- Build host: the `ic7build` WSL distro (Ubuntu 22.04) with
+  `g++-11-arm-linux-gnueabihf`, Qt 5.9.9 host `moc`/`rcc` (aqtinstall, qtbase
+  only), and the stock rootfs's Qt 5.9.6 / glibc 2.24 headers+libs as sysroot.
+  `deploy/wsl-build.sh` drives this; the stripped binary is ~112 KB, links
+  libstdc++/libgcc statically and needs no glibc symbol newer than GLIBC_2.4.
+- Test host extras: `qemu-user` (qemu-arm), `ffmpeg` (fixtures), and for the
+  NSP image suite `python3-pil` plus `usr/bin/qmltestrunner` in the sysroot.
+- Expected on the target (present in the stock rootfs image, never confirmed on
+  a running unit): Qt 5.9.x Core/Gui/Network/Qml/Quick/QuickControls2/
+  Positioning/Location (osm geoservice)/Multimedia with the GStreamer 1.x
+  mediaservice plugin, the `gif` imageformat plugin, and the `offscreen` and
+  `eglfs` platform plugins.
+
+What was verified, only under QEMU user-mode with the offscreen platform:
+the app starts, loads all QML without errors, loads the 7-frame CAN map,
+renders the map from bundled tiles via the loopback tile server (no online
+provider), loads and animates a multi-frame GIF, and plays H.264 MP4 (a small
+fixture and the supplied 1080p file) through the stock GStreamer stack in
+software. `deploy/qemu-smoke-test.sh` reproduces this.
+
+Unverified: anything on real iC-7 hardware — eglfs/display integration and
+orientation (QEMU captures are vertically flipped), i.MX6 VPU decode and video
+performance, real CAN input, GPS, behaviour alongside the stock dash
+application/watchdog, and NSP coexistence.
+
+This remains a standalone app test bundle, not custom firmware: no
 modified rootfs or flashable `.swu` has been built, no on-dash test has run, and
 the unit is reachable only through NSP USB rather than the SSH method described
 for scratch testing. Recovery access is unverified. Do not flash; obtain an

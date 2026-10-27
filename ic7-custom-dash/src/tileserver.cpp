@@ -56,10 +56,14 @@ void TileServer::onNewConnection()
             }
             const QString full = QDir(m_baseDir).filePath(path.mid(1));
             QFile f(full);
+            // IC7_TILE_LOG=1: log each tile request (used by the QEMU smoke test).
+            static const bool logTiles = qEnvironmentVariableIsSet("IC7_TILE_LOG");
             if (!f.exists() || !f.open(QIODevice::ReadOnly)) {
+                if (logTiles) qInfo("tileserver: 404 %s", qPrintable(path));
                 send(404, "image/png", QByteArray());
                 return;
             }
+            if (logTiles) qInfo("tileserver: 200 %s", qPrintable(path));
             send(200, "image/png", f.readAll());
         });
         connect(sock, &QTcpSocket::disconnected, sock, &QObject::deleteLater);

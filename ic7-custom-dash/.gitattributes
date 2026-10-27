@@ -1,0 +1,4 @@
+# Shell scripts run inside WSL/Linux and on the ARM target; CRLF breaks them
+# (`set: pipefail: invalid option name`). Keep them LF even with core.autocrlf.
+*.sh text eol=lf
+deploy/scratch/SCRATCH-TEST-NOT-FIRMWARE.txt text eol=lf

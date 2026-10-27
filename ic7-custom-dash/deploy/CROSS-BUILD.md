@@ -22,6 +22,18 @@ Both rootfs-tar and stock `.swu` extraction paths were built successfully.
 The resulting ARM executable also ran under QEMU with the stock Qt runtime;
 physical hardware has not been tested. See [build results](../../README.md).
 
+Re-run on 2026-10-27 in the `ic7build` WSL distro (Ubuntu 22.04, GCC 11.4
+armhf, Qt 5.9.9 host tools, existing `~/ic7build/sysroot`) with
+`SKIP_INSTALL=1`; result: ELF 32-bit ARM EABI5, 112,208 bytes stripped,
+max GLIBC_2.4. QEMU check and packaging:
+`IC7_SYSROOT=~/ic7build/sysroot bash deploy/qemu-smoke-test.sh` and
+`bash deploy/bundle-scratch-test.sh` (SCRATCH-TEST tarball only — see
+`ON-DASH-TEST.md`). On a Windows checkout with `core.autocrlf=true`, `.sh`
+files were checked out with CRLF and bash failed (`set: pipefail: invalid
+option name`); `ic7-custom-dash/.gitattributes` now pins `*.sh` to LF.
+Section 3 (staging into a rootfs copy) and section 6 (flashing) below were not
+performed and remain untested.
+
 The full Boot2Qt SDK instructions below are an alternative, not a requirement
 for the verified build above.
 

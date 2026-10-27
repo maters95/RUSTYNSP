@@ -52,6 +52,9 @@ uses NSP's private original renderer when its installed runtime is available.
    a correctly signed com0com installation is another. No kernel driver is
    bundled, and disabling Windows driver-signing enforcement is not required
    or recommended. Create a paired connection, for example **COM10 <-> COM11**.
+   With signed com0com, `.\setup-virtual-pair.cmd` can plan and (with `-Apply`)
+   create the pair for you; with HHD, create it in HHD and record it with
+   `-Manual`. See **Virtual COM Pair Setup** below.
 5. With the real dash disconnected, launch `.\start-workbench.cmd`. On
   Windows, if no port is already labeled `Haltech iC-7 Simulator`, the
   workbench offers to prepare NSP discovery. Choose the NSP-facing end of the
@@ -92,7 +95,87 @@ uses NSP's private original renderer when its installed runtime is available.
    `-Runtime 'C:\path\to\Haltech\Nexus'`.
 
 The driver installation and port-description change are Windows-local setup
-steps; this container cannot install or verify them on your PC. If NSP does
+steps; this container cannot install or verify them on your PC.
+
+## Virtual COM Pair Setup (com0com or HHD)
+
+`setup-virtual-pair.cmd` configures and records the NSP/emulator pair so the
+workbench and `start-emulator.cmd` pick it up without retyping or relabelling
+port names. It never downloads or installs a driver, never changes driver
+signing or test-signing settings, and never opens a serial port.
+
+Prerequisites: Windows, Python 3.11+ (the `.venv` from `start-emulator.cmd`
+is used when present), and **either** a signed com0com build installed by you
+with its normal installer (for example the signed 3.0.0.0 or 2.2.2.0 release)
+**or** HHD Virtual Serial Port Tools / another signed driver for the manual path.
+Keep the physical dash disconnected.
+
+```powershell
+.\setup-virtual-pair.cmd                                   # dry run: detect and print the plan (default)
+.\setup-virtual-pair.cmd -NspPort COM10 -EmulatorPort COM11 -Apply   # run it after a typed "yes" and a UAC prompt
+```
+
+Dry run (default) is read-only. It reports installed HHD software, its
+services/drivers and Authenticode signatures, any present HHD ports (two
+present HHD ports are shown as a *candidate* pair; whether HHD has bridged them
+cannot be read from Windows inventory), the com0com `setupc.exe` location, the
+`com0com.sys` signature (`Get-AuthenticodeSignature`) and `pnputil
+/enum-drivers` entry, existing com0com pairs (`setupc list`, or the com0com
+service registry if `setupc list` needs elevation), and then prints the exact
+`setupc` commands it would run, for example:
+
+```text
+cd "C:\Program Files (x86)\com0com"; .\setupc.exe install PortName=COM#,RealPortName=COM10 PortName=COM#,RealPortName=COM11
+```
+
+`PortName=COM#,RealPortName=COMn` asks com0com to use the Windows Ports class,
+so the ports appear in Device Manager where NSP, pyserial and
+`set-nsp-port.ps1` can see them. If one requested name already belongs to a
+com0com pair only that pair's other end is renamed (`change CNCxN ...`);
+`-RenamePair N` renames an existing pair instead of installing a new one.
+
+Refusals (exit code 3, nothing changed): a requested name is held by any
+non-com0com device (physical USB/ACPI ports, the dash, HHD ports, any
+`SERIALCOMM` entry not owned by com0com), the two names are in different
+com0com pairs, or the name is reserved in the Windows COM database by an absent
+device (often a disconnected USB device such as the dash; override with
+`-AllowReserved` only after checking Device Manager with hidden devices shown).
+If no signed com0com is installed, or `com0com.sys` is not validly signed, the
+helper exits with code 2 and explains the options.
+
+`-Apply` asks you to type `yes` (skip only with `-Yes`), re-checks the driver
+signature, runs each `setupc` command through `Start-Process -Verb RunAs` (a
+visible UAC prompt; declining it stops the run), re-reads the pairs to verify,
+and saves `port-pair.json` next to the scripts. That file is machine-local and
+excluded from `package.py` builds.
+
+**HHD/manual fallback:** create the pair in HHD Virtual Serial Port Tools (or
+another signed driver) as before, then record it:
+
+```powershell
+.\setup-virtual-pair.cmd -Manual -NspPort COM10 -EmulatorPort COM11          # dry run: checks both ports look virtual
+.\setup-virtual-pair.cmd -Manual -NspPort COM10 -EmulatorPort COM11 -Apply   # saves port-pair.json only
+```
+
+`-Manual` makes no system changes; it refuses ports that are absent, USB/ACPI
+or not identified as virtual. Without `port-pair.json`, everything behaves as
+before: `start-emulator.cmd` prompts for the port and the workbench lists all
+identified virtual ports.
+
+With `port-pair.json` present, `start-emulator.cmd` without `-Port` uses its
+`emulator_port`, the workbench preselects that port, and the NSP discovery
+prompt offers `nsp_port` first. **NSP discovery labelling is still a separate
+step:** NSP only lists ports described as Haltech, so `set-nsp-port.ps1 -Port
+COM10` (or the workbench prompt) is still needed once on the NSP end, for
+either driver.
+
+Unverified: this helper has not been run against a real com0com install
+(com0com is not installed on the development machine), `-Apply` has never
+been executed, the `RealPortName` parameter form, whether `setupc list` works
+without elevation, whether `set-nsp-port.ps1` can relabel com0com ports, and an
+NSP connection through a com0com pair are all untested. Only detection,
+dry-run, refusal and no-driver paths were run, plus unit tests with fixture
+`setupc` output. See `docs/COM-SETUP-TEST-CHECKLIST.md` for the manual checks. If NSP does
 not connect, return `state\emulator.log` and the port-helper output. If there
 is no protocol traffic, diagnose discovery/port pairing before changing maps.
 
@@ -308,6 +391,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\set-nsp-port.ps1 -Port
 .\.venv\Scripts\python.exe -m unittest discover -s .\tests -v
 ```
 
+`tests/test_virtual_pair.py` covers `setupc list`/`pnputil`/ComDB parsing,
+HHD port/service selection, pair planning and port-conflict refusals, config
+round-trips, and the dry-run/confirmation/no-driver command-line paths with
+fixture data and mocks; it never runs `setupc` or requires a driver.
 Local checks cover CRC rejection, fragmented/coalesced requests, write/read-back,
 identity, persistence, image/font resource operations, resource checksum rejection,
 uploaded BMP display, live setting writes changing scene/pixels, and the

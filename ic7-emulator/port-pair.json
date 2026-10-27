@@ -1,0 +1,6 @@
+{
+  "driver": "manual",
+  "nsp_port": "COM10",
+  "emulator_port": "COM11",
+  "pair": null
+}

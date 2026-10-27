@@ -20,9 +20,16 @@ from PyQt5.QtWidgets import (QAction, QApplication, QComboBox, QFileDialog, QFor
 
 from ic7_emulator import Device, serve_stream
 from viewer import is_video_resource, render_layout, start_viewer
+from virtual_pair import load_pair_config
 
 
 ROOT = Path(__file__).resolve().parent
+PAIR_CONFIG = ROOT / "port-pair.json"
+
+
+def preferred_first(candidates, preferred):
+    """Keep the virtual-port list order but move the configured pair end to the front."""
+    return sorted(candidates, key=lambda name: name != preferred)
 
 
 def virtual_ports(ports):
@@ -344,8 +351,13 @@ class Workbench(QMainWindow):
         except ImportError:
             self.available_ports = []
             self.statusBar().showMessage("pyserial is unavailable; preview only")
+        pair = load_pair_config(PAIR_CONFIG)
         if previous:
             self.port.setCurrentIndex(max(0, self.port.findData(previous)))
+        elif pair and self.port.findData(pair["emulator_port"]) > 0:
+            self.port.setCurrentIndex(self.port.findData(pair["emulator_port"]))
+            self.statusBar().showMessage(
+                f"Configured pair: NSP {pair['nsp_port']} <-> emulator {pair['emulator_port']} ({pair.get('driver')})")
 
     def prepare_nsp_port(self):
         if sys.platform != "win32":
@@ -354,7 +366,8 @@ class Workbench(QMainWindow):
         if configured:
             self.statusBar().showMessage(f"NSP discovery is ready on {configured}")
             return
-        candidates = virtual_ports(self.available_ports)
+        pair = load_pair_config(PAIR_CONFIG)
+        candidates = preferred_first(virtual_ports(self.available_ports), pair and pair["nsp_port"])
         if not candidates:
             return
         answer = QMessageBox.question(

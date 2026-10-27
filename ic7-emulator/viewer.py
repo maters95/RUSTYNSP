@@ -1,6 +1,7 @@
 import io
 import hashlib
 import json
+import math
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import threading
@@ -47,11 +48,189 @@ def scene_state(device, screen):
     ]}
 
 
+# GAUGE_TYPE groupings (match native_view COMPONENTS mapping).
+CIRCULAR_TYPES = {4, 5, 6, 16}
+NUMERIC_TYPES = {3, 17}
+BAR_H_TYPES = {13, 14, 15, 19}
+BAR_V_TYPES = {9, 10, 20, 21}
+INDICATOR_TYPES = {7}
+TEXT_TYPES = {18}
+
+# NSP-like palette.
+COL_TILE = (17, 23, 28)
+COL_TILE_EDGE = (44, 60, 54)
+COL_LABEL = (138, 160, 160)
+COL_VALUE = (233, 242, 236)
+COL_ACCENT = (63, 216, 200)
+COL_TRACK = (36, 46, 44)
+COL_WARN = (255, 92, 77)
+
+# Keyword -> (unit, vmin, vmax, base, amplitude, period_s, decimals, warn_above|None).
+# These are SIMULATED display values only; the emulator holds no live ECU telemetry.
+_PROFILES = [
+    (("rpm", "engine speed"), ("rpm", 0, 8000, 2600, 1600, 5.0, 0, 7200)),
+    (("coolant",), ("°C", 40, 120, 88, 4, 11.0, 0, 108)),
+    (("oil temp",), ("°C", 40, 150, 97, 6, 13.0, 0, 130)),
+    (("intake", "iat", "air temp"), ("°C", 0, 90, 34, 5, 9.0, 0, None)),
+    (("ethanol",), ("%", 0, 100, 10, 0, 1.0, 0, None)),
+    (("oil press",), ("psi", 0, 120, 62, 10, 4.0, 0, None)),
+    (("fuel press",), ("psi", 0, 100, 43, 3, 4.0, 0, None)),
+    (("boost", "manifold", "map"), ("psi", -15, 30, 7, 11, 3.5, 1, 26)),
+    (("air fuel", "afr"), ("", 10, 20, 14.2, 1.3, 2.5, 1, None)),
+    (("lambda",), ("λ", 0.7, 1.3, 0.99, 0.08, 2.5, 2, None)),
+    (("battery", "volt"), ("V", 10, 16, 13.9, 0.2, 6.0, 1, None)),
+    (("speed",), ("km/h", 0, 220, 64, 42, 8.0, 0, None)),
+    (("throttle", "tps", "pedal"), ("%", 0, 100, 28, 26, 4.0, 0, None)),
+    (("egt", "exhaust"), ("°C", 0, 1000, 640, 120, 6.0, 0, 950)),
+    (("fuel level",), ("%", 0, 100, 56, 1, 20.0, 0, None)),
+    (("gear",), ("", 0, 6, 3, 2, 6.0, 0, None)),
+]
+_DEFAULT_PROFILE = ("", 0, 100, 50, 22, 6.0, 0, None)
+
+
+def simulate(label, channel, now):
+    text = (label or "").lower()
+    profile = next((spec for keys, spec in _PROFILES if any(key in text for key in keys)), _DEFAULT_PROFILE)
+    unit, vmin, vmax, base, amp, period, decimals, warn = profile
+    phase = (channel % 97) / 97.0 * 6.283185
+    value = base + amp * math.sin(now / period * 6.283185 + phase)
+    value = max(vmin, min(vmax, value))
+    if decimals == 0:
+        value = round(value)
+    frac = (value - vmin) / (vmax - vmin) if vmax > vmin else 0.0
+    return {"value": value, "min": vmin, "max": vmax, "unit": unit, "decimals": decimals,
+            "frac": max(0.0, min(1.0, frac)), "warn": warn is not None and value >= warn}
+
+
+def _fmt(value, decimals):
+    return f"{value:.{decimals}f}" if decimals else str(int(round(value)))
+
+
+def _centered(draw, box, text, fnt, fill):
+    left, top, right, bottom = box
+    bbox = draw.textbbox((0, 0), text, font=fnt)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    draw.text((left + (right - left - tw) / 2 - bbox[0], top + (bottom - top - th) / 2 - bbox[1]), text, font=fnt, fill=fill)
+
+
+def _tile(draw, box, radius=6):
+    draw.rounded_rectangle(box, radius=radius, fill=COL_TILE, outline=COL_TILE_EDGE, width=1)
+
+
+def _draw_numeric(draw, box, label, sim):
+    left, top, right, bottom = box
+    _tile(draw, box)
+    height = bottom - top
+    value_col = COL_WARN if sim["warn"] else COL_VALUE
+    if label:
+        draw.text((left + 8, top + 5), label[:26], fill=COL_LABEL, font=font(max(10, min(14, height // 4))))
+        draw.line((left + 8, top + 20, right - 8, top + 20), fill=COL_TILE_EDGE, width=1)
+    num = _fmt(sim["value"], sim["decimals"])
+    unit = sim["unit"]
+    value_font = font(max(16, min(40, int(height * 0.5))))
+    unit_font = font(max(10, min(16, int(height * 0.24))))
+    num_w = draw.textlength(num, font=value_font)
+    unit_w = draw.textlength(unit, font=unit_font) + 5 if unit else 0
+    nbox = draw.textbbox((0, 0), num, font=value_font)
+    num_h = nbox[3] - nbox[1]
+    x = left + (right - left - (num_w + unit_w)) / 2
+    y = top + (height - num_h) / 2 + height * 0.10 - nbox[1]
+    draw.text((x, y), num, font=value_font, fill=value_col)
+    if unit:
+        ubox = draw.textbbox((0, 0), unit, font=unit_font)
+        uy = y + nbox[1] + num_h - (ubox[3] - ubox[1]) - ubox[1]
+        draw.text((x + num_w + 5, uy), unit, font=unit_font, fill=COL_LABEL)
+
+
+def _draw_bar(draw, box, label, sim, vertical):
+    left, top, right, bottom = box
+    _tile(draw, box)
+    fill_col = COL_WARN if sim["warn"] else COL_ACCENT
+    if label:
+        draw.text((left + 7, top + 4), label[:24], fill=COL_LABEL, font=font(12))
+    pad = 8
+    if vertical:
+        track = (left + pad, top + 22, right - pad, bottom - 20)
+        draw.rounded_rectangle(track, radius=4, fill=COL_TRACK)
+        h = (track[3] - track[1]) * sim["frac"]
+        draw.rounded_rectangle((track[0], track[3] - h, track[2], track[3]), radius=4, fill=fill_col)
+    else:
+        track = (left + pad, bottom - 24, right - pad, bottom - 12)
+        draw.rounded_rectangle(track, radius=4, fill=COL_TRACK)
+        w = (track[2] - track[0]) * sim["frac"]
+        draw.rounded_rectangle((track[0], track[1], track[0] + w, track[3]), radius=4, fill=fill_col)
+    vtext = _fmt(sim["value"], sim["decimals"]) + (" " + sim["unit"] if sim["unit"] else "")
+    draw.text((right - 7 - draw.textlength(vtext, font=font(15)), top + 3), vtext, fill=COL_VALUE, font=font(15))
+
+
+def _draw_circular(canvas, draw, box, label, sim):
+    left, top, right, bottom = box
+    size = min(right - left, bottom - top)
+    cx, cy = (left + right) / 2, (top + bottom) / 2
+    r = size / 2 - 4
+    start, sweep = 135, 270  # NSP-style 270-degree sweep
+    draw.arc((cx - r, cy - r, cx + r, cy + r), start, start + sweep, fill=COL_TRACK, width=max(4, int(r / 7)))
+    end = start + sweep * sim["frac"]
+    draw.arc((cx - r, cy - r, cx + r, cy + r), start, end, fill=COL_WARN if sim["warn"] else COL_ACCENT, width=max(4, int(r / 7)))
+    angle = math.radians(end)
+    draw.line((cx, cy, cx + (r - 6) * math.cos(angle), cy + (r - 6) * math.sin(angle)), fill=COL_VALUE, width=max(2, int(r / 16)))
+    draw.ellipse((cx - 4, cy - 4, cx + 4, cy + 4), fill=COL_VALUE)
+    _centered(draw, (left, int(cy + r / 3), right, bottom), _fmt(sim["value"], sim["decimals"]), font(max(14, int(r / 2))), COL_VALUE)
+    if label:
+        _centered(draw, (left, top - 2, right, top + 18), label[:22], font(12), COL_LABEL)
+    if sim["unit"]:
+        _centered(draw, (left, int(cy + r / 3 + r / 2), right, bottom - 2), sim["unit"], font(12), COL_LABEL)
+
+
+def _draw_indicator(canvas, draw, box, label, resources, source, on):
+    left, top, right, bottom = box
+    payload = resources.get((0, source)) or resources.get((0, "h/" + source)) if source else None
+    if payload:
+        try:
+            with Image.open(io.BytesIO(payload)) as image:
+                item = ImageOps.contain(image.convert("RGBA"), (right - left, bottom - top))
+                if not on:
+                    item.putalpha(item.getchannel("A").point(lambda a: a * 55 // 255))
+                canvas.alpha_composite(item, (int(left + (right - left - item.width) / 2), int(top + (bottom - top - item.height) / 2)))
+            return
+        except (OSError, ValueError):
+            pass
+    colour = COL_ACCENT if on else COL_TRACK
+    draw.ellipse(box, fill=colour, outline=COL_TILE_EDGE)
+    if label:
+        _centered(draw, box, label[:3].upper(), font(12), COL_TILE)
+
+
+def _seek_frame(image, now):
+    """Advance an animated GIF/APNG to the frame for the current time (in place)."""
+    try:
+        count = getattr(image, "n_frames", 1)
+        if count <= 1:
+            return
+        durations = []
+        for index in range(count):
+            image.seek(index)
+            durations.append(image.info.get("duration") or 100)
+        total = sum(durations) or count * 100
+        elapsed = (now * 1000) % total
+        accumulated = 0
+        target = 0
+        for index, duration in enumerate(durations):
+            accumulated += duration
+            if elapsed < accumulated:
+                target = index
+                break
+        image.seek(target)
+    except (EOFError, OSError, ValueError):
+        pass
+
+
 def render_layout(device, screen):
     scene = scene_state(device, screen)
     with device.lock:
         resources = dict(device.resources.items)
-    canvas = Image.new("RGBA", (860, 480), (16, 19, 20, 255))
+    now = time.monotonic()
+    canvas = Image.new("RGBA", (860, 480), (10, 13, 15, 255))
     draw = ImageDraw.Draw(canvas)
     components = sorted(scene["components"], key=lambda component: component["values"].get("Z_POS", 0))
     for component in components:
@@ -65,24 +244,38 @@ def render_layout(device, screen):
         height = min(960, max(1, values.get("Y_SIZE", 60)))
         if left > 860 or top > 480 or left + width < 0 or top + height < 0:
             continue
+        box = (left, top, left + width, top + height)
         source = values.get("IMAGE_SRC", "")
         label = values.get("LABEL_TEXT", "")
-        opacity = min(255, max(0, round(values.get("DAY_OPACITY", 1000) * 255 / 1000)))
-        payload = resources.get((0, source)) or resources.get((0, "h/" + source))
-        if payload:
-            try:
-                with Image.open(io.BytesIO(payload)) as image:
-                    item = ImageOps.contain(image.convert("RGBA"), (width, height))
-                    item.putalpha(item.getchannel("A").point(lambda alpha: alpha * opacity // 255))
-                    canvas.alpha_composite(item, (left + (width - item.width) // 2, top + (height - item.height) // 2))
-            except (OSError, ValueError):
-                pass
-        if kind not in (2, 7) or not payload:
-            draw.rectangle((left, top, left + width, top + height), outline=(76, 108, 96), width=1)
-            if label:
-                draw.text((left + 5, top + 4), label[:40], fill=(224, 232, 228), font=font(14))
-            draw.text((left + 5, top + 25), f"CH {values.get('CHANNEL', 0)}",
-                      fill=(116, 213, 160), font=font(18))
+        channel = values.get("CHANNEL", 0)
+        if kind == 2:  # image / background
+            opacity = min(255, max(0, round(values.get("DAY_OPACITY", 1000) * 255 / 1000)))
+            payload = resources.get((0, source)) or resources.get((0, "h/" + source))
+            if payload:
+                try:
+                    with Image.open(io.BytesIO(payload)) as image:
+                        _seek_frame(image, now)
+                        item = ImageOps.contain(image.convert("RGBA"), (width, height))
+                        item.putalpha(item.getchannel("A").point(lambda alpha: alpha * opacity // 255))
+                        canvas.alpha_composite(item, (left + (width - item.width) // 2, top + (height - item.height) // 2))
+                except (OSError, ValueError):
+                    draw.rectangle(box, outline=COL_TILE_EDGE, width=1)
+            continue
+        if kind in INDICATOR_TYPES:
+            _draw_indicator(canvas, draw, box, label, resources, source, (channel + int(now)) % 5 != 0)
+            continue
+        sim = simulate(label, channel, now)
+        if kind in CIRCULAR_TYPES:
+            _draw_circular(canvas, draw, box, label, sim)
+        elif kind in BAR_H_TYPES:
+            _draw_bar(draw, box, label, sim, vertical=False)
+        elif kind in BAR_V_TYPES:
+            _draw_bar(draw, box, label, sim, vertical=True)
+        elif kind in TEXT_TYPES:
+            _tile(draw, box)
+            _centered(draw, box, label[:30] or f"CH {channel}", font(16), COL_VALUE)
+        else:  # numeric and any unmapped active gauge
+            _draw_numeric(draw, box, label, sim)
     return canvas.convert("RGB").resize((800, 480), Image.Resampling.LANCZOS)
 
 

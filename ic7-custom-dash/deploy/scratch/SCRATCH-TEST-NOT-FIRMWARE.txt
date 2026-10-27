@@ -1,0 +1,55 @@
+SCRATCH TEST BUNDLE -- NOT FIRMWARE
+===================================
+
+What this is
+  A standalone Qt/QML test application (ic7dash: gauges, offline map, GIF or
+  MP4 background) cross-compiled for ARMv7 hard-float against the Qt 5.9.6
+  libraries extracted from the stock Haltech iC-7 rootfs.
+
+What this is NOT
+  - not firmware, not custom firmware, not a flash image, not an update package
+  - not a .nex, .swu, rootfs or partition image; it cannot be installed with NSP
+  - not verified on real iC-7 hardware: it has only been run under QEMU
+    user-mode emulation (offscreen platform) on a Linux build host
+
+It does not modify the stock system. The stock/NSP workflow is unchanged.
+No script in this bundle installs services, starts/stops services, remounts
+filesystems read-write, configures CAN/network interfaces, or writes outside
+its own directory and /tmp/ic7dash-scratch.
+
+Deliberately left out (they change system state):
+  bringup-can.sh       (runs `ip link set` on can0)
+  ic7-mode.sh          (stops/starts systemd services)
+  ic7-overlay.service  (systemd unit meant for /etc/systemd/system)
+
+Target expectations (none of this has been confirmed on hardware)
+  - ARMv7 hard-float Linux, glibc >= 2.4 symbol versions (stock rootfs: 2.24)
+  - Qt 5.9.x shared libs + plugins on the target: Core, Gui, Network, Qml,
+    Quick, QuickControls2 (QML), Positioning, Location (osm geoservice),
+    Multimedia (+ GStreamer 1.x mediaservice for MP4), imageformats/gif,
+    platform plugin offscreen (selftest) and eglfs (on-screen)
+  - libstdc++/libgcc are linked statically; no other bundled libraries
+
+How to run (only with shell access the vendor supports; do not bypass
+access controls)
+  1. Copy the archive to a scratch location, e.g. /tmp, and extract:
+       mkdir -p /tmp/ic7scratch && cd /tmp/ic7scratch
+       tar xzf ic7dash-scratch-test-<date>.tar.gz
+       cd ic7dash-scratch
+  2. Headless self-test (offscreen, draws nothing, exits by itself):
+       ./run-scratch.sh selftest
+     Logs and screenshots: /tmp/ic7dash-scratch/
+  3. Interactive run with a background (map | gif | video):
+       ./run-scratch.sh gif
+     The platform defaults to offscreen. Using QT_QPA_PLATFORM=eglfs needs the
+     display to be free; this bundle never stops the stock UI for you, and
+     doing so on the real dash is untested.
+
+How to remove
+  rm -rf /tmp/ic7scratch /tmp/ic7dash-scratch
+  (or wherever you extracted it). Nothing else was created.
+
+Unverified
+  real display / eglfs integration and orientation, i.MX6 VPU or software
+  video decode speed on target, GIF/map performance on target, real CAN
+  input, GPS, coexistence with the stock dash application and NSP.

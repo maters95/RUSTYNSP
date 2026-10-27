@@ -72,6 +72,21 @@ Rectangle {
         fillMode: Image.PreserveAspectCrop
         source: visible ? (bgDir + "/bg.gif") : ""
         cache: false
+        // Diagnostics (one line each, "ic7bg:" prefix) so a headless/QEMU or
+        // on-target run can confirm the background actually loaded/animated.
+        property bool _reportedAdvance: false
+        onStatusChanged: {
+            if (status === Image.Ready)
+                console.log("ic7bg: gif ready frames=" + frameCount);
+            else if (status === Image.Error)
+                console.warn("ic7bg: gif error loading " + source);
+        }
+        onCurrentFrameChanged: {
+            if (!_reportedAdvance && currentFrame > 0) {
+                _reportedAdvance = true;
+                console.log("ic7bg: gif frame advanced to " + currentFrame);
+            }
+        }
     }
     Video {
         id: bgVid
@@ -83,6 +98,23 @@ Rectangle {
         source: visible ? (bgDir + "/bg.mp4") : ""
         loops: MediaPlayer.Infinite
         onStopped: if (visible) play()   // belt-and-braces loop
+        // Diagnostics, same "ic7bg:" prefix as the GIF background.
+        property bool _reportedPosition: false
+        onStatusChanged: if (visible) console.log("ic7bg: video status=" + status)
+        onPlaybackStateChanged: {
+            if (playbackState === MediaPlayer.PlayingState)
+                console.log("ic7bg: video playing");
+        }
+        onErrorChanged: {
+            if (error !== MediaPlayer.NoError)
+                console.warn("ic7bg: video error " + error + ": " + errorString);
+        }
+        onPositionChanged: {
+            if (!_reportedPosition && position > 0) {
+                _reportedPosition = true;
+                console.log("ic7bg: video position advanced ms=" + position);
+            }
+        }
     }
 
     // --- Simulated GPS: drive the loop at ~speed from the CAN feed ---

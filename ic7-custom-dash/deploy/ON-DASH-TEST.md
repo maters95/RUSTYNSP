@@ -1,81 +1,87 @@
-# Scratch-running ic7dash on the dash — WITHOUT flashing (untested)
+# Scratch-running ic7dash on the dash — WITHOUT flashing (untested on hardware)
 
-This procedure is intended to run the app from writable scratch storage without
-installing firmware. It has **not** been verified on the owner's unit. Stopping
-the display/watchdog services or launching an incompatible Qt app can leave the
-screen unavailable until a power cycle; do not treat this as zero risk.
+This procedure runs the standalone app from scratch storage using the
+SCRATCH-TEST bundle. It is **not firmware**, not a flash image and not an
+NSP package, and it has **never been run on a real iC-7**. Everything below
+has only been exercised under QEMU user-mode emulation on a Linux build host.
+The stock firmware and the stock/NSP workflow are unchanged by it.
 
-Do not attempt permanent installation. The update packaging and recovery route
-are still unverified.
+Do not attempt permanent installation. Update packaging and recovery are
+still unverified (see `DEPLOY.md`).
 
-## Why this is safe
-- The commands below target `/mnt/usb` scratch and do not intentionally write
-  firmware partitions. Verify the mount and service names on the exact unit
-  before running anything.
-- A power cycle is expected to return to stock only if the stock boot path and
-  watchdog behave as documented; this has not been tested on the owner's unit.
-- The app only owns the screen and reads CAN/GPS; its only writes are map tiles
-  cache under `/mnt/usb`.
+## Scope of the bundle
+- `dist-scratch/ic7dash-scratch-test-<date>.tar.gz`, built by
+  `deploy/bundle-scratch-test.sh`. Top level: `SCRATCH-TEST-NOT-FIRMWARE.txt`
+  and `ic7dash-scratch/` (binary, `emtron_can.json`, `bg.gif`, optional
+  `bg.mp4`, `tiles/`, `run-scratch.sh`, `PROVENANCE.txt`, `SHA256SUMS`).
+- `run-scratch.sh` never installs anything, never starts/stops services, never
+  remounts filesystems and never configures CAN/network interfaces. It writes
+  only the app's `tilecache/` inside its own folder and
+  `/tmp/ic7dash-scratch/` (logs, screenshots, redirected HOME/XDG caches).
+  This write scope was checked on the build host under QEMU.
+- Left out on purpose because they change system state: `bringup-can.sh`
+  (`ip link set`), `ic7-mode.sh` (systemctl), `ic7-overlay.service`.
 
 ## Prerequisites (confirm on YOUR unit first)
-1. **An ARM build of ic7dash** — cross-compiled per `CROSS-BUILD.md` on a Linux
-   box. (It could not be built on the Windows analysis PC; that's expected.)
-2. **An officially supported shell on the dash.** Rootfs evidence of Dropbear
-  does not mean SSH is enabled. The owner's unit is currently accessible only
-  through NSP USB; that is not an app-upload shell. If you do not already have
-  vendor-authorized shell access, stop and ask Haltech/Ingenuity for the
-  supported development path. Do not attempt to bypass access controls.
-3. **Network to the dash** — e.g. its Wi-Fi or Ethernet. Confirm the officially
-  supported shell works before preparing to run the app.
-4. The other NSP session isn't actively using the dash while you test.
+1. **Vendor-supported shell access.** The owner's unit is currently reachable
+   only through NSP over USB, which is not an app-upload shell. Rootfs evidence
+   of Dropbear does not mean SSH is enabled. If you do not already have
+   vendor-authorized shell access, stop here; do not bypass access controls.
+2. A way to copy the archive to writable scratch storage (`/tmp`, or a USB
+   stick mount) — confirm the mount and free space first.
+3. Expected on the target (present in the stock rootfs image; not confirmed on
+   a running unit): ARMv7 hard-float Linux with glibc ≥ 2.4 symbol versions,
+   Qt 5.9.x Core/Gui/Network/Qml/Quick/QuickControls2/Positioning/Location
+   (osm)/Multimedia + GStreamer 1.x mediaservice, the `gif` imageformat plugin,
+   and the `offscreen` (selftest) and `eglfs` (on-screen) platform plugins.
 
 ## Steps
 ```sh
-# 1. Only after vendor-supported shell access is confirmed, copy the app bundle
-#    from your Linux build box to the dash's scratch area.
-#    (replace dash-ip / user with yours)
-scp -r build-arm/ic7dash emtron_can.json tiles deploy/bringup-can.sh \
-    root@dash-ip:/mnt/usb/ic7test/
+# 1. Copy the archive to the dash's scratch area and extract it there.
+mkdir -p /tmp/ic7scratch && cd /tmp/ic7scratch
+tar xzf ic7dash-scratch-test-<date>.tar.gz
+cd ic7dash-scratch
+sha256sum -c SHA256SUMS
 
-# 2. SSH in
-ssh root@dash-ip
+# 2. Headless self-test: offscreen platform, draws nothing, leaves the stock UI
+#    alone, exits by itself (~1 min per mode on a PC under QEMU; unknown on the
+#    dash). Runs map, gif and video (if bg.mp4 is present).
+./run-scratch.sh selftest
+#    -> per-mode "OK"/"PROBLEM", logs + PNGs in /tmp/ic7dash-scratch/
+#    Look for: "qml: ic7bg: gif ready", "qml: ic7bg: video playing",
+#    "tileserver: 200 /z/x/y.png", and no "qrc:/qml/..." error lines.
 
-# 3. On the dash: stop the stock UI + its watchdog so they release the screen.
-systemctl stop watchdog-launcher gui-launcher
-
-# 4. Run the app on the framebuffer. CAN is optional — if can0 isn't up the app
-#    falls back to a simulated feed, so the UI still comes up.
-cd /mnt/usb/ic7test
-chmod +x ic7dash bringup-can.sh
-./bringup-can.sh can0 1000000        # optional: only if you've wired CAN
-QT_QPA_PLATFORM=eglfs \
-QT_NMEA_SERIAL_PORT=/dev/ttyUSB0 \
-IC7_CAN=can0 \
-./ic7dash
-# -> you should see the gauges page; swipe/second screen shows the map + laps.
-
-# 5. Stop and restore the stock dash:
-#    Ctrl-C to quit the app, then:
-systemctl start gui-launcher watchdog-launcher
-#    (or just power-cycle the dash — nothing was changed.)
+# 3. Optional interactive run (offscreen unless you choose otherwise):
+./run-scratch.sh map        # or gif / video; Ctrl-C to quit
 ```
 
-## If something's off (all harmless)
-- **App errors on eglfs** (`Failed to create...`): the board may need a specific
-  integration. Check what the stock app used: `systemctl cat gui-launcher` and
-  match its `QT_QPA_*` environment, then re-run step 4 with those.
-- **Screen stays black / app exits**: read the error it printed; missing Qt
-  plugins mean the ARM build can't find them — fix on the build side,
-  re-copy, retry. Firmware is still untouched.
-- **Watchdog reboots the dash** when you stop gui-launcher: harmless — it boots
-  the stock firmware. If it's disruptive, stop `watchdog-launcher` first (step 3
-  already does).
-- **No CAN data**: expected if `can0` isn't wired/up — the app shows the
-  simulated feed. Wire CAN and re-run to see live values.
+An **on-screen** run needs `QT_QPA_PLATFORM=eglfs` and a free display. eglfs
+allows one display owner, so the stock UI would have to be stopped first
+(earlier notes used `systemctl stop watchdog-launcher gui-launcher`). That step
+changes running services until reboot, is **not** part of the scratch bundle,
+and has never been tested on the owner's unit — stopping the display/watchdog
+services or starting an incompatible Qt app may leave the screen unusable until
+a power cycle. Only do it with vendor guidance.
 
-## What this proves
-That the app actually runs on *your* hardware, with your Qt/eglfs, and reads your
-CAN — before any firmware change. Once this is solid, `DEPLOY.md` covers making
-it permanent safely (flash the PASSIVE partition, keep the good one, verify i.MX6
-USB recovery first). Leave the STM32 I/O firmware alone throughout.
+CAN is simulated unless you export `IC7_CAN=can0` for an interface that is
+already up; the app only reads it. The bundle will not bring the bus up.
+
+## Remove
+```sh
+rm -rf /tmp/ic7scratch /tmp/ic7dash-scratch
 ```
+Nothing else is created.
+
+## If something's off
+- **Missing Qt plugin / module errors** in the selftest log: the target's Qt
+  differs from the extracted sysroot — report the exact error; nothing was
+  changed on the dash.
+- **`ic7bg: video error ...`** or no `video playing`: the GStreamer stack or
+  codec on the target differs from the sysroot; GIF and map modes still work.
+- **No CAN data**: expected unless `can0` is up and `IC7_CAN=can0` is set.
+
+## What remains unverified
+Real display/eglfs integration and orientation (QEMU captures are vertically
+flipped), i.MX6 VPU vs software decode and video performance, GIF/map
+performance, real CAN input, GPS, coexistence with the stock dash application,
+watchdog and NSP.

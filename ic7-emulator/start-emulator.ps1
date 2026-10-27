@@ -48,7 +48,12 @@ function Test-PythonRuntime {
 
 Set-Location -LiteralPath $PSScriptRoot
 if (-not $Workbench -and -not $ViewerOnly -and -not $Port) {
-    $Port = Read-Host 'Emulator end of the virtual serial pair (for example COM11)'
+    $pairConfig = Join-Path $PSScriptRoot 'port-pair.json'
+    if (Test-Path -LiteralPath $pairConfig) {
+        try { $Port = [string](Get-Content -LiteralPath $pairConfig -Raw | ConvertFrom-Json).emulator_port } catch { $Port = $null }
+        if ($Port) { Write-Host "Using emulator port $Port from port-pair.json (written by setup-virtual-pair)." }
+    }
+    if (-not $Port) { $Port = Read-Host 'Emulator end of the virtual serial pair (for example COM11)' }
 }
 if (-not $Workbench -and -not $ViewerOnly -and $Port -notmatch '^COM\d+$') {
     throw 'Specify a virtual COM port, for example -Port COM11. Do not select the real dash port.'
