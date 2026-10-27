@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+
+/ic7-custom-dash/build/
+/ic7-custom-dash/build-linux/
+/ic7-custom-dash/build-qmake/
+/fw/swu_nsp/var-image-swupdate-var-som-mx6-20240621065410.rootfs.tar

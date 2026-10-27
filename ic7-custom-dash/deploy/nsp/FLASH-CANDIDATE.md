@@ -16,7 +16,7 @@ Paths are relative to the repository root:
 - GIF and MP4 mapfix with NSP PNG-picker alias support: `ic7-custom-dash/build-cfw-media-mapfix-alias/ic7-2.36-media-cfw-mapfix-alias-experimental.nex`
 - Earlier GIF and MP4 mapfix: `ic7-custom-dash/build-cfw-media-mapfix/ic7-2.36-media-cfw-mapfix-experimental.nex`
 - Stock resources mapfix: `ic7-custom-dash/build-cfw-media-mapfix/ic7-2.36-stock-resources-experimental.nex`
-- Original full vendor package: `Dash-V2-36-0-Release.nex`
+- Original full vendor package: [fw/Dash-V2-36-0-Release.nex](../../../fw/Dash-V2-36-0-Release.nex)
 
 Each mapfix candidate keeps the stock product's `hdefFile="ic-7.hdef"` link
 and embeds the matching stock HDEF solely as an NSP map-migration dependency.

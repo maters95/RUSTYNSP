@@ -5,6 +5,34 @@ The supplied `iC7-Custom-Dash-Project.7z` has been extracted into this workspace
 The decompiled source and ILSpy are at `nsp_src/` and `ilspy/`, respectively
 (not under `tools/` in this archive).
 
+## Repository Storage
+
+Large firmware, archive and capture files use Git LFS. Install Git LFS before
+cloning, or initialize it and download the content in an existing clone:
+
+```bash
+git lfs install
+git lfs pull
+```
+
+Pushing the initial LFS history requires approximately 3.25 GiB of available
+GitHub LFS storage and upload bandwidth. Keep at least 2 GiB of free local
+space for LFS temporary files in addition to the checkout and LFS object cache.
+
+The canonical stock v2.36 package is [fw/Dash-V2-36-0-Release.nex](fw/Dash-V2-36-0-Release.nex).
+The generated asset-map copy is retained under
+[build-nsp-map/](ic7-custom-dash/build-nsp-map/), not duplicated under `build-nsp/`.
+Desktop CMake/qmake build directories and Python bytecode caches are not
+versioned; regenerate desktop builds using the commands below.
+
+The extracted root filesystem is also omitted because it is byte-for-byte
+reproducible from the retained compressed archive. If needed, restore it with:
+
+```bash
+gzip -dc fw/swu_nsp/var-image-swupdate-var-som-mx6.tar.gz \
+  > fw/swu_nsp/var-image-swupdate-var-som-mx6-20240621065410.rootfs.tar
+```
+
 ## Runnable Simulator
 
 [Download the updated Windows workbench](dist/ic7-emulator-windows-workbench-nsp-autosetup.zip) and read
