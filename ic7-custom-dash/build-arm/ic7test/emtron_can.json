@@ -1,0 +1,49 @@
+{
+  "_comment": [
+    "Emtron -> iC-7 Generic CAN receive layout, copied from NSP (Connections >",
+    "CAN > Third Party CAN > Generic CAN) on 2026-10-25. Standard 11-bit IDs,",
+    "8 bytes, 1 Mbit/s. All signals 16-bit little-endian unsigned.",
+    "Physical = raw * scale + offset (same as NSP's multiplier/offset).",
+    "Pressures are psi exactly as NSP shows them (Emtron sends kPa x10).",
+    "VEHICLE_SPEED x0.1 is not yet confirmed on the road."
+  ],
+  "frames": [
+    { "id": "0x3E8", "signals": [
+      { "name": "ENGINE_SPEED",      "startBit": 0,  "length": 16, "scale": 1,         "offset": 0,       "unit": "rpm" },
+      { "name": "MANIFOLD_PRESSURE", "startBit": 16, "length": 16, "scale": 0.0145038, "offset": -14.696, "unit": "psi" },
+      { "name": "COOLANT_TEMP",      "startBit": 32, "length": 16, "scale": 0.1,       "offset": -50,     "unit": "C" },
+      { "name": "INTAKE_AIR_TEMP",   "startBit": 48, "length": 16, "scale": 0.1,       "offset": -50,     "unit": "C" }
+    ]},
+    { "id": "0x3E9", "signals": [
+      { "name": "OIL_PRESSURE",      "startBit": 0,  "length": 16, "scale": 0.0145038, "offset": 0,       "unit": "psi" },
+      { "name": "FUEL_PRESSURE",     "startBit": 16, "length": 16, "scale": 0.0145038, "offset": 0,       "unit": "psi" },
+      { "name": "ETHANOL",           "startBit": 32, "length": 16, "scale": 0.1,       "offset": 0,       "unit": "%" },
+      { "name": "LAMBDA",            "startBit": 48, "length": 16, "scale": 0.001,     "offset": 0,       "unit": "lambda" }
+    ]},
+    { "id": "0x3EA", "signals": [
+      { "name": "OIL_TEMP",          "startBit": 0,  "length": 16, "scale": 0.1,       "offset": -50,     "unit": "C" },
+      { "name": "DTC_CODES",         "startBit": 16, "length": 16, "scale": 1,         "offset": 0,       "unit": "" },
+      { "name": "IGN_BASE",          "startBit": 32, "length": 16, "scale": 0.1,       "offset": -100,    "unit": "deg" },
+      { "name": "VTEC",              "startBit": 48, "length": 16, "scale": 1,         "offset": 0,       "unit": "" }
+    ]},
+    { "id": "0x3EB", "signals": [
+      { "name": "VEHICLE_SPEED",     "startBit": 0,  "length": 16, "scale": 0.1,       "offset": 0,       "unit": "km/h" }
+    ]},
+    { "id": "0x3F2", "signals": [
+      { "name": "TPS",               "startBit": 0,  "length": 16, "scale": 0.1,       "offset": -100,    "unit": "%" },
+      { "name": "STFT",              "startBit": 16, "length": 16, "scale": 0.01,      "offset": -100,    "unit": "%" },
+      { "name": "LTFT",              "startBit": 32, "length": 16, "scale": 0.01,      "offset": -100,    "unit": "%" },
+      { "name": "LAMBDA_TARGET",     "startBit": 48, "length": 16, "scale": 0.001,     "offset": 0,       "unit": "lambda" }
+    ]},
+    { "id": "0x3F3", "signals": [
+      { "name": "IGN_ANGLE",         "startBit": 0,  "length": 16, "scale": 0.1,       "offset": -100,    "unit": "deg" },
+      { "name": "INJ_DUTY",          "startBit": 16, "length": 16, "scale": 0.1,       "offset": 0,       "unit": "%" },
+      { "name": "DTC_COUNT",         "startBit": 32, "length": 16, "scale": 1,         "offset": 0,       "unit": "" },
+      { "name": "KNOCK_COUNT",       "startBit": 48, "length": 16, "scale": 1,         "offset": 0,       "unit": "" }
+    ]},
+    { "id": "0x3F4", "signals": [
+      { "name": "CAM_POS",           "startBit": 0,  "length": 16, "scale": 0.1,       "offset": -200,    "unit": "deg" },
+      { "name": "CAM_TARGET",        "startBit": 16, "length": 16, "scale": 0.1,       "offset": -200,    "unit": "deg" }
+    ]}
+  ]
+}

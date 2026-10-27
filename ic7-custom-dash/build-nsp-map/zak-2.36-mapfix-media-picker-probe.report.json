@@ -1,0 +1,22 @@
+{
+  "source": "2026-10-26_0612pm.ic7-2-36-0.nexmap",
+  "output": "zak-2.36-mapfix-media-picker-probe.nexmap",
+  "source_sha256": "4c38c528ddf700b4c235ab9241e9aa2735e133c407807a4d52c009f8f6901346",
+  "output_sha256": "bfe9e07f7fbea79618e53aa636fe8c3add816dc4120c6b84c38df270245959ab",
+  "original_entries_preserved": 37,
+  "changed_existing_entries": [],
+  "map_settings_byte_identical": true,
+  "added_assets": [
+    {
+      "name": "user_resources/images/ic7_media_probe.mp4",
+      "bytes": 23159,
+      "sha256": "03fa37f798da7717b9c507d0283fb002e7ed4bc34d6d24f697e1ac8a8f0e1cb8"
+    },
+    {
+      "name": "user_resources/images/ic7_video_probe.png",
+      "bytes": 23159,
+      "sha256": "03fa37f798da7717b9c507d0283fb002e7ed4bc34d6d24f697e1ac8a8f0e1cb8"
+    }
+  ],
+  "status": "offline authenticated; NSP import, resource listing and device transfer untested"
+}

@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-windows.zip",
+  "bytes": 30914257,
+  "sha256": "3c1a0b1713dc3f95f8b13a879605d1a1c5782d7fb5741ad0af52757214466450",
+  "files": 46,
+  "status": "Windows NSP basic serial session observed; resource RPC fix locally tested; original renderer Windows runtime unverified"
+}

@@ -1,0 +1,105 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.39.3 or newer.
+
+<b>V2.27.2 Release</b>
+
+<b>Fixes</b>
+
+* Fix default values for Stage Injection time
+
+* Fix Dash temperature channel sometimes not available.
+
+* Fix ECU temperature not available over Haltech CAN
+
+<b>V2.27.1 Release</b>
+
+<b>Fixes</b>
+
+* Fix <b>Gear Selector Position</b> not displaying correct values on the Dash
+
+* Fix formatted time units not supporting user defined decimal places
+
+* Fix Target Boost Pressure Level showing incorrect value when using Haltech CAN protocol.
+
+* Fix <b>Yaw Rate, Pitch Rate, Roll Rate<b> flicker when enabled in Dash
+
+* Fix <b>Combined Gear Position</b> flickering when <b>Gear Detection Type<b> is configured in Dash
+
+* Fix Knock Sensor 1 Knock Level only allowing percentage units. It now correctly allows decibels.
+
+* Fix dash incorrectly sending DPI state information to Elite ECUs.
+
+* Fix scaling issues in some channels when using <b>Third Party CAN - FuelTech</b>
+
+* Fixes Haltech iC-7 and uC-10 momentary inputs sometimes acting as push-on/push-off when used from an ECU.
+
+<b>V2.27.0 Release</b>
+
+<i><b>Important Notes</b></i>
+
+<b>Features</b>
+
+* Add Wi-Fi support for uC-10
+
+* <b>Fuel Level Sensors</b>
+    * Now supports 2 Fuel Level Sensors
+    * Add <b>Resistance</b> as an Input Type option for fuel level sensors
+    * Increased filtering on fuel level sensors
+    * Improved fuel level when sent from ECU to Dash over CAN
+        * <b>Fuel Level Remaining</b> channel will represent remaining fuel as a percentage of the total fuel volume as configured in the ECU.
+        * <b>Fuel Volume Remaining</b> channel now represents remaining fuel volume as configured in the ECU.
+        * The existing <b>Fuel Level</b> channel is now disabled when <i>Sensors - Fuel Level</i> is disabled and all use of the <b>Fuel Level</b> channel on dash screens has been automatically upgraded to use <b>Fuel Level Remaining</b>.
+
+* <b>Third Party Can</b>
+    * Support for user configurable baud rates.
+    * Support auto detect baud rate.
+    * E38 ECU Support
+    * Holley EFI Standard Protocol
+
+* Add support for multiple gear detection methods, including:
+    * Gear Ratio Detection
+    * Gear Position Sensor
+    * Selector Position
+    * Gear Switch
+    * RPM Drop
+
+<b>Fixes</b>
+
+* Fix alarm banners flickering in some instances
+
+* Fix TMS showing <i>Calibrating</i> incorrectly in NSP and dash.
+
+* Fixed occassional loss of logged data when powered off while logging.
+
+* <b>Battery Voltage</b>
+    * Change <b>Battery Voltage</b> channel to <b>Device Battery Voltage</b>. This channel always represents the devices measured battery voltage.
+    * Add <b>ECU Battery Voltage</b> channel that represents the battery voltage of the ECU connected over CAN.
+
+* Fix the following channels not displaying correctly when sent from a Haltech ECU:
+    * Lateral G
+    * Longitudinal G
+    * Vertical G
+    * Pitch Rate
+    * Roll Rate
+    * Yaw Rate
+    * ECU Battery Voltage
+    * Fuel Level 1 Volume
+
+* Hide external wideband channels if that wideband is not enabled.
+
+* Fix bar gauges sometimes displaying wrong unit type.
+
+* Fix some channels not displaying correctly when using <b>Syvecs</b> third party protocol.
+
+* Fix a change to a <b>Generic Can</b> channel not notifiying the user that a reset is required.
+
+* Fix Dash Screen Day Palette displayed two times in NSP
+
+* Fix dash sending incorrect DPI state information to Elite ECUs.
+
+* Fixes AVI and SPI input state flickering when state should be on
+
+* Allow <b>Gear Ratio Detection</b> to get <i>RPM</i> and <i>Vehicle Speed</i> from the ECU over CAN but do the gear calculation on the dash if <b>Gear Detection Type</b> is set to anything other than <i>Disabled</i>.
+
+* Fix <b>Transmission - Detection Type - Transmission Ratios</b> showing an error if <b>Driveshaft RPM</b> sensor is disabled in Dash. It now checks if the driveshaft sensor is broadcast by the active CAN protocol.

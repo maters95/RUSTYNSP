@@ -1,0 +1,12 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.34.0 or newer.
+
+<i><b>Changes for v3.14.0</b></i>
+
+* Internal changes to improve calibration of external widebands
+
+<i><b>Changes for v3.11.0</b></i>
+
+* Fixes the status falsely reporting "In Condensation Phase" momentarily when in calibration mode.
+* Fixes changing NTK sensor type on one channel reinitializing the other channel (Dual wideband boxes only).

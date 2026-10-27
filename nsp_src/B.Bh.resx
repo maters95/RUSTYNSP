@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="VehicleNameTextBox.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwcyMTEsIDIy</value></data><data name="CancellingButton.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>9</value></data>
+  <data name="DescLabel.Text" xml:space="preserve"><value>Specify Unique Name or Identifier:</value></data>
+  <data name="DescLabel.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwcxODMsIDEz</value></data><data name="$this.Text" xml:space="preserve"><value>Vehicle Name</value></data>
+  <data name="$this.ClientSize" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwgyMzUsIDEwOQ==</value></data><data name="&gt;&gt;DescLabel.ZOrder" xml:space="preserve"><value>3</value></data>
+  <data name="OKButton.Text" xml:space="preserve"><value>OK</value></data>
+  <data name="OKButton.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwY4MCwgMzA=</value></data><data name="&gt;&gt;DescLabel.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;VehicleNameTextBox.ZOrder" xml:space="preserve"><value>2</value></data>
+  <data name="&gt;&gt;VehicleNameTextBox.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;CancellingButton.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.32.16.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;CancellingButton.Name" xml:space="preserve"><value>CancellingButton</value></data>
+  <data name="&gt;&gt;DescLabel.Type" xml:space="preserve"><value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;DescLabel.Name" xml:space="preserve"><value>DescLabel</value></data>
+  <data name="DescLabel.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>6</value></data>
+  <data name="CancellingButton.Text" xml:space="preserve"><value>Cancel</value></data>
+  <data name="CancellingButton.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwY3NSwgMzA=</value></data><data name="VehicleNameTextBox.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYxMiwgMzY=</value></data><data name="CancellingButton.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwcxMjYsIDcw</value></data><data name="&gt;&gt;OKButton.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.32.16.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;OKButton.Name" xml:space="preserve"><value>OKButton</value></data>
+  <data name="&gt;&gt;OKButton.ZOrder" xml:space="preserve"><value>0</value></data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve"><value>VehicleNameEntryDialog</value></data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve"><value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;VehicleNameTextBox.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedTextBox, NSP, Version=1.32.16.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;VehicleNameTextBox.Name" xml:space="preserve"><value>VehicleNameTextBox</value></data>
+  <data name="&gt;&gt;CancellingButton.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="DescLabel.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYxNCwgMTM=</value></data><data name="OKButton.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYzMywgNzA=</value></data><data name="&gt;&gt;CancellingButton.ZOrder" xml:space="preserve"><value>1</value></data>
+  <data name="&gt;&gt;OKButton.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="$this.StartPosition" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwxDZW50ZXJQYXJlbnQ=</value></data><data name="VehicleNameTextBox.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>7</value></data>
+  <data name="OKButton.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>10</value></data>
+  <data name="DescLabel.AutoSize" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>True</value></data>
+  <data name="$this.AutoScaleDimensions" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwU2LCAxMw==</value></data></root>

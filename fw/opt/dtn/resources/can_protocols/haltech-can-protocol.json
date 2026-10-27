@@ -1,0 +1,1390 @@
+{
+	"CanProtocol": "HALTECH",
+	"CanTermination": "Yes",
+	"CanSpeed": 1000000,
+	"CanNodeList": [
+		{
+			"Name": "Engine RPM",
+			"ID": 384,
+			"EcuCanID": 864,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Speed",
+			"ID": 397,
+			"EcuCanID": 880,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Temp",
+			"ID": 235,
+			"EcuCanID": 992,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Pres",
+			"ID": 236,
+			"EcuCanID": 865,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Pres",
+			"ID": 234,
+			"EcuCanID": 865,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wastegate Pressure",
+			"ID": 265,
+			"EcuCanID": 865,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Manifold Pressure",
+			"ID": 224,
+			"EcuCanID": 864,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Throttle Position",
+			"ID": 225,
+			"EcuCanID": 864,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Coolant Pressure",
+			"ID": 254,
+			"EcuCanID": 864,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Engine Demand",
+			"ID": 232,
+			"EcuCanID": 865,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injection Stage 1 Duty Cycle",
+			"ID": 5666,
+			"EcuCanID": 866,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ignition Angle Leading",
+			"ID": 518,
+			"EcuCanID": 866,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Wheel Slip",
+			"ID": 6756,
+			"EcuCanID": 867,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 1",
+			"ID": 230,
+			"EcuCanID": 872,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Gear",
+			"ID": 405,
+			"EcuCanID": 880,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Injection Stage 2 Duty Cycle",
+			"ID": 5667,
+			"EcuCanID": 866,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Diff",
+			"ID": 6754,
+			"EcuCanID": 867,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 2",
+			"ID": 231,
+			"EcuCanID": 872,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 3",
+			"ID": 247,
+			"EcuCanID": 872,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 4",
+			"ID": 248,
+			"EcuCanID": 872,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Trigger System Error Count",
+			"ID": 2970,
+			"EcuCanID": 873,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Trigger Counter",
+			"ID": 1274,
+			"EcuCanID": 873,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Trigger Sync Level",
+			"ID": 759,
+			"EcuCanID": 873,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Knock Level 1",
+			"ID": 391,
+			"EcuCanID": 874,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Knock Level 2",
+			"ID": 395,
+			"EcuCanID": 874,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Brake Pressure",
+			"ID": 251,
+			"EcuCanID": 875,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Pressure Sensor 1",
+			"ID": 250,
+			"EcuCanID": 875,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Turbo Speed Sensor 1",
+			"ID": 1476,
+			"EcuCanID": 875,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Lateral G",
+			"ID": 491,
+			"EcuCanID": 875,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Front Left",
+			"ID": 465,
+			"EcuCanID": 876,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Front Right",
+			"ID": 467,
+			"EcuCanID": 876,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Rear Left",
+			"ID": 469,
+			"EcuCanID": 876,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Rear Right",
+			"ID": 471,
+			"EcuCanID": 876,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Exhaust Cam Angle 1",
+			"ID": 1412,
+			"EcuCanID": 877,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Exhaust Cam Angle 2",
+			"ID": 1413,
+			"EcuCanID": 877,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Engine Limiting Active",
+			"ID": 2754,
+			"EcuCanID": 878,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Launch Control Ignition Retard",
+			"ID": 4254,
+			"EcuCanID": 878,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Launch Control Fuel Correction",
+			"ID": 4244,
+			"EcuCanID": 878,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Launch Control End RPM",
+			"ID": 945,
+			"EcuCanID":867,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Longitudinal G",
+			"ID": 5789,
+			"EcuCanID": 878,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Output 1 Duty Cycle",
+			"ID": 220,
+			"EcuCanID": 879,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Boost Control Output",
+			"ID": 1462,
+			"EcuCanID": 879,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Intake Cam Angle 1",
+			"ID": 1410,
+			"EcuCanID": 880,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Intake Cam Angle 2",
+			"ID": 1411,
+			"EcuCanID": 880,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Fuel Flow",
+			"ID": 252,
+			"EcuCanID": 881,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Flow Return",
+			"ID": 373,
+			"EcuCanID": 881,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Target Boost Level",
+			"ID": 1461,
+			"EcuCanID": 882,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Barometric Pressure",
+			"ID": 257,
+			"EcuCanID": 882,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 1",
+			"ID": 242,
+			"EcuCanID": 883,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 2",
+			"ID": 246,
+			"EcuCanID": 883,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 3",
+			"ID": 272,
+			"EcuCanID": 883,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 4",
+			"ID": 273,
+			"EcuCanID": 883,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 5",
+			"ID": 274,
+			"EcuCanID": 884,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 6",
+			"ID": 275,
+			"EcuCanID": 884,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 7",
+			"ID": 276,
+			"EcuCanID": 884,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 8",
+			"ID": 277,
+			"EcuCanID": 884,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 9",
+			"ID": 279,
+			"EcuCanID": 885,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 10",
+			"ID": 280,
+			"EcuCanID": 885,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 11",
+			"ID": 281,
+			"EcuCanID": 885,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "EGT Sensor 12",
+			"ID": 282,
+			"EcuCanID": 885,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ambient Air Temperature",
+			"ID": 8340,
+			"EcuCanID": 886,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Relative Humidity",
+			"ID": 8383,
+			"EcuCanID": 886,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Specific Humidity",
+			"ID": 8384,
+			"EcuCanID": 886,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Absolute Humidity",
+			"ID": 8385,
+			"EcuCanID": 886,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Coolant Temperature",
+			"ID": 229,
+			"EcuCanID": 992,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Air Temperature",
+			"ID": 228,
+			"EcuCanID": 992,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Temperature",
+			"ID": 233,
+			"EcuCanID": 992,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Gearbox Oil Temperature",
+			"ID": 258,
+			"EcuCanID": 993,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Diff Oil Temperature",
+			"ID": 259,
+			"EcuCanID": 993,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Composition",
+			"ID": 285,
+			"EcuCanID": 993,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Level",
+			"ID": 375,
+			"EcuCanID": 994,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 1",
+			"ID": 1400,
+			"EcuCanID": 995,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 2",
+			"ID": 1401,
+			"EcuCanID": 995,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Fuel Trim Long Term Bank 1",
+			"ID": 3814,
+			"EcuCanID": 995,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Fuel Trim Long Term Bank 2",
+			"ID": 4039,
+			"EcuCanID": 995,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Gear Switch",
+			"ID": 1312,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Decel Cut Active",
+			"ID": 1500,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Transient Throttle Active",
+			"ID": 3970,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Brake Pedal Switch",
+			"ID": 1542,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Clutch Switch",
+			"ID": 1387,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Anti-lag Active",
+			"ID": 4240,
+			"EcuCanID": 1139,
+			"EcuByteOrder": "4:5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Anti-lag Switch",
+			"ID": 4187,
+			"EcuCanID": 1139,
+			"EcuByteOrder": "4:6",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Aux RPM Limiter Active",
+			"ID": 4350,
+			"EcuCanID": 996,
+			"EcuByteOrder": "2:5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Flat Shift Switch",
+			"ID": 1519,
+			"EcuCanID": 996,
+			"EcuByteOrder": "2:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Torque Reduction Active",
+			"ID": 1595,
+			"EcuCanID": 996,
+			"EcuByteOrder": "2:1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rotary Trim Module 1",
+			"ID": 8159,
+			"EcuCanID": 996,
+			"EcuByteOrder": "4",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Rotary Trim Module 2",
+			"ID": 8076,
+			"EcuCanID": 996,
+			"EcuByteOrder": "5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Rotary Trim Module 3",
+			"ID": 8083,
+			"EcuCanID": 996,
+			"EcuByteOrder": "6",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Check Engine Light",
+			"ID": 689,
+			"EcuCanID": 996,
+			"EcuByteOrder": "7:7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Battery Light Active",
+			"ID": 1528,
+			"EcuCanID": 996,
+			"EcuByteOrder": "7:6",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ignition Switch",
+			"ID": 4165,
+			"EcuCanID": 997,
+			"EcuByteOrder": "0",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Turbo Timer - Time Remaining",
+			"ID": 4185,
+			"EcuCanID": 997,
+			"EcuByteOrder": "1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Turbo Timer - Engine Time Remaining",
+			"ID": 4455,
+			"EcuCanID": 997,
+			"EcuByteOrder": "2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Steering Wheel Angle",
+			"ID": 489,
+			"EcuCanID": 997,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Driveshaft RPM",
+			"ID": 6469,
+			"EcuCanID": 997,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Pressure Sensor 2",
+			"ID": 6282,
+			"EcuCanID": 998,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Pressure Sensor 3",
+			"ID": 6295,
+			"EcuCanID": 998,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Pressure Sensor 4",
+			"ID": 6308,
+			"EcuCanID": 998,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Turbo Speed Sensor 2",
+			"ID": 6943,
+			"EcuCanID": 998,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 1",
+			"ID": 266,
+			"EcuCanID": 999,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 2",
+			"ID": 267,
+			"EcuCanID": 999,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 3",
+			"ID": 268,
+			"EcuCanID": 999,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 4",
+			"ID": 269,
+			"EcuCanID": 999,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 5",
+			"ID": 270,
+			"EcuCanID": 1000,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 6",
+			"ID": 271,
+			"EcuCanID": 1000,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 7",
+			"ID": 243,
+			"EcuCanID": 1000,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 8",
+			"ID": 249,
+			"EcuCanID": 1000,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 9",
+			"ID": 253,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Generic Sensor 10",
+			"ID": 256,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Target Lambda",
+			"ID": 132,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Stage 1 Output State",
+			"ID": 7118,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Stage 2 Output State",
+			"ID": 7119,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:6",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Stage 3 Output State",
+			"ID": 7120,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Stage 4 Output State",
+			"ID": 7121,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Torque Management Knob",
+			"ID": 11888,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Gearbox Line Pressure",
+			"ID": 5767,
+			"EcuCanID": 1002,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injection Stage 3 Duty Cycle",
+			"ID": 5668,
+			"EcuCanID": 1002,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injection Stage 4 Duty Cycle",
+			"ID": 5669,
+			"EcuCanID": 1002,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Crank Case Pressure",
+			"ID": 6906,
+			"EcuCanID": 1002,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Race Timer",
+			"ID": 6425,
+			"EcuCanID": 1003,
+			"EcuByteOrder": "0-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ignition Angle Bank 1",
+			"ID": 1121,
+			"EcuCanID": 1003,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Ignition Angle Bank 2",
+			"ID": 1122,
+			"EcuCanID": 1003,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Nitrous Stage 5 Output State",
+			"ID": 12226,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Nitrous Stage 6 Output State",
+			"ID": 14099,
+			"EcuCanID": 1001,
+			"EcuByteOrder": "6:2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Torque Management Driveshaft RPM Target",
+			"ID": 6447,
+			"EcuCanID": 1004,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Torque Management Driveshaft RPM Target Error",
+			"ID": 6468,
+			"EcuCanID": 1004,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Torque Management Driveshaft RPM Target Error Ignition Correction",
+			"ID": 6457,
+			"EcuCanID": 1004,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Torque Management Driveshaft RPM Timed Ignition Correction",
+			"ID": 6437,
+			"EcuCanID": 1004,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Torque Management Combined Ignition Correction",
+			"ID": 6970,
+			"EcuCanID": 1005,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Wideband Sensor 5",
+			"ID": 7826,
+			"EcuCanID": 1006,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 6",
+			"ID": 7827,
+			"EcuCanID": 1006,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 7",
+			"ID": 7828,
+			"EcuCanID": 1006,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 8",
+			"ID": 7829,
+			"EcuCanID": 1006,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 9",
+			"ID": 7830,
+			"EcuCanID": 1007,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 10",
+			"ID": 7831,
+			"EcuCanID": 1007,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 11",
+			"ID": 7832,
+			"EcuCanID": 1007,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Sensor 12",
+			"ID": 7833,
+			"EcuCanID": 1007,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Overall",
+			"ID": 8018,
+			"EcuCanID": 1136,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Bank 1",
+			"ID": 6904,
+			"EcuCanID": 1136,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Bank 2",
+			"ID": 6929,
+			"EcuCanID": 1136,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injector Pressure Differential",
+			"ID": 421,
+			"EcuCanID": 1137,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Pedal Position",
+			"ID": 5,
+			"EcuCanID": 1137,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Launch Control Light",
+			"ID": 1433,
+			"EcuCanID": 996,
+			"EcuByteOrder": "2:7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Traction Control Light",
+			"ID": 6738,
+			"EcuCanID": 996,
+			"EcuByteOrder": "3:6",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Pressure Light",
+			"ID": 9529,
+			"EcuCanID": 996,
+			"EcuByteOrder": "1:0",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Left Tyre Pressure",
+			"ID": 12014,
+			"EcuCanID": 1776,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Right Tyre Pressure",
+			"ID": 12015,
+			"EcuCanID": 1776,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Left Tyre Pressure",
+			"ID": 12016,
+			"EcuCanID": 1776,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Right Tyre Pressure",
+			"ID": 12017,
+			"EcuCanID": 1776,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Left Tyre Temperature",
+			"ID": 12018,
+			"EcuCanID": 1777,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Right Tyre Temperature",
+			"ID": 12019,
+			"EcuCanID": 1777,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Left Tyre Temperature",
+			"ID": 12020,
+			"EcuCanID": 1777,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Right Tyre Temperature",
+			"ID": 12021,
+			"EcuCanID": 1777,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Left Tyre Sensor Battery Voltage",
+			"ID": 12022,
+			"EcuCanID": 1778,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Right Tyre Sensor Battery Voltage",
+			"ID": 12023,
+			"EcuCanID": 1778,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Left Tyre Sensor Battery Voltage",
+			"ID": 12024,
+			"EcuCanID": 1778,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Right Tyre Sensor Battery Voltage",
+			"ID": 12025,
+			"EcuCanID": 1778,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Tyre Recommended Pressure",
+			"ID": 12039,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Tyre Recommended Pressure",
+			"ID": 12040,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Tyre Air Leak Detected",
+			"ID": 12038,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "4:0:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Left Tyre Leak",
+			"ID": 15968,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "4:0",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Front Right Tyre Leak",
+			"ID": 15969,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "4:1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Left Tyre Leak",
+			"ID": 15970,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "4:2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Rear Right Tyre Leak",
+			"ID": 15971,
+			"EcuCanID": 1779,
+			"EcuByteOrder": "4:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+
+		{
+			"ID": 12202,
+			"Name": "Park Lights",
+			"EcuCanID": 1780,
+			"EcuByteOrder": "0:0",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"ID": 12203,
+			"Name": "Head Light",
+			"EcuCanID": 1780,
+			"EcuByteOrder": "0:1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"ID": 12204,
+			"Name": "High Beam Light",
+			"EcuCanID": 1780,
+			"EcuByteOrder": "0:2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"ID": 12205,
+			"Name": "Left Indicator",
+			"EcuCanID": 1780,
+			"EcuByteOrder": "0:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"ID": 12206,
+			"Name": "Right Indicator",
+			"EcuCanID": 1780,
+			"EcuByteOrder": "0:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"ID": 14293,
+			"Name": "Handbrake",
+			"EcuCanID": 996,
+			"EcuByteOrder": "7:1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		}
+	]
+}

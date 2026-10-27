@@ -1,0 +1,202 @@
+﻿{
+    "CollectedAtUtc":  "2026-10-26T02:15:50.6663223Z",
+    "PowerShellVersion":  "5.1.22621.6133",
+    "SerialPorts":  [
+                        {
+                            "DeviceID":  "COM3",
+                            "Name":  "USB Serial Device (COM3)",
+                            "PNPDeviceID":  "USB\\VID_16D0\u0026PID_0001\\0123456789",
+                            "Status":  "OK"
+                        }
+                    ],
+    "UsbDevices":  [
+                       {
+                           "Name":  "USB Serial Device (COM3)",
+                           "PNPDeviceID":  "USB\\VID_16D0\u0026PID_0001\\0123456789",
+                           "Service":  "usbser",
+                           "Status":  "OK"
+                       }
+                   ],
+    "NspProcesses":  [
+                         {
+                             "Name":  "dash_virtual",
+                             "Id":  13124,
+                             "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe"
+                         },
+                         {
+                             "Name":  "NexusUpdater",
+                             "Id":  5160,
+                             "Path":  "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech Nexus Updater\\NexusUpdater.exe"
+                         },
+                         {
+                             "Name":  "NSP",
+                             "Id":  11452,
+                             "Path":  "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech NSP\\NSP.exe"
+                         }
+                     ],
+    "InstallRoots":  [
+                         "C:\\Program Files (x86)\\Haltech",
+                         "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech Nexus Updater",
+                         "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech NSP",
+                         "C:\\Program Files\\Haltech",
+                         "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus"
+                     ],
+    "Binaries":  [
+                     {
+                         "Path":  "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech NSP\\NSP.dll",
+                         "FileVersion":  "1.48.5",
+                         "ProductVersion":  "1.48.5+8b457e5a01d7a4149e3feae91502bfa09c99fc26",
+                         "Length":  3496448,
+                         "SHA256":  "8D99E028044491FC5C6970AB2B48D7A192F646A2A423F1CF6DEB2C6887E4FBCA"
+                     },
+                     {
+                         "Path":  "C:\\Program Files (x86)\\Haltech\\Nexus Software\\Haltech NSP\\NSP.exe",
+                         "FileVersion":  "1.48.5",
+                         "ProductVersion":  "1.48.5+8b457e5a01d7a4149e3feae91502bfa09c99fc26",
+                         "Length":  173096,
+                         "SHA256":  "E1534E877E699AEEA13A92BDB7CDCB0F99CE126DDC7E5A06094D0DB0A75191E6"
+                     },
+                     {
+                         "Path":  "C:\\Program Files\\Haltech\\Haltech ICC\\Bin\\Qt5Core.dll",
+                         "FileVersion":  "5.11.3.0",
+                         "ProductVersion":  "5.11.3.0",
+                         "Length":  4892160,
+                         "SHA256":  "2A031289586467DCE7BD64B9D882B3077FB44C46A6D4FEB9C4601C437FC93AA8"
+                     },
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                         "FileVersion":  "0.0.0.0",
+                         "ProductVersion":  "0.0.0.0",
+                         "Length":  839680,
+                         "SHA256":  "5A5D74FE029178398512A5622D480FED213F4FD8F58E70B85CA169BB5A62303B"
+                     },
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Core.dll",
+                         "FileVersion":  "5.11.3.0",
+                         "ProductVersion":  "5.11.3.0",
+                         "Length":  4892160,
+                         "SHA256":  "2A031289586467DCE7BD64B9D882B3077FB44C46A6D4FEB9C4601C437FC93AA8"
+                     }
+                 ],
+    "QmlFiles":  [
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\factory_screens\\main.qml",
+                         "EvidenceCopy":  "qml/000-main.qml",
+                         "Length":  2898,
+                         "SHA256":  "6A8AFA8496F589799A6593EB27F9AA641BB1CB65249FD520C4D471427BAC5968"
+                     },
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalImage.qml",
+                         "EvidenceCopy":  "qml/001-HalImage.qml",
+                         "Length":  3410,
+                         "SHA256":  "32BAF88AC62D670E905BC30FD6C4DCB7ABDBFC4A9C3B248254B98FDD07F5C6FB"
+                     },
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalText.qml",
+                         "EvidenceCopy":  "qml/002-HalText.qml",
+                         "Length":  4207,
+                         "SHA256":  "4F8503CA566F0D4CC1252A1F3D4B9B7B178730DE059304C7B5511CCCA114B4BA"
+                     },
+                     {
+                         "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\QML_TEMPLATE.qml",
+                         "EvidenceCopy":  "qml/003-QML_TEMPLATE.qml",
+                         "Length":  3159,
+                         "SHA256":  "A84B769D706BA85360DC52A93EB429295D1819FF13B7E813D773F9BAC418B192"
+                     }
+                 ],
+    "FirmwareFiles":  [
+                          {
+                              "Name":  "Dash-V2-27-2-Release.nex",
+                              "Length":  21712492,
+                              "LastWriteTimeUtc":  "\/Date(1730778296000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-28-0-Release.nex",
+                              "Length":  29254603,
+                              "LastWriteTimeUtc":  "\/Date(1738021229000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-29-0-Release.nex",
+                              "Length":  56794347,
+                              "LastWriteTimeUtc":  "\/Date(1757297285000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-29-2-Release.nex",
+                              "Length":  56793700,
+                              "LastWriteTimeUtc":  "\/Date(1747708817000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-30-0-Release.nex",
+                              "Length":  57671198,
+                              "LastWriteTimeUtc":  "\/Date(1748319253000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-31-1-Release.nex",
+                              "Length":  58072847,
+                              "LastWriteTimeUtc":  "\/Date(1754897719000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-31-2-Release.nex",
+                              "Length":  58074060,
+                              "LastWriteTimeUtc":  "\/Date(1755141139000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-31-4-Release.nex",
+                              "Length":  64536403,
+                              "LastWriteTimeUtc":  "\/Date(1757305130000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-32-0-Release.nex",
+                              "Length":  59250861,
+                              "LastWriteTimeUtc":  "\/Date(1762840268000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-32-1-Release.nex",
+                              "Length":  59250509,
+                              "LastWriteTimeUtc":  "\/Date(1764115246000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-32-2-Release.nex",
+                              "Length":  59250562,
+                              "LastWriteTimeUtc":  "\/Date(1767571098000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-32-3-Release.nex",
+                              "Length":  59253745,
+                              "LastWriteTimeUtc":  "\/Date(1767660863000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-33-0-Release.nex",
+                              "Length":  60146621,
+                              "LastWriteTimeUtc":  "\/Date(1770183956000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-33-1-Release.nex",
+                              "Length":  60153221,
+                              "LastWriteTimeUtc":  "\/Date(1772594239000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-34-0-Release.nex",
+                              "Length":  60414044,
+                              "LastWriteTimeUtc":  "\/Date(1776818746000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-35-1-Release.nex",
+                              "Length":  55148394,
+                              "LastWriteTimeUtc":  "\/Date(1781767141000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-35-2-Release.nex",
+                              "Length":  55148823,
+                              "LastWriteTimeUtc":  "\/Date(1787793648000)\/"
+                          },
+                          {
+                              "Name":  "Dash-V2-36-0-Release.nex",
+                              "Length":  56974065,
+                              "LastWriteTimeUtc":  "\/Date(1790749921000)\/"
+                          }
+                      ],
+    "Errors":  [
+
+               ]
+}

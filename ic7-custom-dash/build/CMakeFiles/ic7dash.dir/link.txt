@@ -1,0 +1,3 @@
+T:\cmake\cmake-4.4.4-windows-x86_64\bin\cmake.exe -E rm -f CMakeFiles\ic7dash.dir/objects.a
+T:\Qt\Tools\mingw810_64\bin\ar.exe qc CMakeFiles\ic7dash.dir/objects.a @CMakeFiles\ic7dash.dir\objects1.rsp
+T:\Qt\Tools\mingw810_64\bin\c++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\ic7dash.dir/objects.a -Wl,--no-whole-archive -o ic7dash.exe -Wl,--out-implib,libic7dash.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ic7dash.dir\linkLibs.rsp

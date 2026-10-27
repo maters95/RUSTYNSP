@@ -1,0 +1,43 @@
+software =
+{
+	version = "0.1.0";
+
+	hardware-compatibility: [ "1.0" ];
+
+	var-som-mx6 = {
+		hardware-compatibility: [ "1.0" ];
+
+		stable:
+		{
+		        copy1:
+		        {
+				files: (
+				{
+					filename = "opt-applications-var-som-mx6.tar.bz2";
+					device = "/dev/mmcblk0p3";
+					path = "/";
+					filesystem = "ext4";
+					type = "archive";
+					installed-directly = true;
+				}
+				);
+				scripts: (
+					{
+						filename = "update.sh";
+						type = "shellscript";
+					}
+				);
+		        };
+		        copy2:
+		        {
+				scripts: (
+					{
+						filename = "update.sh";
+						type = "shellscript";
+					}
+				);
+		        };
+		};
+	};
+}
+

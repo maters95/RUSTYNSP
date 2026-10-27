@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-windows-workbench-nsp-autosetup.zip",
+  "bytes": 30938197,
+  "sha256": "a75bbcbb9b9d968dd26a68ee01560f89cdac96d7bdd24fa027897ce1d9099a90",
+  "files": 49,
+  "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"
+}

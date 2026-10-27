@@ -1,0 +1,46 @@
+<b>V2.34.0 Release</b>
+
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP Version 1.46.3 or newer.
+
+<i><b>Features</b></i>
+
+* Added <b>Oil Over Temperature</b> channel to all dashes.
+
+<i><b>Fixes</b></i>
+
+* <b>Haltech CAN</b>
+    * Now supports <i>Oil Level</i> and <i>Clutch Pressure</i>.
+    * Now supports <i>Nitrous Enable 1-4 Output State</i>s
+    * Now Supports <i>NOS Bottle Opener State</i> and <i>Exhaust Cutout State</i>
+    * Fixes <i>Turbo Speed 1</i> and <i>Turbo Speed 2</i> scaling.
+    * Fixes <i>Specific Humidity</i> scaling.
+
+* <b>Third Party CAN</b>
+    * <b>ECUMaster</b> now displays gear correctly.
+    * <b>OBDII</b> now reads <i>Ambient Air Temperature</i> correctly.
+    * <b>OBDII</b> now handles unsupported channels more effectively.
+
+* Fixes tables rounding to incorrect table cell along an axis with an <b>axis mode</b> of <i>Discrete Centered</i> and the axis values were consecutive integers.
+
+* <i>Battery Light Output Channel State</i> now correctly shows as "On" and "Off".
+
+* Outputs that support PWM but are configured as a switched output now only display the pin state.
+
+* <i>Transmission Oil Temperature Switch Input State</i> now correctly shows as "Ok"and "Over Temp".
+
+* Added a warning when an on‑board data logging group contains channels but is disabled.
+
+* Fixes <b>Fuel Level Sensor</b> ignoring <i>Input Type</i> setting.
+
+* Dash displays an error message if error conditions are met, instead of displaying a large negative number.
+
+* Fixes external device nodes flickering on the NSP navigation tree when it's connected but not enabled on the Haltech CAN System menu.
+
+* Moves <b>Peak Values</b> menu under <b>Functions</b>.
+    * Adds enable setting for the <b>Peak Values</b> Input.
+
+* Fixes <i>Device Timeout</i> channel messages from Dash to ECU.
+
+* When Haltech CAN System is selected, <b>Enable External IO Control</b> option is automatically selected by default

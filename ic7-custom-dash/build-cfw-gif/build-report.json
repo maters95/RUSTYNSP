@@ -1,0 +1,23 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "label": "gif-cfw-candidate",
+  "changed_members": [
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 338,
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "76cb5311e4863342799b5ef32a4349ba142ad4ae5c8da7dfd48a10cfe489d377",
+  "wrapper_preserved": true,
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-gif-cfw-candidate-experimental.nex": {
+      "bytes": 17377883,
+      "sha256": "143703bdffc7bb127eb5aaf08a01302d8bfb796296fe63940bab5645fb90cdb9"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 17372251,
+      "sha256": "008f3a7abbfe70d31f1227f76d70d36dfc27be23e0c6d8d16c9d942afdadb529"
+    }
+  }
+}

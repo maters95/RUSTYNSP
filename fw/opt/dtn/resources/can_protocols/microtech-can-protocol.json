@@ -1,0 +1,129 @@
+{
+	"CanProtocol": "MICROTECH",
+	"CanTermination": null,
+	"CanSpeed": 1000000,
+	"CanNodeList": [
+		{
+			"Name": "Engine RPM",
+			"ID": 384,
+			"EcuCanID": 16,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"unitGroup": 6,
+			"unitSelection": 0,
+			"ID": 387,
+			"Name": "Battery Voltage",
+			"EcuCanID": 17,
+			"EcuByteOrder": "4-5",
+			"Scale": 0.1,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Temp",
+			"ID": 235,
+			"EcuCanID": 16,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true			
+		},
+		{
+			"Name": "Fuel Pres",
+			"ID": 234,
+			"EcuCanID": 17,
+			"EcuByteOrder": "2-3",
+			"Scale": 200.0,
+			"Offset": 0.0,
+			"Signed": true			
+		},
+		{
+			"Name": "Oil Pres",
+			"ID": 236,
+			"EcuCanID": 16,
+			"EcuByteOrder": "4-5",
+			"Scale": 200.0,
+			"Offset": 0.0,
+			"Signed": true			
+		},
+		{
+			"Name": "Gear",
+			"ID": 405,
+			"EcuCanID": 19,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Manifold Pressure",
+			"ID": 224,
+			"EcuCanID": 18,
+			"EcuByteOrder": "0-1",
+			"Scale": 1,
+			"Offset": 100.0,
+			"Signed": true			
+		},
+		{
+			"Name": "Throttle Position",
+			"ID": 52,
+			"EcuCanID": 17,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injector Duty Cycle",
+			"ID": 5666,
+			"EcuCanID": 19,
+			"EcuByteOrder": "4-5",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ignition Advance",
+			"ID": 518,
+			"EcuCanID": 19,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true			
+		},
+		{
+			"Name": "Road Speed",
+			"ID": 397,
+			"EcuCanID": 16,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Coolant Temperature",
+			"ID": 229,
+			"EcuCanID": 17,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true			
+		},
+		{
+			"Name": "Intake Air Temperature",
+			"ID": 228,
+			"EcuCanID": 18,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true			
+		},
+		{
+			"Name": "Exhaust Gas Temperature",
+			"ID": 242,
+			"EcuCanID": 18,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true			
+		}
+	]
+}

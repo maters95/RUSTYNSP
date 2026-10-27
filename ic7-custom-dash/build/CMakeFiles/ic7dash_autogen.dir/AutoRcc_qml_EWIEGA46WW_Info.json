@@ -1,0 +1,30 @@
+{
+	"BUILD_DIR" : "U:/build/ic7dash_autogen",
+	"CMAKE_BINARY_DIR" : "U:/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "U:/build",
+	"CMAKE_CURRENT_SOURCE_DIR" : "U:/",
+	"CMAKE_SOURCE_DIR" : "U:/",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "MinGW Makefiles",
+	"INCLUDE_DIR" : "U:/build/ic7dash_autogen/include",
+	"INPUTS" : 
+	[
+		"U:/qml/Clock.qml",
+		"U:/qml/TrackPage.qml",
+		"U:/qml/GaugesPage.qml",
+		"U:/qml/Main.qml",
+		"U:/qml/Gauge.qml",
+		"U:/resources/emtron_can.json"
+	],
+	"LOCK_FILE" : "U:/build/CMakeFiles/ic7dash_autogen.dir/AutoRcc_qml_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "qml" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_qml.cpp",
+	"RCC_EXECUTABLE" : "T:/Qt/5.15.2/mingw81_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "U:/build/CMakeFiles/ic7dash_autogen.dir/AutoRcc_qml_EWIEGA46WW_Used.txt",
+	"SOURCE" : "U:/qml.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}

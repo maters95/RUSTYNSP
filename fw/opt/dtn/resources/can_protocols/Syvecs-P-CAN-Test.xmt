@@ -1,0 +1,23 @@
+; C:\Projects\nex\nexus_ecu\dash_generic\core_dash\CAN Protocols\Syvecs-P-CAN-Test.xmt
+; CAN messages saved by PCAN-View 4.2.0
+;
+; Columns descriptions:
+; ~~~~~~~~~~~~~~~~~~~~~
+; +Message ID
+; |            +Cycle time in ms (0=manual)
+; |            |  +Data length
+; |            |  |  +Frame type
+; |            |  |  |  +Message data
+; |            |  |  |  |
+578h        1500  8  D 00h 00h 00h 0Ch 00h 01h 00h 00h  Paused ; RPM High
+600h        1000  8  D 03h 00h 00h 00h 00h 08h 00h 00h ; Syvecs RPM,Batt
+600h        1500  8  D 06h 00h 00h 00h 00h A0h 00h 00h ; Syvecs RPM,Battery
+601h        1000  8  D 01h 00h 00h 00h 00h 00h 02h 00h ; Syvecs Map,TPS
+601h        1500  8  D 03h 00h 00h 00h 0Bh 03h 08h 01h ; Syvecs-Coolant
+605h        1000  8  D 00h 00h 0Bh 00h 0Ah 00h 00h 00h ; Syvecs Coolant Temp
+605h        1000  8  D 03h 00h 00h 02h 0Bh 00h 00h 02h ; Syvecs-EGT
+609h        1000  8  D 0Ah 00h 00h 00h 0Fh 0Fh 01h 00h ; Syvecs Oil Temp BAP
+60Eh        1500  8  D 00h 00h 00h 03h 50h 00h 00h 04h ; Syvecs-Gear3
+60Eh        2500  8  D 04h 00h 00h 02h 00h 01h 00h 00h ; Syvecs-Gear 1
+610h        1000  8  D 00h 00h 00h 00h 05h 00h 00h 00h ; Syvecs Speed
+610h        1500  8  D 09h 00h 00h 00h 08h 00h 00h 00h ; Syvecs-Speed High

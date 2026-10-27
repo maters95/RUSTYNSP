@@ -1,0 +1,83 @@
+2026-10-26 01:56:21,833 - aqt.main - INFO - installer 135663755626304 aqtinstall(aqt) v3.3.0 on Python 3.14.2 [CPython GCC 13.3.0]
+2026-10-26 01:56:21,834 - aqt.helper - DEBUG - helper 135663755626304 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt5_599/Updates.xml.sha256
+2026-10-26 01:56:25,314 - aqt.helper - DEBUG - helper 135573662558016 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt5_599/qt.qt5.599.gcc_64/5.9.9-0-201912101208qtbase-Linux-RHEL_7_4-GCC-Linux-RHEL_7_4-X86_64.7z.sha256
+2026-10-26 01:56:26,515 - aqt.helper - INFO - helper 135573662558016 Downloading qtbase...
+2026-10-26 01:56:26,515 - aqt.installer - DEBUG - installer 135573662558016 Download URL: https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt5_599/qt.qt5.599.gcc_64/5.9.9-0-201912101208qtbase-Linux-RHEL_7_4-GCC-Linux-RHEL_7_4-X86_64.7z
+2026-10-26 01:56:27,689 - aqt.helper - DEBUG - helper 135573662558016 Asked to redirect(302) to: https://qt.mirror.constant.com/online/qtsdkrepository/linux_x64/desktop/qt5_599/qt.qt5.599.gcc_64/5.9.9-0-201912101208qtbase-Linux-RHEL_7_4-GCC-Linux-RHEL_7_4-X86_64.7z
+2026-10-26 01:56:27,690 - aqt.helper - INFO - helper 135573662558016 Redirected: qt.mirror.constant.com
+2026-10-26 01:56:34,011 - aqt.installer - INFO - installer 135573662558016 Finished installation of qtbase-Linux-RHEL_7_4-GCC-Linux-RHEL_7_4-X86_64.7z in 8.70108043
+2026-10-26 01:56:34,119 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/bin/qmake
+2026-10-26 01:56:34,397 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5DBus.pc
+2026-10-26 01:56:34,397 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Xml.pc
+2026-10-26 01:56:34,398 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Network.pc
+2026-10-26 01:56:34,398 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5OpenGLExtensions.pc
+2026-10-26 01:56:34,398 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Widgets.pc
+2026-10-26 01:56:34,399 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Gui.pc
+2026-10-26 01:56:34,399 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Concurrent.pc
+2026-10-26 01:56:34,399 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5OpenGL.pc
+2026-10-26 01:56:34,400 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Core.pc
+2026-10-26 01:56:34,400 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Sql.pc
+2026-10-26 01:56:34,400 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5PrintSupport.pc
+2026-10-26 01:56:34,401 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/pkgconfig/Qt5Test.pc
+2026-10-26 01:56:34,401 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5GlxSupport.la
+2026-10-26 01:56:34,402 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5ServiceSupport.la
+2026-10-26 01:56:34,403 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Concurrent.la
+2026-10-26 01:56:34,404 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Network.la
+2026-10-26 01:56:34,405 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5OpenGLExtensions.la
+2026-10-26 01:56:34,406 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EventDispatcherSupport.la
+2026-10-26 01:56:34,406 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5OpenGL.la
+2026-10-26 01:56:34,407 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5FbSupport.la
+2026-10-26 01:56:34,408 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5KmsSupport.la
+2026-10-26 01:56:34,409 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Bootstrap.la
+2026-10-26 01:56:34,410 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Core.la
+2026-10-26 01:56:34,411 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5PrintSupport.la
+2026-10-26 01:56:34,412 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5LinuxAccessibilitySupport.la
+2026-10-26 01:56:34,412 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5ThemeSupport.la
+2026-10-26 01:56:34,413 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5DBus.la
+2026-10-26 01:56:34,414 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5AccessibilitySupport.la
+2026-10-26 01:56:34,415 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglFSDeviceIntegration.la
+2026-10-26 01:56:34,416 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Test.la
+2026-10-26 01:56:34,417 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglFsKmsSupport.la
+2026-10-26 01:56:34,418 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5DeviceDiscoverySupport.la
+2026-10-26 01:56:34,418 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5InputSupport.la
+2026-10-26 01:56:34,419 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Gui.la
+2026-10-26 01:56:34,420 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Sql.la
+2026-10-26 01:56:34,421 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglSupport.la
+2026-10-26 01:56:34,422 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Widgets.la
+2026-10-26 01:56:34,422 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Xml.la
+2026-10-26 01:56:34,423 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5XcbQpa.la
+2026-10-26 01:56:34,424 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5PlatformCompositorSupport.la
+2026-10-26 01:56:34,425 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5FontDatabaseSupport.la
+2026-10-26 01:56:34,426 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Concurrent.prl
+2026-10-26 01:56:34,426 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EventDispatcherSupport.prl
+2026-10-26 01:56:34,427 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5FbSupport.prl
+2026-10-26 01:56:34,427 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5OpenGLExtensions.prl
+2026-10-26 01:56:34,427 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5PlatformCompositorSupport.prl
+2026-10-26 01:56:34,428 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Test.prl
+2026-10-26 01:56:34,428 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5DBus.prl
+2026-10-26 01:56:34,428 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5GlxSupport.prl
+2026-10-26 01:56:34,429 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglFsKmsSupport.prl
+2026-10-26 01:56:34,429 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5InputSupport.prl
+2026-10-26 01:56:34,429 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Bootstrap.prl
+2026-10-26 01:56:34,429 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Gui.prl
+2026-10-26 01:56:34,430 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5AccessibilitySupport.prl
+2026-10-26 01:56:34,430 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglFSDeviceIntegration.prl
+2026-10-26 01:56:34,430 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5ServiceSupport.prl
+2026-10-26 01:56:34,431 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5LinuxAccessibilitySupport.prl
+2026-10-26 01:56:34,431 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libqtlibpng.prl
+2026-10-26 01:56:34,431 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5XcbQpa.prl
+2026-10-26 01:56:34,432 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5DeviceDiscoverySupport.prl
+2026-10-26 01:56:34,432 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Widgets.prl
+2026-10-26 01:56:34,432 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Xml.prl
+2026-10-26 01:56:34,433 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Network.prl
+2026-10-26 01:56:34,433 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5KmsSupport.prl
+2026-10-26 01:56:34,433 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5ThemeSupport.prl
+2026-10-26 01:56:34,433 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5EglSupport.prl
+2026-10-26 01:56:34,434 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5FontDatabaseSupport.prl
+2026-10-26 01:56:34,434 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5OpenGL.prl
+2026-10-26 01:56:34,434 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Sql.prl
+2026-10-26 01:56:34,434 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Core.prl
+2026-10-26 01:56:34,435 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5PrintSupport.prl
+2026-10-26 01:56:34,435 - aqt.updater - INFO - updater 135663755626304 Patching /home/codespace/ic7build/qt59/5.9.9/gcc_64/lib/libQt5Core.so.5.9.9
+2026-10-26 01:56:34,453 - aqt.main - INFO - installer 135663755626304 Finished installation
+2026-10-26 01:56:34,453 - aqt.main - INFO - installer 135663755626304 Time elapsed: 12.62051216 second

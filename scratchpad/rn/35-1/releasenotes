@@ -1,0 +1,49 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP v1.47.1 or newer
+
+<b>V2.35.1 Release</b>
+
+<i><b>Features</b></i>
+
+* Added <b>Intake Air Temperature Pre-Intercooler Differential</b> channel which will calculate the temperature difference pre/post intercooler, falling back to standard air temperature when no <i>Intake Air Temperature</i> sensor is present.
+
+* <b>Generic Output 1-3</b> - Added third axis in the table configuration menu.
+
+* When using NSP V1.47.0 or newer, there will now be a button in NSP to calibrate all enabled vehicle speed sensors simultaneously.
+
+* Supports separate Day and Night Needle Images for dial gauges.
+
+* Added <b>Speedometer (Discrete)</b> function to support pulse driven speedometers in some factory clusters.
+
+* <b>Electrical Load</b> now supports the voltage input type, so the vehicle's electrical load current can be monitored.
+
+<i><b>Fixes</b></i>
+
+* Fixes the issue with populating data from CAN bus for some vendor specific ECUs.
+
+* Updated default <i>Duty Cycle</i> for <b>Generic Output</b> options to 50%.
+
+* <b>Generic Output</b> Tables no longer show up when using <i>input switch</i> mode.
+
+* Fixes Dash Channel values enumeration.
+
+* Fixes Dash not sending correct button states to ECU.
+
+* Fixes Missing Haltech CAN Channel <i>Fuel Flow Estimated</i> support.
+
+* Fixes Dash Generic Output value flickering when enabled in ECU.
+
+* Fixed Peak value settings in map upgrade for Dash.
+
+* Fixes the issue with raising false error on the virtual outputs.
+
+* Fixed an issue where dash was not inquiring the data for PIDs of above 32 from OBDII server device.
+
+* Fixed <b>Electrical Load Switch State</b> channel not updating.
+
+* Resolves the problem with interpreting the input state when the input originates from an HBO channel on an external box.
+
+* Fixes <i>Intercooler Temperature Differential</i> channel not being displayed when <i>Intake Air Temperature Pre-Intercooler</i> sensor is enabled.
+
+* Made CAN termination come on at splash screen time (if enabled) rather than when the dash screens come up.

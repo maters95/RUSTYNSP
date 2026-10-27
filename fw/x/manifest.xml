@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NEX_FILE>
+  <FW_PACKAGE_VERSION>2.36.0.0.0</FW_PACKAGE_VERSION>
+  <FILE_FORMAT_VERSION>1</FILE_FORMAT_VERSION>
+  <PRODUCT name="iC-7 Dash" pid="21" vid="11" hwid="1,2,40960" releaseNotesFile="releasenotes" hdefFile="ic-7.hdef">
+    <FILE name="ic-7.hdef" desc="Write Definition File" type="hdef" abortOnFailure="true" />
+    <FILE name="res_ic-7.qzip" desc="Write Resources File" type="qzip" abortOnFailure="true" />
+    <FILE name="nic-7" desc="Write Dash Firmware" type="nic-7" abortOnFailure="true" />
+    <FILE name="dstm" desc="Write I/O Firmware" type="dstm" abortOnFailure="true" />
+  </PRODUCT>
+  <PRODUCT name="uC-10 Dash" pid="21" vid="12" hwid="44032,41472,42496" releaseNotesFile="releasenotes" hdefFile="uc-10.hdef">
+    <FILE name="uc-10.hdef" desc="Write Definition File" type="hdef" abortOnFailure="true" />
+    <FILE name="res_uc-10.qzip" desc="Write Resources File" type="qzip" abortOnFailure="true" />
+    <FILE name="nic-7" desc="Write Dash Firmware" type="nic-7" abortOnFailure="true" />
+    <FILE name="dstm" desc="Write I/O Firmware" type="dstm" abortOnFailure="true" />
+  </PRODUCT>
+  <EXTERNAL_DEVICE name="Wideband Box" device_ids="7,8,11,12,13" releaseNotesFile="wbboxreleasenotes">
+    <FILE name="ewb" desc="Write WB Box Firmware" />
+  </EXTERNAL_DEVICE>
+  <EXTERNAL_DEVICE name="STM Wideband Box" device_ids="7,8,11,12,13" releaseNotesFile="swbboxreleasenotes">
+    <FILE name="swb" desc="Write WB Box Firmware" />
+  </EXTERNAL_DEVICE>
+  <EXTERNAL_DEVICE name="TCA Box" device_ids="3,4,5,6" releaseNotesFile="tcaboxreleasenotes">
+    <FILE name="etca" desc="Write TCA Box Firmware" />
+  </EXTERNAL_DEVICE>
+  <EXTERNAL_DEVICE name="PD16" device_ids="20,21,22,23" releaseNotesFile="pd16releasenotes">
+    <FILE name="pd16" desc="Write PD16 Firmware" />
+  </EXTERNAL_DEVICE>
+  <EXTERNAL_DEVICE name="IO16" device_ids="24,25" releaseNotesFile="io16releasenotes">
+    <FILE name="io16" desc="Write IO16 Firmware" />
+  </EXTERNAL_DEVICE>
+</NEX_FILE>

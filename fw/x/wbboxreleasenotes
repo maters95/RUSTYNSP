@@ -1,0 +1,9 @@
+<i><b>Changes</b></i>
+
+* Improved temperature sensitivity to reduce incidences of "Sensor Cold".
+
+* If connected to a Haltech ECU: 
+  * Wideband will remain off while the engine is off.
+
+* If not connected to a Haltech ECU:
+  * Wideband will remain off for 5 seconds after the controller is powered up. 

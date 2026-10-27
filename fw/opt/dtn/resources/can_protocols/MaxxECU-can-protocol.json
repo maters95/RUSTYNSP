@@ -1,0 +1,415 @@
+{
+	"CanProtocol": "MaxxECU",
+	"CanTermination": "Yes",
+	"CanSpeed": 1000000,
+	"CanNodeList": [
+		{
+			"ID": 384,
+			"Name": "Engine Speed",
+			"EcuCanID": 1312,
+			"EcuByteOrder": "1-0",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"unitGroup": 3,
+			"unitSelection": 0,
+			"ID": 397,
+			"Name": "Vehicle Speed",
+			"EcuCanID": 1314,
+			"EcuByteOrder": "7-6",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"unitGroup": 6,
+			"unitSelection": 0,
+			"ID": 387,
+			"Name": "Battery Voltage",
+			"EcuCanID": 1328,
+			"EcuByteOrder": "1-0",
+			"Scale": 0.1,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Gear",
+			"ID": 405,
+			"EcuCanID": 1334,
+			"EcuByteOrder": "1-0",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Manifold Pressure",
+			"ID": 224,
+			"EcuCanID": 1312,
+			"EcuByteOrder": "5-4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Throttle Position",
+			"ID": 52,
+			"EcuCanID": 1312,
+			"EcuByteOrder": "3-2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Slip",
+			"ID": 6756,
+			"EcuCanID": 1315,
+			"EcuByteOrder": "5-4",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Target slip",
+			"ID": 6740,
+			"EcuCanID": 1315,
+			"EcuByteOrder": "7-6",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true,
+			"comment": "TRACTION_CTRL_DESIRED_SLIP"
+		},
+		{
+			"Name": "Lambda Target",
+			"ID": 132,
+			"EcuCanID": 1312,
+			"EcuByteOrder": "7-6",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true,
+			"comment": "Target Lambda"
+		},
+		{
+			"Name": "Lambda A",
+			"ID": 6904,
+			"EcuCanID": 1313,
+			"EcuByteOrder": "1-0",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"comment": "Wideband Bank 1"
+		},
+		{
+			"Name": "Lambda B",
+			"ID": 6929,
+			"EcuCanID": 1313,
+			"EcuByteOrder": "3-2",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"comment": "Wideband Bank 2"
+		},
+		{
+			"Name": "Barometric Pressure",
+			"ID": 257,
+			"EcuCanID": 1328,
+			"EcuByteOrder": "3-2",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Coolant Temperature",
+			"ID": 229,
+			"EcuCanID": 1328,
+			"EcuByteOrder": "7-6",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true
+		},
+		{
+			"Name": "Air Temperature",
+			"ID": 228,
+			"EcuCanID": 1328,
+			"EcuByteOrder": "5-4",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true
+		},
+		{
+			"Name": "Ignition Angle BTDC",
+			"ID": 518,
+			"EcuCanID": 1313,
+			"EcuByteOrder": "5-4",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true,
+			"comment": "Ignition Angle Leading"
+		},
+		{
+			"Name": "EGT 1",
+			"ID": 242,
+			"EcuCanID": 1329,
+			"EcuByteOrder": "7-6",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 2",
+			"ID": 246,
+			"EcuCanID": 1330,
+			"EcuByteOrder": "1-0",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 3",
+			"ID": 272,
+			"EcuCanID": 1330,
+			"EcuByteOrder": "3-2",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 4",
+			"ID": 273,
+			"EcuCanID": 1330,
+			"EcuByteOrder": "5-4",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 5",
+			"ID": 274,
+			"EcuCanID": 1330,
+			"EcuByteOrder": "7-6",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 6",
+			"ID": 275,
+			"EcuCanID": 1331,
+			"EcuByteOrder": "1-0",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 7",
+			"ID": 276,
+			"EcuCanID": 1331,
+			"EcuByteOrder": "3-2",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT 8",
+			"ID": 277,
+			"EcuCanID": 1331,
+			"EcuByteOrder": "5-4",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "EGT Highest",
+			"ID": 1989,
+			"EcuCanID": 1331,
+			"EcuByteOrder": "7-6",
+			"Scale": 10.0,
+			"Offset": 2731,
+			"comment": "EXHAUST_GAS_TEMPERATURE_MAX_VALUE"
+		},
+		{
+			"Name": "Oil Temp",
+			"ID": 235,
+			"EcuCanID": 1334,
+			"EcuByteOrder": "7-6",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true
+		},
+		{
+			"Name": "Transmission Temp",
+			"ID": 258,
+			"CanID": 1344,
+			"CanByteOrdering": "5-4",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true,
+			"comment": "Gear Oil Temperature"
+		  },
+		  {
+			"Name": "Differential Temp",
+			"ID": 259,
+			"CanID": 1344,
+			"CanByteOrdering": "7-6",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true,
+			"comment": "Differential Oil Temperature"
+		  }
+	],
+	"UnsupportedNodeList": [
+		{
+			"unitGroup": 16,
+			"unitSelection": 1,
+			"ID": 11,
+			"Name": "Ignition cut",
+			"EcuCanID": 1313,
+			"EcuByteOrder": "7-6"
+		},
+		{
+			"unitGroup": 14,
+			"unitSelection": 0,
+			"ID": 124,
+			"Name": "Firmware version",
+			"EcuCanID": 1316,
+			"EcuByteOrder": "7-6"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 126,
+			"Name": "Lambda corr A",
+			"EcuCanID": 1316,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 127,
+			"Name": "Lambda corr B",
+			"EcuCanID": 1316,
+			"EcuByteOrder": "5-4"
+		},
+		{
+			"unitGroup": 30,
+			"unitSelection": 0,
+			"ID": 128,
+			"Name": "Total ignition comp",
+			"EcuCanID": 1329,
+			"EcuByteOrder": "5-4"
+		},
+		{
+			"unitGroup": 7,
+			"unitSelection": 0,
+			"ID": 141,
+			"Name": "ECU CPU Temp",
+			"EcuCanID": 1332,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 19,
+			"unitSelection": 1,
+			"ID": 18,
+			"Name": "Error code count",
+			"EcuCanID": 1332,
+			"EcuByteOrder": "5-4"
+		},
+		{
+			"unitGroup": 19,
+			"unitSelection": 1,
+			"ID": 19,
+			"Name": "Lost sync count",
+			"EcuCanID": 1332,
+			"EcuByteOrder": "7-6"
+		},
+		{
+			"unitGroup": 3,
+			"unitSelection": 0,
+			"ID": 41,
+			"Name": "Undriven wheels avg spd",
+			"EcuCanID": 1315,
+			"EcuByteOrder": "1-0"
+		},
+		{
+			"unitGroup": 3,
+			"unitSelection": 0,
+			"ID": 42,
+			"Name": "Driven wheels avg.spd",
+			"EcuCanID": 1315,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 43,
+			"Name": "Fuel duty",
+			"EcuCanID": 1314,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 1,
+			"ID": 44,
+			"Name": "Fuel cut",
+			"EcuCanID": 1314,
+			"EcuByteOrder": "5-4"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 70,
+			"Name": "Ethanol concentration",
+			"EcuCanID": 1329,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 21,
+			"unitSelection": 0,
+			"ID": 91,
+			"Name": "Fuel Pulse Width",
+			"EcuCanID": 1314,
+			"EcuByteOrder": "1-0"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 72,
+			"Name": "Total Fuel Trim",
+			"EcuCanID": 1329,
+			"EcuByteOrder": "1-0"
+		},
+		{
+			"unitGroup": 34,
+			"unitSelection": 1,
+			"ID": 103,
+			"Name": "User analog input 1",
+			"EcuCanID": 1333,
+			"EcuByteOrder": "1-0"
+		},
+		{
+			"unitGroup": 34,
+			"unitSelection": 1,
+			"ID": 104,
+			"Name": "User analog input 2",
+			"EcuCanID": 1333,
+			"EcuByteOrder": "3-2"
+		},
+		{
+			"unitGroup": 34,
+			"unitSelection": 1,
+			"ID": 105,
+			"Name": "User analog input 3",
+			"EcuCanID": 1333,
+			"EcuByteOrder": "5-4"
+		},
+		{
+			"unitGroup": 34,
+			"unitSelection": 1,
+			"ID": 106,
+			"Name": "User analog input 4",
+			"EcuCanID": 1333,
+			"EcuByteOrder": "7-6"
+		},
+		{
+			"unitGroup": 7,
+			"unitSelection": 0,
+			"ID": 140,
+			"Name": "EGT Difference",
+			"EcuCanID": 1332,
+			"EcuByteOrder": "1-0"
+		},
+		{
+			"unitGroup": 16,
+			"unitSelection": 0,
+			"ID": 14,
+			"Name": "Traction Ctrl Power limit",
+			"EcuCanID": 1316,
+			"EcuByteOrder": "1-0"
+		}
+	]
+}

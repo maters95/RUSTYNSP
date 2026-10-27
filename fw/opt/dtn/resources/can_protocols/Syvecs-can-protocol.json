@@ -1,0 +1,444 @@
+{
+   "CanProtocol":"SYVECS",
+   "CanTermination":"Yes",
+   "CanSpeed":1000000,
+   "CanNodeList":[
+      {
+         "ID":384,
+         "Name":"Engine Speed",
+         "EcuCanID":1536,
+         "EcuByteOrder":"0-1",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "unitGroup":3,
+         "unitSelection":0,
+         "ID":397,
+         "Name":"Vehicle Speed",
+         "EcuCanID":1552,
+         "EcuByteOrder":"4-5",
+         "Scale":0.36,
+         "Offset":0.0
+      },
+      {
+         "unitGroup":6,
+         "unitSelection":0,
+         "ID":387,
+         "Name":"Battery Voltage",
+         "EcuCanID":1536,
+         "EcuByteOrder":"4-5",
+         "Scale":0.01,
+         "Offset":0.0
+      },
+      {
+         "Name":"Engine Oil Temp",
+         "ID":235,
+         "EcuCanID":1545,
+         "EcuByteOrder":"0-1",
+         "Scale":1.0,
+         "Offset":2731,
+		 "Signed": true
+		},
+      {
+         "Name":"Relative Fuel Pres 1",
+         "ID":421,
+         "EcuCanID":1539,
+         "EcuByteOrder":"0-1",
+         "Scale":0.987,
+         "Offset":98.7,
+         "comment":"Injector Pressure Differential"
+      },
+      {
+         "Name":"Engine Oil Pressure 1",
+         "ID":236,
+         "EcuCanID":1544,
+         "EcuByteOrder":"0-1",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Gear",
+         "ID":405,
+         "EcuCanID":1550,
+         "EcuByteOrder":"2-3",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Manifold Pressure",
+         "ID":224,
+         "EcuCanID":1537,
+         "EcuByteOrder":"0-1",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Throttle Position 1",
+         "ID":52,
+         "EcuCanID":1537,
+         "EcuByteOrder":"6-7",
+         "Scale":0.1221,
+         "Offset":0.0
+      },
+      {
+         "Name":"Engine Coolant Pressure",
+         "ID":254,
+         "EcuCanID":1545,
+         "EcuByteOrder":"4-5",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Wheel Spin",
+         "ID":6756,
+         "EcuCanID":1553,
+         "EcuByteOrder":"0-1",
+         "Scale":0.977,
+         "Offset":0.0,
+         "comment":"Wheel Slip"
+      },
+      {
+         "unitGroup":4,
+         "unitSelection":1,
+         "ID":230,
+         "Name":"Lambda 1",
+         "EcuCanID":1539,
+         "EcuByteOrder":"2-3",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Lambda 2",
+         "ID":231,
+         "EcuCanID":1540,
+         "EcuByteOrder":"2-3",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Lateral G",
+         "ID":491,
+         "EcuCanID":1552,
+         "EcuByteOrder":"2-3",
+         "Scale":0.101,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Longitudinal G",
+         "ID":5789,
+         "EcuCanID":1536,
+         "EcuByteOrder":"6-7",
+         "Scale":0.101,
+         "Offset":0.0
+      },
+      {
+         "Name":"Crank Case Pressure 1",
+         "ID":6906,
+         "EcuCanID":1543,
+         "EcuByteOrder":"0-1",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Front Left Speed",
+         "ID":465,
+         "EcuCanID":1551,
+         "EcuByteOrder":"0-1",
+         "Scale":0.36,
+         "Offset":0.0,
+		  "Signed": true
+      },
+      {
+         "Name":"Front Right Speed",
+         "ID":467,
+         "EcuCanID":1551,
+         "EcuByteOrder":"2-3",
+         "Scale":0.36,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Rear Left Speed",
+         "ID":469,
+         "EcuCanID":1551,
+         "EcuByteOrder":"4-5",
+         "Scale":0.36,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Rear Right Speed",
+         "ID":471,
+         "EcuCanID":1551,
+         "EcuByteOrder":"6-7",
+         "Scale":0.36,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Engine Coolant Temp 1",
+         "ID":229,
+         "EcuCanID":1541,
+         "EcuByteOrder":"2-3",
+         "Scale":1.0,
+         "Offset":2731,
+		 "Signed": true
+      },
+      {
+         "Name":"Barometric Pressure",
+         "ID":257,
+         "EcuCanID":1545,
+         "EcuByteOrder":"6-7",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"EGT Sensor 1",
+         "ID":242,
+         "EcuCanID":1541,
+         "EcuByteOrder":"4-5",
+         "Scale":1.0,
+         "Offset":2731,
+		 "Signed": true
+      },
+      {
+         "Name":"EGT Sensor 2",
+         "ID":246,
+         "EcuCanID":1542,
+         "EcuByteOrder":"4-5",
+         "Scale":1.0,
+         "Offset":2731,
+		 "Signed": true
+      }
+   ],
+   "UnsupportedNodeList":[
+      {
+         "Name":"Throttle Position 2",
+         "EcuCanID":1538,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Pedal Position",
+         "EcuCanID":1536,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Gear Cut Dog Kick Count",
+         "EcuCanID":1549,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Gear Cut Fail Count",
+         "EcuCanID":1549,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"GSP",
+         "EcuCanID":1550,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Knock Status",
+         "EcuCanID":1549,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Relative Fuel Pres 2",
+         "EcuCanID":1540,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Post Restrictor Pressure 1",
+         "EcuCanID":1537,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Crank Case Pressure 2",
+         "EcuCanID":1543,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Turbo Speed 1",
+         "EcuCanID":1537,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"MAP2",
+         "EcuCanID":1538,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Engine Coolant Temp 2",
+         "EcuCanID":1542,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Air Charge Temp 1",
+         "EcuCanID":1541,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Cal Select",
+         "EcuCanID":1546,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"TC Select",
+         "EcuCanID":1546,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Air Charge Temp 2",
+         "EcuCanID":1542,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Fuel Temp 1",
+         "EcuCanID":1545,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Fuel Cons",
+         "EcuCanID":1548,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Fuel Correction 1",
+         "EcuCanID":1539,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Fuel Correction 2",
+         "EcuCanID":1540,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Man/Auto Switch",
+         "EcuCanID":1547,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"WOW",
+         "EcuCanID":1547,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Sensor Switch",
+         "EcuCanID":1548,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"WGC Startegy Active",
+         "EcuCanID":1548,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Clutch Switch",
+         "EcuCanID":1547,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"ALS State",
+         "EcuCanID":1548,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Pit Switch",
+         "EcuCanID":1546,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Auto Start State",
+         "EcuCanID":1547,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Paddle Switch",
+         "EcuCanID":1550,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Engine Enable",
+         "EcuCanID":1546,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"DBW Status",
+         "EcuCanID":1549,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Steering Wheel Angle",
+         "EcuCanID":1552,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Driven Speed",
+         "EcuCanID":1552,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Crank Case Pressure 3",
+         "EcuCanID":1543,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Crank Case Pressure 4",
+         "EcuCanID":1543,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Engine Oil Pressure 2",
+         "EcuCanID":1544,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Turbo Speed 2",
+         "EcuCanID":1538,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Gear Voltage",
+         "EcuCanID":1550,
+         "EcuByteOrder":"0-1"
+      },
+      {
+         "Name":"Post Restrictor Pressure 2",
+         "EcuCanID":1538,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Traction Control Spin Target",
+         "EcuCanID":1553,
+         "EcuByteOrder":"2-3"
+      },
+      {
+         "Name":"Traction Control Spin Error",
+         "EcuCanID":1553,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Traction Control Torque",
+         "EcuCanID":1553,
+         "EcuByteOrder":"6-7"
+      },
+      {
+         "Name":"Engine Oil Pressure 3",
+         "EcuCanID":1544,
+         "EcuByteOrder":"4-5"
+      },
+      {
+         "Name":"Engine Oil Pressure 4",
+         "EcuCanID":1544,
+         "EcuByteOrder":"6-7"
+      }
+   ]
+}

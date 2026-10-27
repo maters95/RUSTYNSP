@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="filterTextBox.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>4</value></data>
+  <data name="&gt;&gt;headerChannel.Type" xml:space="preserve"><value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;headerChannel.Name" xml:space="preserve"><value>headerChannel</value></data>
+  <data name="ok.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>Awg2OTEsIDQwNg==</value></data><data name="$this.Text" xml:space="preserve"><value>Available Channels</value></data>
+  <data name="SearchClearButton.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>17</value></data>
+  <data name="headerGroup.Text" xml:space="preserve"><value>Group</value></data>
+  <data name="&gt;&gt;SearchClearButton.Name" xml:space="preserve"><value>SearchClearButton</value></data>
+  <data name="&gt;&gt;SearchClearButton.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="$this.ClientSize" mimetype="application/x-microsoft.net.object.binary.base64"><value>Awg4ODQsIDQ0Mg==</value></data><data name="&gt;&gt;headerGroup.Name" xml:space="preserve"><value>headerGroup</value></data>
+  <data name="richTextBox1.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>4</value></data>
+  <data name="&gt;&gt;headerGroup.Type" xml:space="preserve"><value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="richTextBox1.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwgxNDYsIDM1Ng==</value></data><data name="richTextBox1.Text" xml:space="preserve"><value /></data>
+  <data name="SearchPictureBox.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>18</value></data>
+  <data name="&gt;&gt;filterTextBox.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;SearchClearButton.ZOrder" xml:space="preserve"><value>4</value></data>
+  <data name="&gt;&gt;filterTextBox.ZOrder" xml:space="preserve"><value>3</value></data>
+  <data name="headerChannel.Text" xml:space="preserve"><value>Channel</value></data>
+  <data name="headerUnits.Text" xml:space="preserve"><value>Units</value></data>
+  <data name="ok.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>2</value></data>
+  <data name="cancel.Anchor" mimetype="application/x-microsoft.net.object.binary.base64"><value>Aw1Cb3R0b20sIFJpZ2h0</value></data><data name="&gt;&gt;richTextBox1.Name" xml:space="preserve"><value>richTextBox1</value></data>
+  <data name="&gt;&gt;richTextBox1.Type" xml:space="preserve"><value>NSP.UserInterface.RichTextBoxWithThemedScrollBars, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;ok.Name" xml:space="preserve"><value>ok</value></data>
+  <data name="&gt;&gt;ok.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;SearchClearButton.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="headerGroup.Width" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>110</value></data>
+  <data name="headerShortName.Width" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>175</value></data>
+  <data name="&gt;&gt;SearchPictureBox.Type" xml:space="preserve"><value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;SearchPictureBox.Name" xml:space="preserve"><value>SearchPictureBox</value></data>
+  <data name="&gt;&gt;ok.ZOrder" xml:space="preserve"><value>1</value></data>
+  <data name="richTextBox1.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>Awc3MzAsIDQx</value></data><data name="filterTextBox.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwczMzQsIDIz</value></data><data name="ok.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwY4NywgMjc=</value></data><data name="ok.Text" xml:space="preserve"><value>OK</value></data>
+  <data name="&gt;&gt;applyFilterTimer.Type" xml:space="preserve"><value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;applyFilterTimer.Name" xml:space="preserve"><value>applyFilterTimer</value></data>
+  <data name="&gt;&gt;listView.Name" xml:space="preserve"><value>listView</value></data>
+  <data name="&gt;&gt;listView.Type" xml:space="preserve"><value>NSP.UserInterface.ListViewWithThemedScrollBars, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;ok.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;headerUnits.Name" xml:space="preserve"><value>headerUnits</value></data>
+  <data name="&gt;&gt;headerUnits.Type" xml:space="preserve"><value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="cancel.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>Awg3ODQsIDQwNg==</value></data><data name="headerShortName.Text" xml:space="preserve"><value>Short Name</value></data>
+  <data name="cancel.Text" xml:space="preserve"><value>Cancel</value></data>
+  <data name="cancel.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwY4NywgMjc=</value></data><data name="SearchClearButton.Margin" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwozLCAyLCAzLCAz</value></data><data name="headerChannel.Width" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>310</value></data>
+  <data name="SearchPictureBox.Image" mimetype="application/x-microsoft.net.object.binary.base64"><value>ApICiVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAALEQAACxEBf2RfkQAAALRJREFUSEvtVMENgzAQy6MSX0ZghI7CSNmoozBKRwAbOdVRJRWXNB+EJQvlcraTQAg3qvEYhhl8gashx7Na6gCDUUbW+JucHyXxQeJkFMFJ9UnjT8gu8AAiHksyeKp8AOumx3dcEKTVR5Wy4Lz6fLuQiNyPpQTOp16VzsEjagoAu+2g+zvo+xUREJ29B2/Qf9koAm1IjjTncwGrb3TxXwRyETRvC/mF64ao/F+YkD4BNxoQwgaYgV734YzARAAAAABJRU5ErkJggg==</value></data><data name="headerUnits.Width" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>90</value></data>
+  <data name="filterTextBox.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwY0MCwgMTA=</value></data><data name="&gt;&gt;listView.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;filterTextBox.Name" xml:space="preserve"><value>filterTextBox</value></data>
+  <data name="&gt;&gt;filterTextBox.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedTextBox, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="cancel.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>3</value></data>
+  <data name="&gt;&gt;listView.ZOrder" xml:space="preserve"><value>6</value></data>
+  <data name="SearchClearButton.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYyMiwgMjU=</value></data><data name="SearchClearButton.Text" xml:space="preserve"><value>X</value></data>
+  <data name="&gt;&gt;cancel.ZOrder" xml:space="preserve"><value>0</value></data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve"><value>SelectChannelDialog</value></data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve"><value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="&gt;&gt;SearchPictureBox.ZOrder" xml:space="preserve"><value>2</value></data>
+  <data name="SearchClearButton.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYzODAsIDk=</value></data><data name="&gt;&gt;SearchPictureBox.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="ok.ImeMode" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwlOb0NvbnRyb2w=</value></data><data name="listView.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>1</value></data>
+  <data name="&gt;&gt;headerShortName.Name" xml:space="preserve"><value>headerShortName</value></data>
+  <data name="&gt;&gt;headerShortName.Type" xml:space="preserve"><value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="listView.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>Awg3MTIsIDM1NQ==</value></data><data name="$this.StartPosition" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwxDZW50ZXJQYXJlbnQ=</value></data><data name="SearchClearButton.ImeMode" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwlOb0NvbnRyb2w=</value></data><data name="cancel.ImeMode" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwlOb0NvbnRyb2w=</value></data><data name="&gt;&gt;cancel.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="ok.Enabled" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>False</value></data>
+  <data name="listView.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYxMiwgNDE=</value></data><data name="&gt;&gt;richTextBox1.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="&gt;&gt;cancel.Name" xml:space="preserve"><value>cancel</value></data>
+  <data name="&gt;&gt;cancel.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.27.3.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="$this.AutoScaleDimensions" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwU3LCAxNQ==</value></data><data name="&gt;&gt;richTextBox1.ZOrder" xml:space="preserve"><value>5</value></data>
+  <data name="richTextBox1.ScrollBars" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwhWZXJ0aWNhbA==</value></data><data name="SearchPictureBox.Location" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYxMCwgMTA=</value></data><data name="SearchPictureBox.Size" mimetype="application/x-microsoft.net.object.binary.base64"><value>AwYyNCwgMjQ=</value></data></root>

@@ -1,0 +1,1621 @@
+Fri Jan 31 15:55:37 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:37 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:37 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:37 2025 Debug: reading...
+Fri Jan 31 15:55:37 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:37 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:37 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:37 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:37 2025 Debug: reading...
+Fri Jan 31 15:55:37 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:37 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:37 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:37 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:37 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:37 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:37 2025 Debug: reading...
+Fri Jan 31 15:55:37 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:37 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:37 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:37 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:37 2025 Debug: reading...
+Fri Jan 31 15:55:37 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/4be4f598-45bd-4195-923d-53ddb0d37a77.json;|"
+Fri Jan 31 15:55:37 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/4be4f598-45bd-4195-923d-53ddb0d37a77.json;|"  Commands found : 2
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/4be4f598-45bd-4195-923d-53ddb0d37a77.json;"
+Fri Jan 31 15:55:37 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/4be4f598-45bd-4195-923d-53ddb0d37a77.json"
+Fri Jan 31 15:55:37 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/4be4f598-45bd-4195-923d-53ddb0d37a77.json"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "Engine RPM Overrev"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "Over Boost"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "Over Boost"
+Fri Jan 31 15:55:37 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:37 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:37 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:37 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:55:37 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:55:37 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:37 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:37 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:38 2025 Debug: reading...
+Fri Jan 31 15:55:38 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:38 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:38 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:38 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:38 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:38 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:38 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:38 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:41 2025 Debug: reading...
+Fri Jan 31 15:55:41 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:41 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:41 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:41 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:41 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:41 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:41 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:41 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:41 2025 Debug: reading...
+Fri Jan 31 15:55:41 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:41 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:41 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:41 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:41 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:42 2025 Debug: reading...
+Fri Jan 31 15:55:42 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:42 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:42 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:42 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:42 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:42 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:42 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:42 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:42 2025 Debug: reading...
+Fri Jan 31 15:55:42 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:42 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:42 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:42 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:42 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:46 2025 Debug: reading...
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:46 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:46 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:46 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:46 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:46 2025 Debug: reading...
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/8f4a2b7e-1a12-49b7-9601-cbd71554164d.json;|"
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/8f4a2b7e-1a12-49b7-9601-cbd71554164d.json;|"  Commands found : 2
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/8f4a2b7e-1a12-49b7-9601-cbd71554164d.json;"
+Fri Jan 31 15:55:46 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/8f4a2b7e-1a12-49b7-9601-cbd71554164d.json"
+Fri Jan 31 15:55:46 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/8f4a2b7e-1a12-49b7-9601-cbd71554164d.json"
+Fri Jan 31 15:55:46 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:46 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:46 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:46 2025 Debug: 		Alert:  "Engine RPM Overrev"
+Fri Jan 31 15:55:46 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:46 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:46 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:46 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:46 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:46 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:46 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:46 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:46 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:46 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:46 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:46 2025 Debug: 		Alert:  "Over Boost"
+Fri Jan 31 15:55:46 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:46 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:46 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:46 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:55:46 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:46 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:46 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:46 2025 Debug: reading...
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:46 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:46 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:46 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:46 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:46 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:46 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:49 2025 Debug: reading...
+Fri Jan 31 15:55:49 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:49 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:49 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:49 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:49 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:49 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:49 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:49 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:51 2025 Debug: reading...
+Fri Jan 31 15:55:51 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:51 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:51 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:51 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:51 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:51 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:51 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:51 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:51 2025 Debug: reading...
+Fri Jan 31 15:55:51 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:51 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:51 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:51 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:51 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:52 2025 Debug: reading...
+Fri Jan 31 15:55:52 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/ef0b3f64-78f0-4cec-8ea1-5605a784c679.json;|"
+Fri Jan 31 15:55:52 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/ef0b3f64-78f0-4cec-8ea1-5605a784c679.json;|"  Commands found : 2
+Fri Jan 31 15:55:52 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/ef0b3f64-78f0-4cec-8ea1-5605a784c679.json;"
+Fri Jan 31 15:55:52 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/ef0b3f64-78f0-4cec-8ea1-5605a784c679.json"
+Fri Jan 31 15:55:52 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/ef0b3f64-78f0-4cec-8ea1-5605a784c679.json"
+Fri Jan 31 15:55:52 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:52 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:52 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:52 2025 Debug: 		Alert:  "Engine RPM Overrev"
+Fri Jan 31 15:55:52 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:52 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:52 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:52 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:52 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:52 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:52 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:52 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:52 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:52 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:52 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:52 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:55:52 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:55:52 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:52 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:52 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:52 2025 Debug: reading...
+Fri Jan 31 15:55:52 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:52 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:52 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:52 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:52 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:52 2025 Debug: reading...
+Fri Jan 31 15:55:52 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:52 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:52 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:52 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:52 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:52 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:52 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:52 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:53 2025 Debug: reading...
+Fri Jan 31 15:55:53 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:53 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:53 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:53 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:53 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:53 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:53 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:53 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:55 2025 Debug: reading...
+Fri Jan 31 15:55:55 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:55 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:55 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:55 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:55 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:55 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:55 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:55 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:56 2025 Debug: reading...
+Fri Jan 31 15:55:56 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/07e0102f-cd2e-4c42-8ac6-162c8d73af24.json;|"
+Fri Jan 31 15:55:56 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/07e0102f-cd2e-4c42-8ac6-162c8d73af24.json;|"  Commands found : 2
+Fri Jan 31 15:55:56 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/07e0102f-cd2e-4c42-8ac6-162c8d73af24.json;"
+Fri Jan 31 15:55:56 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/07e0102f-cd2e-4c42-8ac6-162c8d73af24.json"
+Fri Jan 31 15:55:56 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/07e0102f-cd2e-4c42-8ac6-162c8d73af24.json"
+Fri Jan 31 15:55:56 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:56 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:56 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:56 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:56 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:56 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:56 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:56 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:55:56 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:55:56 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:55:56 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:55:56 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:55:56 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:55:56 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:56 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:56 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:56 2025 Debug: reading...
+Fri Jan 31 15:55:56 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:56 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:56 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:56 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:56 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:56 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:56 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:56 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:58 2025 Debug: reading...
+Fri Jan 31 15:55:58 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:55:58 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:55:58 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:55:58 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:58 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:55:58 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:58 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:58 2025 Debug: 6  bytes written...
+Fri Jan 31 15:55:58 2025 Debug: reading...
+Fri Jan 31 15:55:58 2025 Debug: Received string :  ""
+Fri Jan 31 15:55:58 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:55:58 2025 Debug: Command to process:  ""
+Fri Jan 31 15:55:58 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:55:58 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:16 2025 Debug: reading...
+Fri Jan 31 15:56:16 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:56:16 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:56:16 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:56:16 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:16 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:16 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:16 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:16 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:16 2025 Debug: reading...
+Fri Jan 31 15:56:16 2025 Debug: Received string :  ""
+Fri Jan 31 15:56:16 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:56:16 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:16 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:16 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:18 2025 Debug: reading...
+Fri Jan 31 15:56:18 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:56:18 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:56:18 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:56:18 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:18 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:18 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:18 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:18 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:21 2025 Debug: reading...
+Fri Jan 31 15:56:21 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:56:21 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:56:21 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:56:21 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:21 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:21 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:21 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:21 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:21 2025 Debug: reading...
+Fri Jan 31 15:56:21 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:56:21 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:56:21 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:56:21 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:21 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:21 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:21 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:21 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:22 2025 Debug: reading...
+Fri Jan 31 15:56:22 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/99b1f131-c717-4ee1-8caf-135989d2ecd4.json;|"
+Fri Jan 31 15:56:22 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/99b1f131-c717-4ee1-8caf-135989d2ecd4.json;|"  Commands found : 2
+Fri Jan 31 15:56:22 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/99b1f131-c717-4ee1-8caf-135989d2ecd4.json;"
+Fri Jan 31 15:56:22 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/99b1f131-c717-4ee1-8caf-135989d2ecd4.json"
+Fri Jan 31 15:56:22 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/99b1f131-c717-4ee1-8caf-135989d2ecd4.json"
+Fri Jan 31 15:56:22 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:22 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:22 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:22 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:56:22 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:22 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:22 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:22 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:56:22 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:22 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:22 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:22 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:56:22 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:22 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:22 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:22 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:56:22 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:22 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:22 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:22 2025 Debug: 		Alert:  "New Alarm Message"
+Fri Jan 31 15:56:22 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:56:22 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:22 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:22 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:22 2025 Debug: reading...
+Fri Jan 31 15:56:22 2025 Debug: Received string :  ""
+Fri Jan 31 15:56:22 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:56:22 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:22 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:22 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:22 2025 Debug: ***************adding processAlert ret: true ,deleteAlert: false  Message: "New Alarm Message"
+Fri Jan 31 15:56:22 2025 Debug: Time to show: Building ListElement for:  "New Alarm Message" currentTime: 1738299382869
+Fri Jan 31 15:56:22 2025 Debug: "New Alarm Message" , Showing Now; Not Displayed for: 1738299382869
+Fri Jan 31 15:56:22 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:56:22 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd399600, name = "AlertPopup_01")
+Fri Jan 31 15:56:22 2025 Debug: ******* reInitAlarmScreen Parsed data length:1
+Fri Jan 31 15:56:22 2025 Debug: alarmModel length now:1
+Fri Jan 31 15:56:22 2025 Debug: enableLEDs called; m_alertsEnabled.size() 1
+Fri Jan 31 15:56:22 2025 Debug: Re-Setting LED values for  "New Alarm Message" ,Command: "<LED>Set:0;"
+Fri Jan 31 15:56:22 2025 Debug: slot_qmlMessage to send: "<LED>Set:0;"
+Fri Jan 31 15:56:22 2025 Debug: Sending to server  <LED>Set:0;
+Fri Jan 31 15:56:22 2025 Debug: 11  bytes written...
+Fri Jan 31 15:56:59 2025 Debug: reading...
+Fri Jan 31 15:56:59 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:56:59 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:56:59 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:56:59 2025 Debug: clearAlerts called; m_alertsEnabled.size() 1
+Fri Jan 31 15:56:59 2025 Debug: clearAlerts deleting :  "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug:  deleteAlertComponentForcibly Called: "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug: Deleted  "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug: **************deleting: LEDs for  Alert Message: "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug: slot_qmlMessage to send: "<LED>Clear:0;"
+Fri Jan 31 15:56:59 2025 Debug: Sending to server  <LED>Clear:0;
+Fri Jan 31 15:56:59 2025 Debug: 13  bytes written...
+Fri Jan 31 15:56:59 2025 Debug: "New Alarm Message" , deleting; Displayed for: 36154
+Fri Jan 31 15:56:59 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:56:59 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd399668, name = "AlertPopup_01")
+Fri Jan 31 15:56:59 2025 Debug: ******* reInitAlarmScreen Parsed data length:0
+Fri Jan 31 15:56:59 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:59 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:56:59 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:59 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:59 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:59 2025 Debug: reading...
+Fri Jan 31 15:56:59 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/146e2a6c-bfd3-45c9-8b19-77232c72ce0a.json;|"
+Fri Jan 31 15:56:59 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/146e2a6c-bfd3-45c9-8b19-77232c72ce0a.json;|"  Commands found : 2
+Fri Jan 31 15:56:59 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/146e2a6c-bfd3-45c9-8b19-77232c72ce0a.json;"
+Fri Jan 31 15:56:59 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/146e2a6c-bfd3-45c9-8b19-77232c72ce0a.json"
+Fri Jan 31 15:56:59 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/146e2a6c-bfd3-45c9-8b19-77232c72ce0a.json"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:56:59 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:56:59 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:56:59 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 15:56:59 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:56:59 2025 Debug: Command to process:  ""
+Fri Jan 31 15:56:59 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:56:59 2025 Debug: 6  bytes written...
+Fri Jan 31 15:56:59 2025 Debug: ***************adding processAlert ret: true ,deleteAlert: false  Message: "New Alarm Message"
+Fri Jan 31 15:56:59 2025 Debug: Time to show: Building ListElement for:  "New Alarm Message" currentTime: 1738299419315
+Fri Jan 31 15:56:59 2025 Debug: "New Alarm Message" , Showing Now; Not Displayed for: 1738299419315
+Fri Jan 31 15:56:59 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:56:59 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd399668, name = "AlertPopup_01")
+Fri Jan 31 15:56:59 2025 Debug: ******* reInitAlarmScreen Parsed data length:1
+Fri Jan 31 15:56:59 2025 Debug: alarmModel length now:1
+Fri Jan 31 15:56:59 2025 Debug: enableLEDs called; m_alertsEnabled.size() 1
+Fri Jan 31 15:56:59 2025 Debug: Re-Setting LED values for  "New Alarm Message" ,Command: "<LED>Set:0;"
+Fri Jan 31 15:56:59 2025 Debug: slot_qmlMessage to send: "<LED>Set:0;"
+Fri Jan 31 15:56:59 2025 Debug: Sending to server  <LED>Set:0;
+Fri Jan 31 15:56:59 2025 Debug: 11  bytes written...
+Fri Jan 31 15:57:00 2025 Debug: reading...
+Fri Jan 31 15:57:00 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:00 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:00 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:00 2025 Debug: clearAlerts called; m_alertsEnabled.size() 1
+Fri Jan 31 15:57:00 2025 Debug: clearAlerts deleting :  "New Alarm Message"
+Fri Jan 31 15:57:00 2025 Debug:  deleteAlertComponentForcibly Called: "New Alarm Message"
+Fri Jan 31 15:57:00 2025 Debug: Deleted  "New Alarm Message"
+Fri Jan 31 15:57:00 2025 Debug: **************deleting: LEDs for  Alert Message: "New Alarm Message"
+Fri Jan 31 15:57:00 2025 Debug: slot_qmlMessage to send: "<LED>Clear:0;"
+Fri Jan 31 15:57:00 2025 Debug: Sending to server  <LED>Clear:0;
+Fri Jan 31 15:57:00 2025 Debug: 13  bytes written...
+Fri Jan 31 15:57:00 2025 Debug: "New Alarm Message" , deleting; Displayed for: 851
+Fri Jan 31 15:57:00 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:57:00 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd399668, name = "AlertPopup_01")
+Fri Jan 31 15:57:00 2025 Debug: ******* reInitAlarmScreen Parsed data length:0
+Fri Jan 31 15:57:00 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:00 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:00 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:00 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:00 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:02 2025 Debug: reading...
+Fri Jan 31 15:57:02 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:02 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:02 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:02 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:02 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:02 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:02 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:02 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:08 2025 Debug: reading...
+Fri Jan 31 15:57:08 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:08 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:08 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:08 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:08 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:08 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:08 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:08 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:10 2025 Debug: reading...
+Fri Jan 31 15:57:10 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:10 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:10 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:10 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:10 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:10 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:10 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:10 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:10 2025 Debug: reading...
+Fri Jan 31 15:57:10 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:10 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:10 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:10 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:10 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:12 2025 Debug: reading...
+Fri Jan 31 15:57:12 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:12 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:12 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:12 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:12 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:12 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:12 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:12 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:12 2025 Debug: reading...
+Fri Jan 31 15:57:12 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:12 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:12 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:12 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:12 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:14 2025 Debug: reading...
+Fri Jan 31 15:57:14 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:14 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:14 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:14 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:14 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:14 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:14 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:14 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:14 2025 Debug: reading...
+Fri Jan 31 15:57:14 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:14 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:14 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:14 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:14 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:18 2025 Debug: reading...
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:18 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:18 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:18 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:18 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:18 2025 Debug: reading...
+Fri Jan 31 15:57:18 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:18 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:18 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:18 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:18 2025 Debug: reading...
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/908939d6-14fb-4654-ac47-aec05cde290c.json;|"
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/908939d6-14fb-4654-ac47-aec05cde290c.json;|"  Commands found : 2
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/908939d6-14fb-4654-ac47-aec05cde290c.json;"
+Fri Jan 31 15:57:18 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/908939d6-14fb-4654-ac47-aec05cde290c.json"
+Fri Jan 31 15:57:18 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/908939d6-14fb-4654-ac47-aec05cde290c.json"
+Fri Jan 31 15:57:18 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:18 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:18 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:18 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:57:18 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:18 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:18 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:18 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:57:18 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:18 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:18 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:18 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:57:18 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:18 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:18 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:18 2025 Debug: 		Alert:  "New Alarm Message"
+Fri Jan 31 15:57:18 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:18 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:18 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:18 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 15:57:18 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:18 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:18 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:18 2025 Debug: reading...
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:18 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:18 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:18 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:18 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:18 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:18 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:18 2025 Debug: ***************adding processAlert ret: true ,deleteAlert: false  Message: "New Alarm Message"
+Fri Jan 31 15:57:18 2025 Debug: Time to show: Building ListElement for:  "New Alarm Message" currentTime: 1738299438609
+Fri Jan 31 15:57:18 2025 Debug: "New Alarm Message" , Showing Now; Not Displayed for: 1738299438609
+Fri Jan 31 15:57:18 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:57:18 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd39a300, name = "AlertPopup_01")
+Fri Jan 31 15:57:18 2025 Debug: ******* reInitAlarmScreen Parsed data length:1
+Fri Jan 31 15:57:18 2025 Debug: alarmModel length now:1
+Fri Jan 31 15:57:18 2025 Debug: enableLEDs called; m_alertsEnabled.size() 1
+Fri Jan 31 15:57:18 2025 Debug: Re-Setting LED values for  "New Alarm Message" ,Command: "<LED>Set:0;"
+Fri Jan 31 15:57:18 2025 Debug: slot_qmlMessage to send: "<LED>Set:0;"
+Fri Jan 31 15:57:18 2025 Debug: Sending to server  <LED>Set:0;
+Fri Jan 31 15:57:18 2025 Debug: 11  bytes written...
+Fri Jan 31 15:57:21 2025 Debug: reading...
+Fri Jan 31 15:57:21 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:21 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:21 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:21 2025 Debug: clearAlerts called; m_alertsEnabled.size() 1
+Fri Jan 31 15:57:21 2025 Debug: clearAlerts deleting :  "New Alarm Message"
+Fri Jan 31 15:57:21 2025 Debug:  deleteAlertComponentForcibly Called: "New Alarm Message"
+Fri Jan 31 15:57:21 2025 Debug: Deleted  "New Alarm Message"
+Fri Jan 31 15:57:21 2025 Debug: **************deleting: LEDs for  Alert Message: "New Alarm Message"
+Fri Jan 31 15:57:21 2025 Debug: slot_qmlMessage to send: "<LED>Clear:0;"
+Fri Jan 31 15:57:21 2025 Debug: Sending to server  <LED>Clear:0;
+Fri Jan 31 15:57:21 2025 Debug: 13  bytes written...
+Fri Jan 31 15:57:21 2025 Debug: "New Alarm Message" , deleting; Displayed for: 2926
+Fri Jan 31 15:57:21 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:57:21 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd39a5d8, name = "AlertPopup_01")
+Fri Jan 31 15:57:21 2025 Debug: ******* reInitAlarmScreen Parsed data length:0
+Fri Jan 31 15:57:21 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:21 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:21 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:21 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:21 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: reading...
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:24 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:24 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:24 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: reading...
+Fri Jan 31 15:57:24 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:24 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:24 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: reading...
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/777a4173-2554-4b75-894b-42da1c676d73.json;|"
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/777a4173-2554-4b75-894b-42da1c676d73.json;|"  Commands found : 2
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/777a4173-2554-4b75-894b-42da1c676d73.json;"
+Fri Jan 31 15:57:24 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/777a4173-2554-4b75-894b-42da1c676d73.json"
+Fri Jan 31 15:57:24 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/777a4173-2554-4b75-894b-42da1c676d73.json"
+Fri Jan 31 15:57:24 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:24 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:24 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:24 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:57:24 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:24 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:24 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:24 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:57:24 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:24 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:24 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:24 2025 Debug: 		Alert:  "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:24 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:24 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:24 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 15:57:24 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:24 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: reading...
+Fri Jan 31 15:57:24 2025 Debug: Received string :  ""
+Fri Jan 31 15:57:24 2025 Debug: Received string :  ""  Commands found : 1
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:24 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: ***************adding processAlert ret: true ,deleteAlert: false  Message: "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug: Time to show: Building ListElement for:  "New Alarm Message" currentTime: 1738299444712
+Fri Jan 31 15:57:24 2025 Debug: "New Alarm Message" , Showing Now; Not Displayed for: 1738299444712
+Fri Jan 31 15:57:24 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:57:24 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd39a9e8, name = "AlertPopup_01")
+Fri Jan 31 15:57:24 2025 Debug: ******* reInitAlarmScreen Parsed data length:1
+Fri Jan 31 15:57:24 2025 Debug: alarmModel length now:1
+Fri Jan 31 15:57:24 2025 Debug: enableLEDs called; m_alertsEnabled.size() 1
+Fri Jan 31 15:57:24 2025 Debug: Re-Setting LED values for  "New Alarm Message" ,Command: "<LED>Set:0;"
+Fri Jan 31 15:57:24 2025 Debug: slot_qmlMessage to send: "<LED>Set:0;"
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <LED>Set:0;
+Fri Jan 31 15:57:24 2025 Debug: 11  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: reading...
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:24 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:24 2025 Debug: clearAlerts called; m_alertsEnabled.size() 1
+Fri Jan 31 15:57:24 2025 Debug: clearAlerts deleting :  "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug:  deleteAlertComponentForcibly Called: "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug: Deleted  "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug: **************deleting: LEDs for  Alert Message: "New Alarm Message"
+Fri Jan 31 15:57:24 2025 Debug: slot_qmlMessage to send: "<LED>Clear:0;"
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <LED>Clear:0;
+Fri Jan 31 15:57:24 2025 Debug: 13  bytes written...
+Fri Jan 31 15:57:24 2025 Debug: "New Alarm Message" , deleting; Displayed for: 1
+Fri Jan 31 15:57:24 2025 Debug: **************refreshAlertComponent Called
+Fri Jan 31 15:57:24 2025 Debug: refreshAlertComponent delete m_componentObject: AlertPopup_01_QMLTYPE_5480(0xd399fc0, name = "AlertPopup_01")
+Fri Jan 31 15:57:24 2025 Debug: ******* reInitAlarmScreen Parsed data length:0
+Fri Jan 31 15:57:24 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:24 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:24 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:24 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:24 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:29 2025 Debug: reading...
+Fri Jan 31 15:57:29 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:29 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:29 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:29 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:29 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:29 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:29 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:29 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:30 2025 Debug: reading...
+Fri Jan 31 15:57:30 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:30 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:30 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:30 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:30 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:30 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:30 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:30 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:32 2025 Debug: reading...
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:32 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:32 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:32 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:32 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:32 2025 Debug: reading...
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/46d4cf13-54b3-4f08-9edf-78757f748f02.json;|"
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/46d4cf13-54b3-4f08-9edf-78757f748f02.json;|"  Commands found : 2
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/46d4cf13-54b3-4f08-9edf-78757f748f02.json;"
+Fri Jan 31 15:57:32 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/46d4cf13-54b3-4f08-9edf-78757f748f02.json"
+Fri Jan 31 15:57:32 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/46d4cf13-54b3-4f08-9edf-78757f748f02.json"
+Fri Jan 31 15:57:32 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:32 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:32 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:32 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:57:32 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:32 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:32 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:32 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:57:32 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:57:32 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:57:32 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:57:32 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 15:57:32 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:32 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:32 2025 Debug: 6  bytes written...
+Fri Jan 31 15:57:32 2025 Debug: reading...
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 15:57:32 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 15:57:32 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:32 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 15:57:32 2025 Debug: Command to process:  ""
+Fri Jan 31 15:57:32 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:57:32 2025 Debug: 6  bytes written...
+Fri Jan 31 15:58:08 2025 Debug: s:0, widgets count:12
+Fri Jan 31 15:58:08 2025 Debug: Selected ChannelID:layout_01_10
+Fri Jan 31 15:58:08 2025 Debug: slot_qmlMessage to send: "<Channel>1;<X>543;<Y>327;<ScreenID>0;<ChannelID>layout_01_10;"
+Fri Jan 31 15:58:08 2025 Debug: Sending to server  <Channel>1;<X>543;<Y>327;<ScreenID>0;<ChannelID>layout_01_10;
+Fri Jan 31 15:58:08 2025 Debug: 61  bytes written...
+Fri Jan 31 15:58:08 2025 Debug: reading...
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "SetChannel:39;Value=0;|"
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "SetChannel:39;Value=0;|"  Commands found : 2
+Fri Jan 31 15:58:08 2025 Debug: Command to process:  "SetChannel:39;Value=0;"
+Fri Jan 31 15:58:08 2025 Debug:  SetChannel id: "39"
+Fri Jan 31 15:58:08 2025 Debug: Found address: 39  Value: QVariant(Invalid)
+Fri Jan 31 15:58:08 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 15:58:08 2025 Debug: Set dataMapValue of:  HaltechBigNumericGauge_QMLTYPE_5408_QML_5468(0xfae3a50) to:  QVariant(QString, "0")
+Fri Jan 31 15:58:08 2025 Debug:  Setting Value of id: "39"  =  "0"
+Fri Jan 31 15:58:08 2025 Debug: Command to process:  ""
+Fri Jan 31 15:58:08 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:58:08 2025 Debug: 6  bytes written...
+Fri Jan 31 15:58:08 2025 Debug: reading...
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "SetChannel:39;Value=0;|"
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "SetChannel:39;Value=0;|"  Commands found : 2
+Fri Jan 31 15:58:08 2025 Debug: Command to process:  "SetChannel:39;Value=0;"
+Fri Jan 31 15:58:08 2025 Debug:  SetChannel id: "39"
+Fri Jan 31 15:58:08 2025 Debug: Found address: 39  Value: QVariant(QString, "0")
+Fri Jan 31 15:58:08 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 15:58:08 2025 Debug: Set dataMapValue of:  HaltechBigNumericGauge_QMLTYPE_5408_QML_5468(0xfae3a50) to:  QVariant(QString, "0")
+Fri Jan 31 15:58:08 2025 Debug:  Setting Value of id: "39"  =  "0"
+Fri Jan 31 15:58:08 2025 Debug: Command to process:  ""
+Fri Jan 31 15:58:08 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:58:08 2025 Debug: 6  bytes written...
+Fri Jan 31 15:58:08 2025 Debug: reading...
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "<Refresh>|"
+Fri Jan 31 15:58:08 2025 Debug: Received string :  "<Refresh>|"  Commands found : 2
+Fri Jan 31 15:58:08 2025 Debug: Command to process:  "<Refresh>"
+Fri Jan 31 15:58:08 2025 Debug: Reloading main window by calling reInitScreens after clearing cache
+Fri Jan 31 15:58:08 2025 Debug: reInitScreens called
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Fri Jan 31 15:58:09 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Fri Jan 31 15:58:09 2025 Debug: Command to process:  ""
+Fri Jan 31 15:58:09 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:58:09 2025 Debug: 6  bytes written...
+Fri Jan 31 15:58:09 2025 Debug: reading...
+Fri Jan 31 15:58:09 2025 Debug: Received string :  "SetChannel:39;Value=0;|UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34f18a80-cd06-4036-ae81-930b51a2a364.json;|SetProperty:dayTime;Value=true;|"
+Fri Jan 31 15:58:09 2025 Debug: Received string :  "SetChannel:39;Value=0;|UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34f18a80-cd06-4036-ae81-930b51a2a364.json;|SetProperty:dayTime;Value=true;|"  Commands found : 4
+Fri Jan 31 15:58:09 2025 Debug: Command to process:  "SetChannel:39;Value=0;"
+Fri Jan 31 15:58:09 2025 Debug:  SetChannel id: "39"
+Fri Jan 31 15:58:09 2025 Debug: Found address: 39  Value: QVariant(QString, "0")
+Fri Jan 31 15:58:09 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 15:58:09 2025 Debug: Set dataMapValue of:  HaltechBigNumericGauge_QMLTYPE_5482_QML_5542(0xd39ff38) to:  QVariant(QString, "0")
+Fri Jan 31 15:58:09 2025 Debug:  Setting Value of id: "39"  =  "0"
+Fri Jan 31 15:58:09 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34f18a80-cd06-4036-ae81-930b51a2a364.json;"
+Fri Jan 31 15:58:09 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/34f18a80-cd06-4036-ae81-930b51a2a364.json"
+Fri Jan 31 15:58:09 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/34f18a80-cd06-4036-ae81-930b51a2a364.json"
+Fri Jan 31 15:58:09 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:58:09 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:58:09 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:58:09 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 15:58:09 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:58:09 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:58:09 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:58:09 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 15:58:09 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 15:58:09 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 15:58:09 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 15:58:09 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 15:58:09 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 15:58:09 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Fri Jan 31 15:58:09 2025 Debug:  SetProperty id: "dayTime"
+Fri Jan 31 15:58:09 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Fri Jan 31 15:58:09 2025 Debug: Command to process:  ""
+Fri Jan 31 15:58:09 2025 Debug: Sending to server  <noop>
+Fri Jan 31 15:58:09 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:20 2025 Debug: reading...
+Fri Jan 31 16:16:20 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/a34710f6-efac-4efd-aa52-65e85655be5b.json;|"
+Fri Jan 31 16:16:20 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/a34710f6-efac-4efd-aa52-65e85655be5b.json;|"  Commands found : 2
+Fri Jan 31 16:16:20 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/a34710f6-efac-4efd-aa52-65e85655be5b.json;"
+Fri Jan 31 16:16:20 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/a34710f6-efac-4efd-aa52-65e85655be5b.json"
+Fri Jan 31 16:16:20 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/a34710f6-efac-4efd-aa52-65e85655be5b.json"
+Fri Jan 31 16:16:20 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:20 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:20 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:20 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 16:16:20 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:20 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:20 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:20 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 16:16:20 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:20 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:20 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:20 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 16:16:20 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 16:16:20 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:20 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:20 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:44 2025 Debug: s:0, widgets count:12
+Fri Jan 31 16:16:44 2025 Debug: Selected ChannelID:layout_01_06
+Fri Jan 31 16:16:44 2025 Debug: slot_qmlMessage to send: "<Channel>1;<X>766;<Y>210;<ScreenID>0;<ChannelID>layout_01_06;"
+Fri Jan 31 16:16:44 2025 Debug: Sending to server  <Channel>1;<X>766;<Y>210;<ScreenID>0;<ChannelID>layout_01_06;
+Fri Jan 31 16:16:44 2025 Debug: 61  bytes written...
+Fri Jan 31 16:16:44 2025 Debug: reading...
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|"
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|"  Commands found : 2
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  "SetChannel:141;Value=0;"
+Fri Jan 31 16:16:44 2025 Debug:  SetChannel id: "141"
+Fri Jan 31 16:16:44 2025 Debug: Found address: 141  Value: QVariant(Invalid)
+Fri Jan 31 16:16:44 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechNewBarGauge_QMLTYPE_5508_QML_5551(0xe952f30) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechTellTaleLight_QMLTYPE_5516(0xd39dde8) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug:  Setting Value of id: "141"  =  "0"
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:44 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:44 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:44 2025 Debug: reading...
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|"
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|"  Commands found : 2
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  "SetChannel:141;Value=0;"
+Fri Jan 31 16:16:44 2025 Debug:  SetChannel id: "141"
+Fri Jan 31 16:16:44 2025 Debug: Found address: 141  Value: QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechNewBarGauge_QMLTYPE_5508_QML_5551(0xe952f30) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechTellTaleLight_QMLTYPE_5516(0xd39dde8) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug:  Setting Value of id: "141"  =  "0"
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:44 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:44 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:44 2025 Debug: reading...
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "<Refresh>|"
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "<Refresh>|"  Commands found : 2
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  "<Refresh>"
+Fri Jan 31 16:16:44 2025 Debug: Reloading main window by calling reInitScreens after clearing cache
+Fri Jan 31 16:16:44 2025 Debug: reInitScreens called
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Fri Jan 31 16:16:44 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:44 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:44 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:44 2025 Debug: reading...
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34e8bdb8-95c5-42f7-b713-95e943ea801f.json;|SetProperty:dayTime;Value=true;|"
+Fri Jan 31 16:16:44 2025 Debug: Received string :  "SetChannel:141;Value=0;|UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34e8bdb8-95c5-42f7-b713-95e943ea801f.json;|SetProperty:dayTime;Value=true;|"  Commands found : 4
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  "SetChannel:141;Value=0;"
+Fri Jan 31 16:16:44 2025 Debug:  SetChannel id: "141"
+Fri Jan 31 16:16:44 2025 Debug: Found address: 141  Value: QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechNewBarGauge_QMLTYPE_5581_QML_5624(0xe6f6710) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug: Set dataMapValue of:  HaltechTellTaleLight_QMLTYPE_5589(0xe710b20) to:  QVariant(QString, "0")
+Fri Jan 31 16:16:44 2025 Debug:  Setting Value of id: "141"  =  "0"
+Fri Jan 31 16:16:44 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/34e8bdb8-95c5-42f7-b713-95e943ea801f.json;"
+Fri Jan 31 16:16:44 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/34e8bdb8-95c5-42f7-b713-95e943ea801f.json"
+Fri Jan 31 16:16:44 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/34e8bdb8-95c5-42f7-b713-95e943ea801f.json"
+Fri Jan 31 16:16:44 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:44 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:44 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:44 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 16:16:45 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:45 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:45 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:45 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 16:16:45 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:16:45 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:16:45 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:16:45 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 16:16:45 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 16:16:45 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Fri Jan 31 16:16:45 2025 Debug:  SetProperty id: "dayTime"
+Fri Jan 31 16:16:45 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Fri Jan 31 16:16:45 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:45 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:45 2025 Debug: 6  bytes written...
+Fri Jan 31 16:16:46 2025 Debug: reading...
+Fri Jan 31 16:16:46 2025 Debug: Received string :  "<CancelAlerts>|"
+Fri Jan 31 16:16:46 2025 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Fri Jan 31 16:16:46 2025 Debug: Command to process:  "<CancelAlerts>"
+Fri Jan 31 16:16:46 2025 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Fri Jan 31 16:16:46 2025 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Fri Jan 31 16:16:46 2025 Debug: Command to process:  ""
+Fri Jan 31 16:16:46 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:16:46 2025 Debug: 6  bytes written...
+Fri Jan 31 16:17:53 2025 Debug: reading...
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetChannel:149;Value=0;|"
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetChannel:149;Value=0;|"  Commands found : 2
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "SetChannel:149;Value=0;"
+Fri Jan 31 16:17:53 2025 Debug:  SetChannel id: "149"
+Fri Jan 31 16:17:53 2025 Debug: Found address: 149  Value: QVariant(Invalid)
+Fri Jan 31 16:17:53 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:17:53 2025 Debug:  Setting Value of id: "149"  =  "0"
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  ""
+Fri Jan 31 16:17:53 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:17:53 2025 Debug: 6  bytes written...
+Fri Jan 31 16:17:53 2025 Debug: reading...
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "<Refresh>|"
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "<Refresh>|"  Commands found : 2
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "<Refresh>"
+Fri Jan 31 16:17:53 2025 Debug: Reloading main window by calling reInitScreens after clearing cache
+Fri Jan 31 16:17:53 2025 Debug: reInitScreens called
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Fri Jan 31 16:17:53 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  ""
+Fri Jan 31 16:17:53 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:17:53 2025 Debug: 6  bytes written...
+Fri Jan 31 16:17:53 2025 Debug: reading...
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetChannel:149;Value=6;|SetChannel:149;Value=6;|<Refresh>|SetProperty:dayTime;Value=true;|"
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetChannel:149;Value=6;|SetChannel:149;Value=6;|<Refresh>|SetProperty:dayTime;Value=true;|"  Commands found : 5
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "SetChannel:149;Value=6;"
+Fri Jan 31 16:17:53 2025 Debug:  SetChannel id: "149"
+Fri Jan 31 16:17:53 2025 Debug: Found address: 149  Value: QVariant(QString, "0")
+Fri Jan 31 16:17:53 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:17:53 2025 Debug: Set dataMapValue of:  HaltechNewBarGauge_QMLTYPE_5654_QML_5697(0xe9576b0) to:  QVariant(QString, "6")
+Fri Jan 31 16:17:53 2025 Debug:  Setting Value of id: "149"  =  "6"
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "SetChannel:149;Value=6;"
+Fri Jan 31 16:17:53 2025 Debug:  SetChannel id: "149"
+Fri Jan 31 16:17:53 2025 Debug: Found address: 149  Value: QVariant(QString, "6")
+Fri Jan 31 16:17:53 2025 Debug: Screen_Base::slot_canDataMapObjectsUpdated NoOf updatedCanDataMapObjects:  1
+Fri Jan 31 16:17:53 2025 Debug: Set dataMapValue of:  HaltechNewBarGauge_QMLTYPE_5654_QML_5697(0xe9576b0) to:  QVariant(QString, "6")
+Fri Jan 31 16:17:53 2025 Debug:  Setting Value of id: "149"  =  "6"
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "<Refresh>"
+Fri Jan 31 16:17:53 2025 Debug: Reloading main window by calling reInitScreens after clearing cache
+Fri Jan 31 16:17:53 2025 Debug: reInitScreens called
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Fri Jan 31 16:17:53 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Fri Jan 31 16:17:53 2025 Debug:  SetProperty id: "dayTime"
+Fri Jan 31 16:17:53 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  ""
+Fri Jan 31 16:17:53 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:17:53 2025 Debug: 6  bytes written...
+Fri Jan 31 16:17:53 2025 Debug: reading...
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Fri Jan 31 16:17:53 2025 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Fri Jan 31 16:17:53 2025 Debug:  SetProperty id: "dayTime"
+Fri Jan 31 16:17:53 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Fri Jan 31 16:17:53 2025 Debug: Command to process:  ""
+Fri Jan 31 16:17:53 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:17:53 2025 Debug: 6  bytes written...
+Fri Jan 31 16:17:57 2025 Debug: reading...
+Fri Jan 31 16:17:57 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/b76db510-10b0-4f6b-a33d-10e5b14d2eda.json;|"
+Fri Jan 31 16:17:57 2025 Debug: Received string :  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/b76db510-10b0-4f6b-a33d-10e5b14d2eda.json;|"  Commands found : 2
+Fri Jan 31 16:17:57 2025 Debug: Command to process:  "UpdateAlerts:C:/Users/ZakMasters/AppData/Local/Temp/b76db510-10b0-4f6b-a33d-10e5b14d2eda.json;"
+Fri Jan 31 16:17:57 2025 Debug:  UpdateAlerts filename: "C:/Users/ZakMasters/AppData/Local/Temp/b76db510-10b0-4f6b-a33d-10e5b14d2eda.json"
+Fri Jan 31 16:17:57 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Local/Temp/b76db510-10b0-4f6b-a33d-10e5b14d2eda.json"
+Fri Jan 31 16:17:57 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:17:57 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:17:57 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:17:57 2025 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Fri Jan 31 16:17:57 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:17:57 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:17:57 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:17:57 2025 Debug: 		Alert:  "Coolant Temperature High"
+Fri Jan 31 16:17:57 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Fri Jan 31 16:17:57 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Fri Jan 31 16:17:57 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Fri Jan 31 16:17:57 2025 Debug: 		Alert:  "Oil Temperature High"
+Fri Jan 31 16:17:57 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Fri Jan 31 16:17:57 2025 Debug: Command to process:  ""
+Fri Jan 31 16:17:57 2025 Debug: Sending to server  <noop>
+Fri Jan 31 16:17:57 2025 Debug: 6  bytes written...
+Sat Dec 27 13:10:11 2025 Debug: =====================================Start of Application =======================
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml"
+Sat Dec 27 13:10:11 2025 Debug: Starting ComponentManager; Qml Directory: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml"
+Sat Dec 27 13:10:11 2025 Debug: The Parameter count: 3
+Sat Dec 27 13:10:11 2025 Debug: Parameter :  0  is  C:\Program Files\Haltech\Haltech ICC\Bin\HaltechDashWindow.exe
+Sat Dec 27 13:10:11 2025 Debug: Parameter :  1  is  C:\Users\ZakMasters\AppData\Roaming\Haltech\Dash\qmlroot
+Sat Dec 27 13:10:11 2025 Debug: Parameter :  2  is  1235
+Sat Dec 27 13:10:11 2025 Debug: translator loaded:  false
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_01_09
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_02_05
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_03_01
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_04_02
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_05_00
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_06_RPM_GAUGE
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_07_01
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_08_02
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_09_02
+Sat Dec 27 13:10:11 2025 Debug: channelId:layout_10_15
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  2  with id:  1
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  3  with id:  2
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  4  with id:  3
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  5  with id:  4
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  6  with id:  5
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  7  with id:  6
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  8  with id:  7
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  9  with id:  9
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  10  with id:  13
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  11  with id:  10
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  12  with id:  11
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  13  with id:  12
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  14  with id:  14
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Sat Dec 27 13:10:11 2025 Debug: Created screen object  15  with id:  8
+Sat Dec 27 13:10:11 2025 Debug: switchScreen 0
+Sat Dec 27 13:10:11 2025 Debug: newScreenToSwitchTo Screen_Splash(0x3281518) oldScreen QObject(0x0)
+Sat Dec 27 13:10:11 2025 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens/SplashScreen.qml")
+Sat Dec 27 13:10:12 2025 Debug: Creating component
+Sat Dec 27 13:10:12 2025 Debug: Creating component successful
+Sat Dec 27 13:10:12 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens/SplashScreen.qml")
+Sat Dec 27 13:10:12 2025 Debug: haveToSwitchScreenIn
+Sat Dec 27 13:10:12 2025 Debug: Switched to id:  0
+Sat Dec 27 13:10:12 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data"
+Sat Dec 27 13:10:12 2025 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data/CurrentConfiguration.JSON"
+Sat Dec 27 13:10:12 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Sat Dec 27 13:10:12 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Sat Dec 27 13:10:12 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Sat Dec 27 13:10:12 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Sat Dec 27 13:10:12 2025 Debug: 		Alert:  "Engine RPM Overrev"
+Sat Dec 27 13:10:12 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Sat Dec 27 13:10:12 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Sat Dec 27 13:10:12 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Sat Dec 27 13:10:12 2025 Debug: 		Alert:  "Over Boost"
+Sat Dec 27 13:10:12 2025 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Sat Dec 27 13:10:12 2025 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Sat Dec 27 13:10:12 2025 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Sat Dec 27 13:10:12 2025 Debug: 		Alert:  "Coolant Temperature High"
+Sat Dec 27 13:10:12 2025 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Sat Dec 27 13:10:12 2025 Debug: connecting...
+Sat Dec 27 13:10:12 2025 Debug: TCPServer connected...
+Sat Dec 27 13:10:12 2025 Debug: Sending to server  HEAD / HTTP/1.0
+
+Sat Dec 27 13:10:12 2025 Debug: 17  bytes written...
+Sat Dec 27 13:10:12 2025 Debug: Sending Hello to Server
+Sat Dec 27 13:10:12 2025 Debug: Sending to server  Hello From Qt
+
+Sat Dec 27 13:10:12 2025 Debug: 14  bytes written...
+Sat Dec 27 13:10:12 2025 Debug: reading...
+Sat Dec 27 13:10:12 2025 Debug: Received string :  "SetScreen:1;1;|SetProperty:dayTime;Value=true;|"
+Sat Dec 27 13:10:12 2025 Debug: Received string :  "SetScreen:1;1;|SetProperty:dayTime;Value=true;|"  Commands found : 3
+Sat Dec 27 13:10:12 2025 Debug: Command to process:  "SetScreen:1;1;"
+Sat Dec 27 13:10:12 2025 Debug: Entering SetScreen: "SetScreen:1;1;"
+Sat Dec 27 13:10:12 2025 Debug:  SetScreen id: "1" ,layoutID: "1"
+Sat Dec 27 13:10:12 2025 Debug: switchScreen 1
+Sat Dec 27 13:10:12 2025 Debug: newScreenToSwitchTo Screen_XX(0x3281008) oldScreen Screen_Splash(0x3281518)
+Sat Dec 27 13:10:12 2025 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Sat Dec 27 13:10:13 2025 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Sat Dec 27 13:10:14 2025 Debug: Creating component successful
+Sat Dec 27 13:10:14 2025 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Sat Dec 27 13:10:14 2025 Debug: haveToSwitchScreenIn
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Sat Dec 27 13:10:14 2025 Debug:  SetProperty id: "dayTime"
+Sat Dec 27 13:10:14 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  ""
+Sat Dec 27 13:10:14 2025 Debug: Sending to server  <noop>
+Sat Dec 27 13:10:14 2025 Debug: 6  bytes written...
+Sat Dec 27 13:10:14 2025 Debug: reading...
+Sat Dec 27 13:10:14 2025 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"
+Sat Dec 27 13:10:14 2025 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"  Commands found : 4
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Sat Dec 27 13:10:14 2025 Debug:  SetProperty id: "dayTime"
+Sat Dec 27 13:10:14 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Sat Dec 27 13:10:14 2025 Debug:  SetProperty id: "dayTime"
+Sat Dec 27 13:10:14 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Sat Dec 27 13:10:14 2025 Debug:  SetProperty id: "dayTime"
+Sat Dec 27 13:10:14 2025 Debug:  Setting Value of id: "dayTime"  =  "true"
+Sat Dec 27 13:10:14 2025 Debug: Command to process:  ""
+Sat Dec 27 13:10:14 2025 Debug: Sending to server  <noop>
+Sat Dec 27 13:10:14 2025 Debug: 6  bytes written...
+Sat Dec 27 13:10:25 2025 Debug: disconnected...
+Mon Oct 19 14:37:28 2026 Debug: =====================================Start of Application =======================
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml"
+Mon Oct 19 14:37:28 2026 Debug: Starting ComponentManager; Qml Directory: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml"
+Mon Oct 19 14:37:28 2026 Debug: The Parameter count: 3
+Mon Oct 19 14:37:28 2026 Debug: Parameter :  0  is  C:\Program Files\Haltech\Haltech ICC\Bin\HaltechDashWindow.exe
+Mon Oct 19 14:37:28 2026 Debug: Parameter :  1  is  C:\Users\ZakMasters\AppData\Roaming\Haltech\Dash\qmlroot
+Mon Oct 19 14:37:28 2026 Debug: Parameter :  2  is  1235
+Mon Oct 19 14:37:28 2026 Debug: translator loaded:  false
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_01_09
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_02_05
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_03_01
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_04_02
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_05_00
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_06_RPM_GAUGE
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_07_01
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_08_02
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_09_02
+Mon Oct 19 14:37:28 2026 Debug: channelId:layout_10_15
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  2  with id:  1
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  3  with id:  2
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  4  with id:  3
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  5  with id:  4
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  6  with id:  5
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  7  with id:  6
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  8  with id:  7
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  9  with id:  9
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  10  with id:  10
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens"
+Mon Oct 19 14:37:28 2026 Debug: Created screen object  11  with id:  13
+Mon Oct 19 14:37:28 2026 Debug: switchScreen 0
+Mon Oct 19 14:37:28 2026 Debug: newScreenToSwitchTo Screen_Splash(0x3c8cde0) oldScreen QObject(0x0)
+Mon Oct 19 14:37:28 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens/SplashScreen.qml")
+Mon Oct 19 14:37:28 2026 Debug: Creating component
+Mon Oct 19 14:37:28 2026 Debug: Creating component successful
+Mon Oct 19 14:37:28 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/factory_screens/SplashScreen.qml")
+Mon Oct 19 14:37:28 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:28 2026 Debug: Switched to id:  0
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data"
+Mon Oct 19 14:37:28 2026 Debug:  ConfigurationFile:  "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/data/CurrentConfiguration.JSON"
+Mon Oct 19 14:37:28 2026 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Mon Oct 19 14:37:28 2026 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Mon Oct 19 14:37:28 2026 Debug: 		Alert:  "DANGER TO MANIFOLD"
+Mon Oct 19 14:37:28 2026 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Mon Oct 19 14:37:28 2026 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Mon Oct 19 14:37:28 2026 Debug: 		Alert:  "Coolant Temperature High"
+Mon Oct 19 14:37:28 2026 Debug:  After extracting from Json Array, priority: 6 , position: 400
+Mon Oct 19 14:37:28 2026 Debug:  data folder: "C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components"
+Mon Oct 19 14:37:28 2026 Debug: Entering Alert constructor; URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/AlertPopup_01.qml")
+Mon Oct 19 14:37:28 2026 Debug: 		Alert:  "Oil Temperature High"
+Mon Oct 19 14:37:29 2026 Debug: "Error creating device 'socketcan', reason: 'No such plugin: 'socketcan''"
+Mon Oct 19 14:37:29 2026 Debug: connecting...
+Mon Oct 19 14:37:29 2026 Debug: TCPServer connected...
+Mon Oct 19 14:37:29 2026 Debug: Sending to server  HEAD / HTTP/1.0
+
+Mon Oct 19 14:37:29 2026 Debug: 17  bytes written...
+Mon Oct 19 14:37:29 2026 Debug: Sending Hello to Server
+Mon Oct 19 14:37:29 2026 Debug: Sending to server  Hello From Qt
+
+Mon Oct 19 14:37:29 2026 Debug: 14  bytes written...
+Mon Oct 19 14:37:29 2026 Debug: reading...
+Mon Oct 19 14:37:29 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetScreen:1;1;|"
+Mon Oct 19 14:37:29 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetScreen:1;1;|"  Commands found : 3
+Mon Oct 19 14:37:29 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:29 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:29 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:29 2026 Debug: Command to process:  "SetScreen:1;1;"
+Mon Oct 19 14:37:29 2026 Debug: Entering SetScreen: "SetScreen:1;1;"
+Mon Oct 19 14:37:29 2026 Debug:  SetScreen id: "1" ,layoutID: "1"
+Mon Oct 19 14:37:29 2026 Debug: switchScreen 1
+Mon Oct 19 14:37:29 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cd20) oldScreen Screen_Splash(0x3c8cde0)
+Mon Oct 19 14:37:29 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:29 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:30 2026 Debug: Creating component successful
+Mon Oct 19 14:37:30 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:30 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:30 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:30 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:30 2026 Debug: reading...
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:30 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:30 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:30 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:30 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:30 2026 Debug: reading...
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"  Commands found : 3
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:30 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:30 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:30 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:30 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:30 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:30 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:30 2026 Debug: reading...
+Mon Oct 19 14:37:30 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:30 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:30 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:30 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:30 2026 Debug: reading...
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:30 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"  Commands found : 3
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:30 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:30 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:30 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:30 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:30 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:30 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:30 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:31 2026 Debug: reading...
+Mon Oct 19 14:37:31 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:31 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|SetProperty:dayTime;Value=true;|"  Commands found : 4
+Mon Oct 19 14:37:31 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:31 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:31 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:31 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:31 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:31 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:31 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:31 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:31 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:31 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:31 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:31 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:36 2026 Debug: reading...
+Mon Oct 19 14:37:36 2026 Debug: Received string :  "SetScreen:2;1;|"
+Mon Oct 19 14:37:36 2026 Debug: Received string :  "SetScreen:2;1;|"  Commands found : 2
+Mon Oct 19 14:37:36 2026 Debug: Command to process:  "SetScreen:2;1;"
+Mon Oct 19 14:37:36 2026 Debug: Entering SetScreen: "SetScreen:2;1;"
+Mon Oct 19 14:37:36 2026 Debug:  SetScreen id: "2" ,layoutID: "1"
+Mon Oct 19 14:37:36 2026 Debug: switchScreen 2
+Mon Oct 19 14:37:36 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8ce70) oldScreen Screen_XX(0x3c8cd20)
+Mon Oct 19 14:37:36 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_02.qml")
+Mon Oct 19 14:37:36 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:36 2026 Debug: Creating component successful
+Mon Oct 19 14:37:36 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_02.qml")
+Mon Oct 19 14:37:36 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:36 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:36 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:36 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:36 2026 Debug: reading...
+Mon Oct 19 14:37:36 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:36 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:36 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:36 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:36 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:37 2026 Debug: reading...
+Mon Oct 19 14:37:37 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:37 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:37 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:37 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:37 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:37 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:37 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:37 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:37 2026 Debug: reading...
+Mon Oct 19 14:37:37 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:37 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:37 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:37 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:37 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:37 2026 Debug: reading...
+Mon Oct 19 14:37:37 2026 Debug: Received string :  "SetScreen:1;1;|"
+Mon Oct 19 14:37:37 2026 Debug: Received string :  "SetScreen:1;1;|"  Commands found : 2
+Mon Oct 19 14:37:37 2026 Debug: Command to process:  "SetScreen:1;1;"
+Mon Oct 19 14:37:37 2026 Debug: Entering SetScreen: "SetScreen:1;1;"
+Mon Oct 19 14:37:37 2026 Debug:  SetScreen id: "1" ,layoutID: "1"
+Mon Oct 19 14:37:37 2026 Debug: switchScreen 1
+Mon Oct 19 14:37:37 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cd20) oldScreen Screen_XX(0x3c8ce70)
+Mon Oct 19 14:37:37 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:38 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:38 2026 Debug: Creating component successful
+Mon Oct 19 14:37:38 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:38 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:38 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:38 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:38 2026 Debug: reading...
+Mon Oct 19 14:37:38 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:38 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:38 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:38 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:38 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:38 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:38 2026 Debug: reading...
+Mon Oct 19 14:37:38 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:38 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:38 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:38 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:38 2026 Debug: reading...
+Mon Oct 19 14:37:38 2026 Debug: Received string :  "SetScreen:3;2;|"
+Mon Oct 19 14:37:38 2026 Debug: Received string :  "SetScreen:3;2;|"  Commands found : 2
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  "SetScreen:3;2;"
+Mon Oct 19 14:37:38 2026 Debug: Entering SetScreen: "SetScreen:3;2;"
+Mon Oct 19 14:37:38 2026 Debug:  SetScreen id: "3" ,layoutID: "2"
+Mon Oct 19 14:37:38 2026 Debug: switchScreen 3
+Mon Oct 19 14:37:38 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cb70) oldScreen Screen_XX(0x3c8cd20)
+Mon Oct 19 14:37:38 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_03.qml")
+Mon Oct 19 14:37:38 2026 Debug: Creating component
+Mon Oct 19 14:37:38 2026 Debug: Creating component successful
+Mon Oct 19 14:37:38 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_03.qml")
+Mon Oct 19 14:37:38 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:38 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:38 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:38 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:39 2026 Debug: reading...
+Mon Oct 19 14:37:39 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:39 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:39 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:39 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:39 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:39 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:39 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:39 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:39 2026 Debug: reading...
+Mon Oct 19 14:37:39 2026 Debug: Received string :  "SetScreen:4;2;|"
+Mon Oct 19 14:37:39 2026 Debug: Received string :  "SetScreen:4;2;|"  Commands found : 2
+Mon Oct 19 14:37:39 2026 Debug: Command to process:  "SetScreen:4;2;"
+Mon Oct 19 14:37:39 2026 Debug: Entering SetScreen: "SetScreen:4;2;"
+Mon Oct 19 14:37:39 2026 Debug:  SetScreen id: "4" ,layoutID: "2"
+Mon Oct 19 14:37:39 2026 Debug: switchScreen 4
+Mon Oct 19 14:37:39 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cc60) oldScreen Screen_XX(0x3c8cb70)
+Mon Oct 19 14:37:39 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_04.qml")
+Mon Oct 19 14:37:39 2026 Debug: Creating component
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Warning: file:///C:/Program Files/Haltech/Haltech ICC/qml/QtQuick/Controls/Styles/Base/CircularTickmarkLabelStyle.qml:260:28: QML ListModel: remove: indices [-1 - 0] out of range [0 - 0]
+Mon Oct 19 14:37:39 2026 Debug: Creating component successful
+Mon Oct 19 14:37:39 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_04.qml")
+Mon Oct 19 14:37:39 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:39 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:39 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:39 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:40 2026 Debug: reading...
+Mon Oct 19 14:37:40 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:40 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:40 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:40 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:40 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:40 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:40 2026 Debug: reading...
+Mon Oct 19 14:37:40 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:40 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:40 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:40 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:40 2026 Debug: reading...
+Mon Oct 19 14:37:40 2026 Debug: Received string :  "SetScreen:5;3;|"
+Mon Oct 19 14:37:40 2026 Debug: Received string :  "SetScreen:5;3;|"  Commands found : 2
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  "SetScreen:5;3;"
+Mon Oct 19 14:37:40 2026 Debug: Entering SetScreen: "SetScreen:5;3;"
+Mon Oct 19 14:37:40 2026 Debug:  SetScreen id: "5" ,layoutID: "3"
+Mon Oct 19 14:37:40 2026 Debug: switchScreen 5
+Mon Oct 19 14:37:40 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8ca20) oldScreen Screen_XX(0x3c8cc60)
+Mon Oct 19 14:37:40 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_05.qml")
+Mon Oct 19 14:37:40 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:40 2026 Debug: Creating component successful
+Mon Oct 19 14:37:40 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_05.qml")
+Mon Oct 19 14:37:40 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:40 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:40 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:40 2026 Debug: reading...
+Mon Oct 19 14:37:40 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:40 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:40 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:40 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:40 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:41 2026 Debug: reading...
+Mon Oct 19 14:37:41 2026 Debug: Received string :  "SetScreen:6;3;|"
+Mon Oct 19 14:37:41 2026 Debug: Received string :  "SetScreen:6;3;|"  Commands found : 2
+Mon Oct 19 14:37:41 2026 Debug: Command to process:  "SetScreen:6;3;"
+Mon Oct 19 14:37:41 2026 Debug: Entering SetScreen: "SetScreen:6;3;"
+Mon Oct 19 14:37:41 2026 Debug:  SetScreen id: "6" ,layoutID: "3"
+Mon Oct 19 14:37:41 2026 Debug: switchScreen 6
+Mon Oct 19 14:37:41 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cbd0) oldScreen Screen_XX(0x3c8ca20)
+Mon Oct 19 14:37:41 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_06.qml")
+Mon Oct 19 14:37:41 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:41 2026 Debug: Creating component successful
+Mon Oct 19 14:37:41 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_06.qml")
+Mon Oct 19 14:37:41 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:41 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:41 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:41 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:41 2026 Debug: reading...
+Mon Oct 19 14:37:41 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:41 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:41 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:41 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:41 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:41 2026 Debug: reading...
+Mon Oct 19 14:37:41 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:41 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:41 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:41 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:41 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:41 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:41 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:41 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:42 2026 Debug: reading...
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetScreen:7;4;|"
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetScreen:7;4;|"  Commands found : 2
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  "SetScreen:7;4;"
+Mon Oct 19 14:37:42 2026 Debug: Entering SetScreen: "SetScreen:7;4;"
+Mon Oct 19 14:37:42 2026 Debug:  SetScreen id: "7" ,layoutID: "4"
+Mon Oct 19 14:37:42 2026 Debug: switchScreen 7
+Mon Oct 19 14:37:42 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8ced0) oldScreen Screen_XX(0x3c8cbd0)
+Mon Oct 19 14:37:42 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_07.qml")
+Mon Oct 19 14:37:42 2026 Debug: Creating component
+Warning: file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_components/HaltechBarGauge.qml:131: ReferenceError: displayText is not defined
+Mon Oct 19 14:37:42 2026 Debug: Creating component successful
+Mon Oct 19 14:37:42 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_07.qml")
+Mon Oct 19 14:37:42 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:42 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:42 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:42 2026 Debug: reading...
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:42 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:42 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:42 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:42 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:42 2026 Debug: reading...
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:42 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:42 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:42 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:42 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:42 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:42 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:43 2026 Debug: reading...
+Mon Oct 19 14:37:43 2026 Debug: Received string :  "<CancelAlerts>|"
+Mon Oct 19 14:37:43 2026 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Mon Oct 19 14:37:43 2026 Debug: Command to process:  "<CancelAlerts>"
+Mon Oct 19 14:37:43 2026 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:43 2026 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:43 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:43 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:43 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:44 2026 Debug: reading...
+Mon Oct 19 14:37:44 2026 Debug: Received string :  "<CancelAlerts>|"
+Mon Oct 19 14:37:44 2026 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Mon Oct 19 14:37:44 2026 Debug: Command to process:  "<CancelAlerts>"
+Mon Oct 19 14:37:44 2026 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:44 2026 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:44 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:44 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:44 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:44 2026 Debug: reading...
+Mon Oct 19 14:37:44 2026 Debug: Received string :  "<CancelAlerts>|"
+Mon Oct 19 14:37:44 2026 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Mon Oct 19 14:37:44 2026 Debug: Command to process:  "<CancelAlerts>"
+Mon Oct 19 14:37:44 2026 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:44 2026 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Mon Oct 19 14:37:44 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:44 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:44 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:46 2026 Debug: reading...
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetScreen:1;1;|"
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetScreen:1;1;|"  Commands found : 2
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  "SetScreen:1;1;"
+Mon Oct 19 14:37:46 2026 Debug: Entering SetScreen: "SetScreen:1;1;"
+Mon Oct 19 14:37:46 2026 Debug:  SetScreen id: "1" ,layoutID: "1"
+Mon Oct 19 14:37:46 2026 Debug: switchScreen 1
+Mon Oct 19 14:37:46 2026 Debug: newScreenToSwitchTo Screen_XX(0x3c8cd20) oldScreen Screen_XX(0x3c8ced0)
+Mon Oct 19 14:37:46 2026 Debug: showComponent URL: QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:46 2026 Debug: Creating component
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Warning: QFont::setPixelSize: Pixel size <= 0 (0)
+Mon Oct 19 14:37:46 2026 Debug: Creating component successful
+Mon Oct 19 14:37:46 2026 Debug: Screen_Base::showComponent() created screen from url:  QUrl("file:///C:/Users/ZakMasters/AppData/Roaming/Haltech/Dash/qmlroot/qml/user_screens/Screen_01.qml")
+Mon Oct 19 14:37:46 2026 Debug: haveToSwitchScreenIn
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:46 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:46 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:46 2026 Debug: reading...
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:46 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:46 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:46 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:46 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:46 2026 Debug: reading...
+Mon Oct 19 14:37:46 2026 Debug: Received string :  ""
+Mon Oct 19 14:37:46 2026 Debug: Received string :  ""  Commands found : 1
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:46 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:46 2026 Debug: 6  bytes written...
+Mon Oct 19 14:37:46 2026 Debug: reading...
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"
+Mon Oct 19 14:37:46 2026 Debug: Received string :  "SetProperty:dayTime;Value=true;|"  Commands found : 2
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  "SetProperty:dayTime;Value=true;"
+Mon Oct 19 14:37:46 2026 Debug:  SetProperty id: "dayTime"
+Mon Oct 19 14:37:46 2026 Debug:  Setting Value of id: "dayTime"  =  "true"
+Mon Oct 19 14:37:46 2026 Debug: Command to process:  ""
+Mon Oct 19 14:37:46 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:37:46 2026 Debug: 6  bytes written...
+Mon Oct 19 14:47:11 2026 Debug: reading...
+Mon Oct 19 14:47:11 2026 Debug: Received string :  "<CancelAlerts>|"
+Mon Oct 19 14:47:11 2026 Debug: Received string :  "<CancelAlerts>|"  Commands found : 2
+Mon Oct 19 14:47:11 2026 Debug: Command to process:  "<CancelAlerts>"
+Mon Oct 19 14:47:11 2026 Debug: clearAlerts called; m_alertsEnabled.size() 0
+Mon Oct 19 14:47:11 2026 Debug: enableLEDs called; m_alertsEnabled.size() 0
+Mon Oct 19 14:47:11 2026 Debug: Command to process:  ""
+Mon Oct 19 14:47:11 2026 Debug: Sending to server  <noop>
+Mon Oct 19 14:47:11 2026 Debug: 6  bytes written...

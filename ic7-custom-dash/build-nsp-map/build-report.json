@@ -1,0 +1,22 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "changed_members": [
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 338,
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "76cb5311e4863342799b5ef32a4349ba142ad4ae5c8da7dfd48a10cfe489d377",
+  "wrapper_preserved": true,
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-gif-preview-experimental.nex": {
+      "bytes": 17377883,
+      "sha256": "013030fbf665e1751cd47d391a15af7c60d1cc0bbc1b69323ada81fc03521508"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 17372251,
+      "sha256": "0d598cc0c20eee06a5df1aed0f179b0562181a96de6fb5d0481c4021827a966e"
+    }
+  }
+}

@@ -1,0 +1,492 @@
+{
+	"CanProtocol": "MOTEC-HUNDRED",
+	"CanTermination": "Yes",
+	"CanSpeed": 1000000,
+	"CanNodeList": [
+		{
+			"Name": "Engine RPM",
+			"ID": 384,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Throttle Position",
+			"ID": 52,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Manifold Pressure",
+			"ID": 224,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "8-9",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Air Temperature",
+			"ID": 228,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "10-11",
+			"Scale": 10.0,
+			"Offset": 2731.6
+		},
+		{
+			"Name": "Lambda 1",
+			"ID": 230,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "14-15",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Lambda 2",
+			"ID": 231,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "22-23",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Temperature",
+			"ID": 233,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "22-23",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "Fuel Pres",
+			"ID": 234,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "24-25",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Temp",
+			"ID": 235,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "26-27",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "Oil Pres",
+			"ID": 236,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "28-29",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Exhaust Temperature 1",
+			"ID": 242,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "36-37",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "Exhaust Temperature 2",
+			"ID": 246,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "38-39",
+			"Scale": 10.0,
+			"Offset": 2731
+		},
+		{
+			"ID": 387,
+			"Name": "Battery Voltage",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "48-49",
+			"Scale": 0.1,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Speed",
+			"ID": 397,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "62-63",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 1",
+			"ID": 1400,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "70-71",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 2",
+			"ID": 1401,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "72-73",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Long Term Bank 1",
+			"ID": 3814,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "74-75",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Long Term Bank 2",
+			"ID": 4039,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "76-77",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Aim Lambda 1",
+			"ID": 132,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "78-79",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Ignition Advance",
+			"ID": 518,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "86-87",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Gear",
+			"ID": 405,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "116-177",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Composition",
+			"ID": 285,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "120-121",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Barometric Pressure",
+			"ID": 257,
+			"EcuCanID": 1610,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Slip Speed",
+			"ID": 6754,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "64-65",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"comment": "Wheel slip speed; Do we compute to % and store in 6756 as well ?"
+		}
+	],
+	"UnsupportedNodeList": [
+		{
+			"unitGroup": 3,
+			"unitSelection": 0,
+			"ID": 5,
+			"Name": "Engine Temperature",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "12-13"
+		},
+		{
+			"unitGroup": 2,
+			"unitSelection": 0,
+			"ID": 8,
+			"Name": "Exhaust Manifold Pressure",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "18-19"
+		},
+		{
+			"unitGroup": 5,
+			"unitSelection": 0,
+			"ID": 9,
+			"Name": "Mass Air Flow",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "20-21"
+		},
+		{
+			"unitGroup": 6,
+			"unitSelection": 0,
+			"ID": 14,
+			"Name": "Gear Voltage",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "30-31"
+		},
+		{
+			"unitGroup": 6,
+			"unitSelection": 0,
+			"ID": 15,
+			"Name": "Knock Voltage",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "32-33"
+		},
+		{
+			"unitGroup": 7,
+			"unitSelection": 0,
+			"ID": 16,
+			"Name": "Gear Shift Force",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "34-35"
+		},
+		{
+			"unitGroup": 5,
+			"unitSelection": 0,
+			"ID": 19,
+			"Name": "User Channel 1",
+			"PullupStatus": 0,
+			"EcuCanID": 1520,
+			"EcuByteOrder": "40-41"
+		},
+		{
+			"unitGroup": 5,
+			"unitSelection": 0,
+			"ID": 20,
+			"Name": "User Channel 2",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "42-43"
+		},
+		{
+			"unitGroup": 5,
+			"unitSelection": 0,
+			"ID": 21,
+			"Name": "User Channel 3",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "44-45"
+		},
+		{
+			"unitGroup": 5,
+			"unitSelection": 0,
+			"ID": 22,
+			"Name": "User Channel 4",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "46-47"
+		},
+		{
+			"unitGroup": 3,
+			"unitSelection": 0,
+			"ID": 24,
+			"Name": "ECU Temperature",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "50-51"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 25,
+			"Name": "Digital Input 1 Speed",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "52-53"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 26,
+			"Name": "Digital Input 2 Speed",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "54-55"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 27,
+			"Name": "Digital Input 3 Speed",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "56-57"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 28,
+			"Name": "Digital Input 4 Speed",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "58-59"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 30,
+			"Name": "Drive Speed",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "60-61"
+		},
+		{
+			"unitGroup": 9,
+			"unitSelection": 0,
+			"ID": 32,
+			"Name": "Aim Slip",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "66-67"
+		},
+		{
+			"unitGroup": 0,
+			"unitSelection": 0,
+			"ID": 33,
+			"Name": "Launch RPM",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "68-69"
+		},
+		{
+			"unitGroup": 1,
+			"unitSelection": 0,
+			"ID": 57,
+			"Name": "Fuel Cut Level",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "82-83"
+		},
+		{
+			"unitGroup": 1,
+			"unitSelection": 0,
+			"ID": 41,
+			"Name": "Ignition Cut Level",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "84-85"
+		},
+		{
+			"unitGroup": 11,
+			"unitSelection": 0,
+			"ID": 43,
+			"Name": "Load Point",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "88-89"
+		},
+		{
+			"unitGroup": 11,
+			"unitSelection": 0,
+			"ID": 44,
+			"Name": "Efficiency Point",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "90-91"
+		},
+		{
+			"unitGroup": 12,
+			"unitSelection": 0,
+			"ID": 45,
+			"Name": "Fuel Used",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "92-93"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 46,
+			"Name": "Auxiliary O/P 1 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "94-95"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 47,
+			"Name": "Auxiliary O/P 2 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "96-97"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 48,
+			"Name": "Auxiliary O/P 3 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "98-99"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 49,
+			"Name": "Auxiliary O/P 4 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "100-101"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 50,
+			"Name": "Auxiliary O/P 5 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "102-103"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 51,
+			"Name": "Auxiliary O/P 6 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "104-105"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 52,
+			"Name": "Auxiliary O/P 7 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "106-107"
+		},
+		{
+			"unitGroup": 13,
+			"unitSelection": 0,
+			"ID": 53,
+			"Name": "Auxiliary O/P 8 Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "108-109"
+		},
+		{
+			"unitGroup": 14,
+			"unitSelection": 0,
+			"ID": 54,
+			"Name": "Fuel Actual Pulse Width 0.5",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "110-111"
+		},
+		{
+			"unitGroup": 14,
+			"unitSelection": 0,
+			"ID": 55,
+			"Name": "Fuel Effective Pulse Width 0.5",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "112-113"
+		},
+		{
+			"unitGroup": 1,
+			"unitSelection": 0,
+			"ID": 56,
+			"Name": "Fuel Injector Duty Cycle",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "114-115"
+		},
+		{
+			"unitGroup": 1,
+			"unitSelection": 0,
+			"ID": 8336,
+			"Name": "Sync Position",
+			"comment": "Home percentage of valid travel",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "118-119"
+		},
+		{
+			"unitGroup": 1,
+			"unitSelection": 0,
+			"ID": 60,
+			"Name": "Fuel Comp 2",
+			"EcuCanID": 1520,
+			"EcuByteOrder": "122-123"
+		}
+	]
+}

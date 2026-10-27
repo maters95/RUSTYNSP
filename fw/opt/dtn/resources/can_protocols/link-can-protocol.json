@@ -1,0 +1,485 @@
+{
+   "CanProtocol":"LINK-G4",
+   "CanTermination":"No",
+   "CanSpeed":1000000,
+   "CanNodeList":[
+      {
+         "Name":"Engine RPM",
+         "ID":384,
+         "EcuCanID":1400,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Speed",
+         "ID":397,
+         "EcuCanID":1409,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0,
+         "comment":"Duplicate of Left rear wheel speed"
+      },
+      {
+         "Name":"Battery Voltage",
+         "ID":387,
+         "EcuCanID":1403,
+         "EcuByteOrder":"5-4",
+         "Scale":0.1,
+         "Offset":0.0
+      },
+      {
+         "Name":"Oil Temp",
+         "ID":235,
+         "EcuCanID":1408,
+         "EcuByteOrder":"3-2",
+         "Scale":10.0,
+         "Offset":2231.0
+      },
+      {
+         "Name":"Oil Pres",
+         "ID":236,
+         "EcuCanID":1408,
+         "EcuByteOrder":"5-4",
+         "Scale":10.0,
+         "Offset":1013.2
+      },
+      {
+         "Name":"Fuel Pres",
+         "ID":234,
+         "EcuCanID":1407,
+         "EcuByteOrder":"7-6",
+         "Scale":10.0,
+         "Offset":1013.2
+      },
+      {
+         "Name":"Manifold Pressure",
+         "ID":224,
+         "EcuCanID":1400,
+         "EcuByteOrder":"5-4",
+         "Scale":10.0,
+         "Offset":1013.2
+      },
+      {
+         "Name":"Throttle Position",
+         "ID":52,
+         "EcuCanID":1401,
+         "EcuByteOrder":"5-4",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Injection Duty Cycle",
+         "ID":5666,
+         "EcuCanID":1401,
+         "EcuByteOrder":"7-6",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Gear",
+         "ID":405,
+         "EcuCanID":1404,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0,
+		 "Custom":"link_gear"
+      },
+      {
+         "Name":"Injector Duty Cycle (Sec)",
+         "ID":5667,
+         "EcuCanID":1402,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Knock Level 1",
+         "ID":391,
+         "EcuCanID":1410,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0,
+         "comment":"Unit not matching"
+      },
+      {
+         "Name":"Knock Level 2",
+         "ID":395,
+         "EcuCanID":1410,
+         "EcuByteOrder":"5-4",
+         "Scale":1.0,
+         "Offset":0.0,
+         "comment":"Unit not matching"
+      },
+      {
+         "Name":"Wheel Speed Front Left",
+         "ID":465,
+         "EcuCanID":1408,
+         "EcuByteOrder":"7-6",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Wheel Speed Front Right",
+         "ID":467,
+         "EcuCanID":1409,
+         "EcuByteOrder":"5-4",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Wheel Speed Rear Left",
+         "ID":469,
+         "EcuCanID":1409,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Wheel Speed Rear Right",
+         "ID":471,
+         "EcuCanID":1409,
+         "EcuByteOrder":"7-6",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Ignition Timing",
+         "ID":4254,
+         "EcuCanID":1404,
+         "EcuByteOrder":"7-6",
+         "Scale":1.0,
+         "Offset":-1000,
+	     "Signed": true,
+         "comment":"Launch Control Ignition Retard"
+      },
+      {
+         "Name":"Intake Cam Angle 1",
+         "ID":1410,
+         "EcuCanID":1405,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Intake Cam Angle 2",
+         "ID":1411,
+         "EcuCanID":1405,
+         "EcuByteOrder":"5-4",
+         "Scale":1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Barometric Pressure",
+         "ID":257,
+         "EcuCanID":1401,
+         "EcuByteOrder":"3-2",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Coolant Temperature",
+         "ID":229,
+         "EcuCanID":1402,
+         "EcuByteOrder":"7-6",
+         "Scale":10.0,
+         "Offset":2231.0
+      },
+      {
+         "Name":"Air Temperature",
+         "ID":228,
+         "EcuCanID":1403,
+         "EcuByteOrder":"3-2",
+         "Scale":10.0,
+         "Offset":2231.0
+      },
+      {
+         "Name":"Exhaust Cam Angle 1",
+         "ID":1412,
+         "EcuCanID":1405,
+         "EcuByteOrder":"7-6",
+         "Scale":-1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Exhaust Cam Angle 2",
+         "ID":1413,
+         "EcuCanID":1406,
+         "EcuByteOrder":"3-2",
+         "Scale":-1.0,
+         "Offset":0.0,
+		 "Signed": true
+      },
+      {
+         "Name":"Wideband Bank 1",
+         "ID":6904,
+         "EcuCanID":1406,
+         "EcuByteOrder":"5-4",
+         "Scale":1.0,
+         "Offset":0.0
+      },
+      {
+         "Name":"Wideband Bank 2",
+         "ID":6929,
+         "EcuCanID":1406,
+         "EcuByteOrder":"7-6",
+         "Scale":1.0,
+         "Offset":0.0
+      }
+   ],
+   "UnsupportedNodeList":[
+      {
+         "unitGroup":27,
+         "unitSelection":5,
+         "ID":4,
+         "Name":"Manifold Gauge Pressure",
+         "EcuCanID":1400,
+         "EcuByteOrder":"7-6"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":48,
+         "Name":"RPM Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:0"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":49,
+         "Name":"MAP Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:1"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":50,
+         "Name":"Speed Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:2"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":51,
+         "Name":"Maximum Ignition Flag",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:3"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":52,
+         "Name":"Anti-lag Ignition Cut",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:4"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":53,
+         "Name":"High Supply Voltage Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:5"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":54,
+         "Name":"Overrun Flag",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:6"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":55,
+         "Name":"Traction Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"6:7"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":56,
+         "Name":"Low Supply Voltage Flag",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:0"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":57,
+         "Name":"Launch RPM Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:1"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":58,
+         "Name":"Wakeup Flag",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:2"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":59,
+         "Name":"GP RPM Limit 1",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:3"
+      },
+      {
+         "unitGroup":13,
+         "unitSelection":0,
+         "ID":62,
+         "Name":"Mass Air Flow",
+         "EcuCanID":1403,
+         "EcuByteOrder":"7-6"
+      },
+      {
+         "unitGroup":14,
+         "unitSelection":0,
+         "ID":63,
+         "Name":"Fault Codes",
+         "EcuCanID":1407,
+         "EcuByteOrder":"5-4"
+      },
+      {
+         "unitGroup":1,
+         "unitSelection":0,
+         "ID":71,
+         "Name":"Trigger 1 Error Counter",
+         "EcuCanID":1407,
+         "EcuByteOrder":"3-2"
+      },
+      {
+         "unitGroup":7,
+         "unitSelection":0,
+         "ID":72,
+         "Name":"APS (Main)",
+         "EcuCanID":1413,
+         "EcuByteOrder":"3-2",
+		 "Signed": true
+      },
+      {
+         "unitGroup":8,
+         "unitSelection":0,
+         "ID":73,
+         "Name":"Ethanol Percentage",
+         "EcuCanID":1413,
+         "EcuByteOrder":"5-4",
+		 "Signed": true
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":77,
+         "Name":"Limits Flags",
+         "EcuCanID":1499,
+         "EcuByteOrder":"7-6"
+      },
+      {
+         "unitGroup":21,
+         "unitSelection":0,
+         "ID":91,
+         "Name":"Injector Pulse Width (Actual)",
+         "EcuCanID":1402,
+         "EcuByteOrder":"5-4"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":99,
+         "Name":"Rotary Oil Pump Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:4"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":100,
+         "Name":"GP RPM Limit 2",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:5"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":101,
+         "Name":"EThrottle Limit",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:6"
+      },
+      {
+         "unitGroup":20,
+         "unitSelection":0,
+         "ID":102,
+         "Name":"Cyclic Idle Active",
+         "EcuCanID":1412,
+         "EcuByteOrder":"7:7"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":110,
+         "Name":"Knock Level 3",
+         "EcuCanID":1410,
+         "EcuByteOrder":"7-6"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":111,
+         "Name":"Knock Level 4",
+         "EcuCanID":1411,
+         "EcuByteOrder":"3-2"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":112,
+         "Name":"Knock Level 5",
+         "EcuCanID":1411,
+         "EcuByteOrder":"5-4"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":113,
+         "Name":"Knock Level 6",
+         "EcuCanID":1411,
+         "EcuByteOrder":"7-6"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":114,
+         "Name":"Knock Level 7",
+         "EcuCanID":1412,
+         "EcuByteOrder":"3-2"
+      },
+      {
+         "unitGroup":11,
+         "unitSelection":0,
+         "ID":115,
+         "Name":"Knock Level 8",
+         "EcuCanID":1412,
+         "EcuByteOrder":"5-4"
+      },
+      {
+         "unitGroup":10,
+         "unitSelection":1,
+         "ID":122,
+         "Name":"Injector Timing",
+         "EcuCanID":1404,
+         "EcuByteOrder":"5-4"
+      }
+   ]
+}

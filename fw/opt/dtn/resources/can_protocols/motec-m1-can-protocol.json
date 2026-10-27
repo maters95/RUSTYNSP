@@ -1,0 +1,865 @@
+{
+	"CanProtocol": "MOTEC-M1",
+	"CanTermination": "Yes",
+	"CanSpeed": 1000000,
+	"CanNodeList": [
+		{
+			"Name": "Engine RPM",
+			"ID": 384,
+			"EcuCanID": 1600,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Vehicle Speed",
+			"ID": 397,
+			"EcuCanID": 1625,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Temp",
+			"ID": 235,
+			"EcuCanID": 1609,
+			"EcuByteOrder": "1-1",
+			"Scale": 10.0,
+			"Offset": 2331
+		},
+		{
+			"Name": "Oil Pres",
+			"ID": 236,
+			"EcuCanID": 1604,
+			"EcuByteOrder": "6-7",
+			"Scale": 0.987,
+			"Offset": 98.7
+		},
+		{
+			"Name": "Fuel Pres",
+			"ID": 234,
+			"EcuCanID": 1601,
+			"EcuByteOrder": "4-5",
+			"Scale": 0.987,
+			"Offset": 98.7
+		},
+		{
+			"Name": "Manifold Pressure",
+			"ID": 224,
+			"EcuCanID": 1600,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Throttle Position",
+			"ID": 52,
+			"EcuCanID": 1600,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Coolant Pressure",
+			"ID": 254,
+			"EcuCanID": 1621,
+			"EcuByteOrder": "4-5",
+			"Scale": 0.987,
+			"Offset": 98.7
+		},
+		{
+			"Name": "Engine Demand",
+			"ID": 232,
+			"EcuCanID": 1602,
+			"EcuByteOrder": "2-3",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Injection Stage 1 Duty Cycle",
+			"ID": 5666,
+			"EcuCanID": 1601,
+			"EcuByteOrder": "6-6",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Gear",
+			"ID": 405,
+			"EcuCanID": 1613,
+			"EcuByteOrder": "6:0:4",
+			"Scale": 1.0,
+			"Offset": 0,
+			"Signed": true,
+			"Custom":"motec_m1_gear"
+		},
+		{
+			"Name": "Injection Stage 2 Duty Cycle",
+			"ID": 5667,
+			"EcuCanID": 1618,
+			"EcuByteOrder": "4-4",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Knock Level 1",
+			"ID": 391,
+			"EcuCanID": 1603,
+			"EcuByteOrder": "0-0",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Knock Level 2",
+			"ID": 395,
+			"EcuCanID": 1603,
+			"EcuByteOrder": "1-1",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Brake Pressure",
+			"ID": 251,
+			"EcuCanID": 1621,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Wheel Speed Front Left",
+			"ID": 465,
+			"EcuCanID": 1608,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Front Right",
+			"ID": 467,
+			"EcuCanID": 1608,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Rear Left",
+			"ID": 469,
+			"EcuCanID": 1608,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wheel Speed Rear Right",
+			"ID": 471,
+			"EcuCanID": 1608,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Exhaust Cam Angle 1",
+			"ID": 1412,
+			"EcuCanID": 1607,
+			"EcuByteOrder": "2-3",
+			"Scale": -1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Exhaust Cam Angle 2",
+			"ID": 1413,
+			"EcuCanID": 1607,
+			"EcuByteOrder": "4-5",
+			"Scale": -1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Boost Control Output",
+			"ID": 1462,
+			"EcuCanID": 1605,
+			"EcuByteOrder": "6-6",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Intake Cam Angle 1",
+			"ID": 1410,
+			"EcuCanID": 1606,
+			"EcuByteOrder": "2-3",
+			"Scale": -1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Intake Cam Angle 2",
+			"ID": 1411,
+			"EcuCanID": 1606,
+			"EcuByteOrder": "4-5",
+			"Scale": -1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Battery Voltage",
+			"ID": 387,
+			"EcuCanID": 1609,
+			"EcuByteOrder": "5-5",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Flow",
+			"ID": 252,
+			"EcuCanID": 1622,
+			"EcuByteOrder": "6-7",
+			"Scale": 0.6,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Target Boost",
+			"ID": 1461,
+			"EcuCanID": 1605,
+			"EcuByteOrder": "2-3",
+			"Scale": 1.013,
+			"Offset": -102.64
+		},
+		{
+			"Name": "Barometric Pressure",
+			"ID": 257,
+			"EcuCanID": 1610,
+			"EcuByteOrder": "6-7",
+			"Scale": 0.9869,
+			"Offset": 98.69
+		},
+		{
+			"Name": "EGT Sensor 1",
+			"ID": 242,
+			"EcuCanID": 1610,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 2731
+		},
+		{
+			"Name": "Inlet Air Temperature",
+			"ID": 228,
+			"EcuCanID": 1600,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true
+		},
+		{
+			"Name": "Coolant Temperature",
+			"ID": 229,
+			"EcuCanID": 1609,
+			"EcuByteOrder": "0-0",
+			"Scale": 10.0,
+			"Offset": 2331
+		},
+		{
+			"Name": "Ambient Air Temperature",
+			"ID": 8340,
+			"EcuCanID": 1609,
+			"EcuByteOrder": "3-3",
+			"Scale": 10.0,
+			"Offset": 2331
+		},
+		{
+			"Name": "Fuel Temperature",
+			"ID": 233,
+			"EcuCanID": 1609,
+			"EcuByteOrder": "2-2",
+			"Scale": 10.0,
+			"Offset": 2331
+		},
+		{
+			"Name": "Gearbox Oil Temperature",
+			"ID": 258,
+			"EcuCanID": 1615,
+			"EcuByteOrder": "4-4",
+			"Scale": 10.0,
+			"Offset": 2331,
+			"Signed": true
+		},
+		{
+			"Name": "Fuel Composition",
+			"ID": 285,
+			"EcuCanID": 1648,
+			"EcuByteOrder": "5-5",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Level",
+			"ID": 375,
+			"EcuCanID": 1615,
+			"EcuByteOrder": "5-5",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 1",
+			"ID": 1400,
+			"EcuCanID": 1615,
+			"EcuByteOrder": "2-2",
+			"Scale": 0.05,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Fuel Trim Short Term Bank 2",
+			"ID": 1401,
+			"EcuCanID": 1615,
+			"EcuByteOrder": "3-3",
+			"Scale": 0.05,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Brake Pedal Switch",
+			"ID": 1542,
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:3",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Anti-lag Active",
+			"ID": 4240,
+			"EcuCanID": 1613,
+			"EcuByteOrder": "1:4:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Steering Wheel Angle",
+			"ID": 489,
+			"EcuCanID": 1622,
+			"EcuByteOrder": "0-1",
+			"Scale": 1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Driveshaft RPM",
+			"ID": 6469,
+			"EcuCanID": 1623,
+			"EcuByteOrder": "6-7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Target Lambda",
+			"ID": 132,
+			"EcuCanID": 1601,
+			"EcuByteOrder": "2-3",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Crank Case Pressure",
+			"ID": 6906,
+			"EcuCanID": 1630,
+			"EcuByteOrder": "4-5",
+			"Scale": 0.9869,
+			"Offset": 98.69
+		},
+		{
+			"Name": "Ignition Angle Bank 1",
+			"ID": 1121,
+			"EcuCanID": 1602,
+			"EcuByteOrder": "4-5",
+			"Scale": -1.0,
+			"Offset": 0.0,
+			"Signed": true
+		},
+		{
+			"Name": "Wideband Overall",
+			"ID": 8018,
+			"EcuCanID": 1617,
+			"EcuByteOrder": "0-0",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Bank 1",
+			"ID": 6904,
+			"EcuCanID": 1617,
+			"EcuByteOrder": "2-2",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Wideband Bank 2",
+			"ID": 6929,
+			"EcuCanID": 1617,
+			"EcuByteOrder": "3-3",
+			"Scale": 10.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Launch Control Light",
+			"ID": 1433,
+			"EcuCanID": 1613,
+			"EcuByteOrder": "1:0:4",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Oil Pressure Light",
+			"ID": 9529,
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:7",
+			"Scale": 1.0,
+			"Offset": 0.0
+		},
+		{
+			"Name": "Differential Oil Temperature",
+			"ID": 259,
+			"EcuCanID": 1628,
+			"EcuByteOrder": "4-5",
+			"Scale": 1.0,
+			"Offset": 2731,
+			"Signed": true
+		}
+	],
+	"UnsupportedNodeList": [
+		{
+			"Name": "Fuel Pressure Direct",
+			"EcuCanID": 1618,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Fuel Timing Primary",
+			"EcuCanID": 1602,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Brake Pressure Rear",
+			"EcuCanID": 1621,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Inlet Camshaft Aim",
+			"EcuCanID": 1606,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Fuel Volume",
+			"EcuCanID": 1601,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Engine Efficiency",
+			"EcuCanID": 1601,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Throttle Pedal",
+			"EcuCanID": 1602,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Ignition Output Cut Count",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "0-0"
+		},
+		{
+			"Name": "Fuel Output Cut Count",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "1-1"
+		},
+		{
+			"Name": "Ignition Output Cut Average",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "2-2"
+		},
+		{
+			"Name": "Fuel Output Cut Average",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "3-3"
+		},
+		{
+			"Name": "Fuel Cyl 1 Prim Output Pls Wdth",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "4-4"
+		},
+		{
+			"Name": "Ignition Cut State",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "5:0:4"
+		},
+		{
+			"Name": "Ignition Timing State",
+			"EcuCanID": 1604,
+			"EcuByteOrder": "5:4:4"
+		},
+		{
+			"Name": "Boost Pressure",
+			"EcuCanID": 1605,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Gear Lever Force Sensor",
+			"EcuCanID": 1605,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Inlet Cam Bk 1 Output Duty Cycle",
+			"EcuCanID": 1606,
+			"EcuByteOrder": "6-6"
+		},
+		{
+			"Name": "Inlet Cam Bk 2 Output Duty Cycle",
+			"EcuCanID": 1606,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Exh Cam Bk 1 Output Duty Cycle",
+			"EcuCanID": 1607,
+			"EcuByteOrder": "6-6"
+		},
+		{
+			"Name": "Exh Cam Bk 2 Output Duty Cycle",
+			"EcuCanID": 1607,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Airbox Temperature",
+			"EcuCanID": 1609,
+			"EcuByteOrder": "4-4"
+		},
+		{
+			"Name": "Fuel Used",
+			"EcuCanID": 1609,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Engine Load Average",
+			"EcuCanID": 1610,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Engine Speed Limit",
+			"EcuCanID": 1610,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Engine Run Time",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "ECU Up Time",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Warning Source",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "4-4"
+		},
+		{
+			"Name": "Fuel Pressure Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:0"
+		},
+		{
+			"Name": "Crankcase Pressure Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:1"
+		},
+		{
+			"Name": "Engine Oil Pressure Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:3"
+		},
+		{
+			"Name": "Engine Oil Temperature Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:4"
+		},
+		{
+			"Name": "Engine Speed Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:5"
+		},
+		{
+			"Name": "Coolant Pressure Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:6"
+		},
+		{
+			"Name": "Coolant Temperature Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "5:7"
+		},
+		{
+			"Name": "Knock Warning",
+			"EcuCanID": 1612,
+			"EcuByteOrder": "6:7"
+		},
+		{
+			"Name": "Fuel Pump State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "0:0:4"
+		},
+		{
+			"Name": "Engine State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "0:4:4"
+		},
+		{
+			"Name": "Boost Aim State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "2:4:4"
+		},
+		{
+			"Name": "Fuel State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "3:0:4"
+		},
+		{
+			"Name": "Engine Overrun State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "3:4:4"
+		},
+		{
+			"Name": "Knock State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "4:0:4"
+		},
+		{
+			"Name": "Fuel Purge State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "4:4:4"
+		},
+		{
+			"Name": "Fuel Closed Loop State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "5:0:4"
+		},
+		{
+			"Name": "Throttle Aim State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "5:4:4"
+		},
+		{
+			"Name": "Engine Speed Reference State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "6:4:4"
+		},
+		{
+			"Name": "Engine Speed Limit State",
+			"EcuCanID": 1613,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Fuel Cut State",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "1:0:4"
+		},
+		{
+			"Name": "Neutral Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:0"
+		},
+		{
+			"Name": "Engine Run Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3;1"
+		},
+		{
+			"Name": "Anti Lag Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:2"
+		},
+		{
+			"Name": "Traction Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:4"
+		},
+		{
+			"Name": "Launch Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:5"
+		},
+		{
+			"Name": "Pit Switch",
+			"EcuCanID": 1614,
+			"EcuByteOrder": "3:6"
+		},
+		{
+			"Name": "Engine Run Time Total",
+			"EcuCanID": 1615,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "M1 General 0x640 Version",
+			"EcuCanID": 1615,
+			"EcuByteOrder": "7-7"
+		},
+		{
+			"Name": "Exhaust Temperature Bank 1",
+			"Function": "Exhaust Temperature Bank 1",
+			"EcuCanID": 1617,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Exhaust Temperature Bank 2",
+			"EcuCanID": 1617,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Fuel Injector Sec Contribution",
+			"EcuCanID": 1618,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Fuel Timing Secondary",
+			"EcuCanID": 1618,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Fuel Pressure Direct Aim",
+			"EcuCanID": 1619,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Steering Pressure",
+			"EcuCanID": 1621,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Inlet Mass Flow",
+			"EcuCanID": 1622,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Airbox Mass Flow",
+			"EcuCanID": 1622,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Fuel Injector Primary Pressure",
+			"EcuCanID": 1623,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Fuel Injector Secondary Pressure",
+			"EcuCanID": 1623,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Gear Input Shaft Speed",
+			"EcuCanID": 1623,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Vehicle Accel Lateral",
+			"EcuCanID": 1624,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Vehicle Accel Longitudinal",
+			"EcuCanID": 1624,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Vehicle Accel Vertical",
+			"EcuCanID": 1624,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Vehicle Yaw Rate",
+			"EcuCanID": 1624,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "M1 General 0x650 Version",
+			"EcuCanID": 1626,
+			"EcuByteOrder": "4-4"
+		},
+		{
+			"Name": "Lap Time",
+			"EcuCanID": 1627,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Lap Time Running",
+			"EcuCanID": 1627,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Lap Number",
+			"EcuCanID": 1627,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Lap Distance",
+			"EcuCanID": 1627,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Differential Temperature Front",
+			"EcuCanID": 1628,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Differential Temperature Centre",
+			"EcuCanID": 1628,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Diff Oil Temp",
+			"EcuCanID": 1628,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Steering Temperature",
+			"EcuCanID": 1628,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Exhaust Pressure Bank 1",
+			"EcuCanID": 1630,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Exhaust Pressure Bank 2",
+			"EcuCanID": 1630,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Alternator Current",
+			"EcuCanID": 1630,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Knock Threshold",
+			"EcuCanID": 1631,
+			"EcuByteOrder": "0-1"
+		},
+		{
+			"Name": "Logging System 1 Used",
+			"EcuCanID": 1631,
+			"EcuByteOrder": "2-3"
+		},
+		{
+			"Name": "Vehicle Speed Limit",
+			"EcuCanID": 1631,
+			"EcuByteOrder": "4-5"
+		},
+		{
+			"Name": "Launch Engine Speed",
+			"EcuCanID": 1631,
+			"EcuByteOrder": "6-7"
+		},
+		{
+			"Name": "Exhaust Camshaft Aim",
+			"EcuCanID": 1607,
+			"EcuByteOrder": "0-1"
+		}
+	]
+}

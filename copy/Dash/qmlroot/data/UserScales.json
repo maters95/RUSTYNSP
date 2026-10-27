@@ -1,0 +1,1571 @@
+[
+  {
+    "unitSelection": 0,
+    "Order": 0,
+    "GroupId": 0,
+    "Name": "Engine Speed",
+    "Items": [
+      "RPM"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "RPM",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 1,
+    "GroupId": 1,
+    "Name": "Pressure",
+    "Items": [
+      "kPa",
+      "kPaG",
+      "mbarA",
+      "barG",
+      "kg/cm²",
+      "psi"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 1013.25,
+        "y1": 0.0,
+        "x2": 2013.25,
+        "y2": 100.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 1013.25,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 2,
+        "smoothingFilter": 1,
+        "x1": 1013.25,
+        "y1": 0.0,
+        "x2": 2013.25,
+        "y2": 1.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 2,
+        "smoothingFilter": 1,
+        "x1": 1013.25,
+        "y1": 0.0,
+        "x2": 2013.25,
+        "y2": 1.02,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 1013.25,
+        "y1": 0.0,
+        "x2": 2013.25,
+        "y2": 14.50378,
+        "interpolation": null
+      }
+    ],
+    "Unit": "kPa",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 2,
+    "GroupId": 2,
+    "Name": "Throttle Position",
+    "Items": [
+      "%"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "%",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 3,
+    "GroupId": 3,
+    "Name": "Fuel Pressure Direct",
+    "Items": [
+      "kPa"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "kPa",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 4,
+    "GroupId": 4,
+    "Name": "Engine Load",
+    "Items": [
+      "mg"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "mg",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 5,
+    "GroupId": 5,
+    "Name": "Percentage",
+    "Items": [
+      "%"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "%",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 6,
+    "GroupId": 6,
+    "Name": "Angle",
+    "Items": [
+      "dBTDC"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": -10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "dBTDC",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 7,
+    "GroupId": 7,
+    "Name": "Lambda",
+    "Items": [
+      "LA",
+      "λ"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "LA",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 8,
+    "GroupId": 8,
+    "Name": "Brake Pressure Front",
+    "Items": [
+      "bar",
+      "kpa"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "bar",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 9,
+    "GroupId": 9,
+    "Name": "Vehicle Speed",
+    "Items": [
+      "kmh",
+      "mph"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 621.371192,
+        "interpolation": null
+      }
+    ],
+    "Unit": "kmh",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 10,
+    "GroupId": 10,
+    "Name": "Temperature",
+    "Items": [
+      "°C",
+      "°F"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 32.0,
+        "x2": 1000.0,
+        "y2": 212.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "°C",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 11,
+    "GroupId": 11,
+    "Name": "Volume",
+    "Items": [
+      "CC",
+      "L",
+      "US gal",
+      "Inj. lb"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100000.0,
+        "y2": 26.4172,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 95.238095238095241,
+        "interpolation": null
+      }
+    ],
+    "Unit": "CC",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 12,
+    "GroupId": 12,
+    "Name": "Ignition Output Cut Count",
+    "Items": [
+      "enum"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "enum",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 13,
+    "GroupId": 13,
+    "Name": "Fuel Cyl 1 Prim Output Pls Wdth",
+    "Items": [
+      "mS"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "mS",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 14,
+    "GroupId": 14,
+    "Name": "Gear Lever Force Sensor",
+    "Items": [
+      "N"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 500.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "N",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 15,
+    "GroupId": 15,
+    "Name": "Coolant Temperature",
+    "Items": [
+      "°C",
+      "°F"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": -40.0,
+        "x2": 100.0,
+        "y2": 60.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": -40.0,
+        "x2": 100.0,
+        "y2": 140.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "°C",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 16,
+    "GroupId": 16,
+    "Name": "ECU Battery Voltage",
+    "Items": [
+      "V"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "V",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 1,
+    "Order": 17,
+    "GroupId": 17,
+    "Name": "Fuel Used",
+    "Items": [
+      "CC",
+      "L",
+      "US gal",
+      "Inj. lb"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 26.4172,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 95.238095238095241,
+        "interpolation": null
+      }
+    ],
+    "Unit": "L",
+    "UnitSelection": "1"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 18,
+    "GroupId": 18,
+    "Name": "Engine Run Time",
+    "Items": [
+      "s"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "s",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 19,
+    "GroupId": 19,
+    "Name": "Engine Run Time Total",
+    "Items": [
+      "hour"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "hour",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 20,
+    "Name": "Enumerted Data",
+    "Items": [
+      "enum"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "enum",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 1,
+    "Order": 21,
+    "GroupId": 21,
+    "Name": "Fuel Tank Level",
+    "Items": [
+      "CC",
+      "L",
+      "US gal",
+      "Inj. lb"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1.0,
+        "y2": 1000.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10.0,
+        "y2": 10.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 26.4172,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10.0,
+        "y2": 95.238095238095241,
+        "interpolation": null
+      }
+    ],
+    "Unit": "L",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 22,
+    "GroupId": 22,
+    "Name": "Steering Angle",
+    "Items": [
+      "enum"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "enum",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 23,
+    "GroupId": 23,
+    "Name": "Inlet Mass Flow",
+    "Items": [
+      "g/s"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "g/s",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 24,
+    "GroupId": 24,
+    "Name": "Fuel Flow",
+    "Items": [
+      "ml/s"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "ml/s",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 25,
+    "GroupId": 25,
+    "Name": "Vehicle Accel Lateral",
+    "Items": [
+      "g"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 1.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "g",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 26,
+    "GroupId": 26,
+    "Name": "Vehicle Yaw Rate",
+    "Items": [
+      "deg/s"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "deg/s",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 27,
+    "GroupId": 27,
+    "Name": "Lap Time",
+    "Items": [
+      "s"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "s",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 28,
+    "GroupId": 28,
+    "Name": "Lap Distance",
+    "Items": [
+      "m"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "m",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 29,
+    "GroupId": 29,
+    "Name": "Alternator Current",
+    "Items": [
+      "A"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 10.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "A",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 30,
+    "GroupId": 30,
+    "Name": "Ratio",
+    "Items": [
+      "Ratio"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 2,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 5.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "Ratio",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 2,
+    "Order": 31,
+    "GroupId": 31,
+    "Name": "Battery Voltage",
+    "Items": [
+      "mV",
+      "Volts",
+      "V"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10.0,
+        "y2": 1000.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10.0,
+        "y2": 1.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10.0,
+        "y2": 1.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "V",
+    "UnitSelection": "2"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 32,
+    "Name": "CPUTemperature",
+    "Items": [
+      "°C",
+      "°F"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 2,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 100.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 2,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 32.0,
+        "x2": 10000.0,
+        "y2": 212.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "°C",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 33,
+    "Name": "RawData",
+    "Items": [
+      "Raw",
+      " "
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 2000,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "Raw",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 34,
+    "Name": "Percentage",
+    "Items": [
+      "%",
+      " % "
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 100.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 100.0,
+        "y2": 100.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "%",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 1,
+    "Order": 11,
+    "GroupId": 35,
+    "Name": "ODOMeter",
+    "Items": [
+      "km",
+      "mile"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1000.0,
+        "y2": 1.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 10000.0,
+        "y2": 6.21371192,
+        "interpolation": null
+      }
+    ],
+    "Unit": "mile",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": 36,
+    "GroupId": 36,
+    "Name": "Fluid Pressure",
+    "Items": [
+      "kPa",
+      "kPaG",
+      "mbarA",
+      "bar",
+      "kg/cm²",
+      "psi"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 101.325,
+        "x2": 1013.25,
+        "y2": 201.325,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 101.325,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 2013.25,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 1.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 1.02,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 1013.25,
+        "y2": 14.695,
+        "interpolation": null
+      }
+    ],
+    "Unit": "kPa",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 156,
+    "Name": "AVI Volume",
+    "Items": [
+      "%"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10000,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 1.15,
+            "y": 0.0
+          },
+          {
+            "x": 0.18,
+            "y": 50.0
+          },
+          {
+            "x": 0.001,
+            "y": 100.0
+          }
+        ]
+      }
+    ],
+    "Unit": "%",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 157,
+    "Name": "AVI Temperature",
+    "Items": [
+      "°C",
+      "°F"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.33,
+            "y": 140.0
+          },
+          {
+            "x": 0.63,
+            "y": 110.0
+          },
+          {
+            "x": 0.97,
+            "y": 90.0
+          },
+          {
+            "x": 1.51,
+            "y": 70.0
+          },
+          {
+            "x": 2.25,
+            "y": 50.0
+          },
+          {
+            "x": 3.13,
+            "y": 30.0
+          },
+          {
+            "x": 3.94,
+            "y": 10.0
+          },
+          {
+            "x": 4.51,
+            "y": -10.0
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.33,
+            "y": 284.0
+          },
+          {
+            "x": 0.63,
+            "y": 230.0
+          },
+          {
+            "x": 0.97,
+            "y": 194.0
+          },
+          {
+            "x": 1.51,
+            "y": 158.0
+          },
+          {
+            "x": 2.25,
+            "y": 122.0
+          },
+          {
+            "x": 3.13,
+            "y": 86.0
+          },
+          {
+            "x": 3.94,
+            "y": 50.0
+          },
+          {
+            "x": 4.51,
+            "y": 14.0
+          }
+        ]
+      }
+    ],
+    "Unit": "°C",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 158,
+    "Name": "AVI Temperature",
+    "Items": [
+      "°C",
+      "°F"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.41,
+            "y": 130.0
+          },
+          {
+            "x": 0.79,
+            "y": 100.0
+          },
+          {
+            "x": 1.22,
+            "y": 80.0
+          },
+          {
+            "x": 2.7,
+            "y": 40.0
+          },
+          {
+            "x": 3.57,
+            "y": 20.0
+          },
+          {
+            "x": 3.96,
+            "y": 10.0
+          },
+          {
+            "x": 4.52,
+            "y": -10.0
+          },
+          {
+            "x": 4.7,
+            "y": -20.0
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.41,
+            "y": 266.0
+          },
+          {
+            "x": 0.79,
+            "y": 212.0
+          },
+          {
+            "x": 1.22,
+            "y": 176.0
+          },
+          {
+            "x": 2.7,
+            "y": 104.0
+          },
+          {
+            "x": 3.57,
+            "y": 68.0
+          },
+          {
+            "x": 3.96,
+            "y": 50.0
+          },
+          {
+            "x": 4.52,
+            "y": 14.0
+          },
+          {
+            "x": 4.7,
+            "y": -4.0
+          }
+        ]
+      }
+    ],
+    "Unit": "°C",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 5,
+    "Order": -1,
+    "GroupId": 159,
+    "Name": "AVI Pressure",
+    "Items": [
+      "kPa",
+      "kPaA",
+      "mbarA",
+      "bar",
+      "kg/cm²",
+      "psi"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 0.0
+          },
+          {
+            "x": 4.5,
+            "y": 1034.213
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 101.325
+          },
+          {
+            "x": 4.5,
+            "y": 1135.538
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 1013.25
+          },
+          {
+            "x": 4.5,
+            "y": 11355.381
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 1.013
+          },
+          {
+            "x": 4.5,
+            "y": 11.355
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 0.0
+          },
+          {
+            "x": 4.5,
+            "y": 10.549
+          }
+        ]
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 10,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": [
+          {
+            "x": 0.5,
+            "y": 0.0
+          },
+          {
+            "x": 4.5,
+            "y": 150.0
+          }
+        ]
+      }
+    ],
+    "Unit": "psi",
+    "UnitSelection": "5"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 160,
+    "Name": "AVI Voltage",
+    "Items": [
+      "V"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 1,
+        "smoothingFilter": 0,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 4095.0,
+        "y2": 5.0,
+        "interpolation": []
+      }
+    ],
+    "Unit": "V",
+    "UnitSelection": "0"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 201,
+    "Name": "Engine Speed",
+    "Items": [
+      "RPM"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 1,
+        "x1": 1.0,
+        "y1": 20.0,
+        "x2": 10.0,
+        "y2": 200.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "RPM",
+    "UnitSelection": "5"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 239,
+    "Name": "Direct Input Vehicle Speed",
+    "Items": [
+      "km/h",
+      "mph"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 200,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 55.555555555555557,
+        "y2": 40.0,
+        "interpolation": null
+      },
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 200,
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 55.555555555555557,
+        "y2": 24.8548,
+        "interpolation": null
+      }
+    ],
+    "Unit": "km/h",
+    "UnitSelection": "5000GPS"
+  },
+  {
+    "unitSelection": 0,
+    "Order": -1,
+    "GroupId": 162,
+    "Name": "PulsePerKUnit",
+    "Items": [
+      "Hz/Unit"
+    ],
+    "Conversion": [
+      {
+        "decimalPlaces": 0,
+        "smoothingFilter": 200,
+        "x1": 55.555555555555557,
+        "y1": 5000.0,
+        "x2": 111.11111111111111,
+        "y2": 10000.0,
+        "interpolation": null
+      }
+    ],
+    "Unit": "Hz/Unit",
+    "UnitSelection": "0"
+  }
+]

@@ -1,0 +1,66 @@
+<b>V2.32.0 Release</b>
+
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.44.0 or newer.
+
+<i><b>Features</b></i>
+
+* Added new <b>Vehicle Functions</b>
+	* Thermofan
+	* Windscreen Washer and Wipers
+
+* Added <b>Vehicle Functions - Service Indicator</b> to track when a service is due. Services can be based on distance or time.
+
+* Added <b>Vehicle Functions - Hour Meter</b> to track how many hours have occured under a set of conditions.
+    * Useful to track how long an engine, transmission, or other vehicle component has run for.
+
+* Added support for <b>Day and Night Opacity</b> for <b>Image components</b>.
+
+* Added four new bar gauges that support <b>Value Text</b> alignment, <b> Reversing Bar direction</b>,<b>Step Size</b> and <b> Bars per step</b>
+	* Bar Horizontal Segmented
+	* Bar Horizontal Continuous
+	* Bar Vertical Segmented
+	* Bar Vertical Continuous
+
+* Added <b>Brake Pedal</b> Sensor.
+
+* Bar Horizontal 2 component supports  <b> Reversing Bar direction</b>
+
+<i><b>Changes</b></i>
+
+* Improved support for <b>OBDII</b> CAN protocol.
+
+* Added <b>Sensors - Park Switch</b>.
+    * When NOT using the <i>Selector Position</i> function, if the Park Switch is activated, then the gear will be park.
+
+* Changed <b>Drive Shaft RPM Sensor - Number of Teeth</b> to <b>Drive Shaft RPM Sensor - Pulses Per Revolution</b>. Values can now be entered with 2 decimal places, but otherwise works the same as before.
+    * This allows support of drivetrain sensors which are connected to the driveshaft through a gear set, resulting in a ratio.
+
+* Added support for specifying custom wire colors.
+
+* Within <i>Generics</i> in the navigation tree, added sub-nodes to group the generics of each type.
+
+<b>Fixes</b>
+
+* Fixes the last tick mark on dial gauges sometimes not displaying correctly
+
+* Fixed the individual tyre leak channels, <b>Front Left Tyre Air Leak Detected</b>, <b>Front Right Tyre Air Leak Detected</b>, <b>Rear Left Tyre Air Leak Detected</b>, and <b>Rear Right Tyre Air Leak Detected</b> not displaying correctly when the TMS-4 is enabled on the dash.
+
+* Fixes <b>Nitrous Stage X Output</b> channel sometimes not changing state
+
+* Allow a maximum value of more than 400km/h for all vehicle speed channels.
+
+* Replaced default font
+
+* Limits the SPI/DPI maximum frequency to 5 KHz.
+
+* Changes the dependency from <b>Throttle Position</b> to <b>Engine Demand</b> for the Air Conditioning System.
+
+* Fixs the screen background colour sometimes not applied to DigitalMatrix screen
+
+* Fixes <b>Font Size 0 invalid value</b> error message while upgrading
+
+* For OBDII protocol:
+    * Channels will show "Time Out" in case of network disruption,
+    * Dash will go into bus recovery mode and retries querying the data.

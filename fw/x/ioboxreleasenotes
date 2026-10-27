@@ -1,0 +1,17 @@
+<i><b>Changes in V1.13.0</b></i>
+
+* Remove gradual timeout for I/O Box DPI period & frequency due to issues.
+
+<i><b>Changes in V1.12.0</b></i>
+
+* I/O Box DPI period & frequency measurements now have a gradual timeout.
+  * This means that things like vehicle speed can continuously approach 0, rather than waiting for the timeout before dropping to 0.
+
+
+<i><b>Changes in V1.11.0</b></i>
+
+* Improves responsiveness of I/O box DPI when used for state inputs (e.g. button & switch inputs)
+* Requires I/O box firmware to be updated to v1.11.0 or greater.
+* Also requires either:
+  * Elite firmware version 3.11.0 or greater.
+  * Nexus firmware version 1.25.0 or greater.

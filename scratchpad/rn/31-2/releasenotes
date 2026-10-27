@@ -1,0 +1,59 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.43.7 or newer.
+
+<b>V2.31.0 Release</b>
+
+<i><b>Important Notes</b></i>
+
+<i><b>Features</b></i>
+
+* Added Dual Fuel Transfer function.
+
+* Added an extra setting to <b>Camera Input</b> called <b>Stretch Type</b> to allow the camera to stretch to the entire screen size.
+
+* Support <b>ECUMaster</b> ecu protocol.
+
+* Added <b>Fuel Level<b> to <b>General Motors E38</b> third party CAN protocol.
+
+<i><b>Changes</b></i>
+
+* Support for generic GPS Module and Lap Timing Module.
+
+* Removed minimum font size restriction of 20 pixels for dial gauges
+
+* A new Dash component <b>Text Component</b> added
+
+* Gear detection now prioritises Reverse switch, then Neutral switch, then detected gear.
+
+* When gear detection method is <i>RPM Drop</i> or <i>Gear Ratio</i> and the clutch is pressed, the gear will always be unknown.
+
+* Changed unknown gear symbol form "U" to "-".
+
+<b>Fixes</b>
+
+* Fixes incorrect states showing when AVIs are used with a Button Mode of Push On Push Off
+
+* Formatted Time now displays seconds with a leading 0 for single digit seconds
+    * stops the width changing when rolling over to double digits.
+
+* Fixed the colour options affecting wrong parts of dial gauge components in Dash
+    * All circular gauges
+        * The major and minor ticks follow the <b>Circular Tick</b> colour.
+    * Circular Classic
+        * The enclosing circle follows <b>Circular Tick</b> colour instead of <b>Circular Markings</b> colour
+        * The warning area of tickmark is highlighted by <b>Warning<b> colour
+    * Retro 1
+        * The warning area of tickmark follows <b>Warning<b> colour  instead of <b>Circular Markings Warning</b> colour
+        * The warning area of marking follows <b>Circular Markings Warning</b> colour
+    * Retro 2
+        * The warning area of marking follows <b>Circular Markings Warning</b> colour
+
+* While Resizing Dash components FontSize will be a minimum of 1 pixel
+
+* Fixes screen thumbnails not being generated dynamically
+
+* Fixes an issue with incorrect log time duration and operation over long durations
+
+* Replaced default font
+

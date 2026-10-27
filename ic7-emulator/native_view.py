@@ -1,0 +1,144 @@
+import argparse
+import json
+from pathlib import Path
+import sys
+import time
+import urllib.request
+
+from PyQt5.QtCore import QObject, QTimer, QUrl, pyqtProperty, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtQml import QQmlApplicationEngine
+
+
+COMPONENTS = {
+    2: "HalImage", 3: "HalNumeric", 4: "HalCircularClassic", 5: "HalCircularRetro",
+    6: "HalCircularRetro2", 7: "HalIndicator", 9: "HalBarLeft", 10: "HalBarRight",
+    13: "HalBarHorizontalContinuous", 14: "HalBarHorizontal2", 15: "HalBarClassic",
+    16: "HalCircularHero", 17: "HalRetroNumeric", 18: "HalText",
+    19: "HalBarHorizontalSegmented", 20: "HalBarVerticalSegmented", 21: "HalBarVerticalContinuous",
+}
+
+
+def component_record(record, base_url, revision, patched=False):
+    values = record["values"]
+    kind = values.get("GAUGE_TYPE", 0)
+    component = COMPONENTS.get(kind)
+    if not component:
+        return None
+    source = Path(__file__).with_name("qml") / "user_components" / (component + ".qml")
+    if kind == 2 and patched:
+        source = Path(__file__).with_name("qml") / "patched" / "HalImage.qml"
+
+    def asset(name):
+        if not name:
+            return ""
+        from urllib.parse import quote
+        return base_url + "/asset?name=" + quote(name if name.startswith(("u/", "h/")) else "h/" + name) + "&revision=" + str(revision)
+
+    props = {
+        "x": values.get("X_POS", 0), "y": values.get("Y_POS", 0), "z": values.get("Z_POS", 0),
+        "width": max(1, values.get("X_SIZE", 100)), "height": max(1, values.get("Y_SIZE", 60)),
+        "halImageOpacity": values.get("DAY_OPACITY", 1000), "halImagePath": asset(values.get("IMAGE_SRC", "")),
+        "halChanNameText": values.get("LABEL_TEXT", ""), "halValueText": "--", "halRawValue": 0,
+        "halCompMinValue": 0, "halCompMaxValue": 100, "halUnitText": "",
+    }
+    mapping = {
+        "VALUE_FONT_SIZE": "halValueFontSize", "VALUE_ALIGNMENT": "halValueFontAlign",
+        "LABEL_FONT_SIZE": "halChanNameFontSize", "LABEL_ALIGNMENT": "halChanNameFontAlign",
+        "UNIT_FONT_SIZE": "halUnitFontSize", "UNIT_ALIGNMENT": "halUnitFontAlign",
+        "TICKS_FONT_SIZE": "halTickFontSize", "TICKS_ALIGNMENT": "halTickFontAlign",
+        "STEP_SIZE": "halCompStepSize", "MINOR_TICKS": "halCompMinorTickCount",
+        "OVERRIDE_NUM_DP": "halDecimalPlaces",
+    }
+    for field, prop in mapping.items():
+        if field in values:
+            props[prop] = values[field]
+    colours = ["halWarningColour", "halNumericValueColour", "halNumericLabelColour", "halNumericUnitColour",
+               "halBarValueColour", "halBarLabelColour", "halBarTickColour", "halBarMarkingsColour",
+               "halBarBackgroundColour", "halPeakNeedleColour", "halCircularNeedleColour",
+               "halCircularMarkingsColour", "halCircularMarkingsWarnColour", "halCircularTickColour",
+               "halCircularBackgroundColour", "halIndicatorOnColour", "halIndicatorOffColour"]
+    for index, prop in enumerate(colours):
+        value = values.get(f"PALETTE_0_COLOUR_{index}")
+        if value is not None:
+            red, green, blue, alpha = (value & 0xFFFFFFFF).to_bytes(4, "little")
+            props[prop] = f"#{alpha:02x}{red:02x}{green:02x}{blue:02x}"
+    return {"index": record["index"], "source": QUrl.fromLocalFile(str(source.resolve())).toString(), "props": props}
+
+
+class Bridge(QObject):
+    changed = pyqtSignal()
+
+    def __init__(self, url, patched=False):
+        super().__init__()
+        self.url = url.rstrip("/")
+        self.patched = patched
+        self.screen = 0
+        self.value = json.dumps({"components": [], "status": "Connecting"})
+        self.last = None
+        self.last_poll = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.poll)
+        self.timer.start(50)
+
+    @pyqtProperty(str, notify=changed)
+    def scene(self):
+        return self.value
+
+    @pyqtSlot(int)
+    def setScreen(self, screen):
+        self.screen = screen
+        self.last = None
+
+    def poll(self):
+        try:
+            with urllib.request.urlopen(self.url + f"/api/scene?screen={self.screen}", timeout=0.3) as response:
+                state = json.load(response)
+            signature = (self.screen, tuple(state["revision"]))
+            if signature == self.last:
+                return
+            components = []
+            unsupported = []
+            for item in state["components"]:
+                record = component_record(item, self.url, state["revision"][1], self.patched)
+                if record:
+                    components.append(record)
+                elif item["values"].get("GAUGE_TYPE", 0):
+                    unsupported.append(item["values"]["GAUGE_TYPE"])
+            status = "Stock QML - sensor values unavailable" if not self.patched else "GIF candidate QML - sensor values unavailable"
+            if unsupported:
+                status += " - unsupported types " + ",".join(map(str, sorted(set(unsupported))))
+            self.value = json.dumps({"components": components, "status": status})
+            self.last = signature
+            self.changed.emit()
+        except Exception as error:
+            self.value = json.dumps({"components": [], "status": "Disconnected: " + str(error)})
+            if time.monotonic() - self.last_poll > 2:
+                self.changed.emit()
+                self.last_poll = time.monotonic()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Live stock-QML component view of the iC-7 protocol simulator.")
+    parser.add_argument("--url", default="http://127.0.0.1:8765")
+    parser.add_argument("--patched-images", action="store_true")
+    parser.add_argument("--screenshot", type=Path)
+    args = parser.parse_args()
+    app = QGuiApplication(sys.argv)
+    engine = QQmlApplicationEngine()
+    bridge = Bridge(args.url, args.patched_images)
+    engine.rootContext().setContextProperty("simulator", bridge)
+    engine.load(QUrl.fromLocalFile(str(Path(__file__).with_name("qml") / "NativeDash.qml")))
+    if not engine.rootObjects():
+        return 1
+    if args.screenshot:
+        def screenshot():
+            window = engine.rootObjects()[0]
+            image = window.screen().grabWindow(window.winId())
+            app.exit(0 if image.save(str(args.screenshot)) else 1)
+        QTimer.singleShot(2500, screenshot)
+    return app.exec_()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,5 @@
+EmtronDecoder: loaded 7 frames
+IC7 bgMode = "gif"  bgDir = "file:///U:/build"
+serialnmea: No known GPS device found. Specify the COM port via QT_NMEA_SERIAL_PORT.
+qml: bgGif status=0 src= w=0 h=0 vis=false
+qml: bgGif completed vis=false bgMode=undefined src=

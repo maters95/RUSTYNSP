@@ -1,0 +1,17 @@
+{
+  "source": "2026-10-26_0612pm.ic7-2-36-0.nexmap",
+  "output": "zak-2.36-mapfix-media-picker-uservideo.nexmap",
+  "source_sha256": "4c38c528ddf700b4c235ab9241e9aa2735e133c407807a4d52c009f8f6901346",
+  "output_sha256": "ab5cda27c3b205a1e2760d37d296353397b8ed5190c8fb3dd1c7d5abd5690a3c",
+  "original_entries_preserved": 37,
+  "changed_existing_entries": [],
+  "map_settings_byte_identical": true,
+  "added_assets": [
+    {
+      "name": "user_resources/images/ic7_video_probe.png",
+      "bytes": 25653195,
+      "sha256": "262875b2dbee9a90c397e46d7c0a65967151fc4bc476fa0cfb9916b03a0620e0"
+    }
+  ],
+  "status": "offline authenticated; NSP import, resource listing and device transfer untested"
+}

@@ -1,0 +1,54 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.42.0 or newer.
+
+<b>V2.30.0 Release</b>
+
+<i><b>Important Notes</b></i>
+
+* <b>IO16</b> Release
+
+<b>Changes</b>
+
+* Changing any of the following settings will trigger a full reboot on next press of the reset button, so the change can be seen immediately:
+    * Splash Brightness
+    * Splash Image
+    * CAN Termination Resistor
+
+* CAN Termination Resistor is now set much earlier in the boot process (~2s) to facilitate proper CAN operation for buses that rely on the dashes termination resistor to operate properly.
+
+* Allow font sizes up to 1000pts.
+
+<b>Features</b>
+
+* Added new setting to allow the wideband sensors to be started up before the engine is started, for applications where early data is more important than sensor life. Requires firmware 3.13.0 or later on external CAN controllers.
+
+* Added <b>Splash Brightness</b> setting to control the brightness of the splash screen when powering up the dash. The default is 60%.
+
+* Added new icons to resource folder.
+
+* New Features to Circular Gauges
+    * <b>Needle Image Source</b> can be changed with user specified images to customise the look of the needle. The position can be adjusted with a new <b>Needle Image Offset</b> setting. A larger value will move the needle away from the center in the up/down direction. The image will also be rotated around the centre of the left/right direction.
+    * Added a <b>Reverse Needle Direction</b> setting to toggle between clockwise rotation and counter-clockwise rotation.
+    * Added <b>Gauge Start Angle</b> and <b>Gauge End Angle</b> settings to charge the arc of the gauge.
+
+* <b>Font Source</b> setting added to allow the use of Haltech supplied or user supplied fonts for gauges that have text.
+
+* Customizable Screens
+    * Added a white hover rectangle around the gauge that will be selected on click.
+    * Gauges can be resized by dragging from the edges or corners.
+    * Gauges can be dragged by clicking and holding on a gauge and moving the mouse.
+    * Gauges can be added or deleted from a screen.
+    * Both size and location of a gauge can be modified by editing the settings directly.
+
+* When NSP V1.42.0 or newer is used, the IO Report will show images of the connectors and pin locations on each device.
+
+<b>Fixes</b>
+
+* Fixes <i>Automatic Reluctor Threshold</i> not working correctly on uC10 SPIs.
+
+* Fixes firmware upgrades failing for CAN based devices.
+
+* Fixes inputs using keypads not remembering last state
+
+* Fixes <b>Indicator</b> dash screen components missing <i>Override Channel Attributes</i> setting

@@ -1,0 +1,32 @@
+Name,EcuCanID,EcuByteOrder
+Manifold Gauge Pressure,1400,7-6
+RPM Limit,1412,6:0
+MAP Limit,1412,6:1
+Speed Limit,1412,6:2
+Maximum Ignition Flag,1412,6:3
+Anti-lag Ignition Cut,1412,6:4
+High Supply Voltage Limit,1412,6:5
+Overrun Flag,1412,6:6
+Traction Limit,1412,6:7
+Low Supply Voltage Flag,1412,7:0
+Launch RPM Limit,1412,7:1
+Wakeup Flag,1412,7:2
+GP RPM Limit 1,1412,7:3
+Mass Air Flow,1403,7-6
+Fault Codes,1407,5-4
+Trigger 1 Error Counter,1407,3-2
+APS (Main),1413,3-2
+Ethanol Percentage,1413,5-4
+Limits Flags,1499,7-6
+Injector Pulse Width (Actual),1402,5-4
+Rotary Oil Pump Limit,1412,7:4
+GP RPM Limit 2,1412,7:5
+EThrottle Limit,1412,7:6
+Cyclic Idle Active,1412,7:7
+Knock Level 3,1410,7-6
+Knock Level 4,1411,3-2
+Knock Level 5,1411,5-4
+Knock Level 6,1411,7-6
+Knock Level 7,1412,3-2
+Knock Level 8,1412,5-4
+Injector Timing,1404,5-4

@@ -1,0 +1,45 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP v1.48.0 or newer
+
+<b>V2.36.0 Release</b>
+
+<i><b>Features</b></i>
+
+* <b>Thermo Fans</b> in <i>Digital - Duty Cycle</i> mode now support 3D mapping of fan output.
+
+* Added <b>Output Test</b> feature for all assigned and unassigned HBO, DPO, HCO8 and HCO25 output pins.
+
+* Dash CAN protocol supports Little endian data bitstring over multiple bytes
+
+* Added new <i>Cat Temp Indicator</i> function, for vehicles with a thermal switch on the catalytic converter.
+
+<i><b>Fixes</b></i>
+
+* <b>Thermo Fan</b> Duty Cycle channels now report actual fan duty cycles, as opposed to just those requested by the Thermo Fan data table.
+
+* Fixed some <b>Thermo Fan</b> <b>Enable Below</b>/<b>Disable Above</b> input fields being incorrectly disabled in <b>Digital - Duty Cycle</b> mode.
+
+* Updated <b>Throttle Blip RPM Error</b> min channel value to -20000 RPM.
+
+* Updated <b>Target Lambda</b> min channel value to 0.300 (support methanol AFRs)
+
+* Updated <b>Vehicle Speed</b> max channel value to 1000km/h for better default log rendering.
+
+* Fixes Dash reporting wrong PD16 state when PD16 is disconnected and re-connected
+
+* Fixes Dash not enumerating some error states received through Haltech CAN protocol
+
+* Fixes Thermo Fan state not being correctly applied in Dash Standalone mode.
+
+* Fixes virtual dash peak needle behavior under simulation
+
+* Fixes Dash not sending DPO states to ECU
+
+* Fixes Dash Numeric components peak value not obeying decimal place setting
+
+* <b>Thermo Fan</b> Source Temperature channels now display "Source Out of Range" instead of value when sensor is in error state
+
+* Fixes Dash not displaying <b>Mass Air Flow</b> reading when configured to internal I/O.
+
+* Fixes Font Size set to 0 in Dash components produced error messages in NSP

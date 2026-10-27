@@ -1,0 +1,132 @@
+[
+	{
+		"ID": 384,
+		"Description": "RPM",
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 12,
+		"Period": 100
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 229,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 5,
+		"Period": 1000,
+		"Description": "Engine Coolant Temperature"
+	},
+	{
+		"RequestID": 2015,
+    "ResponseID": 2024,
+		"ID": 228,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 15,
+		"Period": 1000,
+		"Description": "Intake Air Temperature"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 225,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 17,
+		"Period": 500,
+		"Description": "ABS Throttle Position"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 224,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 11,
+		"Period": 500,
+		"Description": "Manifold Pressure"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 1400,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 6,
+		"Period": 1000,
+		"Description": "Fuel Trim Short Term Bank 1"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 1401,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 8,
+		"Period": 1000,
+		"Description": "Fuel Trim Short Term Bank 2"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 3814,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 7,
+		"Period": 1000,
+		"Description": "Fuel Trim Long Term Bank 1"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 4039,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 9,
+		"Period": 1000,
+		"Description": "Fuel Trim Long Term Bank 2"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 397,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 13,
+		"Period": 100,
+		"Description": "Vehicle Speed"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 230,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 38,
+		"Period": 1000,
+		"Description": "Wideband Sensor 1"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 231,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 39,
+		"Period": 1000,
+		"Description": "Wideband Sensor 2"
+	},
+	{
+		"RequestID": 2015,
+    	"ResponseID": 2024,
+		"ID": 387,
+		"BytesWritten": 2,
+		"BytesCount": 1,
+		"PIDValue": 66,
+		"Period": 500,
+		"Description": "Battery voltage"
+	}
+]

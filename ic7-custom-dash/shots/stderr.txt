@@ -1,0 +1,6 @@
+EmtronDecoder: loaded 7 frames
+serialnmea: No known GPS device found. Specify the COM port via QT_NMEA_SERIAL_PORT.
+QGeoTileProviderOsm: Tileserver disabled at  QUrl("http://maps-redirect.qt.io/osm/5.8/satellite")
+QGeoTileFetcherOsm: all providers resolved
+<Unknown File>: QML QQuickRootItem (parent or ancestor of QQuickContentItem): grabToImage: item has no QML engine
+<Unknown File>: QML QQuickRootItem (parent or ancestor of QQuickContentItem): grabToImage: item has no QML engine

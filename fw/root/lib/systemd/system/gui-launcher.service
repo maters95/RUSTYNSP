@@ -1,0 +1,17 @@
+[Unit]
+Description=GuiLauncher
+# Before=multi-user.target
+# After=local-fs.target sysinit.target
+After=multi-user.target
+DefaultDependencies=no
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/applications/dtn/app
+ExecStart=/opt/applications/dtn/app/dash_application
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

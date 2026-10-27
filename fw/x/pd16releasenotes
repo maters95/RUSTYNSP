@@ -1,0 +1,13 @@
+V1.12.0 Release
+
+<b>Changes</b>
+
+* Changes system command CAN IDs. This version of firmware is compatible with ECU firmware version 1.36 or newer.
+
+* Updates the boot code to support update over CAN. This requires a one-off firmware upgrade to PD16 through USB.
+
+<b>Fixes</b>
+
+* Fix HBO leds not lighting up correctly.
+
+* Fix SPI frequency reporting incorrectly above 8192Hz.

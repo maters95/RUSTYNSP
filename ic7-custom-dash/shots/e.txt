@@ -1,0 +1,2 @@
+EmtronDecoder: loaded 7 frames
+serialnmea: No known GPS device found. Specify the COM port via QT_NMEA_SERIAL_PORT.

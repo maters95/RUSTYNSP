@@ -1,0 +1,45 @@
+Name,EcuCanID,EcuByteOrder
+Throttle Position 2,1538,6-7
+Pedal Position,1536,2-3
+Gear Cut Dog Kick Count,1549,0-1
+Gear Cut Fail Count,1549,2-3
+GSP,1550,6-7
+Knock Status,1549,6-7
+Relative Fuel Pres 2,1540,0-1
+Post Restrictor Pressure 1,1537,2-3
+Crank Case Pressure 2,1543,2-3
+Turbo Speed 1,1537,4-5
+MAP2,1538,0-1
+Engine Coolant Temp 2,1542,2-3
+Air Charge Temp 1,1541,0-1
+Cal Select,1546,2-3
+TC Select,1546,4-5
+Air Charge Temp 2,1542,0-1
+Fuel Temp 1,1545,2-3
+Fuel Cons,1548,0-1
+Fuel Correction 1,1539,4-5
+Fuel Correction 2,1540,4-5
+Man/Auto Switch,1547,2-3
+WOW,1547,4-5
+Sensor Switch,1548,2-3
+WGC Startegy Active,1548,6-7
+Clutch Switch,1547,0-1
+ALS State,1548,4-5
+Pit Switch,1546,6-7
+Auto Start State,1547,6-7
+Paddle Switch,1550,4-5
+Engine Enable,1546,0-1
+DBW Status,1549,4-5
+Steering Wheel Angle,1552,0-1
+Driven Speed,1552,6-7
+Crank Case Pressure 3,1543,4-5
+Crank Case Pressure 4,1543,6-7
+Engine Oil Pressure 2,1544,2-3
+Turbo Speed 2,1538,4-5
+Gear Voltage,1550,0-1
+Post Restrictor Pressure 2,1538,2-3
+Traction Control Spin Target,1553,2-3
+Traction Control Spin Error,1553,4-5
+Traction Control Torque,1553,6-7
+Engine Oil Pressure 3,1544,4-5
+Engine Oil Pressure 4,1544,6-7

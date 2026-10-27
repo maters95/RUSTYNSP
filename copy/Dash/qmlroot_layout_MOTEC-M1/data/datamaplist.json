@@ -1,0 +1,822 @@
+[
+  {
+    "Name": "RPM",
+    "ID": 1,
+    "GroupID": 0
+  },
+  {
+    "Name": "MANIFOLD PRESSURE",
+    "ID": 2,
+    "GroupID": 1
+  },
+  {
+    "Name": "THROTTLE POSITION",
+    "ID": 3,
+    "GroupID": 2
+  },
+  {
+    "Name": "COOLANT PRESSURE",
+    "ID": 4,
+    "GroupID": 1
+  },
+  {
+    "Name": "FUEL PRESSURE DIRECT",
+    "ID": 5,
+    "GroupID": 3
+  },
+  {
+    "Name": "OIL PRESSURE",
+    "ID": 6,
+    "GroupID": 1
+  },
+  {
+    "Name": "ENGINE DEMAND",
+    "ID": 7,
+    "GroupID": 4
+  },
+  {
+    "Name": "INJECTION STAGE 1 DUTY CYCLE",
+    "ID": 8,
+    "GroupID": 5
+  },
+  {
+    "Name": "IGNITION ANGLE BANK 1",
+    "ID": 9,
+    "GroupID": 6
+  },
+  {
+    "Name": "IGNITION TIMING",
+    "ID": 10,
+    "GroupID": 6
+  },
+  {
+    "Name": "WIDEBAND OVERALL",
+    "ID": 11,
+    "GroupID": 7
+  },
+  {
+    "Name": "WIDEBAND BANK 1",
+    "ID": 12,
+    "GroupID": 7
+  },
+  {
+    "Name": "WIDEBAND BANK 2",
+    "ID": 13,
+    "GroupID": 7
+  },
+  {
+    "Name": "KNOCK LEVEL 1",
+    "ID": 14,
+    "GroupID": 5
+  },
+  {
+    "Name": "KNOCK LEVEL 2",
+    "ID": 15,
+    "GroupID": 5
+  },
+  {
+    "Name": "BRAKE PRESSURE",
+    "ID": 16,
+    "GroupID": 8
+  },
+  {
+    "Name": "BRAKE PRESSURE REAR",
+    "ID": 17,
+    "GroupID": 8
+  },
+  {
+    "Name": "WHEEL SPEED FRONT LEFT",
+    "ID": 18,
+    "GroupID": 9
+  },
+  {
+    "Name": "WHEEL SPEED FRONT RIGHT",
+    "ID": 19,
+    "GroupID": 9
+  },
+  {
+    "Name": "WHEEL SPEED REAR LEFT",
+    "ID": 20,
+    "GroupID": 9
+  },
+  {
+    "Name": "WHEEL SPEED REAR RIGHT",
+    "ID": 21,
+    "GroupID": 9
+  },
+  {
+    "Name": "EXHAUST CAMSHAFT AIM",
+    "ID": 22,
+    "GroupID": 6
+  },
+  {
+    "Name": "EXHAUST CAM ANGLE 1",
+    "ID": 23,
+    "GroupID": 6
+  },
+  {
+    "Name": "EXHAUST CAM ANGLE 2",
+    "ID": 24,
+    "GroupID": 6
+  },
+  {
+    "Name": "FUEL CYL 1 PRIM OUTPUT PLS WDTH",
+    "ID": 25,
+    "GroupID": 13
+  },
+  {
+    "Name": "INLET CAMSHAFT AIM",
+    "ID": 26,
+    "GroupID": 6
+  },
+  {
+    "Name": "INTAKE CAM ANGLE 1",
+    "ID": 27,
+    "GroupID": 6
+  },
+  {
+    "Name": "INTAKE CAM ANGLE 2",
+    "ID": 28,
+    "GroupID": 6
+  },
+  {
+    "Name": "AIR TEMPERATURE",
+    "ID": 29,
+    "GroupID": 10
+  },
+  {
+    "Name": "FUEL VOLUME",
+    "ID": 30,
+    "GroupID": 11
+  },
+  {
+    "Name": "TARGET LAMBDA",
+    "ID": 31,
+    "GroupID": 7
+  },
+  {
+    "Name": "FUEL PRESSURE",
+    "ID": 32,
+    "GroupID": 1
+  },
+  {
+    "Name": "ENGINE EFFICIENCY",
+    "ID": 33,
+    "GroupID": 5
+  },
+  {
+    "Name": "THROTTLE PEDAL",
+    "ID": 34,
+    "GroupID": 2
+  },
+  {
+    "Name": "IGNITION OUTPUT CUT COUNT",
+    "ID": 35,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL OUTPUT CUT COUNT",
+    "ID": 36,
+    "GroupID": 12
+  },
+  {
+    "Name": "IGNITION OUTPUT CUT AVERAGE",
+    "ID": 37,
+    "GroupID": 5
+  },
+  {
+    "Name": "FUEL OUTPUT CUT AVERAGE",
+    "ID": 38,
+    "GroupID": 5
+  },
+  {
+    "Name": "VEHICLE SPEED",
+    "ID": 39,
+    "GroupID": 9
+  },
+  {
+    "Name": "GEAR",
+    "ID": 40,
+    "GroupID": 12
+  },
+  {
+    "Name": "IGNITION CUT STATE",
+    "ID": 41,
+    "GroupID": 12
+  },
+  {
+    "Name": "IGNITION TIMING STATE",
+    "ID": 42,
+    "GroupID": 12
+  },
+  {
+    "Name": "BOOST PRESSURE",
+    "ID": 43,
+    "GroupID": 1
+  },
+  {
+    "Name": "TARGET BOOST",
+    "ID": 44,
+    "GroupID": 1
+  },
+  {
+    "Name": "BOOST CONTROL OUTPUT",
+    "ID": 45,
+    "GroupID": 5
+  },
+  {
+    "Name": "GEAR LEVER FORCE SENSOR",
+    "ID": 46,
+    "GroupID": 14
+  },
+  {
+    "Name": "INLET CAM BK 1 OUTPUT DUTY CYCLE",
+    "ID": 47,
+    "GroupID": 5
+  },
+  {
+    "Name": "INLET CAM BK 2 OUTPUT DUTY CYCLE",
+    "ID": 48,
+    "GroupID": 5
+  },
+  {
+    "Name": "EXH CAM BK 1 OUTPUT DUTY CYCLE",
+    "ID": 49,
+    "GroupID": 5
+  },
+  {
+    "Name": "EXH CAM BK 2 OUTPUT DUTY CYCLE",
+    "ID": 50,
+    "GroupID": 5
+  },
+  {
+    "Name": "COOLANT TEMPERATURE",
+    "ID": 51,
+    "GroupID": 15
+  },
+  {
+    "Name": "ENGINE OIL TEMPERATURE",
+    "ID": 52,
+    "GroupID": 15
+  },
+  {
+    "Name": "FUEL TEMPERATURE",
+    "ID": 53,
+    "GroupID": 15
+  },
+  {
+    "Name": "AMBIENT AIR TEMPERATURE",
+    "ID": 54,
+    "GroupID": 15
+  },
+  {
+    "Name": "AIRBOX TEMPERATURE",
+    "ID": 55,
+    "GroupID": 15
+  },
+  {
+    "Name": "BATTERY VOLTAGE",
+    "ID": 56,
+    "GroupID": 16
+  },
+  {
+    "Name": "FUEL USED",
+    "ID": 57,
+    "GroupID": 17
+  },
+  {
+    "Name": "EXHAUST TEMPERATURE",
+    "ID": 58,
+    "GroupID": 10
+  },
+  {
+    "Name": "ENGINE LOAD AVERAGE",
+    "ID": 59,
+    "GroupID": 2
+  },
+  {
+    "Name": "ENGINE SPEED LIMIT",
+    "ID": 60,
+    "GroupID": 0
+  },
+  {
+    "Name": "BAROMETRIC PRESSURE",
+    "ID": 61,
+    "GroupID": 1
+  },
+  {
+    "Name": "ENGINE RUN TIME",
+    "ID": 62,
+    "GroupID": 18
+  },
+  {
+    "Name": "ECU UP TIME",
+    "ID": 63,
+    "GroupID": 18
+  },
+  {
+    "Name": "WARNING SOURCE",
+    "ID": 64,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL PRESSURE WARNING",
+    "ID": 65,
+    "GroupID": 12
+  },
+  {
+    "Name": "CRANKCASE PRESSURE WARNING",
+    "ID": 66,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE OIL PRESSURE WARNING",
+    "ID": 67,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE OIL TEMPERATURE WARNING",
+    "ID": 68,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE SPEED WARNING",
+    "ID": 69,
+    "GroupID": 12
+  },
+  {
+    "Name": "COOLANT PRESSURE WARNING",
+    "ID": 70,
+    "GroupID": 12
+  },
+  {
+    "Name": "COOLANT TEMPERATURE WARNING",
+    "ID": 71,
+    "GroupID": 12
+  },
+  {
+    "Name": "KNOCK WARNING",
+    "ID": 72,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL PUMP STATE",
+    "ID": 73,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE STATE",
+    "ID": 74,
+    "GroupID": 12
+  },
+  {
+    "Name": "LAUNCH CONTROL LIGHT",
+    "ID": 75,
+    "GroupID": 12
+  },
+  {
+    "Name": "ANTI LAG ACTIVE",
+    "ID": 76,
+    "GroupID": 12
+  },
+  {
+    "Name": "BOOST AIM STATE",
+    "ID": 77,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL STATE",
+    "ID": 78,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE OVERRUN STATE",
+    "ID": 79,
+    "GroupID": 12
+  },
+  {
+    "Name": "KNOCK STATE",
+    "ID": 80,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL PURGE STATE",
+    "ID": 81,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL CLOSED LOOP STATE",
+    "ID": 82,
+    "GroupID": 12
+  },
+  {
+    "Name": "THROTTLE AIM STATE",
+    "ID": 83,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE SPEED REFERENCE STATE",
+    "ID": 84,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE SPEED LIMIT STATE",
+    "ID": 85,
+    "GroupID": 12
+  },
+  {
+    "Name": "LAUNCH DIAGNOSTIC",
+    "ID": 86,
+    "GroupID": 12
+  },
+  {
+    "Name": "ANTI LAG DIAGNOSTIC",
+    "ID": 87,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL CUT STATE",
+    "ID": 88,
+    "GroupID": 12
+  },
+  {
+    "Name": "BOOST CONTROL DIAGNOSTIC",
+    "ID": 89,
+    "GroupID": 12
+  },
+  {
+    "Name": "FUEL CLOSED LOOP DIAGNOSTIC",
+    "ID": 90,
+    "GroupID": 12
+  },
+  {
+    "Name": "NEUTRAL SWITCH",
+    "ID": 91,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE RUN SWITCH",
+    "ID": 92,
+    "GroupID": 12
+  },
+  {
+    "Name": "ANTI LAG SWITCH",
+    "ID": 93,
+    "GroupID": 12
+  },
+  {
+    "Name": "BRAKE PEDAL SWITCH",
+    "ID": 94,
+    "GroupID": 12
+  },
+  {
+    "Name": "TRACTION SWITCH",
+    "ID": 95,
+    "GroupID": 12
+  },
+  {
+    "Name": "LAUNCH SWITCH",
+    "ID": 96,
+    "GroupID": 12
+  },
+  {
+    "Name": "PIT SWITCH",
+    "ID": 97,
+    "GroupID": 12
+  },
+  {
+    "Name": "OIL PRESSURE LIGHT",
+    "ID": 98,
+    "GroupID": 12
+  },
+  {
+    "Name": "ENGINE RUN TIME TOTAL",
+    "ID": 99,
+    "GroupID": 19
+  },
+  {
+    "Name": "FUEL TRIM SHORT TERM BANK 1",
+    "ID": 100,
+    "GroupID": 30
+  },
+  {
+    "Name": "FUEL TRIM SHORT TERM BANK 2",
+    "ID": 101,
+    "GroupID": 30
+  },
+  {
+    "Name": "GEARBOX OIL TEMP",
+    "ID": 102,
+    "GroupID": 15
+  },
+  {
+    "Name": "FUEL LEVEL",
+    "ID": 103,
+    "GroupID": 21
+  },
+  {
+    "Name": "M1 GENERAL 0X640 VERSION",
+    "ID": 104,
+    "GroupID": 12
+  },
+  {
+    "Name": "EGT SENSOR 1",
+    "ID": 105,
+    "GroupID": 10
+  },
+  {
+    "Name": "EGT SENSOR 2",
+    "ID": 106,
+    "GroupID": 10
+  },
+  {
+    "Name": "FUEL INJECTOR SEC CONTRIBUTION",
+    "ID": 107,
+    "GroupID": 2
+  },
+  {
+    "Name": "FUEL TIMING SECONDARY",
+    "ID": 108,
+    "GroupID": 6
+  },
+  {
+    "Name": "INJECTOR STAGE 2 DUTY CYCLE",
+    "ID": 109,
+    "GroupID": 5
+  },
+  {
+    "Name": "FUEL PRESSURE DIRECT AIM",
+    "ID": 110,
+    "GroupID": 3
+  },
+  {
+    "Name": "STEERING PRESSURE",
+    "ID": 111,
+    "GroupID": 1
+  },
+  {
+    "Name": "STEERING WHEEL ANGLE",
+    "ID": 112,
+    "GroupID": 22
+  },
+  {
+    "Name": "INLET MASS FLOW",
+    "ID": 113,
+    "GroupID": 23
+  },
+  {
+    "Name": "AIRBOX MASS FLOW",
+    "ID": 114,
+    "GroupID": 23
+  },
+  {
+    "Name": "FUEL FLOW",
+    "ID": 115,
+    "GroupID": 24
+  },
+  {
+    "Name": "FUEL INJECTOR PRIMARY PRESSURE",
+    "ID": 116,
+    "GroupID": 1
+  },
+  {
+    "Name": "FUEL INJECTOR SECONDARY PRESSURE",
+    "ID": 117,
+    "GroupID": 1
+  },
+  {
+    "Name": "GEAR INPUT SHAFT SPEED",
+    "ID": 118,
+    "GroupID": 0
+  },
+  {
+    "Name": "DRIVESHAFT RPM",
+    "ID": 119,
+    "GroupID": 0
+  },
+  {
+    "Name": "VEHICLE ACCEL LATERAL",
+    "ID": 120,
+    "GroupID": 25
+  },
+  {
+    "Name": "VEHICLE ACCEL LONGITUDINAL",
+    "ID": 121,
+    "GroupID": 25
+  },
+  {
+    "Name": "VEHICLE ACCEL VERTICAL",
+    "ID": 122,
+    "GroupID": 25
+  },
+  {
+    "Name": "VEHICLE YAW RATE",
+    "ID": 123,
+    "GroupID": 26
+  },
+  {
+    "Name": "M1 GENERAL 0X650 VERSION",
+    "ID": 124,
+    "GroupID": 12
+  },
+  {
+    "Name": "LAP TIME",
+    "ID": 125,
+    "GroupID": 27
+  },
+  {
+    "Name": "LAP TIME RUNNING",
+    "ID": 126,
+    "GroupID": 27
+  },
+  {
+    "Name": "LAP NUMBER",
+    "ID": 127,
+    "GroupID": 12
+  },
+  {
+    "Name": "LAP DISTANCE",
+    "ID": 128,
+    "GroupID": 28
+  },
+  {
+    "Name": "DIFFERENTIAL TEMPERATURE FRONT",
+    "ID": 129,
+    "GroupID": 10
+  },
+  {
+    "Name": "DIFFERENTIAL TEMPERATURE CENTRE",
+    "ID": 130,
+    "GroupID": 10
+  },
+  {
+    "Name": "DIFF OIL TEMP",
+    "ID": 131,
+    "GroupID": 10
+  },
+  {
+    "Name": "STEERING TEMPERATURE",
+    "ID": 132,
+    "GroupID": 10
+  },
+  {
+    "Name": "EXHAUST PRESSURE BANK 1",
+    "ID": 133,
+    "GroupID": 1
+  },
+  {
+    "Name": "EXHAUST PRESSURE BANK 2",
+    "ID": 134,
+    "GroupID": 1
+  },
+  {
+    "Name": "CRANK CASE PRESSURE",
+    "ID": 135,
+    "GroupID": 1
+  },
+  {
+    "Name": "ALTERNATOR CURRENT",
+    "ID": 136,
+    "GroupID": 29
+  },
+  {
+    "Name": "KNOCK THRESHOLD",
+    "ID": 137,
+    "GroupID": 2
+  },
+  {
+    "Name": "LOGGING SYSTEM 1 USED",
+    "ID": 138,
+    "GroupID": 2
+  },
+  {
+    "Name": "VEHICLE SPEED LIMIT",
+    "ID": 139,
+    "GroupID": 9
+  },
+  {
+    "Name": "LAUNCH ENGINE SPEED",
+    "ID": 140,
+    "GroupID": 0
+  },
+  {
+    "Name": "FUEL COMPOSITION",
+    "ID": 141,
+    "GroupID": 5
+  },
+  {
+    "Name": "TRACTION CONTROL LIGHT",
+    "ID": 142,
+    "GroupID": 20
+  },
+  {
+    "Name": "OIL PRESSURE LIGHT",
+    "ID": 143,
+    "GroupID": 20
+  },
+  {
+    "Name": "PARK LIGHTS",
+    "ID": 144,
+    "GroupID": 20
+  },
+  {
+    "Name": "HIGH BEAM",
+    "ID": 145,
+    "GroupID": 20
+  },
+  {
+    "Name": "HAND BRAKE",
+    "ID": 146,
+    "GroupID": 20
+  },
+  {
+    "Name": "RIGHT INDICATOR",
+    "ID": 147,
+    "GroupID": 20
+  },
+  {
+    "Name": "LEFT INDICATOR",
+    "ID": 148,
+    "GroupID": 20
+  },
+  {
+    "Name": "I2C BATTERY",
+    "ID": 149,
+    "GroupID": 31
+  },
+  {
+    "Name": "CPU TEMPERATURE",
+    "ID": 150,
+    "GroupID": 32
+  },
+  {
+    "Name": "AMBIENT LIGHT",
+    "ID": 151,
+    "GroupID": 33
+  },
+  {
+    "Name": "ODOMETER",
+    "ID": 152,
+    "GroupID": 35
+  },
+  {
+    "Name": "TRIP METER 1",
+    "ID": 153,
+    "GroupID": 35
+  },
+  {
+    "Name": "TRIP METER 2",
+    "ID": 154,
+    "GroupID": 35
+  },
+  {
+    "Name": "DASH BRIGHTNESS",
+    "ID": 155,
+    "GroupID": 34
+  },
+  {
+    "Name": "FUEL LEVEL",
+    "ID": 156,
+    "GroupID": 156
+  },
+  {
+    "Name": "OIL TEMP",
+    "ID": 157,
+    "GroupID": 157
+  },
+  {
+    "Name": "COOLANT TEMP",
+    "ID": 158,
+    "GroupID": 158
+  },
+  {
+    "Name": "OIL PRESSURE",
+    "ID": 159,
+    "GroupID": 159
+  },
+  {
+    "Name": "FUEL LEVEL VOLTAGE",
+    "ID": 160,
+    "GroupID": 160
+  },
+  {
+    "Name": "OIL TEMP VOLTAGE",
+    "ID": 161,
+    "GroupID": 160
+  },
+  {
+    "Name": "COOLANT TEMP VOLTAGE",
+    "ID": 162,
+    "GroupID": 160
+  },
+  {
+    "Name": "OIL PRESSURE VOLTAGE",
+    "ID": 163,
+    "GroupID": 160
+  },
+  {
+    "Name": "SPEED PULSE RATE",
+    "ID": 164,
+    "GroupID": 162
+  }
+]

@@ -1,0 +1,24 @@
+[Unit]
+Description=iC-7 custom overlay dash (maps/laps/clock)
+# Mirrors Haltech's gui-launcher.service but starts OUR app instead.
+# Only ONE of gui-launcher / ic7-overlay owns the eglfs display at a time.
+After=multi-user.target
+DefaultDependencies=no
+Conflicts=gui-launcher.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/applications/ic7overlay
+# eglfs so Qt draws straight to the framebuffer, like the stock app.
+Environment=QT_QPA_PLATFORM=eglfs
+Environment=QT_QPA_EGLFS_INTEGRATION=eglfs_kms
+# USB GPS as an NMEA serial source for QtPositioning (adjust device).
+Environment=QT_NMEA_SERIAL_PORT=/dev/ttyUSB0
+Environment=IC7_CAN=can0
+ExecStartPre=/opt/applications/ic7overlay/bringup-can.sh
+ExecStart=/opt/applications/ic7overlay/ic7dash
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

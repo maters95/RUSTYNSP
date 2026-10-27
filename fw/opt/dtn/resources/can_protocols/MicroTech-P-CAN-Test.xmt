@@ -1,0 +1,19 @@
+; C:\Projects\nex\nexus_ecu\dash_generic\core_dash\CAN Protocols\MicroTech-P-CAN-Test.xmt
+; CAN messages saved by PCAN-View 4.2.0
+;
+; Columns descriptions:
+; ~~~~~~~~~~~~~~~~~~~~~
+; +Message ID
+; |            +Cycle time in ms (0=manual)
+; |            |  +Data length
+; |            |  |  +Frame type
+; |            |  |  |  +Message data
+; |            |  |  |  |
+010h        1500  8  D 04h 01h 10h 00h 00h 01h 10h 0Ah ; Haltech V1  RPM,Oil Pr,Speed,Oil Temp _I
+010h        1000  8  D 06h 00h 12h 00h 00h 02h 12h 0Ch ; Haltech V1 RPM, Pr,Speed ,Oil Temp_ II
+011h        1000  8  D 00h B0h 00h 05h 00h 10h 01h 00h ; Haltech V1 - Coolant Temp,Fuel Pr,Battery,Throttle
+011h        1500  8  D 00h C0h 00h 07h 00h 20h 02h 00h ; Haltech V1-Coolant Temp, Fuel Pr,Battery,Throttle - II
+012h        1000  8  D 04h 00h 10h 10h 01h 00h 00h 00h ; Haltech V1-MAP,Air Temp,EGT
+012h        1500  8  D 08h 00h 12h 20h 02h 00h 00h 00h ; Haltech V1-MAP,Air Temp,EGT - II
+013h        1000  8  D 00h 03h 00h 02h 00h 0Ch 00h 00h ; Haltech V1- Gear,Inj Duty,Ig Adv
+013h        1500  8  D 00h 04h 00h 03h 00h 0Dh 00h 00h ; Haltech V1- Gear,Inj Duty,Ig Adv

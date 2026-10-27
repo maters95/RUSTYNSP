@@ -1,0 +1,62 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.41.0 or newer.
+
+<b>V2.29.2 Release</b>
+
+<b>Changes</b>
+
+* Change default screens
+
+<b>V2.29.1 Release</b>
+
+<b>Fixes</b>
+
+* Fixed the **Raw Min** and **Raw Max** for the Manifold Pressure, Exhaust Manifold Pressure, and Fuel Pressure sensors sometimes false tripping on engine start.
+
+<b>V2.29.0 Release</b>
+
+<b>Features</b>
+
+* Add <b>Camera Input</b> feature for the uC-10.
+
+* Add user definable splash screen iC-7 and uC-10.
+
+* Add the following new ECU channels to the Haltech CAN broadcast protocol:
+    * Torque Converter Pressure
+    * Transfer Case Pressure
+    * Air Conditioner Pressure
+    * Air Condition Temperature
+    * Power Steering Pressure
+    * Fuel Consumption Average Economy
+    * Fuel Consumption Instantaneous Economy
+    * Intake Air Temperature Pre Intercooler
+    * Boost Pressure Pre Intercooler
+    * Generic Output 1-4 added.
+
+* Add support for custom images for components in iC-7 and uC-10 dash screens
+    * Allows uploading and downloading custom images to and from Dash
+    * Allows custom images to replace existing Haltech images in Screen Image Components
+    * Map files using custom Images can be saved and shared
+
+* Add Light Control features to all dashes. This includes:
+    * Headlights. Leave the outputs off to monitor the state of headlights.
+    * Indicators.  Leave the outputs off to monitor the state of the indicators.
+    * Brake Lights.
+    * Reverse Lights.
+
+<b>Fixes</b>
+
+* Fixes state of some Haltech CAN channels not displaying correctly.
+
+* Fixed Generic Outputs incorrectly showing as an enabled channel when the current CAN protocol does not support it.
+
+* Fixes Nitrous Stage 1 Output State not available for Haltech Protocol
+
+* Fixes Boost Control Output not available for Haltech Protocol
+
+* Fixes lower warning colour on circular gauges not disappearing correctly when <i>Display Minimum</i> is equal to <i>Warning Minimum</i>
+
+* Fixes the first label on circular gauges with long text covering adjacent components.
+
+* <b>Exhaust Manifold Pressure</b> Sensor using <b>Engine Synchronous Voltage</b> now only shows relevant pin settings.

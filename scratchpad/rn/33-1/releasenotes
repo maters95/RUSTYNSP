@@ -1,0 +1,49 @@
+<i><b>Upgrade Notes</b></i>
+
+Requires NSP Version 1.46.2.0 or newer.
+
+<b>V2.33.1 Release</b>
+
+<i><b>Fixes</b></i>
+
+* Fixed an issue that would cause the "OK" button to remain greyed out on the Wi-Fi configuration panel in NSP, even after applying the SSID and password.
+
+* Fixes <b>Fuel Level Sensor</b> ignoring <i>Input Type</i> setting.
+
+<b>V2.33.0 Release</b>
+
+<i><b>Features</b></i>
+
+* Added new <b>Vehicle Functions</b>
+    * Intercooler System
+    * Nitrous Bottle Opener
+    * Exhaust Cutout
+
+* Added humidity sensors to all dashes
+
+* External Devices now display serial numbers, if available.
+* Added separate Bar Markings and Peak Needle colours to the colour palette
+
+* Supports Peak needle display configuration in Dash for Dial, Bar and Numeric components
+
+<i><b>Changes</b></i>
+
+* Added Channels to all dashes
+    * Average Fuel Mileage
+    * Instantaneous Fuel Mileage
+
+* Added Transmission Oil Temperature Switch Input
+
+* Added <b>Oil Over temperature</b> channel to all dashes
+
+<b>Fixes</b>
+
+* Fixes an issue with restoring sensor type for external NTK wideband boxes.
+
+* Corrected the interpretation of <b>TMS-4</b> channel values in case device is not enabled under <i>Haltech CAN System</i>.
+
+* Fixes Trip meters resetting to zero during firmware upgrade.
+
+* Fixes <b>Holley EFI</b> third party protocol not recieving data.
+
+* Fixes the <b>Wideband Run Conditions</b> setting visually overlapping the settings below it in NSP.

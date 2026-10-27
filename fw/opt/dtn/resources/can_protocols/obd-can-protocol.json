@@ -1,0 +1,111 @@
+{
+  "CanProtocol": "OBD-II",
+  "CanTermination": "No",
+    "CanSpeed": 500000,
+  "CanNodeList": [
+    {
+      "Name": "Engine RPM",
+      "ID": 384,
+      "EcuCanID": 12,
+      "EcuByteOrder": "3-4",
+      "Scale": 0.25,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Speed",
+      "ID": 397,
+      "EcuCanID": 13,
+      "EcuByteOrder": "3-3",
+      "Scale": 10.0,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Coolant Temperature",
+      "ID": 229,
+      "EcuCanID": 5,
+      "EcuByteOrder": "3-3",
+      "Scale": 10,
+      "Offset": 2331.6
+    },
+    {
+      "Name": "Air Temperature",
+      "ID": 228,
+      "EcuCanID": 15,
+      "EcuByteOrder": "3-3",
+      "Scale": 10,
+      "Offset": 2331.6
+    },
+    {
+      "Name": "Throttle Position",
+      "ID": 225,
+      "EcuCanID": 17,
+      "EcuByteOrder": "3-3",
+      "Scale": 3.922,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Manifold Pressure",
+      "ID": 224,
+      "EcuCanID": 11,
+      "EcuByteOrder": "3-3",
+      "Scale": 10.0,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Fuel Trim Short Term Bank 1",
+      "ID": 1400,
+      "EcuCanID": 6,
+      "EcuByteOrder": "3-3",
+      "Scale": 7.8125,
+      "Offset": -1000
+    },
+    {
+      "Name": "Fuel Trim Short Term Bank 2",
+      "ID": 1401,
+      "EcuCanID": 8,
+      "EcuByteOrder": "3-3",
+      "Scale": 7.8125,
+      "Offset": -1000
+    },
+    {
+      "Name": "Fuel Trim Long Term Bank 1",
+      "ID": 3814,
+      "EcuCanID": 7,
+      "EcuByteOrder": "3-3",
+      "Scale": 7.8125,
+      "Offset": -1000
+    },
+    {
+      "Name": "Fuel Trim Long Term Bank 2",
+      "ID": 4039,
+      "EcuCanID": 9,
+      "EcuByteOrder": "3-3",
+      "Scale": 7.8125,
+      "Offset": -1000
+    },
+    {
+      "Name": "Wideband Sensor 1",
+      "ID": 230,
+      "EcuCanID": 38,
+      "EcuByteOrder": "3-4",
+      "Scale": 1.0,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Wideband Sensor 2",
+      "ID": 231,
+      "EcuCanID": 39,
+      "EcuByteOrder": "3-4",
+      "Scale": 1.0,
+      "Offset": 0.0
+    },
+    {
+      "Name": "Battery Voltage",
+      "ID": 387,
+ 	  "EcuCanID": 66,
+	  "EcuByteOrder": "5-4",
+	  "Scale": 0.1,
+      "Offset": 0.0
+    }
+  ]
+}

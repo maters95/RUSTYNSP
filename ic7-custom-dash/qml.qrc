@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/GaugesPage.qml</file>
+        <file>qml/TrackPage.qml</file>
+        <file>qml/Gauge.qml</file>
+        <file>qml/Clock.qml</file>
+        <file>resources/emtron_can.json</file>
+    </qresource>
+</RCC>

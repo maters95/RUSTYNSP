@@ -1,0 +1,29 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "label": "gif-cfw-mapfix",
+  "changed_members": [
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 338,
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "76cb5311e4863342799b5ef32a4349ba142ad4ae5c8da7dfd48a10cfe489d377",
+  "wrapper_preserved": true,
+  "migration_definition": {
+    "name": "ic-7.hdef",
+    "bytes": 7971401,
+    "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+    "listed_for_device_update": false
+  },
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-gif-cfw-mapfix-experimental.nex": {
+      "bytes": 25349399,
+      "sha256": "74c861f76c7fe531ea829c08e1af4045284127687081f8a17f0d21a5cbcc7ad3"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 25343767,
+      "sha256": "25295e56debb7a795f872c2532bacd9a6b5b83afa8d77c21dd6934f71efaf3fd"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+<i><b>Upgrade Notes</b></i>
+
+* Requires NSP V1.40.0 or newer.
+
+<b>V2.28.0 Release</b>
+
+<i><b>Important Notes</b></i>
+
+<b>Features</b>
+
+* Keypads added to the dash. Different buttons on the same keypad can be used by both the ECU and the Dash at the same time.
+
+* Added channel <b>CAN Port Bus Load</b> for all available CAN ports
+
+* PD16s added to the dash. Different IO on the same PD16 can be used by both the ECU and the Dash at the same time.
+
+* Added support for the MyLaps X2 Racelink flag module. Track flags can be issued to the dash by race control and display in a similiar manner to user alarms.
+
+<b>Fixes</b>
+
+* Fix Haltech TMS not correctly enumerating errors
+
+* Fix Undo and Redo changes not reflected in Virtual Dash
+
+* Fix Help messages in Alarms screen
+
+* Fixed the <b>Injector Pressure Differential</b> not showing negative values properly on the Haltech Dash Protocol.
+
+* Fix Generic CAN Channel unit types not saving correctly
+
+* Fix some gauge <b>Unit Types</b> not changing based on channel values.
+
+* Fix some Dash Channels showing wrong unit type
+
+* Fix <b>Gear Switch Input State</b> flickering when receiving from Haltech ECU over CAN.
+
+* Fix Odometer not working when using <b>Third Party CAN - General Motors E38</b> protocol.
+
+* Fix slow rendering of Circular gauges in Dash when channel max or min value changes
+
+* Fixes Boost Control Output not available for Haltech Protocol
+
+* Fix the following channels displaying incorrectly on Microtech CAN Protocol:
+    * Oil Pressure
+    * Fuel Pressure
+    * Manifold Pressure
+

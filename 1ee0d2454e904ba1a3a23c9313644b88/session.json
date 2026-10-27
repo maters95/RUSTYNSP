@@ -1,0 +1,20 @@
+{
+  "requests": 7680,
+  "staged_regions": [
+    620756992,
+    637534208
+  ],
+  "mode": "boot",
+  "sandbox_update": {
+    "package": "ic7-2.36-gif-cfw-candidate-experimental.nex",
+    "status": "received",
+    "error": null,
+    "expected_bytes": 17377280,
+    "received_bytes": 17377280,
+    "expected_sha256": "30643e2ce6413d2d6beb43750ce0a9092c78244e49597362aa2da9aa3830e52a",
+    "component_available": true,
+    "component_active": false,
+    "verification": "exact encrypted payload match; no target-side decryption or execution"
+  },
+  "firmware_execution": false
+}
