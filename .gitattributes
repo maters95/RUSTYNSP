@@ -8,3 +8,5 @@
 /fw/swu_nsp/var-image-swupdate-var-som-mx6.tar.gz filter=lfs diff=lfs merge=lfs -text
 /vendor/source-archives/iC7-Custom-Dash-Project.7z filter=lfs diff=lfs merge=lfs -text
 /media-probe-4.jsonl filter=lfs diff=lfs merge=lfs -text
+**/protocol.jsonl filter=lfs diff=lfs merge=lfs -text
+RaceBox_2.3.0_APKPure.xapk filter=lfs diff=lfs merge=lfs -text

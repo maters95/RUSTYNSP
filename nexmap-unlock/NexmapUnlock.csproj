@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>NexmapUnlock</AssemblyName>
+    <RootNamespace>NexmapUnlock</RootNamespace>
+    <Version>1.0.0</Version>
+    <Product>Nexmap Password Remover</Product>
+    <Description>Removes password protection from Haltech NSP .nexmap calibration files.</Description>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+  </ItemGroup>
+
+</Project>

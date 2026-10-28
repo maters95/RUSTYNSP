@@ -1,2 +1,3 @@
-{"event":"capture_started","format":1,"session_id":"26ce84881df04de3b914e82d0c49d38f","raw_packets":true,"time_ns":1793003134082008721}
-{"event":"capture_stopped","session_id":"26ce84881df04de3b914e82d0c49d38f","time_ns":1793003137914816383,"packets":0,"transport_chunks":0}
+version https://git-lfs.github.com/spec/v1
+oid sha256:8e6713afe2e2638ba4b514841d18c92dcea26f5a627e0867fa8d6c8eca280b7d
+size 275
