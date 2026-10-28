@@ -3,7 +3,7 @@
 # Dash/ARM: source the SDK env, then  qmake && make   (SocketCAN auto-on)
 # CMakeLists.txt builds the same sources; use whichever your kit prefers.
 
-QT += quick qml positioning location network multimedia
+QT += quick qml positioning location network multimedia serialport
 CONFIG += c++17
 TARGET = ic7dash
 TEMPLATE = app
@@ -14,14 +14,16 @@ SOURCES += \
     src/emtrondecoder.cpp \
     src/channelmodel.cpp \
     src/laptimer.cpp \
-    src/tileserver.cpp
+    src/tileserver.cpp \
+    src/nmeagpssource.cpp
 
 HEADERS += \
     src/cansource.h \
     src/emtrondecoder.h \
     src/channelmodel.h \
     src/laptimer.h \
-    src/tileserver.h
+    src/tileserver.h \
+    src/nmeagpssource.h
 
 RESOURCES += qml.qrc
 

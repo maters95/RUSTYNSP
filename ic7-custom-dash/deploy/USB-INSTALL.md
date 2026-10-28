@@ -4,9 +4,9 @@
 
 The owner's actual `.nexmap` and its nested layouts have now been decoded,
 along with the matching v2.36 definition. A separate asset-only test map keeps
-all 34 original entries byte-identical and adds three test images. Updated
-matched artifacts are in `build-nsp-map/`; the earlier `build-nsp/` resource
-candidates predate the tested `ic7_animation_*.png` alias support.
+all 34 original entries byte-identical and adds three test images. Map probes
+are in `build-nsp-map/`; the maintained media resource candidate is in
+`build-cfw-media-mapfix-alias/`.
 See [map integration](NEXMAP-INTEGRATION.md) for verified scope, limitations
 and the next Windows-only check with the dash disconnected. Resource-package
 acceptance is still unverified; a successful map import does not establish it.
@@ -26,19 +26,17 @@ body decodes to a POSIX tar archive, not a ZIP. All 339 tar entries validated.
 The device's `HalImage.qml` matches the Windows evidence byte-for-byte, and
 there is no adjacent compiled `HalImage.qmlc` in this resource archive.
 
-Generated artifacts under `ic7-custom-dash/build-nsp/`:
+The maintained candidate is under
+`ic7-custom-dash/build-cfw-media-mapfix-alias/`:
 
-- `ic7-2.36-gif-preview-experimental.nex`: replaces only the stock image
-  component with the locally tested GIF-capable component.
+- `ic7-2.36-media-cfw-mapfix-alias-experimental.nex`: adds GIF and muted MP4
+  handling plus NSP's PNG-picker alias support.
 - `ic7-2.36-stock-resources-experimental.nex`: carries the original stock
   resource payload byte-for-byte in the same reduced manifest.
 - `build-report.json`: hashes, exact changed-member list, and round-trip results.
 
-The newer media candidate is under `ic7-custom-dash/build-nsp-media/`. It adds
-muted looping MP4 handling to the same `HalImage.qml` component and preserves
-the other 338 resource members. Its adjacent `HalImage.qml` is for the
-emulator's isolated renderer preview. It is still resource-only; NSP acceptance
-and hardware installation are untested.
+The candidate is still resource-only; NSP acceptance and hardware installation
+are untested.
 
 Both packages contain only `manifest.xml` and `res_ic-7.qzip`. The iC-7
 product/hardware identifiers and version are copied from the stock manifest;
@@ -116,7 +114,8 @@ writing, cancel. This check must not be reported as an installed/tested patch.
 
 ## Windows Evidence Verified (2026-10-26)
 
-The returned `nsp-usb-evidence-20261026-131550/report.json` and QML copies show:
+The returned
+`research/usb-evidence/nsp-usb-20261026-131550/report.json` and QML copies show:
 
 - NSP version **1.48.5**, using a running `dash_virtual` process.
 - Dash enumerated as **COM3**, USB VID **16D0**, PID **0001**, driver `usbser`.
@@ -139,11 +138,11 @@ This is separate from the NSP program directory under Program Files.
 
 ## Captured USB Transfers
 
-The first capture, `nsp-screen-upload.pcap`, was recorded during connection
+The first capture, `research/usb-captures/nsp-screen-upload.pcap`, was recorded during connection
 and reboot, as confirmed by the owner. It contains 2,101 read commands and
 14 write commands, totaling only 78 bytes of outbound write payload.
 
-The second capture, `nsp-screen-upload1.pcap`, contains substantial transfers:
+The second capture, `research/usb-captures/nsp-screen-upload1.pcap`, contains substantial transfers:
 
 - Duration: 96.67 seconds. Haltech enumerates on bus 2, device 4, then device 5.
 - Device 4: 1,129 reads and 1,016 writes, with 3,607,166 write-payload bytes.
@@ -191,7 +190,7 @@ a write. Unknown large writes remain unclassified; do not label them firmware
 based on size/address alone.
 
 ```sh
-python3 scripts/inspect-nsp-capture.py nsp-screen-upload1.pcap --bus 2 --device 4 --summary
+python3 scripts/inspect-nsp-capture.py research/usb-captures/nsp-screen-upload1.pcap --bus 2 --device 4 --summary
 ```
 
 On Windows, pass Wireshark's executable if `tshark.exe` is not on `PATH`:
@@ -207,7 +206,7 @@ are written only with the additional `--extract-high-address-payloads` option;
 `--include-prefix` adds the first 32 payload bytes to the full report. Keep
 these opt-ins off unless needed, and inspect outputs before sharing. The tool
 does not upload anything. Reconstructed BMP payloads and viewable PNG versions are in
-`scratchpad/capture1-analysis/`. Avoid sharing configuration/capture data
+`research/scratchpad/capture1-analysis/`. Avoid sharing configuration/capture data
 publicly without reviewing its contents.
 
 The remaining integration question is which NSP or firmware-resource path
@@ -255,9 +254,11 @@ direction, subject to verifying its resource upload behavior.
 
 The supplied NSP resources expose editable QML screens and components:
 
-- `copy/Dash/qmlroot/qml/user_screens/Screen_01.qml` and neighboring screens.
-- `copy/Dash/qmlroot/data/ScreenMap.json` maps screen identities to layouts.
-- `copy/qml_components_data/qml/user_components/QML_TEMPLATE.qml` defines
+- `reference/stock-dash-extract/Dash/qmlroot/qml/user_screens/Screen_01.qml`
+  and neighboring screens.
+- `reference/stock-dash-extract/Dash/qmlroot/data/ScreenMap.json` maps screen
+  identities to layouts.
+- `reference/stock-dash-extract/qml_components_data/qml/user_components/QML_TEMPLATE.qml` defines
   the common `hal*` component contract and `setGaugeProperties()` interface.
 - `HalImage.qml` currently uses a static Qt Quick `Image`, driven by
   `halImagePath`. Animated GIF support is a small candidate experiment, but

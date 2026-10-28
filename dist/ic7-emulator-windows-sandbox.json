@@ -1,7 +1,0 @@
-{
-  "file": "ic7-emulator-windows-sandbox.zip",
-  "bytes": 30927715,
-  "sha256": "de38ee74e7b64f7d349a2bce59d00cca0e0888e970c38b2f489fdf573650bd7b",
-  "files": 47,
-  "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"
-}

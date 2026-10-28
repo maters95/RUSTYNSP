@@ -55,8 +55,12 @@ qml/                      Main, GaugesPage, TrackPage (map+laps), Gauge, Clock
   bundled one).
 
 ## Lap timing & clock in the car
-- Lap timing wants a real GPS (USB/serial u-blox is simplest). In `TrackPage.qml`
-  set `useSimulatedGps: false`; QML's `PositionSource` then feeds `lapTimer`.
+- The app uses a simulated route by default for desktop demos. For real GPS,
+  launch with `IC7_SIM_GPS=0` and set `IC7_GPS_DEVICE` to a USB/serial NMEA
+  receiver (default `/dev/ttyUSB0`, 9600 baud). The app parses checksummed GGA
+  and RMC fixes and updates the marker and lap timer. The stock rootfs includes
+  Qt SerialPort but not Qt's serial NMEA position plugin; an internal GPS source
+  has not been confirmed. Offline tiles must cover the area you plan to drive.
   Capture your finish line once by driving across it and recording the two posts,
   then pass them to `lapTimer.setFinishLine(...)`.
 - The i.MX6 likely has no battery-backed RTC, so system time resets at power-off.
@@ -70,6 +74,8 @@ The second screen's background is selectable with the `IC7_BG` env var:
   Android-Auto-style animated backdrop. Any animated GIF works.
 - `IC7_BG=video` — loops `bg.mp4` (next to the binary) via QtMultimedia (muted).
   The dash image ships GStreamer, so hardware-friendly H.264 is the safe choice.
+The nav page also has an in-app MAP/GIF/MP4 selector, so you can switch modes
+without restarting; `IC7_BG` remains the startup default.
 In every mode the lap-timing panel and clock stay on top, and GPS lap timing
 keeps running. Drop your own `bg.gif` / `bg.mp4` beside `ic7dash`. (The bundled
 `bg.gif` is a placeholder and has a **single frame**, so it does not animate —
@@ -97,8 +103,19 @@ The app ships a tiny loopback tile server (`src/tileserver.cpp`) that serves
 `tiles/<z>/<x>/<y>.png` from next to the binary, and the map reads from it over
 `http://127.0.0.1` — so maps work with **no internet and no TLS**. Seed tiles for
 your area with `deploy/seed-tiles.ps1`, put them in `tiles/` next to the exe, and
-run. (Verified on desktop with ESRI street tiles; see the page-2 screenshot.)
-If `tiles/` is empty the map falls back to online OSM.
+run. The script defaults to Grafton, NSW (about 290 tiles at zoom 13–15), but
+requires a provider URL template and attribution. Use only a map source whose
+terms explicitly permit offline extraction/caching; do not scrape public tile
+servers or redistribute tiles without permission. Attribution in
+`tiles/ATTRIBUTION.txt` is displayed on the map. The included 294-tile Sydney
+demo covers no Grafton area. If no local tiles are available, desktop builds
+can use online OSM; the dash has no internet.
+
+The dash rootfs inventory contains Qt SerialPort but not Qt's serial NMEA
+Positioning plugin. No internal GPS hardware is confirmed. Real tracking needs
+an external NMEA receiver on a serial device (`IC7_SIM_GPS=0`,
+`IC7_GPS_DEVICE=/dev/ttyUSB0`, 9600 baud); `tests/test_nmea_gps.py` exercises
+the parser using a virtual serial port.
 
 ## ARM build, QEMU test and scratch bundle
 Inside the `ic7build` WSL distro (Ubuntu 22.04: `g++-11-arm-linux-gnueabihf`,

@@ -1,0 +1,226 @@
+{
+  "source": "research/nexmaps/2026-10-26_0134pm.ic7-2-36-0.nexmap",
+  "sha256": "29b831dd6a148c630dd304d8eeb4a5d1ccde917b847f26f5152a2e41389cc5fe",
+  "authenticated_entries": 34,
+  "entries": [
+    {
+      "name": "_map",
+      "bytes": 1921546,
+      "sha256": "8e7a8aee51af9a7bc27e9eff44fe90c71ebceff77eb4a2b511b83ae8ea03237a"
+    },
+    {
+      "name": "Hero_860x480_1.0.13 a6302e31-6cb4-4d9f-9fbe-d4f0af92d0e6.nexcfg",
+      "bytes": 204718,
+      "sha256": "56aa02e008930073a0a08e2d11d0c7dbd986f5fdb33771ad36a0c5d0f4628d32"
+    },
+    {
+      "name": "Diagnostics_860x480_1.0.6.nexcfg",
+      "bytes": 45438,
+      "sha256": "75a03f41ed5cfbb661c549a390e4618b5de4e330d3c6c046ef86c0da75560e79"
+    },
+    {
+      "name": "Pressure - Bosch 145 PSI HT010920_1.1.0.nexcfg",
+      "bytes": 68174,
+      "sha256": "892fcb7839d256191d91988e9bbebc886e372ebb3a321320a7791f26a69b95ed"
+    },
+    {
+      "name": "user_resources/fonts/eurostile.TTF",
+      "bytes": 38116,
+      "sha256": "6e0b0f0ad71db6f064bc4f3f5cb065a3bbb5f9d954f3c9779732d37b0cdb1790"
+    },
+    {
+      "name": "user_resources/fonts/GoogleSansFlex-500.ttf",
+      "bytes": 129056,
+      "sha256": "ba9fdfe3266753e630b20fad1477a9cd00831865701d414ef8c21aff3fbdbbee"
+    },
+    {
+      "name": "user_resources/fonts/Roboto-Medium.ttf",
+      "bytes": 511592,
+      "sha256": "2879a5ecb7fbfa13a7fc3e2cdd7fecbf73aa45e91b541dfdfa2c442eed0aac21"
+    },
+    {
+      "name": "user_resources/images/aa_bg3_860.png",
+      "bytes": 74871,
+      "sha256": "39614dc53c5d25889a4b86c2f793d5fe8ddb657a55112e2cc5ec42d44c768225"
+    },
+    {
+      "name": "user_resources/images/aa_bg4_860.png",
+      "bytes": 91931,
+      "sha256": "b16863b53be81b7a9bcd2a3a7ae6ae0809e0577adc26705f9315cdd4d4fc8ea6"
+    },
+    {
+      "name": "user_resources/images/aa_bg5_860.png",
+      "bytes": 92734,
+      "sha256": "08294758708ab28743b51fd2ae5d056dde85bbc86f11478bd59958606ea22c3a"
+    },
+    {
+      "name": "user_resources/images/aa_bg6_860.png",
+      "bytes": 92755,
+      "sha256": "9df48a3e7880837321d6bfb1eb06c36ce4f4929313dff56d4c8c24b6b82b3a3c"
+    },
+    {
+      "name": "user_resources/images/aa_bg7_860.png",
+      "bytes": 137252,
+      "sha256": "f790b27ac954ba511a72040438f12369ce82c0c955644a5a1a5b2b46df3d711a"
+    },
+    {
+      "name": "user_resources/images/aa_bg8_860.png",
+      "bytes": 135983,
+      "sha256": "b1a2e3d21b123aa34cf0d1c3e23d72679263d42abd2537267780080c0dde196e"
+    },
+    {
+      "name": "user_resources/images/aa_bg_860.png",
+      "bytes": 74832,
+      "sha256": "e1bec895522f4009dab9d6a43c45e7b321feae36193885f9b6b5d305ecefcbf0"
+    },
+    {
+      "name": "user_resources/images/aa_grafton_860.png",
+      "bytes": 135983,
+      "sha256": "b1a2e3d21b123aa34cf0d1c3e23d72679263d42abd2537267780080c0dde196e"
+    },
+    {
+      "name": "user_resources/images/android_auto_860.png",
+      "bytes": 63610,
+      "sha256": "af0cde39595a423b13422774bb1967bc0392b92cfc26e1b1ff2431a0b941f6ad"
+    },
+    {
+      "name": "user_resources/images/batt1.png",
+      "bytes": 536,
+      "sha256": "5d4072129cc7e4d3b0040d2e165d11d8780bc49fea6c3fe3b43e67a85c5369ef"
+    },
+    {
+      "name": "user_resources/images/cel1.png",
+      "bytes": 911,
+      "sha256": "edcaa50bbed24514c3c70d6373a8ee6c6d0734542c2131d10cf4b4efc791f65e"
+    },
+    {
+      "name": "user_resources/images/civic_ek_typer_860.png",
+      "bytes": 461091,
+      "sha256": "319fcb9987bae39912f60d6fcae46a7e31f7a3251c9f5652ad5e7b278640f854"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_final2_860.png",
+      "bytes": 489708,
+      "sha256": "fffc1a1540c8b6b63d5b3f92a7f33b2d6c992d90a2ed7dac8077dffd4461b4d1"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_final_860.png",
+      "bytes": 490072,
+      "sha256": "03dd63351f4eddb54f889f1aa561624cf1eae2f583b872f2ec3e561a5ad513d1"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_full_860.png",
+      "bytes": 592647,
+      "sha256": "c8239c1876b54dd18868682aeda922ec44289d10c6392283cd5057df472806ae"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_neon2_860.png",
+      "bytes": 583685,
+      "sha256": "4237823b83e9dfad52baa64aa56c0513aceefd84c2c281eef5b39b14a1972ed9"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_neon_860.png",
+      "bytes": 586387,
+      "sha256": "fd6ada7a6fb54bc57db6ba69c36ac6adc33ea3585d2b643a2e8f245edb48661e"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_vitals3_860.png",
+      "bytes": 523408,
+      "sha256": "f60cb4fc65b388557b5039fe82e3315227bba28633cc1aced96d9a5ae8f38c4a"
+    },
+    {
+      "name": "user_resources/images/ek9_crv_vitals_mock.png",
+      "bytes": 551664,
+      "sha256": "35076f46f6236ca76eb0ab01973de25af5ff1c4813cf4185733022eb23db4c01"
+    },
+    {
+      "name": "user_resources/images/Gemini_Generated_Image_69nclr69nclr69nc.png",
+      "bytes": 6816840,
+      "sha256": "fb8a1dc967ac31bfe4509ca15f5c30fe7ff44dca26e572fef3361a174204cba7"
+    },
+    {
+      "name": "user_resources/images/Gemini_Generated_Image_cjmd67cjmd67cjmd.png",
+      "bytes": 4957325,
+      "sha256": "b0fc73c952d8f2f65277a2dc12a9d4e2c8b439f367eda782dbe3d7bc8581e020"
+    },
+    {
+      "name": "user_resources/images/ivtec_dohc.png",
+      "bytes": 15508,
+      "sha256": "08b31a36c1df4f8234f02c9c86e85d92506b4523bb548c6f3d3efe17891642d1"
+    },
+    {
+      "name": "user_resources/images/markings.png",
+      "bytes": 255016,
+      "sha256": "dce6ad5409aa679309a6e05074b1e4246eea284f9d4448c32b246b7d60017aae"
+    },
+    {
+      "name": "user_resources/images/markings_crv.png",
+      "bytes": 167339,
+      "sha256": "5b2b747be8385aace2d0ea263af0088add98932dbe407b527a8ee0ba49351d1a"
+    },
+    {
+      "name": "user_resources/images/markings_final.png",
+      "bytes": 20111,
+      "sha256": "c851d8a6e32378bd48dbf76c19e6e7ec766143c9102816a173b07ddab9749d98"
+    },
+    {
+      "name": "user_resources/images/markings_v3.png",
+      "bytes": 159099,
+      "sha256": "47845260e32a9afc67981f8799fff9ff23b8440df5d18d9f6836d29b63dda183"
+    },
+    {
+      "name": "user_resources/images/vtec.png",
+      "bytes": 763,
+      "sha256": "cb495436225594f052759835766885013f7d55f46c1f75012e3e9f0f9b95a322"
+    }
+  ],
+  "layouts": {
+    "_map": {
+      "xml": true,
+      "root": "Template",
+      "element_counts": {
+        "Template": 1,
+        "MetaData": 1,
+        "Tag": 1,
+        "MD5": 1,
+        "SerialNumber": 1,
+        "FileTypeId": 1,
+        "HDEF_MD5": 1,
+        "Framework": 1,
+        "Variant": 1,
+        "Version": 1,
+        "Features": 1,
+        "MaxProfileCount": 1,
+        "ProfileEnabled": 1,
+        "MaxProfileNameLength": 1,
+        "ProfileName": 1,
+        "MaxProfileDescriptionLength": 1,
+        "ProfileDescription": 1,
+        "Data": 1,
+        "G": 40090
+      },
+      "top_level": [
+        {
+          "tag": "MetaData",
+          "attributes": {}
+        },
+        {
+          "tag": "Data",
+          "attributes": {}
+        }
+      ]
+    },
+    "Hero_860x480_1.0.13 a6302e31-6cb4-4d9f-9fbe-d4f0af92d0e6.nexcfg": {
+      "xml": false,
+      "prefix_hex": "504b0304140001006300eb523804eb32"
+    },
+    "Diagnostics_860x480_1.0.6.nexcfg": {
+      "xml": false,
+      "prefix_hex": "504b0304140001006300eb5238047236"
+    },
+    "Pressure - Bosch 145 PSI HT010920_1.1.0.nexcfg": {
+      "xml": false,
+      "prefix_hex": "504b0304140001006300eb523804f17c"
+    }
+  }
+}

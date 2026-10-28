@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 157
+Version : 1.1.12.0
+InputUnits : 7
+OutputUnits : 2
+Voltages : 0, 1023
+Values : 0, 1000

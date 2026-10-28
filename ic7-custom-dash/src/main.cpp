@@ -3,11 +3,13 @@
 #include <QQmlContext>
 #include <QtQml>
 #include <QFileInfo>
+#include <QFile>
 #include "channelmodel.h"
 #include "emtrondecoder.h"
 #include "cansource.h"
 #include "laptimer.h"
 #include "tileserver.h"
+#include "nmeagpssource.h"
 
 // Resolve the CAN map: next to the exe, or the bundled resource copy.
 static QString canConfigPath()
@@ -27,11 +29,30 @@ int main(int argc, char *argv[])
     decoder->loadConfig(canConfigPath());
 
     auto *lap = new LapTimer(&app);
+    const bool simulatedGps = qgetenv("IC7_SIM_GPS") != "0";
+    QByteArray gpsDevice = qgetenv("IC7_GPS_DEVICE");
+    if (gpsDevice.isEmpty())
+        gpsDevice = "/dev/ttyUSB0";
+    auto *gps = new NmeaGpsSource(QString::fromLocal8Bit(gpsDevice), !simulatedGps, &app);
 
     // Serve bundled map tiles from <appdir>/tiles over loopback HTTP, so the
     // map works fully offline in the car. Empty URL => QML falls back to online.
     auto *tiles = new TileServer(QCoreApplication::applicationDirPath() + "/tiles", &app);
     const QString tileUrl = tiles->listen() ? tiles->baseUrl() : QString();
+    const QString attributionPath =
+        QCoreApplication::applicationDirPath() + "/tiles/ATTRIBUTION.txt";
+    QFile attributionFile(attributionPath);
+    QString mapAttribution = "Offline map attribution missing";
+    if (attributionFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        const QString configuredAttribution =
+            QString::fromUtf8(attributionFile.readAll()).trimmed();
+        if (!configuredAttribution.isEmpty())
+            mapAttribution = configuredAttribution;
+        else
+            qWarning() << "Map attribution file is empty:" << attributionPath;
+    } else {
+        qWarning() << "Map attribution file not found:" << attributionPath;
+    }
 
     // Pick the CAN feed: IC7_CAN=can0 -> real SocketCAN, else simulator.
     // If the real bus can't be opened (interface not up, no adapter), fall back
@@ -62,6 +83,9 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("shotDir", QString::fromLocal8Bit(qgetenv("IC7_SHOT")));
     engine.rootContext()->setContextProperty("tileBaseUrl", tileUrl);
     engine.rootContext()->setContextProperty("tileCacheDir", QCoreApplication::applicationDirPath() + "/tilecache");
+    engine.rootContext()->setContextProperty("mapAttribution", mapAttribution);
+    engine.rootContext()->setContextProperty("simulatedGps", simulatedGps);
+    engine.rootContext()->setContextProperty("gpsSource", gps);
     // Nav-screen background: IC7_BG = map (default) | gif | video.
     // bg.gif / bg.mp4 are read from next to the binary.
     QString bgMode = QString::fromLocal8Bit(qgetenv("IC7_BG")).toLower();

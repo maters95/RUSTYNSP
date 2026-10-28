@@ -1,0 +1,190 @@
+using System.CodeDom.Compiler;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using NexusUpdaterAWS;
+using NexusUpdaterAWS.Components;
+
+[GeneratedCode("System.ServiceModel", "4.0.0.0")]
+[ServiceContract(ConfigurationName = "INexusAWSSvcCmd")]
+public interface INexusAWSSvcCmd
+{
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/KnockKnock", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/KnockKnockResponse")]
+	bool KnockKnock();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/KnockKnock", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/KnockKnockResponse")]
+	Task<bool> KnockKnockAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CheckForUpdates", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CheckForUpdatesResponse")]
+	CheckForUpdatesResult CheckForUpdates();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CheckForUpdates", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CheckForUpdatesResponse")]
+	Task<CheckForUpdatesResult> CheckForUpdatesAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailableResponse")]
+	bool UpdateAvailable(ComponentTypeEnum type);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailableResponse")]
+	Task<bool> UpdateAvailableAsync(ComponentTypeEnum type);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable1", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable1Response")]
+	int UpdateAvailable1();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable1", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateAvailable1Response")]
+	Task<int> UpdateAvailable1Async();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/ObjectsAvailableTagged", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/ObjectsAvailableTaggedResponse")]
+	int? ObjectsAvailableTagged(string repoFolderName, S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/ObjectsAvailableTagged", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/ObjectsAvailableTaggedResponse")]
+	Task<int?> ObjectsAvailableTaggedAsync(string repoFolderName, S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/LatestObjectVersionAvailableTagged", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/LatestObjectVersionAvailableTaggedResponse")]
+	int? LatestObjectVersionAvailableTagged(string repoFolderName, S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/LatestObjectVersionAvailableTagged", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/LatestObjectVersionAvailableTaggedResponse")]
+	Task<int?> LatestObjectVersionAvailableTaggedAsync(string repoFolderName, S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/DefinitionsAvailable", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/DefinitionsAvailableResponse")]
+	int? DefinitionsAvailable(S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/DefinitionsAvailable", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/DefinitionsAvailableResponse")]
+	Task<int?> DefinitionsAvailableAsync(S3MetaDataKeyValuePair[] requestList);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CheckUpdateComplete", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CheckUpdateCompleteResponse")]
+	UpdateOutcomes CheckUpdateComplete();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CheckUpdateComplete", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CheckUpdateCompleteResponse")]
+	Task<UpdateOutcomes> CheckUpdateCompleteAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateManual", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateManualResponse")]
+	UpdateOutcomes UpdateManual();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/UpdateManual", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/UpdateManualResponse")]
+	Task<UpdateOutcomes> UpdateManualAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetTaggedObjects", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetTaggedObjectsResponse")]
+	GetTaggedObjectsResponse GetTaggedObjects(GetTaggedObjectsRequest request);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetTaggedObjects", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetTaggedObjectsResponse")]
+	Task<GetTaggedObjectsResponse> GetTaggedObjectsAsync(GetTaggedObjectsRequest request);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetDefinitionObjects", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetDefinitionObjectsResponse")]
+	GetDefinitionObjectsResponse GetDefinitionObjects(GetDefinitionObjectsRequest request);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetDefinitionObjects", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetDefinitionObjectsResponse")]
+	Task<GetDefinitionObjectsResponse> GetDefinitionObjectsAsync(GetDefinitionObjectsRequest request);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/AutoUpdateEnabled", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/AutoUpdateEnabledResponse")]
+	bool AutoUpdateEnabled();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/AutoUpdateEnabled", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/AutoUpdateEnabledResponse")]
+	Task<bool> AutoUpdateEnabledAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/ToggleAutoUpdate", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/ToggleAutoUpdateResponse")]
+	bool ToggleAutoUpdate();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/ToggleAutoUpdate", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/ToggleAutoUpdateResponse")]
+	Task<bool> ToggleAutoUpdateAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CreateSchedTask", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CreateSchedTaskResponse")]
+	void CreateSchedTask();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CreateSchedTask", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CreateSchedTaskResponse")]
+	Task CreateSchedTaskAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/DeleteSchedTask", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/DeleteSchedTaskResponse")]
+	void DeleteSchedTask();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/DeleteSchedTask", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/DeleteSchedTaskResponse")]
+	Task DeleteSchedTaskAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/SetDebugMode", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/SetDebugModeResponse")]
+	void SetDebugMode(bool debugMode);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/SetDebugMode", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/SetDebugModeResponse")]
+	Task SetDebugModeAsync(bool debugMode);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetDebugMode", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetDebugModeResponse")]
+	bool GetDebugMode();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetDebugMode", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetDebugModeResponse")]
+	Task<bool> GetDebugModeAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/SaveLogsToFile", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/SaveLogsToFileResponse")]
+	void SaveLogsToFile(string path);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/SaveLogsToFile", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/SaveLogsToFileResponse")]
+	Task SaveLogsToFileAsync(string path);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetErrorLogString", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetErrorLogStringResponse")]
+	string GetErrorLogString();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetErrorLogString", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetErrorLogStringResponse")]
+	Task<string> GetErrorLogStringAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CallInstaller", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CallInstallerResponse")]
+	void CallInstaller(ComponentTypeEnum type, bool restart);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/CallInstaller", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/CallInstallerResponse")]
+	Task CallInstallerAsync(ComponentTypeEnum type, bool restart);
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentDLSpeedKBps", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentDLSpeedKBpsResponse")]
+	float? GetCurrentDLSpeedKBps();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentDLSpeedKBps", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentDLSpeedKBpsResponse")]
+	Task<float?> GetCurrentDLSpeedKBpsAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentPercentProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentPercentProgressResponse")]
+	float? GetCurrentPercentProgress();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentPercentProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentPercentProgressResponse")]
+	Task<float?> GetCurrentPercentProgressAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFileDownloading", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFileDownloadingResponse")]
+	string GetCurrentTaggedFileDownloading();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFileDownloading", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFileDownloadingResponse")]
+	Task<string> GetCurrentTaggedFileDownloadingAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFilePercentProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFilePercentProgressResponse")]
+	int? GetCurrentTaggedFilePercentProgress();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFilePercentProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentTaggedFilePercentProgressResponse")]
+	Task<int?> GetCurrentTaggedFilePercentProgressAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateCheckProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateCheckProgressResponse")]
+	float? GetCurrentUpdateCheckProgress();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateCheckProgress", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateCheckProgressResponse")]
+	Task<float?> GetCurrentUpdateCheckProgressAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentCategory", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentCategoryResponse")]
+	string GetCurrentCategory();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentCategory", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentCategoryResponse")]
+	Task<string> GetCurrentCategoryAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/IsUpdaterBusy", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/IsUpdaterBusyResponse")]
+	bool IsUpdaterBusy();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/IsUpdaterBusy", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/IsUpdaterBusyResponse")]
+	Task<bool> IsUpdaterBusyAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/AbortCurrentOperation", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/AbortCurrentOperationResponse")]
+	void AbortCurrentOperation();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/AbortCurrentOperation", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/AbortCurrentOperationResponse")]
+	Task AbortCurrentOperationAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdaterStatus", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdaterStatusResponse")]
+	UpdaterStatus GetCurrentUpdaterStatus();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdaterStatus", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdaterStatusResponse")]
+	Task<UpdaterStatus> GetCurrentUpdaterStatusAsync();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateInitiator", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateInitiatorResponse")]
+	UpdateInitiator GetCurrentUpdateInitiator();
+
+	[OperationContract(Action = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateInitiator", ReplyAction = "http://tempuri.org/INexusAWSSvcCmd/GetCurrentUpdateInitiatorResponse")]
+	Task<UpdateInitiator> GetCurrentUpdateInitiatorAsync();
+}

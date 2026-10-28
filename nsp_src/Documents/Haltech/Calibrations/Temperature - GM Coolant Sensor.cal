@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 100
+Version : 1.1.07.0
+InputUnits : 7
+OutputUnits : 5
+Voltages : 92, 153, 198, 323, 501, 701, 861, 953
+Values : 3931, 3731, 3631, 3431, 3231, 3031, 2831, 2631

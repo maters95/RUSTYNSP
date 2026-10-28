@@ -12,9 +12,10 @@ WorkingDirectory=/opt/applications/ic7overlay
 # eglfs so Qt draws straight to the framebuffer, like the stock app.
 Environment=QT_QPA_PLATFORM=eglfs
 Environment=QT_QPA_EGLFS_INTEGRATION=eglfs_kms
-# USB GPS as an NMEA serial source for QtPositioning (adjust device).
-Environment=QT_NMEA_SERIAL_PORT=/dev/ttyUSB0
+# USB GPS NMEA serial source (adjust device for the receiver).
+Environment=IC7_GPS_DEVICE=/dev/ttyUSB0
 Environment=IC7_CAN=can0
+Environment=IC7_SIM_GPS=0
 ExecStartPre=/opt/applications/ic7overlay/bringup-can.sh
 ExecStart=/opt/applications/ic7overlay/ic7dash
 ExecStop=/bin/kill -TERM $MAINPID

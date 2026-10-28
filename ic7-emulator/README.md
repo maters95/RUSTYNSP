@@ -220,7 +220,7 @@ candidate ZIP separately from the emulator ZIP. Keep its NEX,
 and in this command, with the candidate's actual absolute path:
 
 ```powershell
-.\start-emulator.cmd -Port COM11 -FreshSandbox -SandboxPackage 'C:\IC7\media\ic7-2.36-media-cfw-mapfix-experimental.nex'
+.\start-emulator.cmd -Port COM11 -FreshSandbox -SandboxPackage 'C:\IC7\media\ic7-2.36-media-cfw-mapfix-alias-experimental.nex'
 ```
 
 `-FreshSandbox` creates a new uniquely named directory under `sandbox-state`

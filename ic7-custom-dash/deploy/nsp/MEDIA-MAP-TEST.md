@@ -69,7 +69,7 @@ resource decryption or prove a real flash.
 On the Linux build environment with the local ARM sysroot and QEMU:
 
 ```sh
-cp "Android Auto Screen (phone).mp4" \
+cp "ic7-custom-dash/test-assets/Android Auto Screen (phone).mp4" \
   ic7-custom-dash/build-nsp-tests/ic7_video_probe.png
 qemu-arm -L "$HOME/ic7build/sysroot" \
   -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \

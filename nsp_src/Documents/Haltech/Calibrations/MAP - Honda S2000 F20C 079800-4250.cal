@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 96
+Version : 1.1.09.0
+InputUnits : 7
+OutputUnits : 3
+Voltages : 102, 307, 409, 614, 716, 818, 921, 982
+Values : 114, 514, 693, 1057, 1236, 1393, 1593, 1707

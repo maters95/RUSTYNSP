@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 155
+Version : 1.1.10.0
+InputUnits : 26
+OutputUnits : 2
+Voltages : 50, 150
+Values : 0, 1000

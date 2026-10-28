@@ -9,6 +9,7 @@ fallback: create the pair in its own UI, then record it with --manual.
 import argparse
 from dataclasses import dataclass, field
 import json
+import ntpath
 import os
 from pathlib import Path
 import re
@@ -202,13 +203,17 @@ def hhd_pair_candidate(ports):
 
 def driver_image_path(path):
     path = str(path or "").strip().strip('"')
+    if not path:
+        return None
     system_root = os.environ.get("SystemRoot", r"C:\Windows")
     if path.lower().startswith("\\systemroot\\"):
-        path = system_root + path[len("\\SystemRoot"):]
+        path = ntpath.normpath(system_root + path[len("\\SystemRoot"):])
     elif path.lower().startswith("system32\\"):
-        path = str(Path(system_root) / path)
+        path = ntpath.normpath(ntpath.join(system_root, path))
     elif path.startswith("\\??\\"):
-        path = path[4:]
+        path = ntpath.normpath(path[4:])
+    else:
+        path = ntpath.normpath(path)
     return Path(path) if path else None
 
 

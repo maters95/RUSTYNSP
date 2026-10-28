@@ -1,0 +1,123 @@
+﻿<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,300;8..144,400;8..144,600&display=block" rel="stylesheet">
+<style>
+:root{--bg:#000;--card:#1f2125;--card2:#2a2d32;--txt:#e8eaed;--sub:#9aa0a6;--green:#1e8e3e;--blue:#8ab4f8;--accent:#a8c7fa}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:860px;height:480px;background:var(--bg);overflow:hidden;font-family:Roboto,sans-serif;color:var(--txt)}
+.rail{position:absolute;left:0;top:0;width:72px;height:480px;display:flex;flex-direction:column;align-items:center;padding:14px 0}
+.time{font-size:19px;font-weight:500;letter-spacing:.2px}
+.status{display:flex;gap:6px;margin-top:6px;opacity:.9}
+.apps{margin-top:22px;display:flex;flex-direction:column;gap:16px}
+.app{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.app svg{width:26px;height:26px}
+.grow{flex:1}
+.mic{width:48px;height:48px;border-radius:50%;background:#2d2f33;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.grid{width:48px;height:48px;border-radius:50%;background:#2d2f33;display:flex;align-items:center;justify-content:center}
+.card{position:absolute;background:var(--card);border-radius:22px;overflow:hidden}
+/* main maps-style card */
+.main{left:80px;top:10px;width:470px;height:460px;background:#0f1a24}
+.map{position:absolute;inset:0}
+.banner{position:absolute;left:12px;top:12px;width:446px;height:112px;background:#0d652d;border-radius:16px;display:flex;align-items:center;padding:0 22px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.banner .arrow{width:62px;height:62px;margin-right:16px}
+.banner .big{font-size:50px;font-weight:500;line-height:1}
+.banner .lbl{font-size:20px;opacity:.95;margin-top:6px}
+.banner .rpmbar{position:absolute;left:22px;right:22px;bottom:12px;height:6px;border-radius:3px;background:rgba(255,255,255,.22)}
+.speed{position:absolute;left:18px;bottom:18px;width:98px;height:98px;border-radius:50%;background:#fff;color:#202124;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.speed .v{font-size:42px;font-weight:500;line-height:1}
+.speed .u{font-size:13px;color:#5f6368;margin-top:2px}
+.eta{position:absolute;right:16px;bottom:16px;height:56px;width:250px;background:#202124;border-radius:28px;display:flex;align-items:center;padding:0 20px;gap:16px;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.eta .g{font-size:15px;color:var(--sub)}
+.eta .n{font-size:24px;font-weight:500;color:#81c995}
+.puck{position:absolute;left:225px;top:300px;width:34px;height:34px}
+/* media card */
+.media{left:558px;top:10px;width:292px;height:212px;padding:16px}
+.art{width:84px;height:84px;border-radius:14px;overflow:hidden;background:#111}
+.art img{width:100%;height:100%;object-fit:cover}
+.mtitle{position:absolute;left:114px;top:18px;font-size:13px;color:var(--sub)}
+.mbig{position:absolute;left:114px;top:38px;font-size:44px;font-weight:500;line-height:1}
+.munit{position:absolute;left:114px;top:86px;font-size:15px;color:var(--sub)}
+.prog{position:absolute;left:16px;right:16px;top:124px;height:4px;border-radius:2px;background:#3c4043}
+.prog i{position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:2px;background:var(--accent)}
+.ctrls{position:absolute;left:16px;right:16px;bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.ctrls div{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ctrls .play{background:var(--accent);width:58px;height:58px;border-radius:18px}
+/* vitals card */
+.vitals{left:558px;top:230px;width:292px;height:240px;padding:14px}
+.vh{font-size:13px;color:var(--sub);margin:2px 4px 10px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{height:60px;border-radius:16px;background:var(--card2);display:flex;align-items:center;padding:0 10px;gap:8px;position:relative}
+.chip .ic{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.chip .ic svg{width:18px;height:18px}
+.chip .t{font-size:11px;color:var(--sub);line-height:1.1}
+.chip .val{font-size:22px;font-weight:500;line-height:1.1;min-height:24px}
+.chip .uu{font-size:11px;color:var(--sub);position:absolute;right:10px;bottom:9px}
+.hide .val,.hide .big,.hide .mbig,.hide .speed .v,.hide .eta .n{color:transparent}
+</style></head>
+<body class="">
+<!-- left rail -->
+<div class="rail">
+  <div class="time" id="t"></div>
+  <div class="status">
+    <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#e8eaed" d="M2 22h20V2z"/></svg>
+    <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#e8eaed" d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+  </div>
+  <div class="apps">
+    <div class="app" style="background:#1e8e3e"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg></div>
+    <div class="app" style="background:#e8710a"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg></div>
+    <div class="app" style="background:#1a73e8"><svg viewBox="0 0 24 24"><path fill="#fff" d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.07 15.07 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1 17 17 0 0 0 17 17 1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z"/></svg></div>
+    <div class="app" style="background:#c5221f"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 4a8 8 0 0 0-8 8h2a6 6 0 0 1 12 0h2a8 8 0 0 0-8-8zm1 9.73V8h-2v5.73A2 2 0 1 0 13 13.73z"/></svg></div>
+  </div>
+  <div class="grow"></div>
+  <div class="mic"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#e8eaed" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5.3-3a5.3 5.3 0 0 1-10.6 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg></div>
+  <div class="grid"><svg width="22" height="22" viewBox="0 0 24 24"><path fill="#e8eaed" d="M4 8h4V4H4zm6 12h4v-4h-4zm-6 0h4v-4H4zm0-6h4v-4H4zm6 0h4v-4h-4zm6-10v4h4V4zm-6 4h4V4h-4zm6 6h4v-4h-4zm0 6h4v-4h-4z"/></svg></div>
+</div>
+
+<!-- main maps-style card -->
+<div class="card main">
+  <svg class="map" viewBox="0 0 470 460">
+    <rect width="470" height="460" fill="#17263c"/>
+    <g fill="#1d2c4d">
+      <rect x="0" y="0" width="140" height="120"/><rect x="160" y="0" width="120" height="150"/><rect x="300" y="0" width="170" height="90"/>
+      <rect x="0" y="140" width="140" height="130"/><rect x="300" y="110" width="170" height="160"/><rect x="0" y="290" width="200" height="170"/><rect x="300" y="290" width="170" height="170"/>
+    </g>
+    <path d="M330 160 q40 40 140 30 L470 270 L330 270z" fill="#0e3d2e"/>
+    <g stroke="#304a7d" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M0 130 H470"/><path d="M0 280 H470"/><path d="M150 0 V460"/><path d="M290 0 V460"/>
+    </g>
+    <g stroke="#2c6675" stroke-width="13" fill="none" stroke-linecap="round"><path d="M-10 400 Q160 360 230 320 T480 150"/></g>
+    <path d="M242 470 V318 H290 V140" stroke="#669df6" stroke-width="10" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>
+  <svg class="puck" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#fff"/><path d="M17 6 L26 27 L17 22 L8 27z" fill="#1a73e8"/></svg>
+  <div class="banner">
+    <svg class="arrow" viewBox="0 0 24 24"><path fill="#fff" d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z"/></svg>
+    <div><div class="big"></div><div class="lbl">RPM</div></div>
+    <div class="rpmbar"></div>
+  </div>
+  <div class="speed"><div class="v"></div><div class="u">km/h</div></div>
+  <div class="eta"><div class="n"></div><div class="g">AFR</div><div class="n" style="color:#e8eaed"></div></div>
+</div>
+
+<!-- media card -->
+<div class="card media">
+  <div class="art"><img src="art.png"></div>
+  <div class="mtitle">Now boosting</div>
+  <div class="mbig"></div>
+  <div class="munit">psi · boost</div>
+  <div class="prog"></div>
+  <div class="ctrls">
+    <div><svg width="26" height="26" viewBox="0 0 24 24"><path fill="#e8eaed" d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></div>
+    <div class="play"><svg width="30" height="30" viewBox="0 0 24 24"><path fill="#062e6f" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></div>
+    <div><svg width="26" height="26" viewBox="0 0 24 24"><path fill="#e8eaed" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></div>
+  </div>
+</div>
+
+<!-- vitals -->
+<div class="card vitals">
+  <div class="vh">Vehicle</div>
+  <div class="chips">
+    <div class="chip"><div class="ic" style="background:#e37400"><svg viewBox="0 0 24 24"><path fill="#fff" d="M15 13V5a3 3 0 0 0-6 0v8a5 5 0 1 0 6 0zm-3-9a1 1 0 0 1 1 1v3h-2V5a1 1 0 0 1 1-1z"/></svg></div><div><div class="t">Coolant</div><div class="val"></div></div><div class="uu">°C</div></div><div class="chip"><div class="ic" style="background:#d93025"><svg viewBox="0 0 24 24"><path fill="#fff" d="M15 13V5a3 3 0 0 0-6 0v8a5 5 0 1 0 6 0zm-3-9a1 1 0 0 1 1 1v3h-2V5a1 1 0 0 1 1-1z"/></svg></div><div><div class="t">Oil temp</div><div class="val"></div></div><div class="uu">°C</div></div><div class="chip"><div class="ic" style="background:#c5221f"><svg viewBox="0 0 24 24"><path fill="#fff" d="M3 9h3l2-2h4l1 1 6-2 2 1-6 6H6L3 11zM20 13s-1.5 2-1.5 3a1.5 1.5 0 0 0 3 0c0-1-1.5-3-1.5-3z"/></svg></div><div><div class="t">Oil press</div><div class="val"></div></div><div class="uu">psi</div></div><div class="chip"><div class="ic" style="background:#1a73e8"><svg viewBox="0 0 24 24"><path fill="#fff" d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11A2.5 2.5 0 0 0 17.5 11.5c.36 0 .69-.08 1-.21v7.21a1 1 0 0 1-2 0V14a2 2 0 0 0-2-2h-1V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16h10v-7.5h1.5v5a2.5 2.5 0 0 0 5 0V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5z"/></svg></div><div><div class="t">Fuel press</div><div class="val"></div></div><div class="uu">psi</div></div><div class="chip"><div class="ic" style="background:#12b5cb"><svg viewBox="0 0 24 24"><path fill="#fff" d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2a1 1 0 1 0 1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5a3.5 3.5 0 0 0-7 0h2a1.5 1.5 0 1 1 1.5 1.5H2v2h13.5A3.5 3.5 0 0 0 19 6.5zM18.5 11H2v2h16.5a1.5 1.5 0 1 1-1.5 1.5h-2a3.5 3.5 0 1 0 3.5-3.5z"/></svg></div><div><div class="t">Intake air</div><div class="val"></div></div><div class="uu">°C</div></div><div class="chip"><div class="ic" style="background:#1e8e3e"><svg viewBox="0 0 24 24"><path fill="#fff" d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg></div><div><div class="t">Battery</div><div class="val"></div></div><div class="uu">V</div></div>
+  </div>
+</div>
+</body></html>
+

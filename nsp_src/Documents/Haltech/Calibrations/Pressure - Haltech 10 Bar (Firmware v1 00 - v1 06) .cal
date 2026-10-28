@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 106
+Version : 1.1.07.0
+InputUnits : 7
+OutputUnits : 27
+Voltages : 102, 307, 614, 818, 890
+Values : 0, 2586, 6462, 9048, 10000

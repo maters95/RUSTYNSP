@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 253
+Version : 1.1.11.0
+InputUnits : 7
+OutputUnits : 3
+Voltages : 102, 921
+Values : 946, 1080

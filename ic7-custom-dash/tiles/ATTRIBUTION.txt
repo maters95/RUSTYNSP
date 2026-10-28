@@ -1,0 +1,2 @@
+Sources: Esri, HERE, Garmin, USGS, Intermap, INCREMENT P, NRCan, Esri Japan, METI, Esri China (Hong Kong), Esri Korea, Esri (Thailand), NGCC, (c) OpenStreetMap contributors, and the GIS User Community.
+Offline tile use must be authorized by the tile provider. Do not copy or redistribute these tiles without permission.

@@ -1,7 +1,0 @@
-{
-  "file": "ic7-emulator-windows-workbench-mapfix.zip",
-  "bytes": 30936857,
-  "sha256": "6e5436d7a293b45def3a105e49a38076e56a9ae4507696d4bd37e0ed9118ad8f",
-  "files": 49,
-  "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"
-}

@@ -1,4 +1,5 @@
 import QtQuick 2.9
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtPositioning 5.9
 import QtLocation 5.9
@@ -6,12 +7,13 @@ import QtMultimedia 5.9
 
 // Moving map + GPS lap timing.
 // PC demo: a simulated car drives a loop so lap timing works with no GPS.
-// In the car: set `useSimulatedGps: false` to use the real PositionSource,
-// and provide offline map tiles (see README) since there's usually no network.
+// In the car: disable simulated GPS to read NMEA sentences from the configured
+// serial device, and provide offline map tiles (see README) since there's no net.
 Rectangle {
     id: page
     color: "#15181c"
-    property bool useSimulatedGps: true
+    property bool useSimulatedGps: simulatedGps
+    property string backgroundMode: bgMode
 
     // Finish line: two posts a little apart, straddling the loop's east side.
     readonly property var trackCenter: QtPositioning.coordinate(-33.8356, 151.0820) // demo: Sydney Motorsport Park-ish
@@ -42,7 +44,7 @@ Rectangle {
         center: carMarker.coordinate
         zoomLevel: 15
         copyrightsVisible: false
-        visible: bgMode === "map"
+        visible: page.backgroundMode === "map"
         Component.onCompleted: {
             if (!page.localTiles) return;
             for (var i = 0; i < supportedMapTypes.length; i++)
@@ -61,13 +63,34 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 3
+        visible: page.backgroundMode === "map"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 6
+        height: attributionText.implicitHeight + 8
+        color: "#b815181c"
+
+        Text {
+            id: attributionText
+            anchors.fill: parent
+            anchors.margins: 4
+            text: mapAttribution
+            color: "#f4f4f4"
+            font.pixelSize: 9
+            wrapMode: Text.WordWrap
+        }
+    }
+
     // Optional animated backgrounds (instead of the map) for an Android-Auto
     // style look. IC7_BG=gif plays bg.gif; IC7_BG=video loops bg.mp4. Files live
     // next to the binary. The lap/clock overlay stays on top in every mode.
     AnimatedImage {
         id: bgGif
         anchors.fill: parent
-        visible: bgMode === "gif"
+        visible: page.backgroundMode === "gif"
         playing: visible
         fillMode: Image.PreserveAspectCrop
         source: visible ? (bgDir + "/bg.gif") : ""
@@ -91,7 +114,7 @@ Rectangle {
     Video {
         id: bgVid
         anchors.fill: parent
-        visible: bgMode === "video"
+        visible: page.backgroundMode === "video"
         autoPlay: visible
         muted: true
         fillMode: VideoOutput.PreserveAspectCrop
@@ -117,6 +140,52 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        z: 2
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.margins: 10
+        width: 204
+        height: 44
+        color: "#cc15181c"
+        radius: 6
+        border.color: "#2a2f36"
+
+        Row {
+            anchors.centerIn: parent
+            spacing: 4
+
+            Repeater {
+                model: [
+                    { label: "MAP", mode: "map" },
+                    { label: "GIF", mode: "gif" },
+                    { label: "MP4", mode: "video" }
+                ]
+
+                delegate: Button {
+                    width: 62
+                    height: 34
+                    text: modelData.label
+                    checkable: true
+                    checked: page.backgroundMode === modelData.mode
+                    onClicked: page.backgroundMode = modelData.mode
+                    background: Rectangle {
+                        radius: 4
+                        color: parent.checked ? "#e5bd45" : "#343a40"
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: parent.checked ? "#15181c" : "#f4f4f4"
+                        font.pixelSize: 13
+                        font.bold: parent.checked
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+    }
+
     // --- Simulated GPS: drive the loop at ~speed from the CAN feed ---
     property real _angle: 0
     Timer {
@@ -132,15 +201,12 @@ Rectangle {
         }
     }
 
-    // --- Real GPS (used when useSimulatedGps is false) ---
-    PositionSource {
-        id: gps
-        active: !page.useSimulatedGps
-        updateInterval: 200
-        onPositionChanged: {
-            if (position.latitudeValid && position.longitudeValid) {
-                carMarker.coordinate = position.coordinate;
-                lapTimer.addFix(position.coordinate.latitude, position.coordinate.longitude);
+    Connections {
+        target: gpsSource
+        onFixReceived: {
+            if (!page.useSimulatedGps) {
+                carMarker.coordinate = QtPositioning.coordinate(latitude, longitude);
+                lapTimer.addFix(latitude, longitude);
             }
         }
     }

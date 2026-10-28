@@ -2,7 +2,7 @@
 
 ## Current Result
 
-The supplied `2026-10-26_0134pm.ic7-2-36-0.nexmap` was decoded offline using
+The supplied `research/nexmaps/2026-10-26_0134pm.ic7-2-36-0.nexmap` was decoded offline using
 the matching NSP source. All 34 AES-ZIP entries authenticated successfully.
 It contains the settings XML, a Hero layout, a Diagnostics layout, a pressure
 sensor definition, fonts and user images. Each nested `.nexcfg` also decoded;
@@ -24,7 +24,8 @@ byte-for-byte. Its source SHA256 remains:
 
 ## Matched Artifacts
 
-Use the newer files in `build-nsp-map/`, not the earlier `build-nsp/` drafts.
+Use the maintained files in `build-nsp-map/`; earlier draft build outputs have
+been removed.
 
 - [Asset-only map probe](../build-nsp-map/zak-2.36-map-assets-v2-experimental.nexmap).
 - [Map preservation report](../build-nsp-map/zak-2.36-map-assets-v2-experimental.report.json).
@@ -36,8 +37,8 @@ Use the newer files in `build-nsp-map/`, not the earlier `build-nsp/` drafts.
 
 The owner opened the asset map in Windows NSP and supplied a screenshot of
 both the static probe and PNG-extension animation alias in the image picker.
-The saved map was returned as the workspace-root
-`zak-2.36-map-assets-v2-experimental.nexmap`. It is distinct from the generated
+The saved map was returned as
+`research/nexmaps/zak-2.36-map-assets-v2-experimental.nexmap`. It is distinct from the generated
 file with the same basename under `build-nsp-map/`.
 
 All 38 returned entries authenticated. The three probe assets, including the
@@ -57,11 +58,11 @@ The matching v2.36 definition classifies all 1,153 changed settings:
 Thus Windows import, picker listing, selection, and saved-map asset/reference
 preservation are proven. This does not prove live USB resource transfer,
 physical animation, or installation of the component patch.
-The reproducible comparison is saved under `scratchpad/map-roundtrip/`.
+The reproducible comparison is saved under `research/scratchpad/map-roundtrip/`.
 
 ```sh
 /home/codespace/ic7build/map-venv/bin/python scripts/inspect-nexmap.py \
-  zak-2.36-map-assets-v2-experimental.nexmap \
+  research/nexmaps/zak-2.36-map-assets-v2-experimental.nexmap \
   --definition fw/ic7_2360.hdef \
   --compare ic7-custom-dash/build-nsp-map/zak-2.36-map-assets-v2-experimental.nexmap
 ```
@@ -114,7 +115,7 @@ archive; the other 338 members retain identical contents. No raw password or
 key material was logged or written separately.
 
 The current resource candidate is
-[`ic7-2.36-media-preview-experimental.nex`](../build-nsp-media/ic7-2.36-media-preview-experimental.nex).
+[`ic7-2.36-media-cfw-mapfix-alias-experimental.nex`](../build-cfw-media-mapfix-alias/ic7-2.36-media-cfw-mapfix-alias-experimental.nex).
 Its exact QML component is adjacent as `HalImage.qml` for the emulator's
 isolated stock-renderer mode. The authenticated map probe
 [`zak-2.36-media-probe.nexmap`](../build-nsp-map/zak-2.36-media-probe.nexmap)
@@ -178,9 +179,9 @@ the separate resource-package builder.
 
 ```sh
 /home/codespace/ic7build/map-venv/bin/python scripts/inspect-nexmap.py \
-  2026-10-26_0134pm.ic7-2-36-0.nexmap --definition fw/ic7_2360.hdef
+  research/nexmaps/2026-10-26_0134pm.ic7-2-36-0.nexmap --definition fw/ic7_2360.hdef
 /home/codespace/ic7build/map-venv/bin/python scripts/build-nexmap-asset-probe.py \
-  2026-10-26_0134pm.ic7-2-36-0.nexmap \
+  research/nexmaps/2026-10-26_0134pm.ic7-2-36-0.nexmap \
   --output /tmp/ic7-asset-probe.nexmap
 bash scripts/test-nsp-image.sh
 IC7_SYSROOT="$HOME/ic7build/sysroot" bash scripts/test-nsp-image.sh

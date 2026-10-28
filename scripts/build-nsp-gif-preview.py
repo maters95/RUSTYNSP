@@ -43,7 +43,7 @@ def replace_component(payload, replacement):
     return output.getvalue()
 
 
-def manifest_for_resource(stock_manifest, resource_name):
+def manifest_for_resource(stock_manifest, resource_name, package_version):
     root = ElementTree.fromstring(stock_manifest)
     products = [product for product in root.findall("PRODUCT")
                 if product.get("pid") == "21" and product.get("vid") == "11"]
@@ -61,7 +61,10 @@ def manifest_for_resource(stock_manifest, resource_name):
         source = root.find(name)
         if source is None:
             raise ValueError(f"Missing manifest element {name}")
-        result.append(copy.deepcopy(source))
+        version = copy.deepcopy(source)
+        if name == "FW_PACKAGE_VERSION":
+            version.text = package_version
+        result.append(version)
     attributes = {name: value for name, value in product.attrib.items()
                   if name != "releaseNotesFile"}
     selected = ElementTree.SubElement(result, "PRODUCT", attributes)
@@ -77,17 +80,23 @@ def main():
     parser.add_argument("--component", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--label", default="gif-preview")
+    parser.add_argument("--package-version", default="2.36.0.0.0")
     args = parser.parse_args()
     if not args.label or any(not (character.islower() or character.isdigit() or character == "-")
                              for character in args.label):
         parser.error("--label may contain only lowercase letters, digits, and hyphens")
+    version_parts = args.package_version.split(".")
+    if len(version_parts) < 2 or not all(part.isdigit() for part in version_parts):
+        parser.error("--package-version must be a dotted numeric version")
     codec = runpy.run_path(str(Path(__file__).with_name("decode-nsp-resources.py")))
     resource_name = "res_ic-7.qzip"
     with zipfile.ZipFile(args.stock_nex) as stock:
         if stock.testzip() is not None:
             raise ValueError("Stock NEX ZIP integrity failed")
         original = stock.read(resource_name)
-        manifest, hdef_name = manifest_for_resource(stock.read("manifest.xml"), resource_name)
+        manifest, hdef_name = manifest_for_resource(
+            stock.read("manifest.xml"), resource_name, args.package_version
+        )
         migration_definition = stock.read(hdef_name)
     decoded, original_report = codec["decode_resource"](args.reference, original)
     original_members = read_members(decoded)
@@ -113,7 +122,8 @@ def main():
     (args.output / "HalImage.qml").write_bytes(replacement)
     packages = {}
     for package_label, payload in ((args.label, candidate), ("stock-resources", original)):
-        name = f"ic7-2.36-{package_label}-experimental.nex"
+        version_label = ".".join(version_parts[:2])
+        name = f"ic7-{version_label}-{package_label}-experimental.nex"
         destination = args.output / name
         with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_STORED) as archive:
             archive.writestr("manifest.xml", manifest)
@@ -131,6 +141,7 @@ def main():
     report = {
         "status": "offline-validated; NSP acceptance and hardware installation untested",
         "label": args.label,
+        "package_version": args.package_version,
         "changed_members": changed, "preserved_members": len(original_members) - 1,
         "original_component_sha256": expected, "replacement_component_sha256": digest(replacement),
         "wrapper_preserved": candidate[:44] == original[:44],

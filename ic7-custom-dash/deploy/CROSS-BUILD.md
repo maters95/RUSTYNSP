@@ -84,8 +84,9 @@ Do NOT `systemctl enable` the overlay — leave stock mode as the boot default.
 - **Display:** the service sets `QT_QPA_PLATFORM=eglfs` (the stock app's platform).
   If eglfs needs a specific integration on this board, match what the stock
   `gui-launcher` used (check its environment / the b2qt image defaults).
-- **GPS:** USB NMEA receiver via QtPositioning serialnmea; service sets
-  `QT_NMEA_SERIAL_PORT=/dev/ttyUSB0` — adjust to your receiver's node.
+- **GPS:** USB/serial NMEA receiver via the app's QtSerialPort parser
+  (`IC7_GPS_DEVICE=/dev/ttyUSB0`, 9600 baud, 8-N-1, and `IC7_SIM_GPS=0`).
+  The stock image has Qt SerialPort but no QtPositioning serial NMEA plugin.
 - **CAN:** `bringup-can.sh` sets `can0` to 1 Mbit/s; the app reads `IC7_CAN=can0`.
 
 ## 5. Offline map tiles (no network in the car)
@@ -93,15 +94,21 @@ The app embeds a tiny loopback HTTP tile server (`src/tileserver.cpp`) that
 serves `tiles/<z>/<x>/<y>.png` from next to the binary, and `TrackPage.qml`
 points QtLocation's osm plugin at `http://127.0.0.1:<port>/`. So the map renders
 fully offline — no internet, and no HTTPS/OpenSSL needed on the dash.
-- Seed tiles with `deploy/seed-tiles.ps1` (or any z/x/y downloader) for the
-  tracks/roads you use; keep zoom ~12–16 to bound the size (294 tiles ≈ 5 MB for
-  one circuit). Verified working on the desktop build against ESRI tiles.
+- Seed tiles with `deploy/seed-tiles.ps1` only from a source/license that permits
+  offline extraction and caching; pass the provider's URL template and required
+  attribution. Do not bulk-scrape public tile services or redistribute tiles
+  without permission. Defaults are Grafton, NSW, zoom 13–15 (~290 tiles). The
+  existing 294-tile demo set was verified by the desktop app but covers Sydney.
 - Deploy the `tiles/` tree to `/opt/applications/ic7overlay/tiles/`.
 - Missing tiles just render blank; present ones are served instantly.
 - To refresh tiles after reseeding, clear the app's `tilecache/` folder (the osm
   plugin caches on disk; the app sets its cache dir next to the binary).
 
-## 6. Flash + test
-Follow `DEPLOY.md` §3–4: verify i.MX6 USB recovery first, flash the PASSIVE A/B
-partition, boot-test (stock mode → NSP connects; `ic7-mode overlay` → your app),
-then promote. Leave the STM32 (`dash_stm`) firmware untouched.
+## 6. Hardware test status
+Do not flash or install this app through NSP: no vendor-compatible installation
+path or recovery process has been verified for the owner's unit. The delivered
+ARM app is a separate display-owner process, not an NSP `.nex` or complete
+firmware image. Use QEMU and the Windows virtual-dash test flow first. Physical
+bench testing requires a vendor-supported deployment method, verified recovery,
+stable bench power, a compatible NMEA receiver, and licensed offline map tiles.
+See `DEPLOY.md` and `USB-INSTALL.md`; leave the STM32 (`dash_stm`) firmware alone.

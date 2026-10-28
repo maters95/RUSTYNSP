@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>NSP</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System.ServiceModel.Primitives">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.ServiceModel.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="FTDI2XX">
+      <HintPath>../vendor/local-installs/haltech-nsp/FTDI2XX.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Ports">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.IO.Ports.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration.ConfigurationManager">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Common">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>../vendor/local-installs/haltech-nsp/Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.Primitives">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.Windows.Forms.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms">
+      <HintPath>../vendor/local-installs/haltech-nsp/Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Core">
+      <HintPath>../vendor/local-installs/haltech-nsp/Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.Windows.Forms.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET-Q8-AnyCPU">
+      <HintPath>../vendor/local-installs/haltech-nsp/Magick.NET-Q8-AnyCPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET.Core">
+      <HintPath>../vendor/local-installs/haltech-nsp/Magick.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel.NetNamedPipe">
+      <HintPath>../vendor/local-installs/haltech-nsp/System.ServiceModel.NetNamedPipe.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>../vendor/local-installs/haltech-nsp/RestSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

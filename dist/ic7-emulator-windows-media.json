@@ -1,7 +1,0 @@
-{
-  "file": "ic7-emulator-windows-media.zip",
-  "bytes": 30921755,
-  "sha256": "f33a796f290e092eee3b6e111823d687eb11cc181040ccfe1ae122f0ecc21fe4",
-  "files": 47,
-  "status": "Windows NSP serial session observed; MP4/GIF resource preview and component override unit-tested; Windows renderer run and firmware installation unverified"
-}

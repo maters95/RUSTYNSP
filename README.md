@@ -1,9 +1,26 @@
 # RUSTYNSP
 
 Haltech iC-7 custom Qt/QML dash application and firmware reference material.
-The supplied `iC7-Custom-Dash-Project.7z` has been extracted into this workspace.
-The decompiled source and ILSpy are at `nsp_src/` and `ilspy/`, respectively
-(not under `tools/` in this archive).
+The supplied project archive is retained in `vendor/source-archives/`;
+the extracted stock dash resources are organized under
+`reference/stock-dash-extract/`. The decompiled NSP source is in `nsp_src/`,
+and the ILSpy command-line tool is in `tools/ilspy/`.
+
+## Repository Layout
+
+- `ic7-custom-dash/` — companion dash application, deployment guides, tests,
+  and experimental resource builds.
+- `ic7-emulator/` — isolated Windows NSP protocol and renderer workbench.
+- `nsp_src/` and `nsp-rebuild/` — NSP source snapshot and rebuild project.
+- `fw/` — firmware packages, definitions, and extracted firmware references.
+- `reference/stock-dash-extract/` — extracted stock QML/resources used for
+  read-only comparison.
+- `research/` — captured USB evidence, map inputs, analysis scratch work,
+  emulator session data, and decompiled updater research.
+- `vendor/` — original source archive and local vendor application installs.
+  `vendor/local-installs/` is intentionally ignored by Git.
+- `scripts/` — repository-level inspection and packaging scripts.
+- `dist/` — generated test bundles and candidate packages.
 
 ## Repository Storage
 
@@ -20,8 +37,8 @@ GitHub LFS storage and upload bandwidth. Keep at least 2 GiB of free local
 space for LFS temporary files in addition to the checkout and LFS object cache.
 
 The canonical stock v2.36 package is [fw/Dash-V2-36-0-Release.nex](fw/Dash-V2-36-0-Release.nex).
-The generated asset-map copy is retained under
-[build-nsp-map/](ic7-custom-dash/build-nsp-map/), not duplicated under `build-nsp/`.
+Generated map probes and their reports are retained under
+[build-nsp-map/](ic7-custom-dash/build-nsp-map/).
 Desktop CMake/qmake build directories and Python bytecode caches are not
 versioned; regenerate desktop builds using the commands below.
 
@@ -44,38 +61,48 @@ on the owner's PC; physical firmware execution is not emulated.
 For the virtual GIF test, use the [updated map test kit](dist/ic7-nsp-media-map-test-autosetup.zip)
 with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
-## Build Results (2026-10-27)
+## Build Results (2026-10-28)
 
 **Deployment blocker:** the owner's firmware-2.36 dash is accessible only via
 NSP over USB, not SSH. The standalone app does not implement NSP USB services.
 The [ARM app scratch-test bundle](dist/ic7dash-arm-scratch-test.tar.gz) is for
-vendor-authorized shell access only; it is not an NSP-installable package or a
+vendor-authorized shell access only; its [SHA-256 checksum](dist/ic7dash-arm-scratch-test.tar.gz.sha256)
+is provided alongside it. The bundle is not an NSP-installable package or a
 flashable CFW image. Its app was freshly cross-built and smoke-tested in QEMU,
 not on the physical dash.
-An experimental resource-only media patch now supports GIF and muted looping
-MP4 in `HalImage.qml`, preserving the stock executable. NSP acceptance and
-hardware installation remain untested. See
+An experimental resource-only media patch supports GIF and muted looping MP4
+in `HalImage.qml`, preserving the stock executable and the other 338 package
+members. The current [HDEF-assisted media candidate](ic7-custom-dash/build-cfw-media-mapfix-alias/ic7-2.36-media-cfw-mapfix-alias-experimental.nex)
+and [build report](ic7-custom-dash/build-cfw-media-mapfix-alias/build-report.json)
+are not NSP- or hardware-validated. See
 [USB investigation and Windows diagnostics](ic7-custom-dash/deploy/USB-INSTALL.md).
 
-The owner's map has now been decoded and an asset-only test copy built, with
-all original settings/layouts preserved. The next test can be performed in
-Windows NSP **with the dash disconnected**. See
-[map integration and offline test](ic7-custom-dash/deploy/NEXMAP-INTEGRATION.md).
+The companion Qt app includes an offline map, GIF/MP4 selector, and checksummed
+NMEA RMC/GGA input over a serial GPS receiver. No internal GPS was confirmed;
+real tracking requires an external receiver, and Grafton tiles require a
+lawfully licensed, attributed provider. The app owns the display separately
+from the OEM UI, so OEM warnings are not visible at the same time. See
+[map integration and offline test](ic7-custom-dash/deploy/NEXMAP-INTEGRATION.md)
+and the [CFW bench-test kit guide](ic7-custom-dash/deploy/CFW-TEST-KIT.md).
 
-Candidate: [experimental media resource package](ic7-custom-dash/build-nsp-media/ic7-2.36-media-preview-experimental.nex).
-Stock counterpart: [experimental stock-resource package](ic7-custom-dash/build-nsp-media/ic7-2.36-stock-resources-experimental.nex).
-[Build report](ic7-custom-dash/build-nsp-media/build-report.json) verifies that
-only `HalImage.qml` changed and all other 338 resource entries retain their
-contents. [MP4/GIF map asset probe](ic7-custom-dash/build-nsp-map/zak-2.36-media-probe.nexmap)
-preserves the original map entries/settings. Neither candidate contains an app
-executable, OS image, definition, or STM32 firmware. Live map/GPS integration
-and physical firmware installation remain separate, untested work.
+The bench-test kit is explicitly **not firmware and not flashable**. It groups
+the resource candidate, test map, ARM demo bundle, checksums and test guidance.
+Neither the resource package nor map package contains the standalone app or
+provides a verified installation/recovery route.
 
-- Linux desktop build: `ic7-custom-dash/build-linux/ic7dash`.
+- [Bench-test kit (not firmware or flashable)](dist/ic7-cfw-bench-test-kit-2.36.zip)
+- [Windows NSP integration test bundle](dist/ic7-nsp-media-integration-test-2.36.zip):
+  use only with a complete copy of NSP while the physical dash is disconnected.
+  The included DLL is an unsigned test build; the bundle does not initiate a
+  firmware update.
+- [SHA-256 checksums](dist/ic7-test-bundles.sha256) for both test bundles.
+
+- Linux desktop build: recreate using the commands in Desktop Verification.
 - Hardware build: `ic7-custom-dash/build-arm/ic7dash`, ARMv7 hard-float EABI5,
-	108,112 bytes after stripping.
+	124,496 bytes after stripping.
 - Deployment bundle: [ic7dash-arm-bundle.tar.gz](ic7-custom-dash/build-arm/ic7dash-arm-bundle.tar.gz),
-	containing the binary, CAN configuration, GIF, CAN setup script and 294 tiles.
+	containing the binary and 294 Sydney demo tiles; it does not contain Grafton
+	map data or a GPS receiver.
 - Cross-build uses GCC 11, Qt 5.9.9 host moc/rcc, and the stock firmware's
 	Qt 5.9.6 headers/libraries and glibc 2.24 sysroot. The executable directly
 	requires no glibc symbol version newer than GLIBC_2.4.
@@ -135,10 +162,11 @@ xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 \
 Desktop captures: [gauges](ic7-custom-dash/shots/linux-map/page1.png),
 [offline map and laps](ic7-custom-dash/shots/linux-map/page2.png).
 ARM offscreen captures are under `ic7-custom-dash/shots/arm-map/`.
-The QML component suite passed eight tests on desktop Qt 5.15 and stock ARM Qt
-5.9.6 under QEMU, including GIF frame advance and playback of the supplied
-1080p H.264 MP4. QEMU does not validate i.MX6 hardware decode or physical
-display performance.
+The QML component suite passed nine tests on desktop Qt 5.15 and stock ARM Qt
+5.9.6 under QEMU. ARM QEMU smoke tests covered the local-tile map, animated GIF,
+and H.264 MP4; a PTY test accepted a valid Grafton NMEA fix and rejected a bad
+checksum. QEMU does not validate i.MX6 hardware decode, GPS reception, or
+physical display performance.
 
 For the hardware run procedure, see
 [ON-DASH-TEST.md](ic7-custom-dash/deploy/ON-DASH-TEST.md).

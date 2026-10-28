@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="EULARTFTextBox.Text" xml:space="preserve"><value>SOFTWARE LICENCE AGREEMENT
+
+PERMISSION TO USE THIS SOFTWARE IS CONDITIONAL UPON YOU AGREEING TO THE TERMS SET OUT BELOW. ACCEPTANCE OF THE TERMS AND CONDITIONS WILL BE BINDING ON YOU. BY CLICKING "I ACCEPT" AT THE END OF THESE TERMS AND CONDITIONS, YOU WILL BE DEEMED TO HAVE ACCEPTED THEM.
+
+
+1 DEFINITIONS AND INTERPRETATION
+
+1.1 The following words have these meanings in this agreement unless the contrary intention appears:
+
+"Acceptance Date" means the date upon which the Software is used in whole or in part.
+
+"Commencement Date" means the date of acceptance of the Software.
+
+"Designated Computer Equipment" means one computer unless a multi user or volume licence is granted by the Supplier.
+
+"Intellectual Property Rights" means all present and future rights conferred by stature, common law or equity in relation to any copyright, trademarks, patents, and designs (whether registered or not), know how, all technical materials, plans, specifications, drawings and all other intellectual property
+
+"Licence" means the licence of Software granted pursuant to this agreement;
+
+"Manual of Specifications" means the documentation which forms part of the Software and which contains technical information relating to the Software whether provided as part of the Software or in addition to the Software and whether in written form or electronic;
+
+"Media" means the media on which the Software is recorded or printed;
+
+"Software" means all content of all files, disks, CD-ROM(s) or other Media which is provided including digital images, stock photographs, clip art, sounds and other artistic works, related explanatory materials or files whether written or electronic, fonts, upgrades, modified versions, updates, additions and copies of Software licensed to the Supplier.
+
+"Supplier" means Lockin Pty Limited ACN 68 061 744 303 trading as Haltech.
+
+1.2 Interpretation
+
+(a) Words importing the singular include the plural and vice versa and words importing one gender shall include all other genders;
+
+(b) Headings are for ease of reference only and shall not affect the interpretation of this licence;
+
+(c) Terms may be defined or used in the Software and when so defined or used will have the meanings given to them.
+
+
+2 DURATION
+
+This agreement commences on the Commencement Date and subject to the terms of this licence, the licence shall continue in perpetuity.
+
+
+3 MANUAL OF SPECIFICATIONS
+
+3.1 The Supplier will supply a copy of the Manual of Specifications to you as part of the Software or accompanying the Software.
+
+3.2 The Supplier warrants that the Manual of Specifications will be adequate to enable you to operate the Software in the manner reasonably contemplated by the parties.
+
+3.3 The Supplier may update the Manual of Specifications from time to time and will post updates to the Manual of Specifications on its website and it is your responsibility to check the Supplier’s website for those updates.
+
+3.4 You acknowledge the Supplier's proprietary interest in the Manual of Specifications. You will not copy the Manual of Specifications except where necessary to enable proper use of the Software in the manner reasonably contemplated by the Supplier.
+
+
+4 CONDITIONS OF LICENCE
+
+4.1 The licence shall be non-transferable and non-exclusive to you.
+
+4.2 Use of the Software is limited to the Designated Computer Equipment, unless the consent of the Supplier is obtained to use the Software on alternative equipment. Such consent shall not be unreasonably withheld.
+
+4.3 The Supplier is not required to provide updates or new releases for the Software pursuant to this agreement.
+
+4.4 The Software is not to be shipped, transferred or exported to any country or used in any way prohibited by export laws or restrictions or regulations. If the Software is identified as being export controlled under relevant laws you represent and warrant that you are not a citizen of an embargoed country and are not otherwise restricted from receiving the Software. All rights under this licence are terminated if this clause is not complied with or you are in breach of the warranty in this clause.
+
+4.5 The Software may automatically report data about the Software usage back to the Supplier in order to track issues, improve features and provide market feedback to the Supplier.
+
+
+5 PRIVACY POLICY
+
+5.1 The Software will operate under the Privacy Policy as outlined here: https://www.haltech.com/privacy-policy/
+
+5.2 A User may opt out of Data Collection at any time by going to the Help-&gt;Data Privacy menu in the Software.
+
+
+6 INSTALLATION
+
+The Supplier is not obliged to install the Software or to provide any services or support in respect of installation of the Software under this licence.
+
+
+7 ACCEPTANCE
+
+7.1 You are taken to have accepted the Software on the Acceptance Date.
+
+7.2 Upon installation of the Software, you will be responsible for ensuring that the Software is used in accordance with the Manual of Specifications.
+
+
+8 OWNERSHIP OF INTELLECTUAL PROPERTY
+
+8.1 You acknowledge and agree that the Supplier is the owner of all Intellectual Property Rights in the Software and Manual of Specifications and that you have no right, title or interest in such Intellectual Property Rights and you will not attempt to claim such rights or asset ownership over such rights.
+
+8.2 The Supplier will be the absolute owner of any Intellectual Property Rights in any modifications made to the Software or Manual of Specifications and the terms of this Agreement will apply equally to the modifications as to the original Intellectual Property Rights themselves.
+
+8.3 You agree to assign to the Supplier all rights to any modifications made to the Software or Manual of Specifications referred to in clause 7.2.
+
+8.4 The structure, organisation and code of the Software are the valuable trade secrets of the Supplier and confidential information of the Supplier. The Software is protected by Australian copyright law. Any copies that you make in accordance with clause 8 must contain the same copyright and other proprietary notices that appear on or in the Software.
+
+8.5 You agree to indemnify the Supplier against any loss or damage suffered by the Supplier as a result of any breach of this agreement by you, any other default or negligence or any claim arising in any way from your use of the Intellectual Property Rights unless such loss or damage is a result of a breach of an express warranty of the Supplier contained in this agreement.
+
+
+9 COPIES
+
+9.1 Subject to the following and without seeking to exclude or limit the application of sections 47B (3), 47 (C), 47D, 47E or 47F of the Copyright Act 1968 (Cth) you must not copy the Software in whole or in part.
+
+9.2 You may make such number of copies of the Software as is necessary to serve your internal needs for system's back-up and security. All copies of the Software and the Media in which the copies are contained will be and remain the property of the Supplier.
+
+9.3 You must mark all copies of the Software and the Media in which the copies are contained with a notice of:-
+(i) the Supplier's ownership of the Software and the Media;
+(ii) the confidentiality of the Software; and
+(iii) such other information as the Supplier requires.
+
+9.4 You must maintain records of all copies of the Software made by it and the place at which those copies are situated. Such records shall be furnished to the Supplier upon reasonable notice.
+
+9.5 You must notify the Supplier immediately on becoming aware of any unauthorised use or copying of the whole or any part of the Software or of the Manual of Specifications.
+
+
+10 MODIFICATIONS
+
+10.1 You will not modify the whole or any part of the Software or combine or incorporate the whole or any part of the Software in any other program or system without the prior consent in writing of the Supplier.
+
+10.2 If the Software is modified, the modifications will, unless the Supplier directs otherwise, be made in accordance with a written proposal submitted by you to the Supplier, which has been approved by the Supplier.
+
+10.3 You indemnify and hold harmless the Supplier against any liability incurred if the said modifications infringe the Intellectual Property Rights of a third person.
+
+
+11 REVERSE ENGINEERING
+
+Except as expressly permitted by sections 47B (3), 47C, 47D, 47E or 47F of the Copyright Act 1968 (Cth), you must not reverse assemble or reverse compile the Software or any part of the Software.
+
+
+12 SECURITY
+
+You are responsible for protecting the software and the manual of specifications at all times from unauthorised access, use or damage.
+
+
+13 CUSTOMER INDEMNITIES
+
+13.1 You expressly acknowledge that the Software must only be used in accordance with the Manual of Specifications and should only be used by a person with knowledge of engine parameters and engine tuning requirements. You also acknowledge that any use of the Software not in accordance with the Manual of Specifications could lead to damage to property or person such as:
+(a) engine failure;
+(b) damage to engine; and
+(c) engine explosion.
+
+13.2 You acknowledge that you a person with knowledge of engine parameters and engine tuning requirements and therefore agree to indemnify the Supplier for any loss, damage to property or injury to any person, caused by the use of the Software other than in accordance with the Manual of Specifications.
+
+13.3 You acknowledge that it is unlawful to tamper with your vehicle's emissions equipment. All products and software are sold for Sanctioned Offroad/Competition Non-Emissions Controlled Vehicles only. Using this product for street / road use on public highways is prohibited by law. It is the responsibility of the installer and/or user of this product to ensure compliance with all applicable local and federal laws and regulations. Please check with your local vehicle authority before using this product.
+
+
+14 SUPPLIER INDEMNITIES
+
+14.1 The Supplier warrants that it has the right to grant the licence to you.
+
+14.2 Subject to clause 13.3, the Supplier indemnifies you against any claim made against you by a third party alleging that the Software infringes the copyright of that third party.
+
+14.3 The Supplier is not liable to you under clause 13.1 or 13.2 if:
+(a) you do not notify the Supplier of the third party’s claim or of infringement of copyright within seven (7) days of becoming aware of the claim;
+(b) the Supplier’s ability to defend the claim has been prejudiced by your noncompliance with any obligations contained in this agreement;
+(c) the claim has arisen because of the use of the Software in combination with equipment, materials or computer programs not supplied or approved by the Supplier; or
+(d) you do not permit the Supplier to have control of the defence of the claim and
+all related settlement negotiations.
+
+
+15 TERMINATION
+
+15.1 For the purpose of this agreement, the following are terminating events:
+(a) the breach of threatened breach by either party of any of its material obligations under this agreement;
+(b) either party enters into any scheme of arrangement with its creditors or any class of them or indicates its intention to do so;
+(c) either party suspends payment of its debts or is unable to pay its debts when they are due, or is or becomes unable to pay its debts within the meaning of the Corporations Act;
+(d) a provisional liquidator is appointed to the other party;
+(e) the permanent discontinuance of use of the Software or any part of the Software by you; or
+(f) the purchase of the Software by you pursuant to an agreement with the Supplier.
+
+15.2 The licence may be terminated immediately upon the happening of a terminating event at the option of the affected party.
+
+15.3 Neither party shall be liable for the consequences of an occurrence of any event beyond its reasonable control;
+
+15.4 Immediately upon termination of this agreement:
+(a) You must return to the Supplier the Software and all the copies of the Software and any revisions, enhancements and upgrades of the Software, the media and all user manuals for the Software; or
+(b) if required by the Supplier, you must destroy such Software, copies, revisions, enhancements and upgrades by erasing them from the Designated Computer Equipment and the Media and must certify, in writing, to the Supplier that they have been destroyed.
+
+
+16 IMPLIED TERMS
+
+16.1 Certain laws imply terms, conditions and warranties ("Prescribed Terms") into contracts for the supply of goods and services and prohibit the exclusion, restriction or modification of such terms, conditions and warranties. The liability of Supplier in respect of a breach of a Prescribed Term or any warranty made under this agreement is limited, to the extent permissible by law and at the option of Supplier:
+(a) if the breach relates to goods:
+(i) the replacement of goods or the supply of equivalent goods;
+(ii) the repair of such goods;
+(iii) the payment of the cost of replacing the goods or acquiring equivalent goods; or
+(iv) the payment of the cost of having the goods repaired; and
+(b) if the breach relates to services:
+(i) the supplying of services again; or
+(ii) the payment of the cost of having the services supplied again.
+
+16.2 Unless the terms and warranties are included in this agreement, all prior discussions, quotations, warranties and Prescribed Terms, to the extent permitted by law, are excluded. You acknowledge that you use the Software at your own risk and agree that the Supplier is not liable for any damage to any engine or other property caused by use of the Software.
+
+
+17 ENTIRE AGREEMENT
+
+This agreement supersedes all prior agreements, arrangements and undertakings between the parties and constitutes the entire agreement between the parties relating to the Software. No addition to or modification of any provision of this agreement will be binding upon the parties unless made by written instrument signed by a duly authorised representative of the party.
+
+
+18 LAW
+
+This agreement shall be governed by and construed in accordance with the laws for the time being in force in the State New South Wales, Australia and the parties agree to submit to the jurisdiction of the courts and tribunals of that State.
+
+
+19 WAIVER
+
+No forbearance, delay or indulgence by a party in enforcing the provisions of this agreement shall prejudice or restrict the rights of that party, nor shall any waiver of those rights operate as a waiver of any subsequent breach.
+
+
+20 SEVERABILITY
+
+Should any part of this agreement be or become invalid, that part shall be severed from this agreement. Such invalidity shall not affect the validity of the remaining provisions of the agreement.
+
+
+21 USAGE POLICY
+
+In many states it is unlawful to tamper with your vehicle's emissions equipment. Haltech products are designed and sold for sanctioned off-road/competition non-emissions controlled vehicles only and may never be used on a public road or highway. Using Haltech products for street/road use on public roads or highways is prohibited by law unless a specific regulatory exemption exists (more information can be found on the SEMA Action Network website www.semasan.com/emissions for state by state details in the USA).
+It is the responsibility of the installer and/or user of this product to ensure compliance with all applicable local and federal laws and regulations. Please check with your local vehicle authority before purchasing, using or installing any Haltech product.</value></data>
+  </root>

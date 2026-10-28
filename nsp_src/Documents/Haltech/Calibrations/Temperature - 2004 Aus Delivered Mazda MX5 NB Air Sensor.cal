@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 104
+Version : 1.2.00.11.0
+InputUnits : 8
+OutputUnits : 5
+Voltages : 1000, 1150, 1600, 2180, 2500, 3190, 3560, 3790
+Values : 3481, 3431, 3331, 3231, 3131, 3031, 2931, 2861

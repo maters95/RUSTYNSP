@@ -7,8 +7,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 # Qt5 (matches the dash's Qt 5.9 era) or Qt6 on a modern dev box.
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Qml Quick Positioning Location Network Multimedia)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Qml Quick Positioning Location Network Multimedia)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Qml Quick Positioning Location Network Multimedia SerialPort)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Qml Quick Positioning Location Network Multimedia SerialPort)
 
 # SocketCAN is Linux-only; on Windows/macOS we build with the simulated source only.
 if(UNIX AND NOT APPLE)
@@ -22,6 +22,7 @@ add_executable(ic7dash
     src/channelmodel.cpp
     src/laptimer.cpp
     src/tileserver.cpp
+    src/nmeagpssource.cpp
     qml.qrc
 )
 
@@ -34,4 +35,5 @@ target_link_libraries(ic7dash PRIVATE
     Qt${QT_VERSION_MAJOR}::Location
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::SerialPort
 )

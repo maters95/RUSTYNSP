@@ -1,7 +1,0 @@
-{
-  "file": "ic7-emulator-windows-media-mapfix.zip",
-  "bytes": 30936984,
-  "sha256": "ab46a2b80aafbe890965505d3dd81b26dc803b4924908a58ea5245c6a489d12b",
-  "files": 49,
-  "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"
-}

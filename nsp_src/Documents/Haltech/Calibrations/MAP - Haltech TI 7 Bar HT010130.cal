@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 104
+Version : 1.2.00.2.102
+InputUnits : 8
+OutputUnits : 3
+Voltages : 507, 4500
+Values : 13, 7013

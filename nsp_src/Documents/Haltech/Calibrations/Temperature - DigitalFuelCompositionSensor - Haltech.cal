@@ -1,0 +1,7 @@
+%CALIBRATION%
+Type : 156
+Version : 1.1.10.0
+InputUnits : 11
+OutputUnits : 5
+Voltages : 1000, 5000
+Values : 2331, 3981

@@ -58,8 +58,9 @@ QTINC="$SYSROOT/usr/include/qt5"
 echo "== 3. moc the Q_OBJECT headers + rcc the resources (host tools)"
 mkdir -p "$OUT"; cd "$OUT"
 INCS="-I$QTINC -I$QTINC/QtCore -I$QTINC/QtGui -I$QTINC/QtQml -I$QTINC/QtQuick \
-      -I$QTINC/QtNetwork -I$QTINC/QtPositioning -I$QTINC/QtLocation -I$QTINC/QtMultimedia -I$SRC/src"
-for h in channelmodel emtrondecoder cansource laptimer tileserver; do
+      -I$QTINC/QtNetwork -I$QTINC/QtPositioning -I$QTINC/QtLocation -I$QTINC/QtMultimedia \
+      -I$QTINC/QtSerialPort -I$SRC/src"
+for h in channelmodel emtrondecoder cansource laptimer tileserver nmeagpssource; do
   "$MOC" -DHAVE_SOCKETCAN "$SRC/src/$h.h" -o "moc_$h.cpp"
 done
 "$RCC" -name qml "$SRC/qml.qrc" -o qrc_qml.cpp
@@ -71,7 +72,7 @@ CXXFLAGS="-O2 -std=gnu++14 -fPIC -DQT_NO_DEBUG -DHAVE_SOCKETCAN --sysroot=$SYSRO
 SYSTEM_INCLUDES=(-nostdinc -isystem "$CXXINC" -isystem "$CXXINC/arm-linux-gnueabihf"
                  -isystem "$CXXINC/backward" -isystem "$GCCINC" -isystem "$SYSROOT/usr/include")
 LIBS="-lQt5Quick -lQt5Qml -lQt5Network -lQt5Location -lQt5Positioning \
-      -lQt5Multimedia -lQt5Gui -lQt5Core -lpthread -ldl -lrt"
+      -lQt5Multimedia -lQt5SerialPort -lQt5Gui -lQt5Core -lpthread -ldl -lrt"
 # gcc-11's static libstdc++ references __libc_single_threaded (glibc>=2.32);
 # the dash is glibc 2.24. Provide it (0 = assume multithreaded, the safe path).
 printf 'char __libc_single_threaded = 0;\n' > compat_stub.c
@@ -79,8 +80,10 @@ printf 'char __libc_single_threaded = 0;\n' > compat_stub.c
   compat_stub.c \
   "$SRC/src/main.cpp" "$SRC/src/cansource.cpp" "$SRC/src/emtrondecoder.cpp" \
   "$SRC/src/channelmodel.cpp" "$SRC/src/laptimer.cpp" "$SRC/src/tileserver.cpp" \
+  "$SRC/src/nmeagpssource.cpp" \
   moc_channelmodel.cpp moc_emtrondecoder.cpp moc_cansource.cpp moc_laptimer.cpp \
   moc_tileserver.cpp qrc_qml.cpp \
+  moc_nmeagpssource.cpp \
   --sysroot="$SYSROOT" -L"$SYSROOT/usr/lib" -L"$SYSROOT/lib" \
   -Wl,-rpath-link,"$SYSROOT/usr/lib" -Wl,--allow-shlib-undefined \
   -static-libstdc++ -static-libgcc \

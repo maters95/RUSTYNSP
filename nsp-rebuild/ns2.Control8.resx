@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="&gt;&gt;selectButton.ZOrder" xml:space="preserve"><value>1</value></data>
+  <data name="selectedChannelName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>Tm9Db250cm9s</value></data><data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>1</value></data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MjQzLCAyMw==</value></data><data name="&gt;&gt;selectButton.Type" xml:space="preserve"><value>NSP.UserInterface.ThemedButton, NSP, Version=1.36.6.0, Culture=neutral, PublicKeyToken=null</value></data>
+  <data name="&gt;&gt;selectButton.Name" xml:space="preserve"><value>selectButton</value></data>
+  <data name="selectedChannelName.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>TWlkZGxlTGVmdA==</value></data><data name="$this.AutoSize" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>True</value></data>
+  <data name="selectButton.Text" xml:space="preserve"><value>Select</value></data>
+  <data name="selectButton.Size" type="System.Drawing.Size, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>NzUsIDIz</value></data><data name="&gt;&gt;tableLayoutPanel1.ZOrder" xml:space="preserve"><value>0</value></data>
+  <data name="&gt;&gt;tableLayoutPanel1.Parent" xml:space="preserve"><value>$this</value></data>
+  <data name="tableLayoutPanel1.ColumnCount" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>2</value></data>
+  <data name="&gt;&gt;selectedChannelName.Parent" xml:space="preserve"><value>tableLayoutPanel1</value></data>
+  <data name="&gt;&gt;selectedChannelName.ZOrder" xml:space="preserve"><value>0</value></data>
+  <data name="selectButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>Tm9Db250cm9s</value></data><data name="selectedChannelName.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>4</value></data>
+  <data name="tableLayoutPanel1.AutoSize" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>True</value></data>
+  <data name="selectedChannelName.Location" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MCwgMQ==</value></data><data name="tableLayoutPanel1.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTE2Ij8+PFRhYmxlTGF5b3V0U2V0dGlu
+Z3M+PENvbnRyb2xzPjxDb250cm9sIE5hbWU9InNlbGVjdGVkQ2hhbm5lbE5hbWUiIFJvdz0iMCIg
+Um93U3Bhbj0iMSIgQ29sdW1uPSIwIiBDb2x1bW5TcGFuPSIxIiAvPjxDb250cm9sIE5hbWU9InNl
+bGVjdEJ1dHRvbiIgUm93PSIwIiBSb3dTcGFuPSIxIiBDb2x1bW49IjEiIENvbHVtblNwYW49IjEi
+IC8+PC9Db250cm9scz48Q29sdW1ucyBTdHlsZXM9IkF1dG9TaXplLDAsQXV0b1NpemUsMCIgLz48
+Um93cyBTdHlsZXM9IkF1dG9TaXplLDAsQWJzb2x1dGUsMjMiIC8+PC9UYWJsZUxheW91dFNldHRp
+bmdzPg==</value></data><data name="tableLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MCwgMA==</value></data><data name="selectButton.Location" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MTY4LCAw</value></data><data name="tableLayoutPanel1.RowCount" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>1</value></data>
+  <data name="&gt;&gt;tableLayoutPanel1.Name" xml:space="preserve"><value>tableLayoutPanel1</value></data>
+  <data name="&gt;&gt;tableLayoutPanel1.Type" xml:space="preserve"><value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="$this.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>R3Jvd0FuZFNocmluaw==</value></data><data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MjQzLCAyMw==</value></data><data name="selectedChannelName.Text" xml:space="preserve"><value>SelectedChannel.Name</value></data>
+  <data name="selectedChannelName.Size" type="System.Drawing.Size, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MTYyLCAyMQ==</value></data><data name="&gt;&gt;$this.Name" xml:space="preserve"><value>ChannelSelector</value></data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve"><value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="selectedChannelName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>TGVmdA==</value></data><data name="selectButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>TGVmdA==</value></data><data name="selectedChannelName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MCwgMCwgMywgMA==</value></data><data name="selectButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MywgMCwgMCwgMA==</value></data><data name="tableLayoutPanel1.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>R3Jvd0FuZFNocmluaw==</value></data><data name="tableLayoutPanel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>MCwgMCwgMCwgMA==</value></data><data name="&gt;&gt;selectButton.Parent" xml:space="preserve"><value>tableLayoutPanel1</value></data>
+  <data name="selectButton.TabIndex" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"><value>1</value></data>
+  <data name="&gt;&gt;selectedChannelName.Name" xml:space="preserve"><value>selectedChannelName</value></data>
+  <data name="&gt;&gt;selectedChannelName.Type" xml:space="preserve"><value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64"><value>NiwgMTM=</value></data></root>

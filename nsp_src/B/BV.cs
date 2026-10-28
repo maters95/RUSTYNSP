@@ -2561,9 +2561,21 @@ namespace b
 							return;
 						}
 						string[] array4 = P_0.GetAttribute(D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.ajf()).Split(',', (StringSplitOptions)0);
-						setting.A(new List<string>((System.Collections.Generic.IEnumerable<string>)array4));
+						List<string> fileExtensions = new List<string>((System.Collections.Generic.IEnumerable<string>)array4);
+						setting.A(fileExtensions);
 						string attribute9 = P_0.GetAttribute(D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.ajG());
 						setting.A((global::A.A.C)int.Parse(attribute9));
+						if (setting.z() == global::A.A.C.BFH)
+						{
+							if (!fileExtensions.Exists(extension => string.Equals(extension, "gif", StringComparison.OrdinalIgnoreCase)))
+							{
+								fileExtensions.Add("gif");
+							}
+							if (!fileExtensions.Exists(extension => string.Equals(extension, "mp4", StringComparison.OrdinalIgnoreCase)))
+							{
+								fileExtensions.Add("mp4");
+							}
+						}
 						aXO.awv.Add(setting);
 						if (!aXO.aww.ContainsKey(setting.z()))
 						{

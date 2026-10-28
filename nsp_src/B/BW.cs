@@ -653,6 +653,21 @@ namespace B
 					((Control)b).Width = num3;
 					((Control)b).Height = 5 + num2 + (int)((SizeF)(ref val)).Height + 5;
 				}
+				else if (IsMp4Path(P_0))
+				{
+					int num3 = 150;
+					Graphics val6 = Graphics.FromHdc((System.IntPtr)A(((Control)this).Handle));
+					try
+					{
+						val = val6.MeasureString(fileName, val2, num3);
+					}
+					finally
+					{
+						((System.IDisposable)val6)?.Dispose();
+					}
+					((Control)b).Width = num3;
+					((Control)b).Height = 80 + (int)((SizeF)(ref val)).Height + 5;
+				}
 			}
 			else if (Wu == global::A.A.C.BFh)
 			{
@@ -679,6 +694,11 @@ namespace B
 					int num5 = ((Control)b).Width / 2 - num / 2;
 					int num6 = 5 + (((Control)b).Height - (5 + (int)((SizeF)(ref val)).Height + 5)) / 2 - num2 / 2;
 					val9.DrawImage(val3, num5, num6, num, num2);
+				}
+				else if (IsMp4Path(P_0))
+				{
+					val9.FillRectangle(Brushes.LightGray, 5, 5, ((Control)b).Width - 10, 70);
+					val9.DrawString("MP4 video", val2, Brushes.Black, 10f, 30f);
 				}
 			}
 			else if (Wu == global::A.A.C.BFh)
@@ -1501,6 +1521,10 @@ namespace B
 			//IL_0079: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0083: Unknown result type (might be due to invalid IL or missing references)
 			string text = P_1.ToLower();
+			if (text == ".gif")
+			{
+				return P_0.RawFormat.Guid == ImageFormat.Gif.Guid;
+			}
 			if (!(text == D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.wM()))
 			{
 				if (!(text == D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.wm()))
@@ -1524,6 +1548,39 @@ namespace B
 			//IL_0092: Expected O, but got Unknown
 			//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
 			//IL_00b7: Expected O, but got Unknown
+			string extension = P_1.ToLowerInvariant();
+			if (extension == ".gif")
+			{
+				MemoryStream gifStream = new MemoryStream(P_0);
+				try
+				{
+					Image gifImage = Image.FromStream((Stream)(object)gifStream);
+					try
+					{
+						if (A(gifImage, P_1))
+						{
+							return P_0;
+						}
+					}
+					finally
+					{
+						((System.IDisposable)gifImage)?.Dispose();
+					}
+				}
+				finally
+				{
+					((System.IDisposable)gifStream)?.Dispose();
+				}
+				throw new System.Exception(D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.wO());
+			}
+			if (extension == ".mp4")
+			{
+				if (P_0.Length >= 12 && P_0[4] == (byte)'f' && P_0[5] == (byte)'t' && P_0[6] == (byte)'y' && P_0[7] == (byte)'p')
+				{
+					return P_0;
+				}
+				throw new System.Exception(D2194834_002DF190_002D4B4E_002D8906_002D0A2F9B069A77.wO());
+			}
 			byte[] result = P_0;
 			MemoryStream val = new MemoryStream(P_0);
 			try
@@ -1589,6 +1646,11 @@ namespace B
 				((System.IDisposable)val)?.Dispose();
 			}
 			return result;
+		}
+
+		private static bool IsMp4Path(string P_0)
+		{
+			return string.Equals(Path.GetExtension(P_0), ".mp4", StringComparison.OrdinalIgnoreCase);
 		}
 
 		private void a(object P_0, DoWorkEventArgs P_1)
