@@ -1,0 +1,967 @@
+﻿{
+    "CollectedUtc":  "2026-10-28T10:48:41.3145020Z",
+    "Scope":  "Read-only host evidence. No COM port, device commands, runtime changes or process termination.",
+    "Windows":  {
+                    "Caption":  "Microsoft Windows 11 Business",
+                    "Version":  "10.0.26200",
+                    "BuildNumber":  "26200",
+                    "OSArchitecture":  "64-bit"
+                },
+    "CollectorArchitecture":  "64-bit",
+    "Processes":  [
+                      {
+                          "Name":  "dash_virtual",
+                          "Id":  9556,
+                          "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                          "StartTime":  "2026-10-28T10:43:08.1181240Z",
+                          "ModuleEnumeration":  "PSAPI EnumProcessModulesEx LIST_MODULES_ALL",
+                          "ModuleEvidenceComplete":  true,
+                          "Modules":  [
+                                          {
+                                              "Name":  "dash_virtual.exe",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                                              "Version":  "0.0.0.0"
+                                          },
+                                          {
+                                              "Name":  "ntdll.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "KERNEL32.DLL",
+                                              "Path":  "C:\\WINDOWS\\System32\\KERNEL32.DLL",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "KERNELBASE.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\KERNELBASE.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ucrtbase.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\ucrtbase.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "SHELL32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\SHELL32.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "msvcp_win.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\msvcp_win.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "USER32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\USER32.dll",
+                                              "Version":  "10.0.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "win32u.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\win32u.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "GDI32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\GDI32.dll",
+                                              "Version":  "10.0.26100.8328 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "gdi32full.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\gdi32full.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "Qt5Gui.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Gui.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5Qml.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Qml.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5Network.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Network.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5Quick.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Quick.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "WS2_32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\WS2_32.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ole32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\ole32.dll",
+                                              "Version":  "10.0.26100.6725 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "RPCRT4.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\RPCRT4.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "combase.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\combase.dll",
+                                              "Version":  "10.0.26100.7705 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MSVCP140.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MSVCP140.dll",
+                                              "Version":  "14.44.35211.0"
+                                          },
+                                          {
+                                              "Name":  "ADVAPI32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\ADVAPI32.dll",
+                                              "Version":  "10.0.26100.3624 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "VCRUNTIME140.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\VCRUNTIME140.dll",
+                                              "Version":  "14.51.36247.0"
+                                          },
+                                          {
+                                              "Name":  "msvcrt.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\msvcrt.dll",
+                                              "Version":  "7.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "sechost.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\sechost.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "Qt5Core.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Core.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "CRYPT32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\CRYPT32.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "DNSAPI.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\DNSAPI.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "IPHLPAPI.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MPR.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MPR.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "NETAPI32.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\NETAPI32.dll",
+                                              "Version":  "10.0.26100.7019 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "USERENV.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+                                              "Version":  "10.0.26100.7920 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "VERSION.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\VERSION.dll",
+                                              "Version":  "10.0.26100.1150 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "WINMM.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "DSPARSE.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\DSPARSE.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "NETUTILS.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\NETUTILS.DLL",
+                                              "Version":  "10.0.26100.1882 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "SRVCLI.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\SRVCLI.DLL",
+                                              "Version":  "10.0.26100.1150 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "CRYPTBASE.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "IMM32.DLL",
+                                              "Path":  "C:\\WINDOWS\\System32\\IMM32.DLL",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "NSI.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\NSI.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "shcore.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\shcore.dll",
+                                              "Version":  "10.0.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "qwindows.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\platforms\\qwindows.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "OLEAUT32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\OLEAUT32.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "dwmapi.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\dwmapi.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "kernel.appcore.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\kernel.appcore.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "bcryptPrimitives.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\bcryptPrimitives.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "uxtheme.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\uxtheme.dll",
+                                              "Version":  "10.0.26100.7019 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "windows.storage.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\windows.storage.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "shlwapi.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\shlwapi.dll",
+                                              "Version":  "10.0.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "profapi.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\profapi.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "d3d9.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\d3d9.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "dxcore.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\dxcore.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "cfgmgr32.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\cfgmgr32.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "directxdatabasehelper.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\directxdatabasehelper.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "opengl32.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\opengl32.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "GLU32.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\GLU32.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MSCTF.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\MSCTF.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "windows.staterepositorycore.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\windows.staterepositorycore.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ig9icd32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\ig9icd32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "dxgi.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\dxgi.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "powrprof.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\powrprof.dll",
+                                              "Version":  "10.0.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "UMPDC.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\UMPDC.dll",
+                                              "Version":  "10.0.26100.8972 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "igdml32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igdml32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "igdgmm32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igdgmm32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "igc32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igc32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "clbcatq.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\clbcatq.dll",
+                                              "Version":  "2001.12.10941.16384 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "urlmon.dll",
+                                              "Path":  "C:\\Windows\\System32\\urlmon.dll",
+                                              "Version":  "11.00.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "iertutil.dll",
+                                              "Path":  "C:\\Windows\\System32\\iertutil.dll",
+                                              "Version":  "11.00.26100.8117 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "SspiCli.dll",
+                                              "Path":  "C:\\Windows\\System32\\SspiCli.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "PROPSYS.dll",
+                                              "Path":  "C:\\Windows\\System32\\PROPSYS.dll",
+                                              "Version":  "7.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "virtdisk.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\virtdisk.dll",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "qtquick2plugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick.2\\qtquick2plugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtquickcontrols2plugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick\\Controls.2\\qtquickcontrols2plugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5QuickControls2.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5QuickControls2.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5QuickTemplates2.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5QuickTemplates2.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "windowplugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick\\Window.2\\windowplugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "dataexchange.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\dataexchange.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "twinapi.appcore.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\twinapi.appcore.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "qtgraphicaleffectsplugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtGraphicalEffects\\qtgraphicaleffectsplugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qquicklayoutsplugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick\\Layouts\\qquicklayoutsplugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "declarative_multimedia.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-qml\\QtMultimedia\\declarative_multimedia.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5MultimediaQuick.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5MultimediaQuick.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "Qt5Multimedia.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Multimedia.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "dsengine.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\mediaservice\\dsengine.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "dxva2.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\dxva2.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MF.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MF.dll",
+                                              "Version":  "10.0.26100.8521 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MFPlat.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MFPlat.DLL",
+                                              "Version":  "10.0.26100.9278 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "Qt5Widgets.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Widgets.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "EVR.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\EVR.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MFCORE.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MFCORE.DLL",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "RTWorkQ.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\RTWorkQ.DLL",
+                                              "Version":  "10.0.26100.3912 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "bcrypt.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\bcrypt.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "mfperfhelper.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\mfperfhelper.dll",
+                                              "Version":  "10.0.26100.1150 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "devenum.dll",
+                                              "Path":  "C:\\Windows\\System32\\devenum.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "setupapi.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\setupapi.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ntmarta.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntmarta.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "DEVOBJ.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\DEVOBJ.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "WINTRUST.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\WINTRUST.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MSASN1.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MSASN1.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "msdmo.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\msdmo.dll",
+                                              "Version":  "10.0.26100.1150 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MMDevApi.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\MMDevApi.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "winmmbase.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\winmmbase.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wdmaud.drv",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\wdmaud.drv",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wdmaud2.drv",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\wdmaud2.drv",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "AVRT.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\AVRT.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "AUDIOSES.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\AUDIOSES.DLL",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "msacm32.drv",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\msacm32.drv",
+                                              "Version":  "10.0.26100.8457 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "MSACM32.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\MSACM32.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "midimap.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\midimap.dll",
+                                              "Version":  "10.0.26100.1882 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "dsound.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\dsound.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ResampleDmo.DLL",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ResampleDmo.DLL",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "quartz.dll",
+                                              "Path":  "C:\\Windows\\System32\\quartz.dll",
+                                              "Version":  "10.0.26100.8875 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "igdumdim32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igdumdim32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "igd9dxva32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igd9dxva32.dll",
+                                              "Version":  "27.20.100.9664"
+                                          },
+                                          {
+                                              "Name":  "igdinfo32.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\DriverStore\\FileRepository\\iigd_dch.inf_amd64_a953cebc2f0daf9c\\igdinfo32.dll",
+                                              "Version":  null
+                                          },
+                                          {
+                                              "Name":  "CRYPTSP.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\CRYPTSP.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "rsaenh.dll",
+                                              "Path":  "C:\\WINDOWS\\system32\\rsaenh.dll",
+                                              "Version":  "10.0.26100.1 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "qgif.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\imageformats\\qgif.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qicns.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qicns.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qico.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qico.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qjpeg.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qjpeg.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtga.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qtga.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtiff.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qtiff.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qwbmp.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qwbmp.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qwebp.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\plugins\\imageformats\\qwebp.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtgraphicaleffectsprivate.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtGraphicalEffects\\private\\qtgraphicaleffectsprivate.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtquickextrasplugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick\\Extras\\qtquickextrasplugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "qtquickcontrolsplugin.dll",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\qml\\QtQuick\\Controls\\qtquickcontrolsplugin.dll",
+                                              "Version":  "5.11.3.0"
+                                          },
+                                          {
+                                              "Name":  "mpg2splt.ax",
+                                              "Path":  "C:\\Windows\\System32\\mpg2splt.ax",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "msmpeg2adec.dll",
+                                              "Path":  "C:\\Windows\\System32\\msmpeg2adec.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "msmpeg2ac3dec.dll",
+                                              "Path":  "C:\\Windows\\System32\\msmpeg2ac3dec.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "CompPkgSup.DLL",
+                                              "Path":  "C:\\Windows\\System32\\CompPkgSup.DLL",
+                                              "Version":  "10.0.26100.8521 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "Windows.StateRepositoryPS.dll",
+                                              "Path":  "C:\\Windows\\System32\\Windows.StateRepositoryPS.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "Windows.FileExplorer.Common.dll",
+                                              "Path":  "C:\\Windows\\System32\\Windows.FileExplorer.Common.dll",
+                                              "Version":  "10.0.26100.8737 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wintypes.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\wintypes.dll",
+                                              "Version":  "10.0.26100.7705 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "ntdll.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64base.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64base.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64win.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64win.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64con.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64con.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64cpu.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64cpu.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          }
+                                      ]
+                      },
+                      {
+                          "Name":  "NSP",
+                          "Id":  27572,
+                          "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                          "StartTime":  "2026-10-28T10:42:53.3224480Z",
+                          "ModuleEnumeration":  "System.Diagnostics.Process.Modules",
+                          "ModuleEvidenceComplete":  false,
+                          "Modules":  [
+                                          {
+                                              "Name":  "NSP.exe",
+                                              "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                                              "Version":  "1.48.5"
+                                          },
+                                          {
+                                              "Name":  "ntdll.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64base.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64base.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64win.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64win.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64con.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64con.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64cpu.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64cpu.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          }
+                                      ]
+                      }
+                  ],
+    "Files":  [
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                      "Length":  839680,
+                      "LastWriteUtc":  "2026-10-28T10:43:07.3323841Z",
+                      "SHA256":  "5A5D74FE029178398512A5622D480FED213F4FD8F58E70B85CA169BB5A62303B",
+                      "Version":  "0.0.0.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                      "Length":  173096,
+                      "LastWriteUtc":  "2026-10-13T03:46:30.0000000Z",
+                      "SHA256":  "E1534E877E699AEEA13A92BDB7CDCB0F99CE126DDC7E5A06094D0DB0A75191E6",
+                      "Version":  "1.48.5",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.dll",
+                      "Length":  3672064,
+                      "LastWriteUtc":  "2026-10-28T10:25:38.5311913Z",
+                      "SHA256":  "5F726F93FA67FEFA95DED5A8670AD79A715BD0998E34AE61E913586E87B12478",
+                      "Version":  "1.48.5",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\manifest.json",
+                      "Length":  1798,
+                      "LastWriteUtc":  "2026-10-28T10:25:38.7982652Z",
+                      "SHA256":  "C533532A3DB385BACA262CAB6E4A043CAE4F2406EC6EE06D9218ED4E732C6A7D",
+                      "Version":  null,
+                      "Copy":  "003-manifest.json"
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Core.dll",
+                      "Length":  4892160,
+                      "LastWriteUtc":  "2024-07-30T06:51:12.0000000Z",
+                      "SHA256":  "2A031289586467DCE7BD64B9D882B3077FB44C46A6D4FEB9C4601C437FC93AA8",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Multimedia.dll",
+                      "Length":  581632,
+                      "LastWriteUtc":  "2018-11-26T12:48:35.0000000Z",
+                      "SHA256":  "7ADF5215F681EE66FBB9F49B9276599A0BBB23B042E5C11B805CE52390E14B75",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5MultimediaQuick.dll",
+                      "Length":  96768,
+                      "LastWriteUtc":  "2018-11-26T12:48:56.0000000Z",
+                      "SHA256":  "687891378EDDC28E5CF9731B4F8B84E478C1097B2A49C8B6A4A61806797F9C26",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Widgets.dll",
+                      "Length":  4429312,
+                      "LastWriteUtc":  "2018-11-26T10:22:43.0000000Z",
+                      "SHA256":  "1CB28BCD1D78BF1CF99B0D6A69C4B89C041668BCBCA6F5C5A4D2F446BCAE24BB",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\mediaservice\\dsengine.dll",
+                      "Length":  229376,
+                      "LastWriteUtc":  "2018-11-26T12:52:32.0000000Z",
+                      "SHA256":  "9119D7A8FEFF46CD03AD804880D28D892EE13037EF2D4DA191F498149EFB69F3",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\mediaservice\\wmfengine.dll",
+                      "Length":  44032,
+                      "LastWriteUtc":  "2018-11-26T12:51:46.0000000Z",
+                      "SHA256":  "913956C2853CB47418E1360B730A617547EE80AF9290DD237E353A4D7048AF7A",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-qml\\QtMultimedia\\declarative_multimedia.dll",
+                      "Length":  228352,
+                      "LastWriteUtc":  "2018-11-26T12:51:57.0000000Z",
+                      "SHA256":  "2A56630B004016891C34DDF649A79415AB0D1D62D3FEEBF24FBE48554E03B3DE",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalImage.qml",
+                      "Length":  5120,
+                      "LastWriteUtc":  "2026-10-28T10:43:08.0752319Z",
+                      "SHA256":  "8C9F2FC49765471E115053A7A50A7EFB4453A5545BCDD4E36782CA42EE64D6C7",
+                      "Version":  null,
+                      "Copy":  "011-HalImage.qml"
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalImage.qmlc",
+                      "Length":  16008,
+                      "LastWriteUtc":  "2026-10-28T10:43:08.6198819Z",
+                      "SHA256":  "A821617601B2FC3C055D300A1390F83620F9AE58394F67DC758474499CD2AF9C",
+                      "Version":  null,
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5Multimedia.dll",
+                      "Length":  581632,
+                      "LastWriteUtc":  "2018-11-26T12:48:35.0000000Z",
+                      "SHA256":  "7ADF5215F681EE66FBB9F49B9276599A0BBB23B042E5C11B805CE52390E14B75",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5MultimediaQuick.dll",
+                      "Length":  96768,
+                      "LastWriteUtc":  "2018-11-26T12:48:56.0000000Z",
+                      "SHA256":  "687891378EDDC28E5CF9731B4F8B84E478C1097B2A49C8B6A4A61806797F9C26",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5Widgets.dll",
+                      "Length":  4429312,
+                      "LastWriteUtc":  "2018-11-26T10:22:43.0000000Z",
+                      "SHA256":  "1CB28BCD1D78BF1CF99B0D6A69C4B89C041668BCBCA6F5C5A4D2F446BCAE24BB",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\plugins\\mediaservice\\dsengine.dll",
+                      "Length":  229376,
+                      "LastWriteUtc":  "2018-11-26T12:52:32.0000000Z",
+                      "SHA256":  "9119D7A8FEFF46CD03AD804880D28D892EE13037EF2D4DA191F498149EFB69F3",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\qml\\QtMultimedia\\declarative_multimedia.dll",
+                      "Length":  228352,
+                      "LastWriteUtc":  "2018-11-26T12:51:57.0000000Z",
+                      "SHA256":  "2A56630B004016891C34DDF649A79415AB0D1D62D3FEEBF24FBE48554E03B3DE",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  }
+              ],
+    "Environment":  [
+                        {
+                            "Name":  "QT_QUICK_BACKEND",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_OPENGL",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_ANGLE_PLATFORM",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_PLUGIN_PATH",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QML2_IMPORT_PATH",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_MULTIMEDIA_PREFERRED_PLUGINS",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_DEBUG_PLUGINS",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_LOGGING_RULES",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        }
+                    ],
+    "Errors":  [
+                   "No renderer/application logs found. dash_virtual uses dash_app.log; absence of a log is not proof of successful playback."
+               ]
+}

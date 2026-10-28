@@ -1,0 +1,95 @@
+2026-10-28 09:08:39,649 - aqt.main - INFO - installer 137043977430848 aqtinstall(aqt) v3.3.0 on Python 3.14.2 [CPython GCC 13.3.0]
+2026-10-28 09:08:48,173 - aqt.helper - DEBUG - helper 127501186537280 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/Updates.xml.sha256
+2026-10-28 09:08:50,862 - aqt.helper - DEBUG - helper 137979341346624 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/Updates.xml.sha256
+2026-10-28 09:08:53,225 - aqt.main - ERROR - installer 137979341346624 No archives for qt available for this request.
+==============================Suggested follow-up:==============================
+* Please use 'aqt list-qt windows desktop' to show versions of Qt available.
+* Please use 'aqt list-qt windows desktop --arch <QT_VERSION>' to show architectures available.
+2026-10-28 09:09:02,566 - aqt.helper - DEBUG - helper 131227908355904 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/Updates.xml.sha256
+2026-10-28 09:09:23,481 - aqt.main - INFO - installer 136948979406656 aqtinstall(aqt) v3.3.0 on Python 3.14.2 [CPython GCC 13.3.0]
+2026-10-28 09:09:23,482 - aqt.helper - DEBUG - helper 136948979406656 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/Updates.xml.sha256
+2026-10-28 09:09:26,897 - aqt.helper - DEBUG - helper 127418870257472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtbase-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z.sha256
+2026-10-28 09:09:26,905 - aqt.helper - DEBUG - helper 126793844754240 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtmultimedia-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z.sha256
+2026-10-28 09:09:28,073 - aqt.helper - INFO - helper 127418870257472 Downloading qtbase...
+2026-10-28 09:09:28,073 - aqt.installer - DEBUG - installer 127418870257472 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtbase-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:09:28,082 - aqt.helper - INFO - helper 126793844754240 Downloading qtmultimedia...
+2026-10-28 09:09:28,082 - aqt.installer - DEBUG - installer 126793844754240 Download URL: https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtmultimedia-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:09:29,246 - aqt.helper - DEBUG - helper 127418870257472 Asked to redirect(302) to: https://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtbase-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:09:29,246 - aqt.helper - INFO - helper 127418870257472 Redirected: qt.mirror.constant.com
+2026-10-28 09:09:29,256 - aqt.helper - DEBUG - helper 126793844754240 Asked to redirect(302) to: https://qt.mirror.constant.com/online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtmultimedia-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:09:29,257 - aqt.helper - INFO - helper 126793844754240 Redirected: qt.mirror.constant.com
+2026-10-28 09:09:31,842 - aqt.installer - INFO - installer 126793844754240 Finished installation of qtmultimedia-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z in 4.93880956
+2026-10-28 09:09:34,775 - aqt.installer - INFO - installer 127418870257472 Finished installation of qtbase-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z in 7.88062074
+2026-10-28 09:09:34,874 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtlibpngd.prl
+2026-10-28 09:09:34,875 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EventDispatcherSupport.prl
+2026-10-28 09:09:34,875 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5DBus.prl
+2026-10-28 09:09:34,876 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5DeviceDiscoverySupportd.prl
+2026-10-28 09:09:34,876 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Networkd.prl
+2026-10-28 09:09:34,876 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Cored.prl
+2026-10-28 09:09:34,877 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Concurrentd.prl
+2026-10-28 09:09:34,877 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Test.prl
+2026-10-28 09:09:34,877 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EventDispatcherSupportd.prl
+2026-10-28 09:09:34,878 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5ThemeSupportd.prl
+2026-10-28 09:09:34,878 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtlibpng.prl
+2026-10-28 09:09:34,879 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5OpenGLd.prl
+2026-10-28 09:09:34,879 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EglSupport.prl
+2026-10-28 09:09:34,879 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5DeviceDiscoverySupport.prl
+2026-10-28 09:09:34,879 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Testd.prl
+2026-10-28 09:09:34,880 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5MultimediaWidgetsd.prl
+2026-10-28 09:09:34,880 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Sqld.prl
+2026-10-28 09:09:34,880 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5FontDatabaseSupport.prl
+2026-10-28 09:09:34,881 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5PlatformCompositorSupportd.prl
+2026-10-28 09:09:34,881 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5DBusd.prl
+2026-10-28 09:09:34,881 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5PrintSupportd.prl
+2026-10-28 09:09:34,882 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5OpenGLExtensions.prl
+2026-10-28 09:09:34,882 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EglSupportd.prl
+2026-10-28 09:09:34,882 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5WindowsUIAutomationSupportd.prl
+2026-10-28 09:09:34,883 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5OpenGLExtensionsd.prl
+2026-10-28 09:09:34,883 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5AccessibilitySupport.prl
+2026-10-28 09:09:34,883 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5WindowsUIAutomationSupport.prl
+2026-10-28 09:09:34,883 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Sql.prl
+2026-10-28 09:09:34,884 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5FontDatabaseSupportd.prl
+2026-10-28 09:09:34,884 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Concurrent.prl
+2026-10-28 09:09:34,884 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Xmld.prl
+2026-10-28 09:09:34,885 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5FbSupportd.prl
+2026-10-28 09:09:34,885 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/libEGLd.prl
+2026-10-28 09:09:34,885 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5ThemeSupport.prl
+2026-10-28 09:09:34,886 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Xml.prl
+2026-10-28 09:09:34,886 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Gui.prl
+2026-10-28 09:09:34,886 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5MultimediaWidgets.prl
+2026-10-28 09:09:34,887 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5FbSupport.prl
+2026-10-28 09:09:34,887 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5VulkanSupport.prl
+2026-10-28 09:09:34,887 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtfreetype.prl
+2026-10-28 09:09:34,887 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/libEGL.prl
+2026-10-28 09:09:34,888 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EdidSupport.prl
+2026-10-28 09:09:34,888 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5EdidSupportd.prl
+2026-10-28 09:09:34,888 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5PrintSupport.prl
+2026-10-28 09:09:34,889 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5VulkanSupportd.prl
+2026-10-28 09:09:34,889 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Widgetsd.prl
+2026-10-28 09:09:34,889 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Multimediad.prl
+2026-10-28 09:09:34,890 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Network.prl
+2026-10-28 09:09:34,890 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5MultimediaQuick.prl
+2026-10-28 09:09:34,890 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtmain.prl
+2026-10-28 09:09:34,891 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Core.prl
+2026-10-28 09:09:34,891 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5PlatformCompositorSupport.prl
+2026-10-28 09:09:34,891 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtmaind.prl
+2026-10-28 09:09:34,892 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/libGLESv2d.prl
+2026-10-28 09:09:34,892 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Multimedia.prl
+2026-10-28 09:09:34,892 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Bootstrap.prl
+2026-10-28 09:09:34,893 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/libGLESv2.prl
+2026-10-28 09:09:34,893 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5MultimediaQuickd.prl
+2026-10-28 09:09:34,893 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/qtfreetyped.prl
+2026-10-28 09:09:34,894 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5OpenGL.prl
+2026-10-28 09:09:34,894 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5AccessibilitySupportd.prl
+2026-10-28 09:09:34,894 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Guid.prl
+2026-10-28 09:09:34,894 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/lib/Qt5Widgets.prl
+2026-10-28 09:09:34,895 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/bin/Qt5Cored.dll
+2026-10-28 09:09:34,934 - aqt.updater - INFO - updater 136948979406656 Patching /tmp/rustynsp-qt5113/5.11.3/msvc2015/bin/Qt5Core.dll
+2026-10-28 09:09:34,947 - aqt.main - INFO - installer 136948979406656 Finished installation
+2026-10-28 09:09:34,947 - aqt.main - INFO - installer 136948979406656 Time elapsed: 11.46652027 second
+2026-10-28 09:10:45,130 - aqt.main - INFO - installer 140433107715904 aqtinstall(aqt) v3.3.0 on Python 3.14.2 [CPython GCC 13.3.0]
+2026-10-28 09:10:45,131 - aqt.helper - DEBUG - helper 140433107715904 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/qt5_5113/Updates.xml.sha256
+2026-10-28 09:10:47,491 - aqt.installer - INFO - installer 140433107715904 DRY RUN: Would download and install the following:
+2026-10-28 09:10:47,491 - aqt.installer - INFO - installer 140433107715904   - qtbase: online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtbase-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:10:47,491 - aqt.installer - INFO - installer 140433107715904   - qtmultimedia: online/qtsdkrepository/windows_x86/desktop/qt5_5113/qt.qt5.5113.win32_msvc2015/5.11.3-0-201811291905qtmultimedia-Windows-Windows_10-MSVC2015-Windows-Windows_10-X86.7z
+2026-10-28 09:10:47,492 - aqt.installer - INFO - installer 140433107715904 Total packages: 2

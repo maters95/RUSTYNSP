@@ -17,6 +17,7 @@ $report = [ordered]@{
     PowerShellVersion = $PSVersionTable.PSVersion.ToString()
     SerialPorts = @()
     UsbDevices = @()
+    UsbDrivers = @()
     NspProcesses = @()
     InstallRoots = @()
     Binaries = @()
@@ -33,6 +34,14 @@ try {
         Select-Object Name, PNPDeviceID, Service, Status)
 } catch {
     $report.Errors += "Device inventory: $($_.Exception.Message)"
+}
+
+try {
+    $report.UsbDrivers = @(Get-CimInstance -ClassName Win32_PnPSignedDriver |
+        Where-Object { $_.DeviceID -match 'VID_16D0|VID_0403' -or $_.DeviceName -match 'Haltech|iC-7|Ingenuity' } |
+        Select-Object DeviceName, DeviceID, DriverProviderName, DriverVersion, DriverDate, InfName, IsSigned)
+} catch {
+    $report.Errors += "USB driver inventory: $($_.Exception.Message)"
 }
 
 $candidateRoots = @($NspInstallPath)
@@ -112,4 +121,7 @@ Write-Output "Evidence written to $OutputDirectory"
 Write-Output "No COM port was opened, no NSP files were modified, and no firmware was uploaded."
 if ($roots.Count -eq 0) {
     Write-Warning "NSP installation not found. Rerun with -NspInstallPath pointing to the NSP folder."
+}
+foreach ($errorMessage in $report.Errors) {
+    Write-Warning $errorMessage
 }

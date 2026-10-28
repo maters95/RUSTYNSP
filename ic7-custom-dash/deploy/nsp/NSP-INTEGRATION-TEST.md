@@ -1,9 +1,37 @@
 # NSP 1.48.5 Media Integration Test
 
+For actual **dash-canvas** GIF/MP4 playback, use the newer
+[native media bundle and setup guide](NATIVE-MEDIA-TEST.md). The legacy bundles
+described below modify the resource picker, not the native dashboard renderer.
+
 This is a dash-disconnected test bundle for the NSP desktop importer and the
 matching iC-7 v2.36 resource candidate. It is not a firmware installer. The
 included `.nex` changes the stock `HalImage.qml` resource only; the live map
 companion app is separate and is not installed or launched by NSP.
+
+The earlier integration bundle crashed during NSP startup because the rebuilt
+`ImageList.ImageStream` resource was emitted as opaque bytes instead of its
+serialized `ImageListStreamer` type. The current bundle corrects that resource
+encoding. Do not retry the earlier DLL.
+
+The `previewfix` bundle also recognizes the supplied `ic7_video_*.png` MP4
+alias by its file header in thumbnails, both image-preview modes, and resource
+metadata. It displays an MP4 placeholder rather than sending video bytes to
+the static-image decoder. This picker does not play video. Genuine PNG images
+with that filename prefix continue through the normal image decoder.
+
+The `gif-preview` bundle animates the selected GIF inside NSP's Image Source
+picker in both preview modes, retaining the existing scaling and backgrounds.
+It uses the GIF frame delays (with a 20 ms minimum) and repeats the frames while
+selected. Changing selection or disposing the picker releases the image,
+source stream, and UI timer. This does not animate the main dashboard canvas
+or change the saved media bytes. MP4 remains a placeholder in this picker.
+
+On Windows, select a multi-frame GIF and observe several frame changes, switch
+between the two preview modes, resize the picker, then select a PNG and an MP4.
+Confirm the PNG remains static, the MP4 shows its placeholder, and closing and
+reopening the picker works. These GUI checks cannot run in the Linux build
+environment and must be completed before treating this feature as validated.
 
 ## Test prerequisites
 
@@ -35,6 +63,12 @@ fallback probes. The patched NSP also adds the `gif` and `mp4` extensions to
 resource pickers and passes valid GIF/MP4 bytes through without image
 conversion.
 
+The returned Windows map from 2026-10-28 authenticated all 38 entries and
+preserved every user resource byte-for-byte, including both GIF names and the
+MP4 PNG alias. These resources already existed in the supplied test map, so
+this confirms save preservation, not a new direct MP4 import. The screenshot
+shows a static GIF frame; animation and target playback remain separate tests.
+
 ## Check firmware-candidate parsing only
 
 Use NSP's local firmware-file selection workflow (**Open File Browser**) to
@@ -50,8 +84,9 @@ environment.
 
 ## Limitations
 
-- The NSP DLL has been rebuilt from the included matching source, but this
-  Linux environment cannot execute the Windows GUI. Confirm application
+- The corrected NSP DLL was rebuilt from the included matching source and its
+  image-list resource encoding was checked against the prior failing build.
+  This Linux environment cannot execute the Windows GUI, so confirm application
   startup, import, save, and local NEX selection on Windows.
 - No physical iC-7 has been updated. The resource candidate is experimental;
   no vendor-supported recovery method is confirmed for it.

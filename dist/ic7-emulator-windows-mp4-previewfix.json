@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-windows-mp4-previewfix.zip",
+  "bytes": 30962505,
+  "sha256": "1f2c12e79344907181fd143445365941f1fb8cd45213df3f5f55a645e1174f0c",
+  "files": 55,
+  "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"
+}

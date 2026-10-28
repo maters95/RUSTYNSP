@@ -29,8 +29,12 @@ you choose; this is an unofficial companion, not an extension injected into or
 patching the installed NSP application.
 
 The dash preview is approximate and sensor values are unavailable. GIFs can
-preview in the Resources tab; MP4 opens in the default browser because this
-workbench runtime does not include QtMultimedia. On Windows, **Stock Renderer**
+preview in the Resources tab; selecting an MP4 opens the browser viewer with
+that resource selected and video controls available, rather than playing in the
+workbench panel. This workbench runtime does not include QtMultimedia. Browser
+launch and playback failures are reported explicitly; playback requires a
+browser-supported video codec. This asset preview is independent of the selected
+NEX and does not verify firmware playback. On Windows, **Stock Renderer**
 uses NSP's private original renderer when its installed runtime is available.
 
 ## Windows Setup

@@ -29,13 +29,22 @@ runtime.
 
 ## Verification Boundary
 
-The Qt 5.9.6 ARM QML suite passed 9 tests under QEMU, including GIF frame
-advance and MP4 playback position. This verifies the QML component against the
+The Qt 5.9.6 ARM QML suite passed 11 tests under QEMU, including GIF frame
+advance, MP4 looping, source switching, decode errors and playback position.
+The desktop Qt suite passed 15 tests, including comparisons of changing GIF
+and MP4 **rendered pixels**. Headless ARM pixel capture is not reliable and is
+not represented as a passing physical rendering check.
+This verifies the QML component against the
 extracted software stack, not the physical dash. Plugin registry success,
 available memory, i.MX6 hardware decode, thermal/performance behavior, and
 display integration still require a physical bench test. The NSP modified
-source builds, but its Windows file import and map save/upload path have not
-been exercised on the owner's PC.
+source builds; the newer [native media setup](NATIVE-MEDIA-TEST.md) installs
+the shared component before NSP's native renderer launches, using the matching
+Windows x86 Qt 5.11.3 add-ons. Thirteen focused tests cover component/runtime
+staging, the actual assembly manifest resource, NEX equality and offline setup.
+Windows Qt plugin loading and canvas playback still need owner testing.
+Earlier picker-only owner logs established import/save behavior, not native
+dash playback or installation of the new media candidate.
 
 Ghidra's analysis database is under `/tmp/ghidra-projects/IC7Dash`; the focused
 decompilation export is

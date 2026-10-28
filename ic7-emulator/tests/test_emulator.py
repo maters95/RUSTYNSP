@@ -9,13 +9,14 @@ import threading
 import unittest
 from unittest.mock import MagicMock, Mock, patch
 import urllib.request
+import urllib.parse
 import zipfile
 import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, request, resource_descriptor
 from ic7_emulator import serve_stream, UpdateSandbox
-from workbench import SessionOptions, configured_nsp_port, preferred_first, virtual_ports
+from workbench import SessionOptions, Workbench, configured_nsp_port, preferred_first, virtual_ports
 from viewer import start_viewer, render_layout, scene_state
 from stock_renderer import get, install_component_override, pe_machine, pipe_message, renderer_environment
 from stock_renderer import stage_windows_platform_plugin, validate_ack
@@ -24,6 +25,28 @@ import package as emulator_package
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_mp4_preview_opens_viewer_with_selected_asset(self):
+        window = MagicMock(movie=None, player=None)
+        resource = {"name": "u/my clip & 1.mp4", "payload": b"video",
+                    "url": "http://127.0.0.1:8765"}
+        with patch("workbench.QPixmap"), patch(
+                "workbench.QDesktopServices.openUrl", return_value=True) as open_url:
+            Workbench.show_resource(window, resource)
+        url = urllib.parse.urlsplit(open_url.call_args.args[0].toString())
+        self.assertEqual((url.netloc, url.path), ("127.0.0.1:8765", "/"))
+        self.assertEqual(urllib.parse.parse_qs(url.query), {"asset": [resource["name"]]})
+        window.session_error.assert_not_called()
+        self.assertIn("not in this panel", window.resource_preview.setText.call_args.args[0])
+
+    def test_mp4_preview_reports_browser_launch_failure(self):
+        window = MagicMock(movie=None, player=None)
+        resource = {"name": "u/ic7_video_probe.png", "payload": b"video",
+                    "url": "http://127.0.0.1:8765"}
+        with patch("workbench.QPixmap"), patch(
+                "workbench.QDesktopServices.openUrl", return_value=False):
+            Workbench.show_resource(window, resource)
+        self.assertIn("Could not open MP4", window.session_error.call_args.args[0])
+
     def test_workbench_sessions_preserve_existing_state(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

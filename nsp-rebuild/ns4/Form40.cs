@@ -23,6 +23,88 @@ namespace ns4;
 
 internal class Form40 : Form
 {
+	private Image previewImage;
+	private Stream previewStream;
+	private string previewImagePath;
+	private System.Windows.Forms.Timer previewTimer;
+	private int previewFrame;
+	private int previewFrameCount;
+	private byte[] previewFrameDelays;
+
+	private void ClearAnimatedPreview()
+	{
+		previewTimer?.Dispose();
+		previewTimer = null;
+		previewImage?.Dispose();
+		previewImage = null;
+		previewStream?.Dispose();
+		previewStream = null;
+		previewImagePath = null;
+		previewFrame = 0;
+		previewFrameCount = 0;
+		previewFrameDelays = null;
+	}
+
+	private int PreviewFrameInterval()
+	{
+		int offset = previewFrame * 4;
+		uint delay = previewFrameDelays != null && offset + 4 <= previewFrameDelays.Length
+			? BitConverter.ToUInt32(previewFrameDelays, offset) : 10;
+		return (int)Math.Clamp((long)delay * 10, 20, int.MaxValue);
+	}
+
+	private Image LoadPreviewImage(string path)
+	{
+		if (previewImagePath == path && previewImage != null)
+		{
+			return previewImage;
+		}
+		ClearAnimatedPreview();
+		try
+		{
+			previewStream = File.OpenRead(path);
+			previewImage = Image.FromStream(previewStream);
+			previewImagePath = path;
+			if (Array.IndexOf(previewImage.FrameDimensionsList, FrameDimension.Time.Guid) >= 0)
+			{
+				previewFrameCount = previewImage.GetFrameCount(FrameDimension.Time);
+				if (previewFrameCount > 1)
+				{
+					if (Array.IndexOf(previewImage.PropertyIdList, 0x5100) >= 0)
+					{
+						previewFrameDelays = previewImage.GetPropertyItem(0x5100).Value;
+					}
+					previewTimer = new System.Windows.Forms.Timer();
+					previewTimer.Interval = PreviewFrameInterval();
+					previewTimer.Tick += AdvancePreviewFrame;
+					previewTimer.Start();
+				}
+			}
+			return previewImage;
+		}
+		catch
+		{
+			ClearAnimatedPreview();
+			throw;
+		}
+	}
+
+	private void AdvancePreviewFrame(object sender, EventArgs e)
+	{
+		try
+		{
+			previewFrame = (previewFrame + 1) % previewFrameCount;
+			previewImage.SelectActiveFrame(FrameDimension.Time, previewFrame);
+			previewTimer.Interval = PreviewFrameInterval();
+			method_5();
+		}
+		catch (Exception ex)
+		{
+			ClearAnimatedPreview();
+			Form54.smethod_6(this, Class333.smethod_2327() + class226_0.method_1() + Class333.smethod_2328() + ex.Message, Class333.smethod_390(), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+		}
+	}
+
 	private class Class224
 	{
 		internal string BqZ;
@@ -510,6 +592,7 @@ internal class Form40 : Form
 		SizeF sizeF = default;
 		Font font = new Font(Font.FontFamily, 8.5f);
 		Image image = null;
+		bool isVideo = false;
 		int num = 0;
 		int num2 = 0;
 		if (enum5_0 == Class1.Enum5.BFH)
@@ -517,7 +600,11 @@ internal class Form40 : Form
 			try
 			{
 				using Stream stream = File.OpenRead(string_10);
-				image = Image.FromStream(stream);
+				isVideo = NSP.MediaResource.IsVideo(string_10, stream);
+				if (!isVideo)
+				{
+					image = Image.FromStream(stream);
+				}
 			}
 			catch
 			{
@@ -536,7 +623,7 @@ internal class Form40 : Form
 				@class.Width = width;
 				@class.Height = 5 + num2 + (int)sizeF.Height + 5;
 			}
-			else if (IsMp4Path(string_10))
+			else if (isVideo)
 			{
 				int width = 150;
 				using (Graphics graphics = Graphics.FromHdc(GetWindowDC(Handle)))
@@ -568,7 +655,7 @@ internal class Form40 : Form
 				int y = 5 + (@class.Height - (5 + (int)sizeF.Height + 5)) / 2 - num2 / 2;
 				graphics3.DrawImage(image, x, y, num, num2);
 			}
-			else if (IsMp4Path(string_10))
+			else if (isVideo)
 			{
 				graphics3.FillRectangle(Brushes.LightGray, 5, 5, @class.Width - 10, 70);
 				graphics3.DrawString("MP4 video", font, Brushes.Black, 10f, 30f);
@@ -648,6 +735,10 @@ internal class Form40 : Form
 
 	private void method_5()
 	{
+		if (class226_0 == null || previewImagePath != class226_0.method_1())
+		{
+			ClearAnimatedPreview();
+		}
 		Bitmap image = new Bitmap(pictureBox_0.Width, pictureBox_0.Height);
 		using (Graphics graphics = Graphics.FromImage(image))
 		{
@@ -661,17 +752,25 @@ internal class Form40 : Form
 					try
 					{
 						using Stream stream = File.OpenRead(class226_0.method_1());
-						using Image image2 = Image.FromStream(stream);
-						float num = (float)size_.Width / (float)framework_0.awW.method_178().Width;
-						Size size = Class25.smethod_1(new Size((int)((float)image2.Width * num), (int)((float)image2.Height * num)), size_);
-						graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-						graphics.SmoothingMode = SmoothingMode.HighQuality;
-						graphics.CompositingQuality = CompositingQuality.HighQuality;
-						graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-						graphics.DrawImage(image2, pictureBox_0.Width / 2 - size.Width / 2, pictureBox_0.Height / 2 - size.Height / 2, size.Width, size.Height);
+						if (NSP.MediaResource.IsVideo(class226_0.method_1(), stream))
+						{
+							graphics.DrawString("MP4 video - playback is not available in this preview", SystemFonts.MessageBoxFont, Brushes.White, 10f, pictureBox_0.Height / 2f);
+						}
+						else
+						{
+							Image image2 = LoadPreviewImage(class226_0.method_1());
+							float num = (float)size_.Width / (float)framework_0.awW.method_178().Width;
+							Size size = Class25.smethod_1(new Size((int)((float)image2.Width * num), (int)((float)image2.Height * num)), size_);
+							graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+							graphics.SmoothingMode = SmoothingMode.HighQuality;
+							graphics.CompositingQuality = CompositingQuality.HighQuality;
+							graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+							graphics.DrawImage(image2, pictureBox_0.Width / 2 - size.Width / 2, pictureBox_0.Height / 2 - size.Height / 2, size.Width, size.Height);
+						}
 					}
 					catch (Exception ex)
 					{
+						ClearAnimatedPreview();
 						Form54.smethod_6(this, Class333.smethod_2327() + class226_0.method_1() + Class333.smethod_2328() + ex.Message, Class333.smethod_390(), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					}
 				}
@@ -699,15 +798,15 @@ internal class Form40 : Form
 					{
 						if (enum5_0 == Class1.Enum5.BFH)
 						{
-							if (IsMp4Path(class226_0.method_1()))
+							using Stream stream2 = File.OpenRead(class226_0.method_1());
+							if (NSP.MediaResource.IsVideo(class226_0.method_1(), stream2))
 							{
 								graphics.FillRectangle(Brushes.LightGray, 0, 0, pictureBox_0.Width, pictureBox_0.Height);
-								graphics.DrawString("MP4 video", SystemFonts.MessageBoxFont, Brushes.Black, 10f, pictureBox_0.Height / 2f);
+								graphics.DrawString("MP4 video - playback is not available in this preview", SystemFonts.MessageBoxFont, Brushes.Black, 10f, pictureBox_0.Height / 2f);
 							}
 							else
 							{
-								using Stream stream2 = File.OpenRead(class226_0.method_1());
-								using Image image3 = Image.FromStream(stream2);
+								Image image3 = LoadPreviewImage(class226_0.method_1());
 								Size size2 = Class25.smethod_1(image3.Size, pictureBox_0.Size);
 								int width = size2.Width;
 								int height = size2.Height;
@@ -728,6 +827,7 @@ internal class Form40 : Form
 					}
 					catch (Exception ex2)
 					{
+						ClearAnimatedPreview();
 						Form54.smethod_6(this, Class333.smethod_2329() + class226_0.method_1() + Class333.smethod_2328() + ex2.Message, Class333.smethod_390(), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					}
 				}
@@ -812,7 +912,7 @@ internal class Form40 : Form
 		{
 			using Stream stream = File.OpenRead(class226_0.method_1());
 			num2 = (int)stream.Length;
-			if (enum5_0 == Class1.Enum5.BFH)
+			if (enum5_0 == Class1.Enum5.BFH && !NSP.MediaResource.IsVideo(class226_0.method_1(), stream))
 			{
 				using Image image = Image.FromStream(stream);
 				num3 = image.Width;
@@ -1216,7 +1316,7 @@ internal class Form40 : Form
 		}
 		if (extension == ".mp4")
 		{
-			if (byte_0.Length >= 12 && byte_0[4] == (byte)'f' && byte_0[5] == (byte)'t' && byte_0[6] == (byte)'y' && byte_0[7] == (byte)'p')
+			if (NSP.MediaResource.HasMp4Header(byte_0))
 			{
 				return byte_0;
 			}
@@ -1254,11 +1354,6 @@ internal class Form40 : Form
 			}
 		}
 		return result;
-	}
-
-	private static bool IsMp4Path(string string_10)
-	{
-		return string.Equals(Path.GetExtension(string_10), ".mp4", StringComparison.OrdinalIgnoreCase);
 	}
 
 	private void method_12(object sender, DoWorkEventArgs e)
@@ -1869,8 +1964,18 @@ internal class Form40 : Form
 		}
 	}
 
+	protected override void OnFormClosed(FormClosedEventArgs e)
+	{
+		ClearAnimatedPreview();
+		base.OnFormClosed(e);
+	}
+
 	protected override void Dispose(bool disposing)
 	{
+		if (disposing)
+		{
+			ClearAnimatedPreview();
+		}
 		if (disposing && icontainer_0 != null)
 		{
 			icontainer_0.Dispose();

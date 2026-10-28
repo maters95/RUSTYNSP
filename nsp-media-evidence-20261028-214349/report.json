@@ -1,0 +1,297 @@
+﻿{
+    "CollectedUtc":  "2026-10-28T10:43:49.5561607Z",
+    "Scope":  "Read-only host evidence. No COM port, device commands, runtime changes or process termination.",
+    "Windows":  {
+                    "Caption":  "Microsoft Windows 11 Business",
+                    "Version":  "10.0.26200",
+                    "BuildNumber":  "26200",
+                    "OSArchitecture":  "64-bit"
+                },
+    "Processes":  [
+                      {
+                          "Name":  "dash_virtual",
+                          "Id":  9556,
+                          "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                          "StartTime":  "2026-10-28T10:43:08.1181240Z",
+                          "Modules":  [
+                                          {
+                                              "Name":  "dash_virtual.exe",
+                                              "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                                              "Version":  "0.0.0.0"
+                                          },
+                                          {
+                                              "Name":  "ntdll.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64base.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64base.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64win.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64win.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64con.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64con.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64cpu.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64cpu.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          }
+                                      ]
+                      },
+                      {
+                          "Name":  "NSP",
+                          "Id":  27572,
+                          "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                          "StartTime":  "2026-10-28T10:42:53.3224480Z",
+                          "Modules":  [
+                                          {
+                                              "Name":  "NSP.exe",
+                                              "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                                              "Version":  "1.48.5"
+                                          },
+                                          {
+                                              "Name":  "ntdll.dll",
+                                              "Path":  "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                                              "Version":  "10.0.26100.9549 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64base.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64base.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64win.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64win.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64con.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64con.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          },
+                                          {
+                                              "Name":  "wow64cpu.dll",
+                                              "Path":  "C:\\WINDOWS\\System32\\wow64cpu.dll",
+                                              "Version":  "10.0.26100.9711 (WinBuild.160101.0800)"
+                                          }
+                                      ]
+                      }
+                  ],
+    "Files":  [
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\dash_virtual.exe",
+                      "Length":  839680,
+                      "LastWriteUtc":  "2026-10-28T10:43:07.3323841Z",
+                      "SHA256":  "5A5D74FE029178398512A5622D480FED213F4FD8F58E70B85CA169BB5A62303B",
+                      "Version":  "0.0.0.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.exe",
+                      "Length":  173096,
+                      "LastWriteUtc":  "2026-10-13T03:46:30.0000000Z",
+                      "SHA256":  "E1534E877E699AEEA13A92BDB7CDCB0F99CE126DDC7E5A06094D0DB0A75191E6",
+                      "Version":  "1.48.5",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\NSP.dll",
+                      "Length":  3672064,
+                      "LastWriteUtc":  "2026-10-28T10:25:38.5311913Z",
+                      "SHA256":  "5F726F93FA67FEFA95DED5A8670AD79A715BD0998E34AE61E913586E87B12478",
+                      "Version":  "1.48.5",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\manifest.json",
+                      "Length":  1798,
+                      "LastWriteUtc":  "2026-10-28T10:25:38.7982652Z",
+                      "SHA256":  "C533532A3DB385BACA262CAB6E4A043CAE4F2406EC6EE06D9218ED4E732C6A7D",
+                      "Version":  null,
+                      "Copy":  "003-manifest.json"
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Core.dll",
+                      "Length":  4892160,
+                      "LastWriteUtc":  "2024-07-30T06:51:12.0000000Z",
+                      "SHA256":  "2A031289586467DCE7BD64B9D882B3077FB44C46A6D4FEB9C4601C437FC93AA8",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Multimedia.dll",
+                      "Length":  581632,
+                      "LastWriteUtc":  "2018-11-26T12:48:35.0000000Z",
+                      "SHA256":  "7ADF5215F681EE66FBB9F49B9276599A0BBB23B042E5C11B805CE52390E14B75",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5MultimediaQuick.dll",
+                      "Length":  96768,
+                      "LastWriteUtc":  "2018-11-26T12:48:56.0000000Z",
+                      "SHA256":  "687891378EDDC28E5CF9731B4F8B84E478C1097B2A49C8B6A4A61806797F9C26",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\Qt5Widgets.dll",
+                      "Length":  4429312,
+                      "LastWriteUtc":  "2018-11-26T10:22:43.0000000Z",
+                      "SHA256":  "1CB28BCD1D78BF1CF99B0D6A69C4B89C041668BCBCA6F5C5A4D2F446BCAE24BB",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\mediaservice\\dsengine.dll",
+                      "Length":  229376,
+                      "LastWriteUtc":  "2018-11-26T12:52:32.0000000Z",
+                      "SHA256":  "9119D7A8FEFF46CD03AD804880D28D892EE13037EF2D4DA191F498149EFB69F3",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-plugins\\mediaservice\\wmfengine.dll",
+                      "Length":  44032,
+                      "LastWriteUtc":  "2018-11-26T12:51:46.0000000Z",
+                      "SHA256":  "913956C2853CB47418E1360B730A617547EE80AF9290DD237E353A4D7048AF7A",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\ic7-media-qml\\QtMultimedia\\declarative_multimedia.dll",
+                      "Length":  228352,
+                      "LastWriteUtc":  "2018-11-26T12:51:57.0000000Z",
+                      "SHA256":  "2A56630B004016891C34DDF649A79415AB0D1D62D3FEEBF24FBE48554E03B3DE",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalImage.qml",
+                      "Length":  5120,
+                      "LastWriteUtc":  "2026-10-28T10:43:08.0752319Z",
+                      "SHA256":  "8C9F2FC49765471E115053A7A50A7EFB4453A5545BCDD4E36782CA42EE64D6C7",
+                      "Version":  null,
+                      "Copy":  "011-HalImage.qml"
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\AppData\\Roaming\\Haltech\\Nexus\\qml_components_data\\qml\\user_components\\HalImage.qmlc",
+                      "Length":  16008,
+                      "LastWriteUtc":  "2026-10-28T10:43:08.6198819Z",
+                      "SHA256":  "A821617601B2FC3C055D300A1390F83620F9AE58394F67DC758474499CD2AF9C",
+                      "Version":  null,
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5Multimedia.dll",
+                      "Length":  581632,
+                      "LastWriteUtc":  "2018-11-26T12:48:35.0000000Z",
+                      "SHA256":  "7ADF5215F681EE66FBB9F49B9276599A0BBB23B042E5C11B805CE52390E14B75",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5MultimediaQuick.dll",
+                      "Length":  96768,
+                      "LastWriteUtc":  "2018-11-26T12:48:56.0000000Z",
+                      "SHA256":  "687891378EDDC28E5CF9731B4F8B84E478C1097B2A49C8B6A4A61806797F9C26",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\bin\\Qt5Widgets.dll",
+                      "Length":  4429312,
+                      "LastWriteUtc":  "2018-11-26T10:22:43.0000000Z",
+                      "SHA256":  "1CB28BCD1D78BF1CF99B0D6A69C4B89C041668BCBCA6F5C5A4D2F446BCAE24BB",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\plugins\\mediaservice\\dsengine.dll",
+                      "Length":  229376,
+                      "LastWriteUtc":  "2018-11-26T12:52:32.0000000Z",
+                      "SHA256":  "9119D7A8FEFF46CD03AD804880D28D892EE13037EF2D4DA191F498149EFB69F3",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  },
+                  {
+                      "Path":  "C:\\Users\\ZakMasters\\Downloads\\NSP-native-media-videofix\\ic7-media-runtime\\qml\\QtMultimedia\\declarative_multimedia.dll",
+                      "Length":  228352,
+                      "LastWriteUtc":  "2018-11-26T12:51:57.0000000Z",
+                      "SHA256":  "2A56630B004016891C34DDF649A79415AB0D1D62D3FEEBF24FBE48554E03B3DE",
+                      "Version":  "5.11.3.0",
+                      "Copy":  null
+                  }
+              ],
+    "Environment":  [
+                        {
+                            "Name":  "QT_QUICK_BACKEND",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_OPENGL",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_ANGLE_PLATFORM",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_PLUGIN_PATH",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QML2_IMPORT_PATH",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_MULTIMEDIA_PREFERRED_PLUGINS",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_DEBUG_PLUGINS",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        },
+                        {
+                            "Name":  "QT_LOGGING_RULES",
+                            "CollectorProcess":  null,
+                            "User":  null,
+                            "Machine":  null
+                        }
+                    ],
+    "Errors":  [
+
+               ]
+}

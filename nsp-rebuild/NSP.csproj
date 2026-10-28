@@ -7,6 +7,10 @@
     <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <Target Name="RequireFormResources" BeforeTargets="PrepareForBuild"
+          Condition="'$(EnableDefaultEmbeddedResourceItems)' == 'false'">
+    <Error Text="NSP requires its form resources. Remove EnableDefaultEmbeddedResourceItems=false from the build command." />
+  </Target>
   <PropertyGroup>
     <LangVersion>14.0</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -16,7 +20,10 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     <RootNamespace />
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="../ic7-custom-dash/deploy/nsp/HalImage.qml"
+                      LogicalName="NSP.Media.HalImage.qml" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ServiceModel.Primitives">
       <HintPath>../vendor/local-installs/haltech-nsp/System.ServiceModel.Primitives.dll</HintPath>

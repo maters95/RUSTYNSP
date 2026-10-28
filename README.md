@@ -22,6 +22,20 @@ and the ILSpy command-line tool is in `tools/ilspy/`.
 - `scripts/` — repository-level inspection and packaging scripts.
 - `dist/` — generated test bundles and candidate packages.
 
+## Read-Only iC-7 USB Diagnostics
+
+The [Windows diagnostic kit](dist/ic7-usb-diagnostics.zip) collects host/device
+inventory, supports bounded passive USBPcap captures, and offers one explicit
+read-only identity query with NSP closed. The offline analyzer preserves both
+traffic directions, validates protocol CRCs and reports unknown/incomplete
+data. It does not scan addresses or send settings/firmware/update commands.
+Passive capture cannot stop NSP from independently writing.
+
+See [setup, commands and verification limits](ic7-custom-dash/deploy/USB-INSTALL.md#read-only-usb-diagnostics-kit).
+The analyzer was checked against a recorded physical-device capture; live
+Windows capture/query operation is not yet hardware-validated. USB identity
+and traffic do not enumerate every physical component or prove unused hardware.
+
 ## Repository Storage
 
 Large firmware, archive and capture files use Git LFS. Install Git LFS before
@@ -63,6 +77,23 @@ with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
 ## Build Results (2026-10-28)
 
+For **native dash-canvas GIF/MP4 testing**, use the
+[native media video-fix bundle](dist/ic7-nsp-native-media-test-2.36-videofix.zip) and its
+[Windows setup and test guide](ic7-custom-dash/deploy/nsp/NATIVE-MEDIA-TEST.md).
+Unlike the older picker-only bundles, it hooks NSP's actual Qt renderer and
+downloads matching Qt 5.11.3 x86 media add-ons. The bundle contains a matching
+resource-only NEX candidate, not a fully hardware-validated CFW. Desktop rendered
+pixels and ARM playback lifecycle are tested separately; Windows GUI playback
+and installation on the real unit still require validation. The owner's real
+stock-update USB capture confirms stock payload layout, not this new candidate.
+The original native-media ZIP omitted the form resources and crashes at startup.
+Use the startup-fix bundle: all 25 form resource sets are retained alongside the
+shared QML, with build and packaging guards against their omission.
+The video-fix bundle also supplies Qt 5.11's actual DirectShow player backend
+and Qt Widgets dependency; the earlier audio-decoder-only plugin could not
+create a video service. Owner testing confirms GIF playback on the Windows
+canvas; MP4 playback with the corrected runtime still needs confirmation.
+
 **Deployment blocker:** the owner's firmware-2.36 dash is accessible only via
 NSP over USB, not SSH. The standalone app does not implement NSP USB services.
 The [ARM app scratch-test bundle](dist/ic7dash-arm-scratch-test.tar.gz) is for
@@ -91,7 +122,7 @@ Neither the resource package nor map package contains the standalone app or
 provides a verified installation/recovery route.
 
 - [Bench-test kit (not firmware or flashable)](dist/ic7-cfw-bench-test-kit-2.36.zip)
-- [Windows NSP integration test bundle](dist/ic7-nsp-media-integration-test-2.36.zip):
+- [Windows NSP integration test bundle with startup and video-alias preview fixes](dist/ic7-nsp-media-integration-test-2.36-previewfix.zip):
   use only with a complete copy of NSP while the physical dash is disconnected.
   The included DLL is an unsigned test build; the bundle does not initiate a
   firmware update.

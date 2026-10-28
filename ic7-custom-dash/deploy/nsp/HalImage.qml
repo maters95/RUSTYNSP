@@ -53,6 +53,7 @@ Item {
     property color halIndicatorOnColour
     property color halIndicatorOffColour
     property bool screenshotMode: false
+    property string mediaError: ""
 
     readonly property bool animatedSource: /(?:\.gif|\/ic7_animation_[^/]*\.png)(?:[?#].*)?$/i.test(halImagePath)
     readonly property bool videoSource: /(?:\.mp4|\/ic7_video_[^/]*\.png)(?:[?#].*)?$/i.test(halImagePath)
@@ -67,6 +68,12 @@ Item {
     onVideoSourceChanged: syncVideoPlayback()
     onVisibleChanged: syncVideoPlayback()
     onScreenshotModeChanged: syncVideoPlayback()
+    onHalImagePathChanged: mediaError = ""
+
+    function reportMediaError(message) {
+        mediaError = message;
+        console.error("HalImage: " + halImagePath + ": " + message);
+    }
 
     function setGaugeProperties(props) {
         var success = 1;
@@ -98,6 +105,10 @@ Item {
         anchors.centerIn: parent
         cache: false
         visible: !thisComp.animatedSource && !thisComp.videoSource
+        onStatusChanged: {
+            if (status === Image.Error)
+                thisComp.reportMediaError("Image could not be decoded");
+        }
     }
 
     AnimatedImage {
@@ -113,6 +124,10 @@ Item {
         opacity: image_obj.opacity
         visible: thisComp.animatedSource
         playing: visible && thisComp.visible && !thisComp.screenshotMode
+        onStatusChanged: {
+            if (status === Image.Error)
+                thisComp.reportMediaError("GIF could not be decoded");
+        }
     }
 
     Video {
@@ -123,9 +138,24 @@ Item {
         height: parent.height
         fillMode: VideoOutput.PreserveAspectFit
         anchors.centerIn: parent
+        opacity: image_obj.opacity
         muted: true
         autoPlay: false
         loops: MediaPlayer.Infinite
         visible: thisComp.videoSource
+        onSourceChanged: thisComp.syncVideoPlayback()
+        onErrorChanged: {
+            if (error !== MediaPlayer.NoError)
+                thisComp.reportMediaError(errorString);
+        }
+    }
+
+    Text {
+        anchors.fill: parent
+        visible: thisComp.mediaError !== ""
+        text: "Media error: " + thisComp.mediaError
+        color: "#ff6060"
+        wrapMode: Text.Wrap
+        font.pixelSize: 16
     }
 }

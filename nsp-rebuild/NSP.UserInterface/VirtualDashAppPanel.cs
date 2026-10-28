@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -101,11 +102,23 @@ public class VirtualDashAppPanel : Panel
 		Class332.smethod_1<Struct64<object>, object>(ref gparam_, 3) = framework_0.awz;
 		processStartInfo.Arguments = string.Format(format, Class332.smethod_0<Struct64<object>, object>(in gparam_, 4));
 		bool result = false;
+		Process renderer = null;
 		try
 		{
-			Process.Start(processStartInfo)?.WaitForInputIdle();
+			if (framework_0.awZ == 21 && framework_0.awz == 11)
+			{
+				NSP.NativeMediaRenderer.Prepare(processStartInfo, Path.Combine(AppContext.BaseDirectory, "ic7-media-runtime"));
+			}
+			renderer = Process.Start(processStartInfo)
+				?? throw new InvalidOperationException("The NSP dash renderer did not start.");
+			renderer.WaitForInputIdle(10000);
+			Stopwatch startup = Stopwatch.StartNew();
 			while (intptr_0 == IntPtr.Zero)
 			{
+				if (renderer.HasExited || startup.ElapsedMilliseconds >= 15000)
+				{
+					throw new InvalidOperationException("The NSP dash renderer exited or did not create its window. Check its Qt log and the matching native media runtime.");
+				}
 				intptr_0 = FindWindow(Class333.smethod_359(), Class333.smethod_360());
 				if (intptr_0 == IntPtr.Zero)
 				{
@@ -153,8 +166,30 @@ public class VirtualDashAppPanel : Panel
 		catch (Exception ex)
 		{
 			Class23.smethod_3(Class333.smethod_361() + ex.Message);
+			try
+			{
+				if (renderer != null && !renderer.HasExited)
+				{
+					renderer.Kill();
+				}
+			}
+			catch (InvalidOperationException cleanupError)
+			{
+				Class23.smethod_3("Native renderer cleanup: " + cleanupError.Message);
+			}
+			catch (System.ComponentModel.Win32Exception cleanupError)
+			{
+				Class23.smethod_3("Native renderer cleanup: " + cleanupError.Message);
+			}
 		}
-		smethod_2();
+		finally
+		{
+			renderer?.Dispose();
+		}
+		if (result)
+		{
+			smethod_2();
+		}
 		return result;
 	}
 

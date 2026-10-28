@@ -4,12 +4,26 @@ This is a fresh ILSpy 11.2 decompilation of the supplied NSP 1.48.5 assembly,
 renamed with de4dot's unknown-protector symbol pass, then rebuilt as an x86
 `.NET 9` Windows Forms project. The vendor binaries are not modified.
 
-The source changes are limited to the Image resource-picker path:
+The media changes cover import, persistence and the native dash renderer:
 
 - `ns5/Class237.cs` adds `gif` and `mp4` to Image resource extensions.
 - `ns4/Form40.cs` validates GIF bytes through the image decoder and preserves
   the original animated bytes; MP4 is accepted only with an ISO-BMFF `ftyp`
   signature and is uploaded unchanged. The picker uses a video placeholder.
+- `NSP/MediaResource.cs` recognizes reserved MP4 aliases without consuming the
+  original resource stream.
+- `NSP/NativeMediaRenderer.cs` stages the matching Qt 5.11.3 x86 add-ons and
+  installs the embedded shared media component before the actual iC-7 renderer
+  launches in `NSP.UserInterface/VirtualDashAppPanel.cs`. The original verified
+  v2.36 component is replaced after each HDEF extraction, not just in the picker.
+- `ns2.Control3.resx` preserves the original serialized image-list resource
+  contract so the rebuilt application can start.
+
+Use the [native media setup and test guide](../ic7-custom-dash/deploy/nsp/NATIVE-MEDIA-TEST.md)
+with the matching bundle. Replacing the DLL alone is not sufficient: the native
+renderer also needs the pinned multimedia QML module and Windows
+DirectShow player plugin and its Qt Widgets dependency. Official Qt archives
+are downloaded locally, not bundled.
 
 Build on a Windows machine with the .NET 9 Windows Desktop targeting pack, or
 from this Linux dev container with Windows targeting enabled:
@@ -17,9 +31,13 @@ from this Linux dev container with Windows targeting enabled:
 ```sh
 dotnet build NSP.csproj --configuration Release \
   -p:EnableWindowsTargeting=true \
-  -p:EnableDefaultEmbeddedResourceItems=false \
   -p:NoWarn=WFO1000
 ```
+
+Do not disable default embedded resources: doing so removes the forms' resource
+sets and causes a startup `MissingManifestResourceException`. The project
+rejects that build option, and regression tests check every original resource
+set alongside the added media component.
 
 `WFO1000` is emitted by the .NET 10 WinForms designer analyzer for decompiled
 controls; suppressing it here does not suppress compiler errors. The source was
@@ -30,4 +48,7 @@ reference identities as the supplied binary.
 The built DLL is an experimental, unsigned test artifact, not a supported NSP
 release. Test only in a copy of the NSP installation directory, retaining its
 original `NSP.exe`, `.deps.json`, `.runtimeconfig.json`, and dependency DLLs.
-Windows execution and import/save/transfer behavior have not yet been tested.
+Native runtime staging and component behavior have automated tests; Windows
+Qt plugin loading, GUI playback and real modified-NEX installation remain
+unverified. Earlier owner logs established import/save behavior for the older
+picker-only DLL, not native dash playback in this build.

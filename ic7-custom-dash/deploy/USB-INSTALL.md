@@ -359,3 +359,170 @@ solely to produce a trace. A capture is passive observation, not evidence that
 the update succeeded, and this analyzer cannot certify installation.
 
 This container cannot access the Windows COM3 device or record that transfer.
+
+## Read-Only USB Diagnostics Kit
+
+The diagnostic collector separates **Windows inventory**, **passive capture**,
+and **one active identity read**. It is not a hardware scanner, firmware
+installer, uploader, or shell. All evidence stays local.
+
+### What it can establish
+
+- Windows USB/COM identifiers, device/driver versions, NSP process and binary
+  information, plus the existing baseline QML copies.
+- The raw USB traffic present in a USBPcap capture, including enumeration and
+  vendor/control transfers retained in the original capture.
+- CRC-validated application requests and replies in both directions, including
+  fragmented/coalesced packets, writes issued by NSP, and device errors.
+- Firmware version, product ID, raw variant/hardware fields, definition ID and
+  serial from a complete, validated iC-7 identity block.
+- Observed addresses and lengths, unanswered/superseded requests, unmatched
+  replies, truncated frames and undecoded bytes. A CRC-failure count concerns
+  candidate protocol frames, not a diagnosis of bad physical USB hardware.
+
+This cannot prove BLE/camera/GPS/RTC/extra GPIO are fitted, accessible, or
+unused. Drivers, generic SoM device trees and library files alone do not prove
+physical population. Full component verification needs vendor board/BOM
+information, authorized physical inspection, or vendor-authorized shell access
+to the *running unit* (active device tree, bound drivers, device enumeration,
+processes and hardware-specific tests). There is no verified "dump everything
+about the hardware" USB command here. Earlier hardware claims in the master
+guide should be treated as leads rather than an independently verified BOM.
+
+### Windows inventory (no Python or Wireshark required)
+
+From the repository or extracted diagnostic ZIP root:
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\start-ic7-usb-diagnostics.ps1 -Mode Inventory
+```
+
+Every run requires a new output directory; existing evidence is never
+overwritten. Inspect `session.json` and `inventory/report.json` for errors.
+If Windows blocks a downloaded script, review its contents and use your
+organization's approved script-unblocking/signing process; the kit does not
+change execution policy or install drivers.
+
+### Passive capture while NSP runs
+
+Install Wireshark with its optional USBPcap driver using the vendor installer.
+Restart Windows if requested. Run an elevated PowerShell if capture permissions
+require it. Start with:
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\start-ic7-usb-diagnostics.ps1 -Mode Capture
+```
+
+This lists capture interfaces and deliberately stops without starting a
+capture. Use USBPcap's controller/device listing to find the controller
+containing `VID_16D0&PID_0001`. Select its full interface name from the list,
+for example `\\.\USBPcap2` (**the number is an example, not autodetection**):
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\start-ic7-usb-diagnostics.ps1 `
+  -Mode Capture -CaptureInterface '\\.\USBPcap2' -Seconds 120 `
+  -ConfirmControllerCapture -OutputDirectory .\ic7-passive-01
+```
+
+The bounded capture uses unlimited packet snap length, no capture filter and
+retains re-enumeration on that controller. For enumeration evidence, start
+before connecting the dash/NSP. Observe the normal connection, device
+information and live channels. Do not edit/apply settings, upload layouts,
+clear logs, reset or update firmware for this investigation. **NSP may write
+automatically on connection**; this tool records those writes but cannot block
+them. If absolutely no host writes are acceptable, leave NSP closed and do
+inventory/authorized identity collection only. Passive capture itself sends
+no application requests.
+
+Keep the original `usb.pcapng` private: other devices on the controller can
+appear, including keyboard/storage traffic. It can contain configuration,
+serial numbers and GPS data. The kit does not upload anything. Capture end
+statistics from tshark should be retained separately if reporting drops;
+the analyzer cannot prove that the capture driver dropped no packets.
+The wrapper saves tshark's output/statistics in `capture-stdout.txt` and
+`capture-stderr.txt`; a nonzero capture exit code fails the session.
+
+### Offline bidirectional analysis
+
+Requires Python 3.10+ and Wireshark's tshark; no Python packages are needed for
+offline analysis. Find bus and device addresses in Wireshark from enumeration
+(`usb.idVendor == 0x16d0 && usb.idProduct == 0x0001`). Include every dash address
+after re-enumeration. Example, using bus 2 and devices 4/5:
+
+```powershell
+py .\scripts\ic7-usb-diagnostics.py analyze .\ic7-passive-01\usb.pcapng `
+  --bus 2 --devices 4 5 --tshark 'C:\Program Files\Wireshark\tshark.exe' `
+  --output .\ic7-analysis-01
+```
+
+Outputs:
+
+- `report.json`: identity, request coverage, errors/unknowns and limitations.
+- `usb-records.jsonl`: selected USB record metadata and all exported
+  `usb.capdata`, including undecoded bytes. Descriptor fields are not a full
+  raw-frame export; retain the original capture for complete USB records.
+- `protocol.jsonl`: validated packets in both directions, packet hex,
+  completed-at frame, and matched request frame where available.
+
+Only the previously observed USBPcap application endpoints (`0x01` submit /
+`0x81` completion) are protocol-decoded. Other transfers remain in the capture.
+Opcode-1 RPC response boundaries are inferred by CRC, not by a fully decoded
+resource-service schema. Unknown addresses are not labeled physical memory,
+hardware registers or firmware. Identity decoding does not interpret raw
+hardware bytes as a component list.
+
+### Optional direct identity read (exit NSP first)
+
+The only active operation is the same address-zero, 1,024-byte identity read
+used by NSP (`nsp_src/A/E.cs`, identity parser in `nsp_src/A/F.cs`). It uses
+opcode 2 with CRC and validates the echoed header, reply CRC and product 21.
+There is no arbitrary address/length option, protocol opcode-1 transmit path,
+resource RPC, reset, scan or automatic retry.
+
+Install the optional serial dependency only for this mode, preferably in an
+isolated Python environment:
+
+```powershell
+py -m venv .ic7-diagnostics-venv
+.\.ic7-diagnostics-venv\Scripts\python.exe -m pip install pyserial==3.5
+```
+
+Close NSP/Nexus and virtual dash processes. Substitute the current COM port
+from inventory; COM3 is only the previously observed value:
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\start-ic7-usb-diagnostics.ps1 `
+  -Mode Identity -Port COM3 -ConfirmNspClosed `
+  -Python .\.ic7-diagnostics-venv\Scripts\python.exe `
+  -OutputDirectory .\ic7-identity-01
+```
+
+The wrapper refuses detected NSP processes; the port must enumerate with the
+previously observed VID/PID. The client sets DTR/RTS false before opening, uses
+115200/8-N-1 with no flow control, and closes the port on completion/failure.
+Opening a serial port can still cause OS/driver line-control activity; this
+is not electrically passive or a guarantee of zero device-side effects.
+Unknown identity formats, changed USB IDs, busy ports, CRC errors and timeouts
+stop the operation rather than enabling a bypass or fallback.
+
+`identity/request.bin`, `identity/response.bin` and `identity/report.json`
+retain the request, complete/partial reply and success/error. A failed
+attempt is marked incomplete and not retried. Reopen NSP normally afterwards.
+This identifies the device; it does not download all firmware/settings.
+
+### Verification status
+
+The parser was exercised against the existing physical-device capture
+`research/usb-captures/nsp-screen-upload1.pcap`: 16,491 selected USB records,
+1,160 reads, 1,016 writes, 2,175 validated replies, one unanswered request,
+zero undecoded protocol bytes, zero CRC-failure candidates, zero
+capture-length-truncated frames, and recovered firmware 2.36.0.
+The historical capture contains writes; these are observations, not operations
+performed by the diagnostic client.
+
+Focused tests cover framing/reassembly, RPC reply boundaries, errors, device
+isolation, identity validation, port allowlisting, read-only transmission,
+partial failure evidence and no-retry behavior. PowerShell was syntax-parsed.
+Live Windows USB capture and active serial querying remain **unverified on
+the connected dash**; Linux/offline tests do not establish physical safety or
+runtime compatibility.

@@ -31,6 +31,7 @@ Item {
             candidate.repaintAll();
             compare(findChild(candidate, "staticImage").opacity, 0.5);
             compare(findChild(candidate, "animatedImage").opacity, 0.5);
+            compare(findChild(candidate, "videoPlayer").opacity, 0.5);
             compare(candidate.setGaugeProperties({unknownProperty: true}), 0);
         }
 
@@ -65,6 +66,32 @@ Item {
             candidate.repaintAll();
             tryCompare(findChild(candidate, "animatedImage"), "status", Image.Ready);
             test_staticImage();
+        }
+
+        function test_mp4LoopsAndSourceChange() {
+            candidate.halImagePath = Qt.resolvedUrl("../../../build-nsp-tests/video.mp4");
+            candidate.repaintAll();
+            var video = findChild(candidate, "videoPlayer");
+            tryCompare(video, "playbackState", MediaPlayer.PlayingState);
+            tryVerify(function() { return video.duration > 0 && video.position > video.duration / 2; }, 10000);
+            var last = video.position;
+            tryVerify(function() { return video.position < last; }, 10000);
+            candidate.halImagePath = Qt.resolvedUrl("../../../build-nsp-tests/ic7_video_probe.png");
+            candidate.repaintAll();
+            tryCompare(video, "playbackState", MediaPlayer.PlayingState);
+            tryVerify(function() { return video.position > 0; }, 10000);
+            candidate.halImagePath = "";
+            tryCompare(video, "source", "");
+            verify(!video.visible);
+            test_staticImage();
+        }
+
+        function test_invalidMediaIsReported() {
+            candidate.halImagePath = Qt.resolvedUrl("../../../build-nsp-tests/missing.mp4");
+            candidate.repaintAll();
+            tryVerify(function() { return candidate.mediaError !== ""; }, 10000);
+            test_staticImage();
+            compare(candidate.mediaError, "");
         }
 
         function test_animationPngAlias() {

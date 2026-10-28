@@ -539,8 +539,12 @@ class Workbench(QMainWindow):
             self.resource_preview.setMovie(self.movie)
             self.movie.start()
         elif is_video_resource(resource["name"]):
-            self.resource_preview.setText("MP4 resource selected; opening browser preview")
-            QDesktopServices.openUrl(QUrl(resource["url"] + "/asset?name=" + QUrl.toPercentEncoding(resource["name"]).data().decode()))
+            url = QUrl(resource["url"] + "/?asset=" + QUrl.toPercentEncoding(resource["name"]).data().decode())
+            if QDesktopServices.openUrl(url):
+                self.resource_preview.setText(
+                    "MP4 playback opened in the browser viewer (not in this panel).")
+            else:
+                self.session_error("Could not open MP4 browser preview: " + url.toString())
         else:
             self.resource_preview.show_bytes(payload)
             if self.resource_preview.image.isNull():

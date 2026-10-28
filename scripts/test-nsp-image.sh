@@ -33,11 +33,12 @@ cp "$FIXTURES/video.mp4" "$FIXTURES/ic7_video_probe.png"
 
 if [[ -n "${IC7_SYSROOT:-}" ]]; then
     qemu-arm -L "$IC7_SYSROOT" \
+        -E QML_DISABLE_DISK_CACHE=1 \
         -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \
         -E QT_PLUGIN_PATH="$IC7_SYSROOT/usr/lib/plugins" \
         -E QML2_IMPORT_PATH="$IC7_SYSROOT/usr/lib/qml" \
-        "$IC7_SYSROOT/usr/bin/qmltestrunner" -input "$SRC/deploy/nsp/tests" -o -,txt
+        "$IC7_SYSROOT/usr/bin/qmltestrunner" -input "$SRC/deploy/nsp/tests/tst_HalImage.qml" -o -,txt
 else
-    xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 \
+    xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 QML_DISABLE_DISK_CACHE=1 \
         qmltestrunner -input "$SRC/deploy/nsp/tests" -o -,txt
 fi

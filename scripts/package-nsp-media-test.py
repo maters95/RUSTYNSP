@@ -43,24 +43,30 @@ def validate_nsp_dll(path: Path) -> None:
         machine_data = source.read(2)
     if len(machine_data) != 2 or struct.unpack("<H", machine_data)[0] != 0x14C:
         raise ValueError(f"NSP DLL must target Windows x86: {path}")
+    assembly = path.read_bytes()
+    for resource in (ROOT / "nsp-rebuild").glob("*.resx"):
+        name = resource.stem + ".resources"
+        if name.encode("utf-8") + b"\0" not in assembly:
+            raise ValueError(f"NSP DLL is missing required form resource: {name}")
 
 
-def validate_inputs(nsp_dll: Path) -> None:
-    for path in (MEDIA_NEX, BUILD_REPORT, MAP_ARCHIVE, GUIDE):
+def validate_inputs(nsp_dll: Path, media_nex: Path = MEDIA_NEX,
+                    build_report: Path = BUILD_REPORT, guide: Path = GUIDE) -> None:
+    for path in (media_nex, build_report, MAP_ARCHIVE, guide):
         if not path.is_file():
             raise FileNotFoundError(f"required test-bundle input is missing: {path}")
     validate_nsp_dll(nsp_dll)
 
-    with BUILD_REPORT.open(encoding="utf-8") as source:
+    with build_report.open(encoding="utf-8") as source:
         report = json.load(source)
-    expected_hash = report["packages"][MEDIA_NEX.name]["sha256"]
-    if sha256(MEDIA_NEX) != expected_hash:
+    expected_hash = report["packages"][media_nex.name]["sha256"]
+    if sha256(media_nex) != expected_hash:
         raise ValueError("media NEX does not match its build report")
     if report["changed_members"] != [
         "qml_components_data/qml/user_components/HalImage.qml"
     ] or report["preserved_members"] != 338:
         raise ValueError("NEX build report does not describe the resource-only patch")
-    with zipfile.ZipFile(MEDIA_NEX) as nex:
+    with zipfile.ZipFile(media_nex) as nex:
         if nex.testzip() is not None:
             raise ValueError("media NEX ZIP integrity check failed")
         if set(nex.namelist()) != {"manifest.xml", "res_ic-7.qzip", "ic-7.hdef"}:
@@ -75,16 +81,39 @@ def validate_inputs(nsp_dll: Path) -> None:
             raise ValueError(f"NSP map test archive is missing {MAP_NAME}")
 
 
+def validate_native_component(nsp_dll: Path, media_nex: Path, build_report: Path) -> str:
+    component = (media_nex.parent / "HalImage.qml").read_bytes()
+    report = json.loads(build_report.read_text(encoding="utf-8"))
+    component_hash = hashlib.sha256(component).hexdigest()
+    if component_hash != report["replacement_component_sha256"]:
+        raise ValueError("native media component does not match the NEX build report")
+    if component != (GUIDE.parent / "HalImage.qml").read_bytes():
+        raise ValueError("native media candidate is stale relative to maintained QML")
+    resource_blob = struct.pack("<I", len(component)) + component
+    if nsp_dll.read_bytes().count(resource_blob) != 1:
+        raise ValueError("NSP DLL does not contain the matching embedded media component")
+    return component_hash
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--nsp-dll", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--media-nex", type=Path, default=MEDIA_NEX)
+    parser.add_argument("--build-report", type=Path, default=BUILD_REPORT)
+    parser.add_argument("--native-media", action="store_true",
+                        help="Include native renderer setup and pinned Qt download metadata")
     args = parser.parse_args()
     nsp_dll = args.nsp_dll.resolve()
     output = args.output.resolve()
     if output.exists():
         parser.error(f"refusing to overwrite existing output: {output}")
-    validate_inputs(nsp_dll)
+    guide = GUIDE.with_name("NATIVE-MEDIA-TEST.md") if args.native_media else GUIDE
+    validate_inputs(nsp_dll, args.media_nex, args.build_report, guide)
+    component_hash = (
+        validate_native_component(nsp_dll, args.media_nex, args.build_report)
+        if args.native_media else None
+    )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary_path = None
@@ -97,11 +126,25 @@ def main() -> int:
         entries = []
         with zipfile.ZipFile(temporary_path, "w", allowZip64=True) as archive:
             files = [
-                (GUIDE, "README.md"),
+                (guide, "README.md"),
                 (nsp_dll, "NSP-test/NSP.dll"),
-                (MEDIA_NEX, "firmware/" + MEDIA_NEX.name),
-                (BUILD_REPORT, "firmware/build-report.json"),
+                (args.media_nex, "firmware/" + args.media_nex.name),
+                (args.build_report, "firmware/build-report.json"),
             ]
+            if args.native_media:
+                files.extend([
+                    (GUIDE.with_name("setup-native-media.ps1"), "setup-native-media.ps1"),
+                    (GUIDE.with_name("collect-native-media-evidence.ps1"),
+                     "collect-native-media-evidence.ps1"),
+                    (GUIDE.with_name("test-native-video.ps1"), "test-native-video.ps1"),
+                    (GUIDE.with_name("qt5113-runtime.json"), "qt5113-runtime.json"),
+                    (args.media_nex.parent / "HalImage.qml", "firmware/HalImage.qml"),
+                ])
+                for name in ("animated.gif", "static.png", "video.mp4"):
+                    files.append((
+                        ROOT / "ic7-custom-dash/build-nsp-tests" / name,
+                        "samples/" + name,
+                    ))
             for source, destination in files:
                 archive.write(source, destination, compress_type=zipfile.ZIP_STORED)
                 entries.append({
@@ -132,6 +175,8 @@ def main() -> int:
                 "firmware_reference": "Haltech iC-7 v2.36",
                 "created_utc": datetime.now(timezone.utc).isoformat(),
                 "physical_installation_tested": False,
+                "native_renderer": args.native_media,
+                "component_sha256": component_hash,
                 "artifacts": entries,
             }
             manifest_bytes = (json.dumps(manifest, indent=2) + "\n").encode()
