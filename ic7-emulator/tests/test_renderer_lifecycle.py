@@ -16,6 +16,14 @@ import stock_renderer
 
 
 class RendererLifecycleTests(unittest.TestCase):
+    def test_settings_updates_are_coalesced_without_losing_coverage(self):
+        ranges = [{"address": 120, "length": 30}, {"address": 100, "length": 30},
+                  {"address": 150, "length": 10}, {"address": 300, "length": 5},
+                  {"address": 310, "length": 0}]
+        self.assertEqual(stock_renderer.merge_settings_ranges(ranges),
+                         [{"address": 100, "length": 60}, {"address": 300, "length": 5}])
+        self.assertEqual(ranges[0], {"address": 120, "length": 30})
+
     def test_reboots_and_firmware_changes_restart_instead_of_exiting(self):
         iteration = 0
         pipes, processes = [], []
@@ -129,6 +137,19 @@ class RendererLifecycleTests(unittest.TestCase):
             self.assertTrue(restored.sandbox.component_active)
             self.assertEqual(restored.sandbox.components, components)
             self.assertEqual(restored.sandbox.runtime_hashes(), device.sandbox.runtime_hashes())
+            from viewer import start_viewer
+            from urllib.request import urlopen
+            server = start_viewer(restored, 0)
+            try:
+                base = f"http://127.0.0.1:{server.server_port}"
+                with urlopen(base + "/api/changes") as response:
+                    self.assertEqual(json.load(response)["runtime_components"], restored.sandbox.runtime_hashes())
+                for name, data in components.items():
+                    with urlopen(base + "/api/component?name=" + name) as response:
+                        self.assertEqual(response.read(), data)
+            finally:
+                server.shutdown()
+                server.server_close()
             (root / "HalSplash.qml").write_bytes(b"bad")
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
                 Device(profile, root / "state")

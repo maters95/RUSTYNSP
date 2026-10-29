@@ -19,11 +19,16 @@ Haltech's verbal blessing; this is a personal project.
 - **Panel:** 800x480 (the 860-wide NSP layout is scaled 800/860 at runtime).
 - **Storage:** eMMC, **A/B rootfs** (`mmcblk0p1`/`p2`), `/opt/applications`
   (p3) = the dash app, `/mnt/usb` (p4) = datalogs + `/mnt/usb/upgrade`.
-- **I/O:** FTDI USB (device-mode, the NSP link `/dev/ttyGS0`), BLE radio,
-  socketcan, an STM32 I/O coprocessor, camera input, PWM backlight.
+- **I/O:** FTDI USB (device-mode, the NSP link `/dev/ttyGS0`), socketcan,
+  an STM32 I/O coprocessor, camera input, PWM backlight. Firmware includes
+  Bluetooth LE/Classic support, but a fitted, usable onboard radio has not
+  been confirmed on the owner's unit. See the
+  [RaceBox/Bluetooth investigation](deploy/RACEBOX-FEASIBILITY.md).
 - **No usable RTC** (only the i.MX6 SNVS, no backup cell evident) → the clock
-  needs GPS/CAN time. **USB is device-mode** (can't host a phone) and radio is
-  **BLE only** → native Android Auto is not possible on this hardware.
+  needs GPS/CAN time. The observed **NSP USB connection is device-mode**;
+  that does not establish an accessible host port. Do not infer a BLE-only
+  radio or Android Auto capability from the SoM's generic specifications.
+  The stock runtime is Boot2Qt Linux, not Android.
 
 ## 3. Firmware: structure & what's accessible
 - NSP downloads firmware to `C:\ProgramData\Haltech\Nexus\Firmware\Dash-V2-*.nex`

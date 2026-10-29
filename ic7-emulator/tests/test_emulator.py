@@ -137,6 +137,25 @@ class ProtocolTests(unittest.TestCase):
                     self.assertEqual(hashlib.sha256(archive.read(name)).hexdigest(), checksum)
             with self.assertRaisesRegex(ValueError, "overwrite"):
                 export_session_archive(saved, saved / "memory.zip")
+            window = MagicMock(worker=None, renderer=Mock(), alert_previews=[], state=saved)
+            Workbench.update_export_action(window)
+            window.export_action.setEnabled.assert_called_with(False)
+            window.renderer = None
+            Workbench.update_export_action(window)
+            window.export_action.setEnabled.assert_called_with(True)
+
+    def test_workbench_opens_dash_display_once_and_records_its_output(self):
+        state = {"state": "/tmp/dash-state", "mode": "main", "requests": 0, "assets": [],
+                 "events": [], "update": None, "url": "http://127.0.0.1:8765"}
+        window = MagicMock(renderer=None, auto_renderer_started=False)
+        window.auto_renderer.isChecked.return_value = True
+        Workbench.receive_snapshot(window, state)
+        Workbench.receive_snapshot(window, state)
+        window.start_renderer.assert_called_once()
+        with tempfile.TemporaryDirectory() as temporary:
+            window.state = Path(temporary)
+            Workbench.renderer_message(window, "Live channels and alarms now follow NSP Simulate.\n")
+            self.assertIn("NSP Simulate", (window.state / "renderer.log").read_text())
 
     def test_workbench_only_lists_identified_virtual_ports(self):
         ports = [Mock(device="COM11", description="HHD Virtual Serial Port", manufacturer="HHD", hwid=""),
@@ -550,6 +569,25 @@ class NspLiveMirrorTests(unittest.TestCase):
 
 
 class ResourceTests(unittest.TestCase):
+    def test_resource_files_and_cached_hashes_follow_commits_rename_and_delete(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "resources"
+            resources = Resources(root)
+            resources.put("u/original.gif", 0, b"GIF89a")
+            checksum = hashlib.sha256(b"GIF89a").hexdigest()
+            self.assertEqual(resources.digests[(0, "u/original.gif")], checksum)
+            restored = Resources(root)
+            self.assertEqual(restored.digests, resources.digests)
+            old = resource_descriptor("u/original.gif", 0, b"GIF89a")
+            new = resource_descriptor("u/renamed.gif", 0, b"GIF89a")
+            self.assertEqual(resources.command(b"\x04\0\0\0" + old + new), b"\0")
+            self.assertNotIn((0, "u/original.gif"), resources.digests)
+            self.assertEqual(resources.digests[(0, "u/renamed.gif")], checksum)
+            self.assertEqual(resources.command(b"\x05\0\0\0" + new), b"\0")
+            self.assertEqual(resources.digests, {})
+            self.assertEqual(list(root.parent.glob("resource-*.tmp")), [])
+
     def test_fragment_retries_are_idempotent_including_final_ack(self):
         with tempfile.TemporaryDirectory() as temporary:
             resources = Resources(temporary)

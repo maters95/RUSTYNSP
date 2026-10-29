@@ -86,7 +86,8 @@ screen components.
 
 Use `ic7-emulator-windows-nexmap-alerts.zip` in a separate directory.
 Open an iC-7 map once in the new NSP copy to stage its Qt add-ons; close its
-renderer. Run `.\start-workbench.cmd`, then `.\start-stock-renderer.cmd`.
+renderer. Run `.\start-workbench.cmd`; **Dash Display** opens automatically on
+Windows. Do not start a second `start-stock-renderer.cmd` alongside it.
 The isolated renderer installs the exact four QML components from this NEX.
 It requires the matching Qt 5.11 x86 multimedia/GIF add-ons and DirectShow
 `dsengine`; missing dependencies are explicit errors. Upload map settings from
@@ -95,7 +96,7 @@ NSP: the display must remain blank until those settings arrive.
 **The emulator renderer mirrors exactly what NSP shows.** While this NSP is
 open, it publishes the same live-data block it sends to its own dash renderer
 (read-only, local shared memory `HaltechNSP_iC7_LiveData`). The workbench's
-`start-stock-renderer.cmd` window applies that block to the original renderer,
+**Dash Display** window applies that block to the original renderer,
 so when NSP's **Simulate** panel (or live data) raises an alarm, the emulator
 shows the same stock popup with the same colours, stacking, GIF override and
 GIF-only setting, and clears it at the same time. Its console prints
@@ -148,7 +149,7 @@ driving.
 
 Verified locally: x86 DLL build with zero compiler errors (402 existing
 decompilation warnings); **24** Python/.NET regressions; **37** desktop QML
-checks; **33** firmware ARM/QEMU QML checks; **99** emulator Python tests with
+checks; **33** firmware ARM/QEMU QML checks; **110** emulator Python tests with
 real PyQt5; and browser checks. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.

@@ -433,6 +433,7 @@ class Resources:
         self.root.mkdir(parents=True, exist_ok=True)
         self.items = {}
         self.checksums = {}
+        self.digests = {}
         self.pending = {}
         self.revision = 0
         for kind in (0, 1):
@@ -444,14 +445,21 @@ class Resources:
                         payload = path.read_bytes()
                         self.items[key] = payload
                         self.checksums[key] = zlib.crc32(payload)
+                        self.digests[key] = hashlib.sha256(payload).hexdigest()
 
     def put(self, name, kind, payload):
         parse_descriptor(resource_descriptor(name, kind, payload))
         destination = self.root / str(kind) / name
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(payload)
+        temporary = self.root.parent / ("resource-" + uuid.uuid4().hex + ".tmp")
+        try:
+            temporary.write_bytes(payload)
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
         self.items[(kind, name)] = payload
         self.checksums[(kind, name)] = zlib.crc32(payload)
+        self.digests[(kind, name)] = hashlib.sha256(payload).hexdigest()
         self.revision += 1
 
     def command(self, payload):
@@ -518,9 +526,10 @@ class Resources:
                 del self.pending[key]
             return b"\0"
         if operation == 5 and len(payload) == 64:
+            (self.root / str(kind) / name).unlink(missing_ok=True)
             del self.items[key]
             self.checksums.pop(key, None)
-            (self.root / str(kind) / name).unlink(missing_ok=True)
+            self.digests.pop(key, None)
             self.revision += 1
             return b"\0"
         if operation == 4 and len(payload) == 124:
@@ -530,6 +539,7 @@ class Resources:
             self.put(new_name, new_kind, self.items[key])
             del self.items[key]
             self.checksums.pop(key, None)
+            self.digests.pop(key, None)
             (self.root / str(kind) / name).unlink(missing_ok=True)
             return b"\0"
         return b"\x01"
@@ -621,11 +631,11 @@ class Device:
         if now is None:
             now = time.monotonic()
         source = None
+        duration_ms = SPLASH_DURATION_MS
         if self.boot_mode or not self.map_loaded:
             phase = "blank"
         else:
             manifest = self.resources.items.get((0, SPLASH_RESOURCE))
-            duration_ms = SPLASH_DURATION_MS
             if manifest:
                 try:
                     info = json.loads(manifest)
@@ -654,7 +664,7 @@ class Device:
             if phase != "splash":
                 source = None
         return {"phase": phase, "map_loaded": self.map_loaded, "reboot_revision": self.reboot_revision,
-                "splash_source": source, "duration_ms": SPLASH_DURATION_MS}
+                "splash_source": source, "duration_ms": duration_ms}
 
     def _respond(self, packet):
         opcode, sequence, raw_address, length = HEADER.unpack_from(packet)

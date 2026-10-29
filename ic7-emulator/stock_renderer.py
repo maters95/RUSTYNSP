@@ -78,6 +78,17 @@ def renderer_restart_required(display, launched_reboot_revision):
             display.get("reboot_revision") != launched_reboot_revision)
 
 
+def merge_settings_ranges(ranges):
+    merged = []
+    for start, end in sorted((entry["address"], entry["address"] + entry["length"])
+                             for entry in ranges if entry["length"] > 0):
+        if merged and start <= merged[-1]["address"] + merged[-1]["length"]:
+            merged[-1]["length"] = max(end, merged[-1]["address"] + merged[-1]["length"]) - merged[-1]["address"]
+        else:
+            merged.append({"address": start, "length": end - start})
+    return merged
+
+
 class WindowsPipe:
     def __init__(self):
         if os.name != "nt":
@@ -539,7 +550,7 @@ def main():
             if changes["full_refresh"]:
                 ranges = [{"address": 0x20000, "length": 651264}]
             else:
-                ranges = changes["ranges"]
+                ranges = merge_settings_ranges(changes["ranges"])
             for entry in ranges:
                 for offset in range(0, entry["length"], 16384):
                     count = min(16384, entry["length"] - offset)

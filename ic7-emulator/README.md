@@ -1,5 +1,49 @@
 # iC-7 NSP Simulator
 
+## Final test-kit workflow
+
+The Windows workbench now opens **Dash Display** automatically using the
+original NSP renderer. This is the primary display for testing screens,
+fonts, GIF/MP4 media and alarm layout. **Layout Diagnostic** is explicitly
+an approximation, not the dash display. Keep only one isolated renderer and
+one test NSP instance open; upload the same map/resources to both.
+
+- **Start Session** creates a new, empty virtual dash. It stays blank until
+  NSP writes dashboard settings. The combined kit selects its matching
+  resource-only NEX automatically.
+- **Resume Dash** opens an existing saved session folder, retaining settings,
+  resources and a completed, hash-matched firmware preview. Its configured
+  splash runs at startup. The original selected NEX and sidecars must still
+  exist; reselect the NEX if the kit has moved.
+- **Power Cycle** restarts the display, replays the splash, drops incomplete
+  resource transfers and saves the retained map/resources. It is disabled
+  during firmware-update mode.
+- NSP reboot commands restart the isolated renderer. A sandbox firmware
+  change reloads verified QML rather than terminating the bridge.
+- Completed sandbox updates publish every available verified sidecar
+  (`main.qml`, `HalImage.qml`, `HalSplash.qml`, `HalAlarmPopup.qml`), not just
+  the screen-image component. New build reports hash every sidecar.
+- Live-data mirroring rejects stale publisher timestamps as well as torn
+  snapshots. If NSP stops publishing, the renderer returns to emulator data.
+- After **Stop**, use **Export Logs**. The ZIP includes settings, image/font
+  resources, protocol capture, emulator log and **renderer.log**, with hashes.
+  It excludes the copied Qt runtime. Logs may contain map and resource data;
+  review them before sharing.
+
+The workbench records renderer errors and exit status; use **Dash Display**
+to retry after correcting a missing dependency. Stopping the workbench
+requests a graceful bridge shutdown so its child dash process is closed too.
+
+### Fidelity limits
+
+This is not a full hardware emulator: it does not execute the ARM application,
+kernel, bootloader or STM32 code. CAN/ECU acquisition, LEDs, physical controls,
+hardware video codecs, USB re-enumeration, hardware flashing and recovery
+are not modeled. Live alarms require NSP's own live-data/Simulate panel and
+the same map settings; the synthetic alert preview is not an alarm engine.
+Windows integration still requires an on-PC acceptance test. Passing the
+Linux/ARM-QEMU component tests is not a physical-firmware safety guarantee.
+
 Runnable protocol simulator built from the owner's iC-7 v2.36 USB captures,
 definition, stock resources and matching NSP 1.48.5 source.
 
@@ -34,8 +78,8 @@ that resource selected and video controls available, rather than playing in the
 workbench panel. This workbench runtime does not include QtMultimedia. Browser
 launch and playback failures are reported explicitly; playback requires a
 browser-supported video codec. This asset preview is independent of the selected
-NEX and does not verify firmware playback. On Windows, **Stock Renderer**
-uses NSP's private original renderer when its installed runtime is available.
+NEX and does not verify firmware playback. On Windows, **Dash Display**
+uses NSP's private original renderer and opens automatically by default.
 
 ## Emulator Display Lifecycle
 
@@ -156,7 +200,9 @@ multimedia modules/plugins and ffmpeg installed; then run
 7. Open/restart NSP. NSP should discover the **COM10** end, while the simulator
    owns **COM11**. Do not configure both applications to open the same port.
    The simulated serial is `F1C700000001`; it is intentionally not the real dash.
-8. In another terminal, start the original-renderer bridge:
+8. The workbench starts **Dash Display** automatically. If you are using only
+   the command-line protocol simulator, start the original-renderer bridge in
+   another terminal (do not launch a second bridge alongside the workbench):
 
    ```powershell
    .\start-stock-renderer.cmd
@@ -330,15 +376,17 @@ transport and mode transition, not target-side decryption or physical flash.
 After return to main mode, a candidate QML sidecar is exposed to the private
 renderer only if its hash and the NEX hash match the supplied build report.
 This is a trusted build-sidecar simulation, not extraction of the staged
-encrypted resource. Start the private renderer after the update:
+encrypted resource. The workbench reloads the private renderer after an update.
+For command-line simulator sessions only, start the bridge:
 
 ```powershell
 .\start-stock-renderer.cmd
 ```
 
 It automatically loads an active sandbox component. Explicit `-Component` or
-`-PatchedImages` overrides take precedence. If the component changes while the
-renderer runs, the bridge stops and asks for a restart because QML is cached.
+`-PatchedImages` overrides take precedence. If components change while the
+renderer runs, the bridge validates the sidecars and restarts its child renderer
+automatically to discard cached QML.
 Startup playback requires QtMultimedia in the Windows preview runtime even
 when a GIF-only component override is selected. Missing modules remain a reported failure,
 not something the emulator can substitute for hardware.

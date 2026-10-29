@@ -65,6 +65,11 @@ def preferred_first(candidates, preferred):
     return sorted(candidates, key=lambda name: name != preferred)
 
 
+def bundled_package():
+    candidate = ROOT.parent / "NSP-test-kit/firmware/ic7-2.36-native-media-alerts-experimental.nex"
+    return candidate if candidate.is_file() else None
+
+
 def virtual_ports(ports):
     markers = ("virtual", "com0com", "hhd", "simulator")
     return sorted(port.device for port in ports
@@ -548,7 +553,7 @@ class Workbench(QMainWindow):
             self.worker.power_cycle_requested.set()
 
     def export_session(self):
-        if self.worker or not self.state:
+        if self.worker or self.renderer or self.alert_previews or not self.state:
             return
         filename, _ = QFileDialog.getSaveFileName(
             self, "Export complete emulator logs", str(self.state.parent / (self.state.name + "-logs.zip")),
@@ -567,7 +572,7 @@ class Workbench(QMainWindow):
         self.resume_action.setEnabled(not running)
         self.stop_action.setEnabled(running)
         self.power_action.setEnabled(running)
-        self.export_action.setEnabled(not running and self.state is not None)
+        self.update_export_action()
         for widget in (self.port, self.refresh_ports, self.package, self.browse, self.clear_package):
             widget.setEnabled(not running)
 
@@ -700,6 +705,9 @@ class Workbench(QMainWindow):
             self.renderer.deleteLater()
             self.renderer = None
             self.renderer_action.setEnabled(self.worker is not None and sys.platform == "win32")
+            self.update_export_action()
+            if self.closing and self.worker is None:
+                self.close()
 
     def renderer_output(self, process):
         text = bytes(process.readAllStandardOutput()).decode("utf-8", "replace")
@@ -713,8 +721,27 @@ class Workbench(QMainWindow):
         self.renderer.deleteLater()
         self.renderer = None
         self.renderer_action.setEnabled(self.worker is not None and sys.platform == "win32")
-        if self.closing and self.worker is None:
+        self.update_export_action()
+        if self.closing and self.worker is None and not self.alert_previews:
             self.close()
+
+    def update_export_action(self):
+        self.export_action.setEnabled(self.worker is None and self.renderer is None and
+                                      not self.alert_previews and self.state is not None)
+
+    def alert_finished(self, process):
+        self.renderer_output(process)
+        if process in self.alert_previews:
+            self.alert_previews.remove(process)
+        process.deleteLater()
+        self.update_export_action()
+        if self.closing and self.worker is None and self.renderer is None and not self.alert_previews:
+            self.close()
+
+    def alert_error(self, process, error):
+        self.renderer_message("Alert preview: " + process.errorString())
+        if error == QProcess.FailedToStart:
+            self.alert_finished(process)
 
     def preview_alert(self):
         if not self.snapshot:
@@ -742,11 +769,9 @@ class Workbench(QMainWindow):
             return
         process = QProcess(self)
         process.setProcessChannelMode(QProcess.MergedChannels)
-        process.readyReadStandardOutput.connect(lambda: self.log.appendPlainText(
-            bytes(process.readAllStandardOutput()).decode("utf-8", "replace").rstrip()))
-        process.errorOccurred.connect(lambda error: self.log.appendPlainText("Alert preview: " + process.errorString()))
-        process.finished.connect(lambda *_: (self.alert_previews.remove(process)
-                                             if process in self.alert_previews else None, process.deleteLater()))
+        process.readyReadStandardOutput.connect(lambda: self.renderer_output(process))
+        process.errorOccurred.connect(lambda error: self.alert_error(process, error))
+        process.finished.connect(lambda *_: self.alert_finished(process))
         self.alert_previews.append(process)
         self.log.appendPlainText("Synthetic alert preview: " + text)
         process.start(sys.executable, [str(ROOT / "native_view.py"), "--url", url, "--preview-alert", text])
@@ -765,7 +790,7 @@ class Workbench(QMainWindow):
             self.closing = True
             self.stop_session()
             event.ignore()
-        elif self.renderer is not None:
+        elif self.renderer is not None or self.alert_previews:
             self.closing = True
             event.ignore()
         else:
@@ -774,7 +799,7 @@ class Workbench(QMainWindow):
 
 def main():
     parser = argparse.ArgumentParser(description="Native, unofficial iC-7 NSP sandbox workbench")
-    parser.add_argument("--package", type=Path)
+    parser.add_argument("--package", type=Path, default=bundled_package())
     parser.add_argument("--state-root", type=Path)
     parser.add_argument("--screenshot", type=Path)
     args = parser.parse_args()

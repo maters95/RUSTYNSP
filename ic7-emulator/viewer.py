@@ -325,7 +325,7 @@ def start_viewer(device, port=8765):
                               "received_screen_revision": hashlib.sha256(device.last_screen).hexdigest() if device.last_screen else None,
                               "events": list(reversed(device.events[-20:])),
                               "assets": [{"kind": kind, "name": name, "bytes": len(payload),
-                                          "sha256": hashlib.sha256(payload).hexdigest()}
+                                          "sha256": device.resources.digests[(kind, name)]}
                                          for (kind, name), payload in sorted(device.resources.items.items())],
                               "staged_regions": sorted(device.staged),
                               "mode": "boot" if device.boot_mode else "main",
