@@ -647,7 +647,7 @@ class Device:
                     self.log.exception("invalid-startup-splash-manifest")
                     source = None
             splash_active = (source is not None and self.splash_started_at is not None and
-                             now - self.splash_started_at < duration_ms / 1000)
+                             now < self.splash_started_at + duration_ms / 1000)
             if source is not None and not splash_active and self.splash_started_at is not None:
                 self.splash_started_at = None
             phase = "splash" if splash_active else "dash"
