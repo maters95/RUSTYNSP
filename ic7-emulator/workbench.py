@@ -678,7 +678,7 @@ class Workbench(QMainWindow):
         process.setProcessChannelMode(QProcess.MergedChannels)
         process.readyReadStandardOutput.connect(lambda: self.renderer_output(process))
         process.finished.connect(self.renderer_finished)
-        process.errorOccurred.connect(lambda error: self.renderer_message("Renderer error: " + process.errorString()))
+        process.errorOccurred.connect(self.renderer_error)
         self.renderer = process
         self.renderer_action.setEnabled(False)
         stop_file = self.state / "renderer.stop"
@@ -693,6 +693,13 @@ class Workbench(QMainWindow):
                 stream.write(message.rstrip() + "\n")
         except OSError as error:
             self.statusBar().showMessage("Cannot save renderer log: " + str(error))
+
+    def renderer_error(self, error):
+        self.renderer_message("Renderer error: " + self.renderer.errorString())
+        if error == QProcess.FailedToStart:
+            self.renderer.deleteLater()
+            self.renderer = None
+            self.renderer_action.setEnabled(self.worker is not None and sys.platform == "win32")
 
     def renderer_output(self, process):
         text = bytes(process.readAllStandardOutput()).decode("utf-8", "replace")
