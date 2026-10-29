@@ -28,6 +28,12 @@ SETTINGS_BASE = 0x20000
 SPLASH_RESOURCE = "u/ic7_splash.json"
 ALERT_RESOURCE = "u/ic7_alerts.json"
 SPLASH_DURATION_MS = 3300
+RUNTIME_COMPONENT_PATHS = {
+    "HalImage.qml": "qml_components_data/qml/user_components/HalImage.qml",
+    "HalSplash.qml": "qml_components_data/qml/user_components/HalSplash.qml",
+    "HalAlarmPopup.qml": "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+    "main.qml": "qml_components_data/qml/factory_screens/main.qml",
+}
 
 
 @lru_cache(maxsize=1)
@@ -101,6 +107,7 @@ class UpdateSandbox:
         self.main_returned = False
         self.component = None
         self.component_active = False
+        self.components = {}
         report_path = self.package.with_name("build-report.json")
         component_path = self.package.with_name("HalImage.qml")
         if report_path.is_file() and component_path.is_file():
@@ -112,6 +119,29 @@ class UpdateSandbox:
             matches_component = report.get("replacement_component_sha256") == hashlib.sha256(component).hexdigest()
             if matches_name and matches_package and matches_component:
                 self.component = component
+                hashes = report.get("runtime_components", {})
+                if hashes:
+                    if not isinstance(hashes, dict) or set(hashes) - RUNTIME_COMPONENT_PATHS.keys():
+                        raise ValueError("Unsupported sandbox runtime component set")
+                    for name, checksum in hashes.items():
+                        data = self.package.with_name(name).read_bytes()
+                        if hashlib.sha256(data).hexdigest() != checksum:
+                            raise ValueError(f"Sandbox runtime component hash mismatch: {name}")
+                        self.components[name] = data
+                    if self.components.get("HalImage.qml") != component:
+                        raise ValueError("Sandbox runtime is missing the verified image component")
+                else:
+                    self.components["HalImage.qml"] = component
+        saved = self.destination / "received-resource.enc"
+        if saved.is_file():
+            received = saved.read_bytes()
+            if received == self.expected:
+                self.received = bytearray(received)
+                self.status = "transfer-complete"
+                self.main_returned = True
+                self.activate_component()
+            else:
+                logging.getLogger("ic7").warning("Saved sandbox payload differs from the selected NEX; not activating")
 
     def reject(self, message):
         self.error = message
@@ -165,6 +195,10 @@ class UpdateSandbox:
         if self.component_active:
             return hashlib.sha256(self.component).hexdigest()
         return None
+
+    def runtime_hashes(self):
+        return {name: hashlib.sha256(data).hexdigest() for name, data in self.components.items()
+                if self.component_active}
 
     def summary(self):
         return {"package": self.package.name, "status": self.status, "error": self.error,
@@ -518,7 +552,7 @@ class Device:
         self.map_loaded = False
         self.reboot_revision = 0
         self.splash_started_at = None
-        self.sandbox = UpdateSandbox(sandbox_package, self.state / "sandbox") if sandbox_package else None
+        self.sandbox = None
         self.last_screen = None
         self.screen_buffer = bytearray()
         self.events = []
@@ -539,13 +573,19 @@ class Device:
         session_path = self.state / "session.json"
         if session_path.is_file():
             try:
-                self.map_loaded = json.loads(session_path.read_text(encoding="utf-8")).get("map_loaded") is True
-            except (OSError, ValueError, UnicodeError):
-                self.map_loaded = False
+                saved_session = json.loads(session_path.read_text(encoding="utf-8"))
+                self.map_loaded = saved_session.get("map_loaded") is True
+                if sandbox_package is None:
+                    sandbox_package = saved_session.get("sandbox_package")
+            except (OSError, ValueError, UnicodeError, AttributeError) as error:
+                raise ValueError(f"Cannot restore saved dash session: {session_path}: {error}") from error
+        self.sandbox = UpdateSandbox(sandbox_package, self.state / "sandbox") if sandbox_package else None
         identity = bytes.fromhex(serial_number)
         if len(identity) != 6:
             raise ValueError("Serial number must be twelve hexadecimal digits")
         self.memory.write(256, identity)
+        if self.map_loaded:
+            self._prepare_splash()
         if capture_path is not None:
             self.capture = ProtocolCapture(capture_path, capture_payloads)
 
@@ -563,6 +603,19 @@ class Device:
 
     def _prepare_splash(self):
         self.splash_started_at = time.monotonic()
+
+    def power_cycle(self):
+        with self.lock:
+            if self.boot_mode:
+                raise ValueError("Finish or cancel the update before power cycling the emulator")
+            self.resources.pending.clear()
+            self.rpc_response = b"\0"
+            self.reboot_revision += 1
+            if self.map_loaded:
+                self._prepare_splash()
+            self.save()
+            self.log.info("emulator-power-cycle revision=%d map_loaded=%s",
+                          self.reboot_revision, self.map_loaded)
 
     def display_state(self, now=None):
         if now is None:
@@ -713,13 +766,16 @@ class Device:
 
     def save(self):
         self.memory.save(self.state / "memory.zip")
-        (self.state / "session.json").write_text(json.dumps({
+        temporary = self.state / "session.tmp"
+        temporary.write_text(json.dumps({
             "requests": self.requests, "staged_regions": sorted(self.staged),
             "mode": "boot" if self.boot_mode else "main",
             "map_loaded": self.map_loaded,
             "sandbox_update": self.sandbox.summary() if self.sandbox else None,
+            "sandbox_package": str(self.sandbox.package.resolve()) if self.sandbox else None,
             "firmware_execution": False,
         }, indent=2) + "\n", encoding="utf-8")
+        os.replace(temporary, self.state / "session.json")
         if self.capture is not None:
             self.capture.stream.flush()
 

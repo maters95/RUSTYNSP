@@ -14,6 +14,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 import zlib
+from ic7_emulator import RUNTIME_COMPONENT_PATHS
 
 
 PIPE_NAME = "SIM_Dash_Pipe"
@@ -145,7 +146,7 @@ NSP_LIVE_CAPACITY = NSP_LIVE_HEADER + 65536
 NSP_LIVE_STALE_SECONDS = 1.0
 
 
-def decode_live_mirror(header, payload, header_after):
+def decode_live_mirror(header, payload, header_after, utc_ticks=None):
     """Decode one consistent NSP live-data snapshot, or return None while NSP is writing."""
     if len(header) < NSP_LIVE_HEADER or header != header_after:
         return None
@@ -155,6 +156,11 @@ def decode_live_mirror(header, payload, header_after):
     if not 0 < length <= NSP_LIVE_CAPACITY - NSP_LIVE_HEADER or len(payload) < length:
         return None
     if address < 0x1000 or address + length > 0x20000:
+        return None
+    written = struct.unpack_from("<q", header, 24)[0]
+    if utc_ticks is None:
+        utc_ticks = int((time.time() + 62135596800) * 10000000)
+    if not 0 <= utc_ticks - written <= int(NSP_LIVE_STALE_SECONDS * 10000000):
         return None
     return {"sequence": sequence, "address": address, "data": bytes(payload[:length]),
             "simulating": bool(simulating)}
@@ -203,6 +209,8 @@ class NspLiveMirror:
         block = decode_live_mirror(*snapshot) if snapshot else None
         now = self.clock()
         if block is None:
+            if self.view is not None:
+                self.close()
             return None
         if block["sequence"] != self.last_sequence:
             self.last_sequence = block["sequence"]
@@ -400,6 +408,28 @@ def install_sandbox_component(base, destination):
     return checksum
 
 
+def install_sandbox_runtime(base, destination, changes):
+    """Validate every sidecar before replacing any runtime component."""
+    hashes = changes.get("runtime_components", {})
+    if not hashes:
+        return install_sandbox_component(base, destination)
+    if set(hashes) - RUNTIME_COMPONENT_PATHS.keys():
+        raise ValueError("Unsupported sandbox runtime components")
+    pending = {}
+    for name, checksum in hashes.items():
+        payload = get(base, "/api/component?" + urllib.parse.urlencode({"name": name}))
+        if hashlib.sha256(payload).hexdigest() != checksum:
+            raise ValueError("Sandbox runtime component hash mismatch: " + name)
+        target = Path(destination) / RUNTIME_COMPONENT_PATHS[name]
+        if not target.parent.is_dir():
+            raise FileNotFoundError("Sandbox runtime directory is missing: " + str(target.parent))
+        pending[target] = payload
+    for target, payload in pending.items():
+        target.write_bytes(payload)
+        target.with_suffix(target.suffix + "c").unlink(missing_ok=True)
+    return changes.get("component_sha256")
+
+
 def renderer_environment(work):
     work = Path(work)
     platform_dirs = (work / "platforms", work / "plugins" / "platforms")
@@ -420,6 +450,7 @@ def main():
     parser.add_argument("--work", type=Path, default=Path(__file__).with_name("state") / "stock-renderer")
     parser.add_argument("--patched-images", action="store_true")
     parser.add_argument("--component", type=Path, help="HalImage.qml to load in the isolated renderer")
+    parser.add_argument("--stop-file", type=Path, help="Stop gracefully when this workbench signal file exists")
     args = parser.parse_args()
     if os.name != "nt":
         raise SystemExit("Run the original renderer bridge on Windows")
@@ -430,7 +461,10 @@ def main():
     if args.component:
         install_component_override(args.work, args.component)
     explicit_component = args.component is not None or args.patched_images
-    component_checksum = None if explicit_component else install_sandbox_component(base, args.work)
+    initial_changes = json.loads(get(base, "/api/changes?after=-1"))
+    component_checksum = (None if explicit_component else
+                          install_sandbox_runtime(base, args.work, initial_changes))
+    runtime_hashes = initial_changes.get("runtime_components", {})
     resources = {}
     pipe = None
     process = None
@@ -442,11 +476,19 @@ def main():
     live_source = None
     try:
         while True:
-            if process is not None and process.poll() is not None:
+            if args.stop_file is not None and args.stop_file.exists():
+                print("Workbench requested dash display shutdown.", flush=True)
                 break
+            if process is not None and process.poll() is not None:
+                raise RuntimeError(f"Dash renderer exited with code {process.returncode}; "
+                                   "see renderer.log, then use Dash Display to retry")
             status = json.loads(get(base, "/api/status"))
             display = status.get("display", {"phase": "blank", "reboot_revision": 0})
-            if process is not None and renderer_restart_required(display, launched_reboot_revision):
+            changes = json.loads(get(base, f"/api/changes?after={revision}"))
+            runtime_changed = not explicit_component and (
+                changes.get("component_sha256") != component_checksum or
+                changes.get("runtime_components", {}) != runtime_hashes)
+            if process is not None and (renderer_restart_required(display, launched_reboot_revision) or runtime_changed):
                 print("Stopping the isolated renderer for the emulator display lifecycle change.", flush=True)
                 pipe.close()
                 pipe = None
@@ -460,6 +502,11 @@ def main():
                 if display["phase"] == "blank":
                     time.sleep(0.05)
                     continue
+            if runtime_changed:
+                install_startup_qml(args.work)
+                component_checksum = install_sandbox_runtime(base, args.work, changes)
+                runtime_hashes = changes.get("runtime_components", {})
+                print("Verified firmware preview components reloaded.", flush=True)
             if process is None:
                 if not renderer_ready(display):
                     time.sleep(0.05)
@@ -485,10 +532,6 @@ def main():
                 last_channels = 0
                 print("Original dash renderer connected to isolated SIM_Dash_Pipe.", flush=True)
                 continue
-            changes = json.loads(get(base, f"/api/changes?after={revision}"))
-            if not explicit_component and changes.get("component_sha256") != component_checksum:
-                print("Sandbox component changed. Restart the renderer to reload its QML.", flush=True)
-                break
             resources_changed = changes["resource_revision"] != resource_revision
             if resources_changed:
                 resources = sync_resources(base, args.work, resources)

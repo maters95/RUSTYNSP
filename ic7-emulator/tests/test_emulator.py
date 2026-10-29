@@ -7,6 +7,7 @@ from pathlib import Path
 import struct
 import sys
 import tempfile
+import time
 import threading
 import unittest
 from unittest.mock import MagicMock, Mock, patch
@@ -96,6 +97,46 @@ class ProtocolTests(unittest.TestCase):
             self.assertEqual((first / "session.json").read_text(), "preserved")
             with self.assertRaisesRegex(ValueError, "actual extracted location"):
                 SessionOptions(profile, root, root / "missing.nex").create_state()
+
+    def test_resume_uses_the_same_saved_dash_without_creating_a_new_one(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            profile = root / "profile.zip"
+            profile.touch()
+            saved = root / "saved"
+            saved.mkdir()
+            options = SessionOptions(profile, root, resume=saved)
+            with self.assertRaisesRegex(ValueError, "saved session"):
+                options.create_state()
+            (saved / "memory.zip").touch()
+            (saved / "session.json").write_text("{}")
+            self.assertEqual(options.create_state(), saved)
+            self.assertEqual(list(root.glob("saved*")), [saved])
+
+    def test_export_contains_resources_and_renderer_log_not_runtime(self):
+        from workbench import export_session_archive
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            saved = root / "session"
+            saved.mkdir()
+            for name in ("session.json", "memory.zip", "renderer.log", "protocol.jsonl",
+                         "resources/0/u/ic7_alerts.json", "resources/0/u/alert.gif",
+                         "stock-renderer/Qt5Core.dll"):
+                path = saved / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode())
+            output = root / "logs.zip"
+            export_session_archive(saved, output)
+            with zipfile.ZipFile(output) as archive:
+                self.assertIn("renderer.log", archive.namelist())
+                self.assertIn("resources/0/u/alert.gif", archive.namelist())
+                self.assertNotIn("stock-renderer/Qt5Core.dll", archive.namelist())
+                for line in archive.read("SHA256SUMS").decode().splitlines():
+                    checksum, name = line.split("  ", 1)
+                    self.assertEqual(hashlib.sha256(archive.read(name)).hexdigest(), checksum)
+            with self.assertRaisesRegex(ValueError, "overwrite"):
+                export_session_archive(saved, saved / "memory.zip")
 
     def test_workbench_only_lists_identified_virtual_ports(self):
         ports = [Mock(device="COM11", description="HHD Virtual Serial Port", manufacturer="HHD", hwid=""),
@@ -471,9 +512,11 @@ class ProtocolTests(unittest.TestCase):
 
 class NspLiveMirrorTests(unittest.TestCase):
     @staticmethod
-    def snapshot(sequence=2, address=0x1400, data=b"\x01\x02\x03\x04", simulating=1, magic=0x4C374349):
+    def snapshot(sequence=2, address=0x1400, data=b"\x01\x02\x03\x04", simulating=1,
+                 magic=0x4C374349, age=0):
         import struct
-        header = struct.pack("<IIIIIIq", magic, 1, sequence, address, len(data), simulating, 0)
+        ticks = int((time.time() + 62135596800 - age) * 10000000)
+        header = struct.pack("<IIIIIIq", magic, 1, sequence, address, len(data), simulating, ticks)
         return header, data, header
 
     def test_decodes_complete_nsp_block(self):
@@ -489,16 +532,19 @@ class NspLiveMirrorTests(unittest.TestCase):
         self.assertIsNone(decode_live_mirror(*self.snapshot(magic=0)))
         self.assertIsNone(decode_live_mirror(*self.snapshot(address=0x20000)))
         self.assertIsNone(decode_live_mirror(header, data[:2], header))
+        self.assertIsNone(decode_live_mirror(*self.snapshot(age=5)))
+        self.assertIsNone(decode_live_mirror(*self.snapshot(age=-5)))
 
     def test_stale_mirror_falls_back_to_emulator_memory(self):
         from stock_renderer import NspLiveMirror
         now = [10.0]
         mirror = NspLiveMirror(clock=lambda: now[0])
-        self.assertIsNotNone(mirror.latest(self.snapshot(sequence=2)))
+        snapshot = self.snapshot(sequence=2)
+        self.assertIsNotNone(mirror.latest(snapshot))
         now[0] = 10.9
-        self.assertIsNotNone(mirror.latest(self.snapshot(sequence=2)))
+        self.assertIsNotNone(mirror.latest(snapshot))
         now[0] = 11.2
-        self.assertIsNone(mirror.latest(self.snapshot(sequence=2)))
+        self.assertIsNone(mirror.latest(snapshot))
         self.assertIsNotNone(mirror.latest(self.snapshot(sequence=4)))
         self.assertIsNone(mirror.latest(None))
 
@@ -669,7 +715,38 @@ class IntegrationTests(unittest.TestCase):
         self.device.save()
         restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
         self.assertTrue(restored.map_loaded)
-        self.assertEqual(restored.display_state()["phase"], "dash")
+        self.assertEqual(restored.display_state()["phase"], "splash")
+
+    def test_power_cycle_preserves_settings_resources_and_clears_partial_uploads(self):
+        manifest = json.dumps({"version": 1, "source": "u/splash.gif", "durationMs": 3300}).encode()
+        self.device.resources.put(SPLASH_RESOURCE, 0, manifest)
+        self.device.resources.put("u/splash.gif", 0, b"GIF89a")
+        self.device.resources.pending[(0, "u/incomplete.gif")] = (10, 0, bytearray(b"abc"))
+        self.device.map_loaded = True
+        self.device.memory.write(0x20000, b"saved-settings")
+        self.device.power_cycle()
+        self.assertEqual(self.device.reboot_revision, 1)
+        self.assertEqual(self.device.display_state()["phase"], "splash")
+        self.assertEqual(self.device.display_state(self.device.splash_started_at + 3.299)["phase"], "splash")
+        self.assertEqual(self.device.display_state(self.device.splash_started_at + 3.3)["phase"], "dash")
+        self.assertEqual(self.device.resources.pending, {})
+        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
+        self.assertEqual(restored.memory.read(0x20000, 14), b"saved-settings")
+        self.assertEqual(restored.resources.items[(0, SPLASH_RESOURCE)], manifest)
+        self.assertEqual(restored.display_state()["phase"], "splash")
+
+    def test_power_cycle_empty_dash_remains_blank_and_boot_mode_is_protected(self):
+        self.device.power_cycle()
+        self.assertEqual(self.device.display_state()["phase"], "blank")
+        self.device.boot_mode = True
+        with self.assertRaisesRegex(ValueError, "update"):
+            self.device.power_cycle()
+
+    def test_corrupt_saved_session_is_reported_instead_of_silently_reset(self):
+        self.device.save()
+        (self.root / "session.json").write_text("not json")
+        with self.assertRaisesRegex(ValueError, "Cannot restore"):
+            Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
 
     def test_selected_mp4_manifest_survives_expiry_and_repeated_reboot(self):
         manifest = json.dumps({"version": 1, "source": "u/selected.mp4", "durationMs": 3000}).encode()

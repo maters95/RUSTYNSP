@@ -181,6 +181,10 @@ def main():
         "added_members": sorted(added),
         "startup_splash": args.splash,
         "alert_media": args.alerts,
+        "runtime_components": {
+            Path(name).name: digest(data)
+            for name, data in {TARGET: replacement, **splash_components}.items()
+        },
         "original_component_sha256": expected, "replacement_component_sha256": digest(replacement),
         "wrapper_preserved": candidate[:44] == original[:44],
         "migration_definition": {"name": hdef_name, "bytes": len(migration_definition),

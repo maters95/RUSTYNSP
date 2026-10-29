@@ -2,20 +2,23 @@ import argparse
 import base64
 from dataclasses import dataclass
 import io
+import hashlib
 import json
 import logging
 from pathlib import Path
 import re
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+import zipfile
 
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QProcess, Qt, QThread, QTimer, QUrl, pyqtSignal
 from PyQt5.QtGui import QDesktopServices, QFont, QMovie, QPixmap
-from PyQt5.QtWidgets import (QAction, QApplication, QComboBox, QFileDialog, QFormLayout,
+from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QFileDialog, QFormLayout,
                             QHBoxLayout, QHeaderView, QInputDialog, QLabel, QLineEdit, QListWidget,
                             QMainWindow, QMessageBox, QPlainTextEdit, QProgressBar,
                             QPushButton, QSizePolicy, QSplitter, QStyle, QTabWidget,
@@ -28,6 +31,33 @@ from virtual_pair import load_pair_config
 
 ROOT = Path(__file__).resolve().parent
 PAIR_CONFIG = ROOT / "port-pair.json"
+
+
+def export_session_archive(state, destination):
+    state, destination = Path(state), Path(destination)
+    if not (state / "session.json").is_file() or not (state / "memory.zip").is_file():
+        raise ValueError("Stop the session first so its settings and logs are saved.")
+    names = ("session.json", "memory.zip", "emulator.log", "protocol.jsonl", "renderer.log",
+             "received-screen.bmp")
+    sources = [state / name for name in names if (state / name).is_file()]
+    for folder in ("resources", "sandbox"):
+        sources.extend(path for path in (state / folder).rglob("*") if path.is_file())
+    if any(path.is_symlink() or destination.resolve() == path.resolve() for path in sources):
+        raise ValueError("Export must not overwrite session files or follow symbolic links.")
+    temporary = destination.with_suffix(".zip.tmp")
+    try:
+        with zipfile.ZipFile(temporary, "w", zipfile.ZIP_DEFLATED) as archive:
+            checksums = []
+            for path in sorted(sources):
+                name = path.relative_to(state).as_posix()
+                archive.write(path, name)
+                with path.open("rb") as stream:
+                    digest = hashlib.file_digest(stream, "sha256").hexdigest()
+                checksums.append(f"{digest}  {name}\n")
+            archive.writestr("SHA256SUMS", "".join(checksums))
+        temporary.replace(destination)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def preferred_first(candidates, preferred):
@@ -72,12 +102,17 @@ class SessionOptions:
     root: Path
     package: Path | None = None
     port: str | None = None
+    resume: Path | None = None
 
     def create_state(self):
         if not self.profile.is_file():
             raise ValueError("Device profile was not found")
         if self.package is not None and not self.package.is_file():
             raise ValueError("NEX package not found. Select its actual extracted location.")
+        if self.resume is not None:
+            if not (self.resume / "memory.zip").is_file() or not (self.resume / "session.json").is_file():
+                raise ValueError("Choose a saved session containing memory.zip and session.json.")
+            return self.resume
         destination = self.root / uuid.uuid4().hex
         destination.mkdir(parents=True, exist_ok=False)
         return destination
@@ -110,8 +145,18 @@ class SessionWorker(QThread):
         self.last_publish = 0
         self.asset_revision = None
         self.assets = []
+        self.power_cycle_requested = threading.Event()
+
+    def service_controls(self, device):
+        if self.power_cycle_requested.is_set():
+            self.power_cycle_requested.clear()
+            try:
+                device.power_cycle()
+            except (OSError, ValueError) as error:
+                self.failed.emit("Power cycle failed: " + str(error))
 
     def publish(self, device):
+        self.service_controls(device)
         if time.monotonic() - self.last_publish < 0.5:
             return
         self.last_publish = time.monotonic()
@@ -125,6 +170,7 @@ class SessionWorker(QThread):
             state = {"mode": "boot" if device.boot_mode else "main", "requests": device.requests,
                      "update": update, "assets": self.assets, "events": list(reversed(device.events[-40:])),
                      "state": str(self.state), "url": self.url,
+                     "display": device.display_state(),
                      "component": device.sandbox.component_sha256() if device.sandbox else None}
             selection = self.selected_asset
             self.selected_asset = None
@@ -233,6 +279,8 @@ class Workbench(QMainWindow):
         self.available_ports = []
         self.port_setup_process = None
         self.alert_previews = []
+        self.resume_state = None
+        self.auto_renderer_started = False
         self.setWindowTitle("iC-7 NSP Sandbox | Unofficial Workbench")
         self.resize(1200, 800)
         self.setMinimumSize(800, 600)
@@ -254,16 +302,21 @@ class Workbench(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         self.addToolBar(toolbar)
         self.start_action = self.action(toolbar, "Start Session", QStyle.SP_MediaPlay, self.start_session)
+        self.resume_action = self.action(toolbar, "Resume Dash", QStyle.SP_DialogOpenButton, self.resume_session)
         self.stop_action = self.action(toolbar, "Stop", QStyle.SP_MediaStop, self.stop_session)
         self.stop_action.setEnabled(False)
+        self.power_action = self.action(toolbar, "Power Cycle", QStyle.SP_BrowserReload, self.power_cycle)
+        self.power_action.setEnabled(False)
         toolbar.addSeparator()
-        self.renderer_action = self.action(toolbar, "Stock Renderer", QStyle.SP_ComputerIcon, self.start_renderer)
+        self.renderer_action = self.action(toolbar, "Dash Display", QStyle.SP_ComputerIcon, self.start_renderer)
         self.renderer_action.setEnabled(False)
         self.alert_action = self.action(toolbar, "Preview Alert", QStyle.SP_MessageBoxWarning, self.preview_alert)
         self.alert_action.setEnabled(False)
         self.action(toolbar, "Launch NSP", QStyle.SP_DesktopIcon, self.launch_nsp)
         self.folder_action = self.action(toolbar, "Session Folder", QStyle.SP_DirOpenIcon, self.open_state)
         self.folder_action.setEnabled(False)
+        self.export_action = self.action(toolbar, "Export Logs", QStyle.SP_DialogSaveButton, self.export_session)
+        self.export_action.setEnabled(False)
         central = QWidget()
         layout = QVBoxLayout(central)
         configuration = QHBoxLayout()
@@ -292,6 +345,10 @@ class Workbench(QMainWindow):
         self.clear_package.clicked.connect(self.package.clear)
         configuration.addWidget(self.clear_package)
         layout.addLayout(configuration)
+        self.auto_renderer = QCheckBox("Open the real NSP dash renderer automatically (Windows)")
+        self.auto_renderer.setChecked(sys.platform == "win32")
+        self.auto_renderer.setEnabled(sys.platform == "win32")
+        layout.addWidget(self.auto_renderer)
         self.tabs = QTabWidget()
         self.preview = DashPreview()
         dash = QWidget()
@@ -306,7 +363,7 @@ class Workbench(QMainWindow):
         screen_row.addWidget(QLabel("Layout approximation | sensor values unavailable"))
         dash_layout.addLayout(screen_row)
         dash_layout.addWidget(self.preview, 1)
-        self.tabs.addTab(dash, "Dash")
+        self.tabs.addTab(dash, "Layout Diagnostic (not dash display)")
         resources = QSplitter()
         self.resources = QListWidget()
         self.resources.currentRowChanged.connect(self.select_resource)
@@ -461,7 +518,8 @@ class Workbench(QMainWindow):
                 QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel) != QMessageBox.Ok:
             return
         package = Path(self.package.text()) if self.package.text() else None
-        options = SessionOptions(ROOT / "device-profile.zip", self.state_root, package, port)
+        options = SessionOptions(ROOT / "device-profile.zip", self.state_root, package, port, self.resume_state)
+        self.resume_state = None
         self.worker = SessionWorker(options, self)
         self.worker.snapshot.connect(self.receive_snapshot)
         self.worker.frame.connect(self.preview.show_bytes)
@@ -473,13 +531,43 @@ class Workbench(QMainWindow):
         self.resources.clear()
         self.resource_signature = None
         self.snapshot = None
+        self.auto_renderer_started = False
         self.set_running(True)
         self.mode_label.setText("Starting session")
         self.worker.start()
 
+    def resume_session(self):
+        folder = QFileDialog.getExistingDirectory(self, "Resume a saved dash session", str(self.state_root))
+        if folder:
+            self.resume_state = Path(folder)
+            self.start_session()
+            self.resume_state = None
+
+    def power_cycle(self):
+        if self.worker:
+            self.worker.power_cycle_requested.set()
+
+    def export_session(self):
+        if self.worker or not self.state:
+            return
+        filename, _ = QFileDialog.getSaveFileName(
+            self, "Export complete emulator logs", str(self.state.parent / (self.state.name + "-logs.zip")),
+            "ZIP files (*.zip)")
+        if not filename:
+            return
+        try:
+            export_session_archive(self.state, Path(filename))
+        except (OSError, ValueError, zipfile.BadZipFile) as error:
+            self.session_error("Cannot export session: " + str(error))
+            return
+        self.statusBar().showMessage("Complete session exported: " + filename)
+
     def set_running(self, running):
         self.start_action.setEnabled(not running)
+        self.resume_action.setEnabled(not running)
         self.stop_action.setEnabled(running)
+        self.power_action.setEnabled(running)
+        self.export_action.setEnabled(not running and self.state is not None)
         for widget in (self.port, self.refresh_ports, self.package, self.browse, self.clear_package):
             widget.setEnabled(not running)
 
@@ -489,7 +577,10 @@ class Workbench(QMainWindow):
             self.stop_action.setEnabled(False)
             self.mode_label.setText("Saving session")
         if self.renderer is not None:
-            self.renderer.terminate()
+            try:
+                (self.state / "renderer.stop").touch()
+            except OSError as error:
+                self.session_error("Cannot request dash display shutdown: " + str(error))
         for process in list(self.alert_previews):
             process.terminate()
 
@@ -515,6 +606,7 @@ class Workbench(QMainWindow):
         self.folder_action.setEnabled(True)
         self.renderer_action.setEnabled(sys.platform == "win32" and self.renderer is None)
         self.alert_action.setEnabled(True)
+        self.power_action.setEnabled(state["mode"] == "main")
         self.mode_label.setText(f"{state['mode'].upper()} | {state['requests']:,} requests | {self.state.name[:8]}")
         update = state["update"] or {}
         values = {"Mode": state["mode"].upper(), "Package": update.get("package", "None"),
@@ -535,6 +627,9 @@ class Workbench(QMainWindow):
         for row, event in enumerate(state["events"]):
             for column, field in enumerate(("time", "operation", "address", "bytes")):
                 self.traffic.setItem(row, column, QTableWidgetItem(str(event[field])))
+        if self.auto_renderer.isChecked() and not self.auto_renderer_started:
+            self.auto_renderer_started = True
+            self.start_renderer()
 
     def change_screen(self, screen):
         if self.worker:
@@ -581,19 +676,38 @@ class Workbench(QMainWindow):
             return
         process = QProcess(self)
         process.setProcessChannelMode(QProcess.MergedChannels)
-        process.readyReadStandardOutput.connect(lambda: self.log.appendPlainText(
-            bytes(process.readAllStandardOutput()).decode("utf-8", "replace").rstrip()))
+        process.readyReadStandardOutput.connect(lambda: self.renderer_output(process))
         process.finished.connect(self.renderer_finished)
-        process.errorOccurred.connect(lambda error: self.log.appendPlainText("Renderer: " + process.errorString()))
+        process.errorOccurred.connect(lambda error: self.renderer_message("Renderer error: " + process.errorString()))
         self.renderer = process
         self.renderer_action.setEnabled(False)
-        process.start(sys.executable, [str(ROOT / "stock_renderer.py"), "--url", self.snapshot["url"],
-                                      "--work", str(self.state / "stock-renderer")])
+        stop_file = self.state / "renderer.stop"
+        stop_file.unlink(missing_ok=True)
+        process.start(sys.executable, ["-u", str(ROOT / "stock_renderer.py"), "--url", self.snapshot["url"],
+                                      "--work", str(self.state / "stock-renderer"), "--stop-file", str(stop_file)])
 
-    def renderer_finished(self):
+    def renderer_message(self, message):
+        self.log.appendPlainText(message.rstrip())
+        try:
+            with (self.state / "renderer.log").open("a", encoding="utf-8") as stream:
+                stream.write(message.rstrip() + "\n")
+        except OSError as error:
+            self.statusBar().showMessage("Cannot save renderer log: " + str(error))
+
+    def renderer_output(self, process):
+        text = bytes(process.readAllStandardOutput()).decode("utf-8", "replace")
+        if text:
+            self.renderer_message(text)
+
+    def renderer_finished(self, exit_code=0, exit_status=QProcess.NormalExit):
+        self.renderer_output(self.renderer)
+        if exit_code or exit_status != QProcess.NormalExit:
+            self.renderer_message(f"Dash display stopped (exit {exit_code}); check renderer.log, then click Dash Display to retry.")
         self.renderer.deleteLater()
         self.renderer = None
         self.renderer_action.setEnabled(self.worker is not None and sys.platform == "win32")
+        if self.closing and self.worker is None:
+            self.close()
 
     def preview_alert(self):
         if not self.snapshot:
@@ -643,6 +757,9 @@ class Workbench(QMainWindow):
         if self.worker is not None:
             self.closing = True
             self.stop_session()
+            event.ignore()
+        elif self.renderer is not None:
+            self.closing = True
             event.ignore()
         else:
             event.accept()

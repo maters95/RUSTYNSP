@@ -358,13 +358,16 @@ def start_viewer(device, port=8765):
                         full = after < 0 or after > device.settings_revision or (events and after < events[0]["revision"] - 1)
                         result = {"revision": device.settings_revision, "resource_revision": device.resources.revision,
                                   "component_sha256": device.sandbox.component_sha256() if device.sandbox else None,
+                                  "runtime_components": device.sandbox.runtime_hashes() if device.sandbox else {},
                                   "full_refresh": bool(full), "ranges": [event for event in events if event["revision"] > after]}
                     self.send(json.dumps(result).encode("utf-8"))
                 except ValueError:
                     self.send(b"Invalid revision", "text/plain", 400)
             elif parsed.path == "/api/component":
                 with device.lock:
-                    payload = device.sandbox.component if device.sandbox and device.sandbox.component_active else None
+                    name = query.get("name", ["HalImage.qml"])[0]
+                    payload = (device.sandbox.components.get(name)
+                               if device.sandbox and device.sandbox.component_active else None)
                 self.send(payload if payload is not None else b"No active sandbox component",
                           "application/octet-stream", 200 if payload is not None else 404)
             elif parsed.path == "/api/resource":
