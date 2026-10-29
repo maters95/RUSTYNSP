@@ -3652,6 +3652,45 @@ internal class Form23 : Form
 		try
 		{
 			string path = ((!flag) ? (string_3 + Class333.smethod_1474() + text) : (string_10 + Class333.smethod_1473() + text));
+			if (framework_1.awZ == 21 && framework_1.awz == 11)
+			{
+				byte[] splashBytes = File.ReadAllBytes(path);
+				bool animated = NSP.SplashMedia.IsAnimated(path, splashBytes);
+				byte[] manifest = NSP.SplashMedia.CreateManifest((flag ? "u/" : "h/") + text, animated);
+				if (animated && flag)
+				{
+					UploadImageResource("u/" + text, splashBytes, backgroundWorker_1, int_49, int_50 * 9 / 10, int_51);
+				}
+				if (animated)
+				{
+					UploadImageResource("u/" + NSP.SplashMedia.ManifestName, manifest);
+				}
+				else
+				{
+					// Only disables an earlier animated splash; never block the stock boot-logo update.
+					try
+					{
+						UploadImageResource("u/" + NSP.SplashMedia.ManifestName, manifest);
+					}
+					catch (Exception manifestError)
+					{
+						Class23.smethod_3("Could not disable the animated startup splash: " + manifestError.Message);
+					}
+				}
+				NSP.SplashMedia.SaveManifest(Path.Combine(string_10, "images"), manifest);
+				if (animated)
+				{
+					Class23.smethod_3("Animated startup splash uploaded; the early kernel logo is unchanged.");
+					if (backgroundWorker_1 != null)
+					{
+						if (int_51 == -1)
+							backgroundWorker_1.ReportProgress(int_49 + int_50);
+						else
+							backgroundWorker_1.ReportProgress(int_49 + int_50, int_51);
+					}
+					return;
+				}
+			}
 			Setting setting = framework_1.method_31(framework_1.awW.method_182());
 			uint num = 0u;
 			if (setting != null)
@@ -3774,6 +3813,85 @@ internal class Form23 : Form
 		{
 			string_42 = Class333.smethod_1479() + ex.Message;
 		}
+	}
+
+	internal static void OpenAlertBannerEditor(string focusText, IWin32Window owner = null)
+	{
+		owner ??= form23_0;
+		if (framework_1 == null || framework_1.awZ != 21 || framework_1.awz != 11)
+		{
+			MessageBox.Show(owner, "Open an iC-7 v2.36 map first.", "Alert banners",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+			return;
+		}
+		try
+		{
+			using var editor = new NSP.UserInterface.AlertBannerEditor(framework_1, focusText);
+			editor.ShowDialog(owner);
+		}
+		catch (Exception error)
+		{
+			Class23.smethod_3("Cannot open alert banner editor: " + error.Message);
+			MessageBox.Show(owner, error.Message, "Alert banners", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+		}
+	}
+
+	internal static void UploadImageResource(string name, byte[] payload, BackgroundWorker worker = null,
+		int progressStart = 0, int progressSpan = 100, int progressPage = -1)
+	{
+		Class10 descriptor = new Class10();
+		descriptor.method_3(name);
+		descriptor.uint_0 = (uint)payload.Length;
+		descriptor.enum5_0 = Class1.Enum5.BFH;
+		descriptor.uint_1 = new global::crc.crc().crc_process(payload, 0u, (uint)payload.Length, uint.MaxValue, partial: false);
+		Class10[] existing = smethod_22(Class1.Enum5.BFH);
+		if (existing != null && existing.Any(item => item.method_2() == name
+			&& item.uint_0 == descriptor.uint_0 && item.uint_1 == descriptor.uint_1))
+		{
+			Class23.smethod_3("Resource already matches device: " + name, bool_1: false);
+			return;
+		}
+		SendResource(descriptor, payload, worker, progressStart, progressSpan, progressPage);
+	}
+
+	private static void SendResource(Class10 descriptor, byte[] payload, BackgroundWorker worker,
+		int progressStart, int progressSpan, int progressPage)
+	{
+		string name = descriptor.method_2();
+		uint limit = Class1.smethod_74(framework_1.aXc, Enum10.const_14);
+		int chunkSize = limit > 68 ? checked((int)(limit - 68)) : 0;
+		int lastPercent = -1;
+		Class23.smethod_3("Uploading resource " + name + " (" + payload.Length + " bytes).", bool_1: false);
+		NSP.ResourceUpload.Send(payload, chunkSize, (offset, fragment) => {
+			// Stock NSP retried nonterminal transport failures while connected; keep that, but bounded.
+			bool sent = false;
+			Class1.Enum4 result = default;
+			for (int attempt = 1; attempt <= 5; attempt++)
+			{
+				sent = Class1.smethod_54(framework_1.aXc, descriptor, offset, fragment, out result, out bool terminal);
+				if (sent || terminal || !smethod_28(framework_1.aXc, bool_53: false))
+					break;
+				Class23.smethod_3("Retrying resource " + name + " at " + offset + " (attempt " + (attempt + 1) + " of 5).", bool_1: false);
+			}
+			if (!sent)
+				throw new IOException("Resource transfer failed: " + name + " at " + offset + "/" + payload.Length
+					+ " bytes (no valid device acknowledgement). Check the emulator log and virtual COM connection.");
+			if (result != Class1.Enum4.BFC)
+				throw new IOException("Resource rejected: " + name + " at " + offset + "/" + payload.Length
+					+ " bytes: " + Class1.smethod_50(result));
+		}, (written, total) => {
+			if (worker != null)
+			{
+				int percent = progressStart + (int)(written * progressSpan / Math.Max(1L, total));
+				if (percent == lastPercent)
+					return;
+				lastPercent = percent;
+				if (progressPage == -1)
+					worker.ReportProgress(percent);
+				else
+					worker.ReportProgress(percent, progressPage);
+			}
+		}, () => worker != null && worker.CancellationPending);
 	}
 
 	private static void smethod_25(BackgroundWorker backgroundWorker_1, byte[] byte_1, int int_49, int int_50, int int_51)
@@ -4558,6 +4676,9 @@ internal class Form23 : Form
 		toolStripMenuItem_30.Text = Class333.smethod_1272();
 		toolStripMenuItem_30.Click += toolStripMenuItem_30_Click;
 		toolStripMenuItem_3.DropDownItems.AddRange(toolStripMenuItem_31, toolStripMenuItem_32, toolStripMenuItem_6, toolStripMenuItem_10, toolStripMenuItem_58, toolStripMenuItem_59, toolStripMenuItem_28);
+		var alertMediaMenu = new ToolStripMenuItem("Alert GIF banners and placement...");
+		alertMediaMenu.Click += (_, _) => OpenAlertBannerEditor(null);
+		toolStripMenuItem_3.DropDownItems.Add(alertMediaMenu);
 		toolStripMenuItem_3.Name = Class333.smethod_1563();
 		toolStripMenuItem_3.Size = new Size(49, 20);
 		toolStripMenuItem_3.Text = Class333.smethod_1564();
@@ -17270,6 +17391,8 @@ internal class Form23 : Form
 							{
 								backgroundWorker_1.ReportProgress(num3);
 							}
+							long totalResourceBytes = Math.Max(1L, array2.Sum(file => new FileInfo(file).Length));
+							long completedResourceBytes = 0;
 							for (int j = 0; j < array2.Length; j++)
 							{
 								string path = array2[j];
@@ -17304,17 +17427,14 @@ internal class Form23 : Form
 										class2.uint_1 = num4;
 										Class10 class10_ = class2;
 										Class23.smethod_3(Class333.smethod_2017() + fileName + Class333.smethod_1394(), bool_1: false);
-										method_227(class10_, array4, out var string_42);
+										int resourceStart = (int)(completedResourceBytes * (num * 9 / 10) / totalResourceBytes);
+										int resourceEnd = (int)((completedResourceBytes + array4.LongLength) * (num * 9 / 10) / totalResourceBytes);
+										method_227(class10_, array4, out var string_42, backgroundWorker_1,
+											num3 + resourceStart, resourceEnd - resourceStart, int_50);
 										if (string_42 != null)
 										{
-											if (string_41 == null)
-											{
-												string_41 = string_42;
-											}
-											else
-											{
-												string_41 = string_41 + Class333.smethod_1812() + string_42;
-											}
+											string_41 = string_42;
+											return;
 										}
 									}
 								}
@@ -17322,7 +17442,8 @@ internal class Form23 : Form
 								{
 									break;
 								}
-								int percentProgress = num3 + (j + 1) * (num * 9 / 10) / array2.Length;
+								completedResourceBytes += array4.LongLength;
+								int percentProgress = num3 + (int)(completedResourceBytes * (num * 9 / 10) / totalResourceBytes);
 								if (int_50 != -1)
 								{
 									backgroundWorker_1.ReportProgress(percentProgress, int_50);
@@ -17367,22 +17488,19 @@ internal class Form23 : Form
 		Thread.Sleep(500);
 	}
 
-	private void method_227(Class10 class10_0, byte[] byte_1, out string string_41)
+	private void method_227(Class10 class10_0, byte[] byte_1, out string string_41,
+		BackgroundWorker worker = null, int progressStart = 0, int progressSpan = 100, int progressPage = -1)
 	{
 		string_41 = null;
-		bool flag;
-		do
+		try
 		{
-			if (Class1.smethod_54(framework_1.aXc, class10_0, 0u, byte_1, out var enum4_, out flag))
-			{
-				if (enum4_ != Class1.Enum4.BFC)
-				{
-					string_41 = Class333.smethod_2018() + class10_0.method_2() + Class333.smethod_2019() + Class1.smethod_50(enum4_) + Class333.smethod_9();
-				}
-				break;
-			}
+			SendResource(class10_0, byte_1, worker, progressStart, progressSpan, progressPage);
 		}
-		while (!flag && smethod_28(framework_1.aXc, bool_53: false));
+		catch (Exception error) when (error is IOException || error is OperationCanceledException)
+		{
+			string_41 = error.Message;
+			Class23.smethod_3(error.Message);
+		}
 	}
 
 	private void method_228(string string_41, Class240 class240_1)

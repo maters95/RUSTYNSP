@@ -1,6 +1,8 @@
 import base64
 import io
 import json
+import os
+import shutil
 from pathlib import Path
 import struct
 import sys
@@ -14,12 +16,14 @@ import zipfile
 import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, request, resource_descriptor
+from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, SPLASH_RESOURCE
+from ic7_emulator import request, resource_descriptor
 from ic7_emulator import serve_stream, UpdateSandbox
 from workbench import SessionOptions, Workbench, configured_nsp_port, preferred_first, virtual_ports
 from viewer import start_viewer, render_layout, scene_state
 from stock_renderer import get, install_component_override, pe_machine, pipe_message, renderer_environment
-from stock_renderer import stage_windows_platform_plugin, validate_ack
+from stock_renderer import stage_windows_platform_plugin, sync_resources, install_startup_qml, validate_ack
+from stock_renderer import renderer_ready, renderer_restart_required
 from stock_renderer import install_sandbox_component
 import package as emulator_package
 
@@ -46,6 +50,39 @@ class ProtocolTests(unittest.TestCase):
                 "workbench.QDesktopServices.openUrl", return_value=False):
             Workbench.show_resource(window, resource)
         self.assertIn("Could not open MP4", window.session_error.call_args.args[0])
+
+    def test_workbench_alert_preview_lists_uploaded_alert_texts(self):
+        from workbench import alert_preview_texts
+        payload = json.dumps({"version": 1, "banners": [
+            {"text": "Engine RPM Overrev", "source": "u/a.gif", "x": 0, "y": 0, "width": 860, "height": 60},
+            {"text": "Engine RPM Overrev", "source": "", "x": 0, "y": 0, "width": 860, "height": 60},
+            {"text": "Oil Pressure", "source": "", "x": 0, "y": 60, "width": 400, "height": 60},
+            {"text": " ", "source": ""}, "invalid"]}).encode()
+        self.assertEqual(alert_preview_texts(payload), ["Engine RPM Overrev", "Oil Pressure"])
+        self.assertEqual(alert_preview_texts(b""), [])
+        for invalid in (b"[]", b'{"version":2,"banners":[]}', b"not json", b"\xff"):
+            with self.assertRaises(ValueError):
+                alert_preview_texts(invalid)
+
+    def test_workbench_alert_preview_launches_synthetic_view(self):
+        window = MagicMock(snapshot={"url": "http://127.0.0.1:8765"}, alert_previews=[])
+        manifest = json.dumps({"version": 1, "banners": [
+            {"text": "Engine RPM Overrev", "source": "u/a.gif", "x": 10, "y": 20, "width": 400, "height": 80}]}).encode()
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = manifest
+        process = MagicMock()
+        with patch("workbench.urllib.request.urlopen", return_value=response) as urlopen, \
+                patch("workbench.QInputDialog.getItem", return_value=("Engine RPM Overrev", True)) as ask, \
+                patch("workbench.QProcess", return_value=process):
+            Workbench.preview_alert(window)
+        query = urllib.parse.parse_qs(urllib.parse.urlsplit(urlopen.call_args.args[0]).query)
+        self.assertEqual(query, {"kind": ["0"], "name": ["u/ic7_alerts.json"]})
+        self.assertEqual(ask.call_args.args[3], ["Engine RPM Overrev"])
+        arguments = process.start.call_args.args[1]
+        self.assertEqual(arguments[1:], ["--url", "http://127.0.0.1:8765", "--preview-alert", "Engine RPM Overrev"])
+        self.assertTrue(arguments[0].endswith("native_view.py"))
+        self.assertEqual(window.alert_previews, [process])
+        window.session_error.assert_not_called()
 
     def test_workbench_sessions_preserve_existing_state(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -116,6 +153,129 @@ class ProtocolTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "hash mismatch"):
                     install_sandbox_component("http://127.0.0.1", destination)
             self.assertEqual(target.read_bytes(), component)
+
+    def test_renderer_installs_startup_root_and_splash_helper(self):
+        with tempfile.TemporaryDirectory() as temporary:
+                destination = Path(temporary)
+                for path in ("qml_components_data/qml/factory_screens",
+                             "qml_components_data/qml/user_components"):
+                    (destination / path).mkdir(parents=True)
+                targets = install_startup_qml(destination)
+                root = destination / "qml_components_data/qml/factory_screens/main.qml"
+                helper = destination / "qml_components_data/qml/user_components/HalSplash.qml"
+                image = destination / "qml_components_data/qml/user_components/HalImage.qml"
+                alarm = destination / "qml_components_data/qml/user_components/HalAlarmPopup.qml"
+                self.assertEqual(targets, (root, helper, image, alarm))
+                self.assertIn("reInitAlarmScreen", alarm.read_text())
+                self.assertIn('objectName: "startupSplashLoader"', root.read_text())
+                self.assertIn("ic7_splash.json", helper.read_text())
+                self.assertEqual(helper.read_bytes(),
+                                 (Path(__file__).resolve().parents[1] / "qml/stock_renderer/HalSplash.qml").read_bytes())
+                self.assertEqual(image.read_bytes(),
+                                 (Path(__file__).resolve().parents[1] / "qml/stock_renderer/HalImage.qml").read_bytes())
+                image_text = image.read_text(encoding="utf-8")
+                self.assertIn("import QtMultimedia 5.9", image_text)
+                self.assertIn("AnimatedImage", image_text)
+                self.assertIn("Video {", image_text)
+
+    def test_renderer_requires_gif_and_video_multimedia_runtime(self):
+        from stock_renderer import validate_multimedia_runtime
+
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary)
+            for path in ("qml/QtMultimedia", "plugins/imageformats", "plugins/mediaservice"):
+                (destination / path).mkdir(parents=True)
+            for path in ("qml/QtMultimedia/qmldir",
+                         "qml/QtMultimedia/Video.qml",
+                         "qml/QtMultimedia/declarative_multimedia.dll",
+                         "Qt5Multimedia.dll", "Qt5MultimediaQuick.dll", "Qt5Widgets.dll",
+                         "plugins/imageformats/qgif.dll", "plugins/mediaservice/dsengine.dll"):
+                (destination / path).write_bytes(b"fixture")
+            self.assertTrue(validate_multimedia_runtime(destination))
+            (destination / "plugins/mediaservice/dsengine.dll").unlink()
+            (destination / "plugins/mediaservice/wmfengine.dll").write_bytes(b"audio-only fixture")
+            with self.assertRaisesRegex(RuntimeError, "Qt Multimedia DirectShow media-player plugin"):
+                validate_multimedia_runtime(destination)
+
+    def test_renderer_stages_addons_from_native_media_nsp_cache(self):
+        from stock_renderer import stage_multimedia_addons
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime = root / "nsp"
+            destination = root / "isolated"
+            for name in ("ic7-media-qml/QtMultimedia/qmldir",
+                         "ic7-media-plugins/mediaservice/dsengine.dll",
+                         "ic7-media-plugins/imageformats/qgif.dll"):
+                source = runtime / name
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_bytes(name.encode())
+            stage_multimedia_addons(runtime, destination)
+            for name in ("qml/QtMultimedia/qmldir", "plugins/mediaservice/dsengine.dll",
+                         "plugins/imageformats/qgif.dll"):
+                self.assertEqual((destination / name).read_bytes(), ("ic7-media-" + name).encode())
+
+    def test_isolated_runtime_refreshes_same_size_dll(self):
+        from stock_renderer import prepare_runtime
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime = root / "nsp"
+            destination = root / "isolated"
+            runtime.mkdir()
+            destination.mkdir()
+            original = Path(__file__).resolve().parents[2] / "reference/stock-dash-extract/dash_virtual.exe"
+            shutil.copyfile(original, runtime / "dash_virtual.exe")
+            (runtime / "Qt5Multimedia.dll").write_bytes(b"freshdll")
+            (destination / "Qt5Multimedia.dll").write_bytes(b"staledll")
+            with patch("stock_renderer.stage_windows_platform_plugin"), patch(
+                    "stock_renderer.validate_multimedia_runtime") as validate:
+                prepare_runtime(runtime, destination, False)
+            validate.assert_called_once_with(destination)
+            self.assertEqual((destination / "Qt5Multimedia.dll").read_bytes(), b"freshdll")
+
+    def test_renderer_waits_for_map_and_restarts_at_reboot(self):
+        blank = {"phase": "blank", "map_loaded": False, "reboot_revision": 0}
+        dash = {"phase": "dash", "map_loaded": True, "reboot_revision": 0}
+        splash = {"phase": "splash", "map_loaded": True, "reboot_revision": 1}
+        self.assertFalse(renderer_ready(blank))
+        self.assertTrue(renderer_ready(dash))
+        self.assertTrue(renderer_ready(splash))
+        self.assertFalse(renderer_restart_required(dash, 0))
+        self.assertTrue(renderer_restart_required(blank, 0))
+        self.assertTrue(renderer_restart_required(splash, 0))
+
+    def test_stock_renderer_syncs_h_and_u_resource_namespaces(self):
+        with tempfile.TemporaryDirectory() as temporary:
+                destination = Path(temporary)
+                status = {"assets": [
+                    {"kind": 0, "name": "h/stock-bg.gif", "sha256": "stock"},
+                    {"kind": 0, "name": "u/ic7_splash.json", "sha256": "splash"},
+                    {"kind": 0, "name": "u/user-bg.png", "sha256": "user"},
+                ]}
+                with patch("stock_renderer.get", side_effect=[
+                        json.dumps(status).encode(), b"stock image", b"splash manifest", b"user image"]):
+                    current = sync_resources("http://emulator", destination, {})
+                self.assertEqual((destination / "qml_components_data/images/stock-bg.gif").read_bytes(),
+                                 b"stock image")
+                self.assertEqual((destination / "user_resources/images/ic7_splash.json").read_bytes(),
+                                 b"splash manifest")
+                self.assertEqual((destination / "user_resources/images/user-bg.png").read_bytes(), b"user image")
+
+    def test_stock_renderer_restores_bundled_h_asset_after_resource_removal(self):
+        destination = Path(".test-stock-resources")
+        try:
+                target = destination / "qml_components_data/images/BasicRaceBar.png"
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"map override")
+                with zipfile.ZipFile(Path(__file__).resolve().parents[1] / "renderer-resources.zip") as archive:
+                    baseline = archive.read("qml_components_data/images/BasicRaceBar.png")
+                with patch("stock_renderer.get", return_value=json.dumps({"assets": []}).encode()):
+                    sync_resources("http://emulator", destination, {(0, "h/BasicRaceBar.png"): "old"})
+                self.assertEqual(target.read_bytes(), baseline)
+        finally:
+                import shutil
+                shutil.rmtree(destination, ignore_errors=True)
 
     def test_renderer_http_get_retries_connection_reset(self):
         response = MagicMock()
@@ -198,7 +358,7 @@ class ProtocolTests(unittest.TestCase):
             platform.mkdir(parents=True)
             (platform / "qwindows.dll").write_bytes(b"fixture")
             environment = renderer_environment(root)
-            self.assertEqual(environment["QT_PLUGIN_PATH"], str(root))
+            self.assertEqual(environment["QT_PLUGIN_PATH"], os.pathsep.join((str(root / "plugins"), str(root))))
             self.assertEqual(environment["QT_QPA_PLATFORM_PLUGIN_PATH"], str(platform))
             self.assertEqual(environment["QML2_IMPORT_PATH"], str(root / "qml"))
 
@@ -309,7 +469,97 @@ class ProtocolTests(unittest.TestCase):
             self.assertEqual(restored.memory.read(0x20000, 4), b"test")
 
 
+class NspLiveMirrorTests(unittest.TestCase):
+    @staticmethod
+    def snapshot(sequence=2, address=0x1400, data=b"\x01\x02\x03\x04", simulating=1, magic=0x4C374349):
+        import struct
+        header = struct.pack("<IIIIIIq", magic, 1, sequence, address, len(data), simulating, 0)
+        return header, data, header
+
+    def test_decodes_complete_nsp_block(self):
+        from stock_renderer import decode_live_mirror
+        block = decode_live_mirror(*self.snapshot())
+        self.assertEqual(block, {"sequence": 2, "address": 0x1400, "data": b"\x01\x02\x03\x04", "simulating": True})
+
+    def test_rejects_torn_foreign_or_out_of_range_blocks(self):
+        from stock_renderer import decode_live_mirror
+        header, data, _ = self.snapshot()
+        self.assertIsNone(decode_live_mirror(header, data, self.snapshot(sequence=4)[0]))
+        self.assertIsNone(decode_live_mirror(*self.snapshot(sequence=3)))
+        self.assertIsNone(decode_live_mirror(*self.snapshot(magic=0)))
+        self.assertIsNone(decode_live_mirror(*self.snapshot(address=0x20000)))
+        self.assertIsNone(decode_live_mirror(header, data[:2], header))
+
+    def test_stale_mirror_falls_back_to_emulator_memory(self):
+        from stock_renderer import NspLiveMirror
+        now = [10.0]
+        mirror = NspLiveMirror(clock=lambda: now[0])
+        self.assertIsNotNone(mirror.latest(self.snapshot(sequence=2)))
+        now[0] = 10.9
+        self.assertIsNotNone(mirror.latest(self.snapshot(sequence=2)))
+        now[0] = 11.2
+        self.assertIsNone(mirror.latest(self.snapshot(sequence=2)))
+        self.assertIsNotNone(mirror.latest(self.snapshot(sequence=4)))
+        self.assertIsNone(mirror.latest(None))
+
+
 class ResourceTests(unittest.TestCase):
+    def test_fragment_retries_are_idempotent_including_final_ack(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            resources = Resources(temporary)
+            payload = b"GIF89a" + bytes(range(256)) * 40
+            descriptor = resource_descriptor("u/retry.gif", 0, payload)
+            commands = [b"\x06\0\0\0" + descriptor + struct.pack(">I", offset) + payload[offset:offset + 4000]
+                        for offset in range(0, len(payload), 4000)]
+            self.assertEqual(resources.command(commands[0]), b"\0")
+            self.assertEqual(resources.command(commands[1]), b"\0")
+            self.assertEqual(resources.command(commands[0]), b"\0")
+            self.assertEqual(resources.command(commands[1]), b"\0")
+            self.assertEqual(resources.command(commands[2]), b"\0")
+            revision = resources.revision
+            self.assertEqual(resources.command(commands[2]), b"\0")
+            self.assertEqual(resources.revision, revision)
+            self.assertEqual(resources.items[(0, "u/retry.gif")], payload)
+
+    def test_same_size_replacement_with_shared_prefix_is_not_skipped(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            resources = Resources(temporary)
+            before = b"GIF89a-prefix" + b"a" * 8000
+            after = b"GIF89a-prefix" + b"a" * 4000 + b"b" * 4000
+            resources.put("u/replaced.gif", 0, before)
+            descriptor = resource_descriptor("u/replaced.gif", 0, after)
+            for offset in range(0, len(after), 4000):
+                command = b"\x06\0\0\0" + descriptor + struct.pack(">I", offset) + after[offset:offset + 4000]
+                self.assertEqual(resources.command(command), b"\0")
+            self.assertEqual(resources.items[(0, "u/replaced.gif")], after)
+
+    def test_conflicting_fragment_retry_is_rejected_without_committing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            resources = Resources(temporary)
+            payload = b"a" * 10000
+            descriptor = resource_descriptor("u/retry.gif", 0, payload)
+            for offset in (0, 4000):
+                self.assertEqual(resources.command(
+                    b"\x06\0\0\0" + descriptor + struct.pack(">I", offset) + payload[offset:offset + 4000]), b"\0")
+            with self.assertLogs("ic7", level="WARNING") as logs:
+                status = resources.command(b"\x06\0\0\0" + descriptor + struct.pack(">I", 4000) + b"x" * 4000)
+            self.assertEqual(status, b"\x01")
+            self.assertIn("Conflicting resource retry", logs.output[0])
+            self.assertNotIn((0, "u/retry.gif"), resources.items)
+
+    def test_resource_limit_rejection_explains_size(self):
+        from ic7_emulator import MAX_RESOURCE_SIZE
+
+        with tempfile.TemporaryDirectory() as temporary:
+            resources = Resources(temporary)
+            descriptor = bytearray(resource_descriptor("u/oversize.mp4", 0, b"x"))
+            descriptor[52:56] = struct.pack(">I", MAX_RESOURCE_SIZE + 1)
+            with self.assertLogs("ic7", level="WARNING") as logs:
+                status = resources.command(b"\x06\0\0\0" + descriptor + bytes(4) + b"x")
+            self.assertEqual(status, b"\x01")
+            self.assertIn("size=" + str(MAX_RESOURCE_SIZE + 1), logs.output[0])
+            self.assertEqual(resources.pending, {})
+
     def test_resource_roundtrip(self):
         with tempfile.TemporaryDirectory() as temporary:
             resources = Resources(temporary)
@@ -358,6 +608,96 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(response[12:15], bytes((2, 36, 0)))
         self.assertEqual(response[20], 21)
         self.assertEqual(response[12 + 256:12 + 262], bytes.fromhex("F1C700000001"))
+
+    def test_display_is_blank_until_nexmap_component_settings_arrive(self):
+        scene = scene_state(self.device, 0)
+        self.assertFalse(scene["display"]["map_loaded"])
+        self.assertEqual(scene["display"]["phase"], "blank")
+        self.assertEqual(scene["components"], [])
+        self.assertEqual(render_layout(self.device, 0).getpixel((400, 240)), (0, 0, 0))
+
+    def test_main_command_restarts_to_splash_then_loaded_dashboard(self):
+        from PIL import Image
+
+        schema = json.loads((Path(__file__).resolve().parents[1] / "viewer-schema.json").read_text())
+        fields = next(item for item in schema["components"]
+                      if item["screen"] == 0 and item["component"] == 0)["fields"]
+        image_buffer = io.BytesIO()
+        Image.new("RGB", (4, 4), (240, 32, 24)).save(image_buffer, format="PNG")
+        self.device.resources.put("u/splash_source.png", 0, image_buffer.getvalue())
+        self.device.resources.put(SPLASH_RESOURCE, 0, json.dumps(
+            {"version": 1, "source": "u/splash_source.png", "durationMs": 3000}).encode())
+
+        gauge = fields["GAUGE_TYPE"]
+        self.device.respond(request(1, 1, 0x20000 + gauge["address"], gauge["bytes"],
+                                   (2).to_bytes(gauge["bytes"], "little")))
+        image_source = fields["IMAGE_SRC"]
+        source = b"u/splash_source.png"
+        self.device.respond(request(1, 2, 0x20000 + image_source["address"], image_source["bytes"],
+                                   source.ljust(image_source["bytes"], b"\0")))
+        self.assertEqual(scene_state(self.device, 0)["display"]["phase"], "dash")
+
+        self.device.respond(request(1, 3, 0, 2, b"\0\0"))
+        scene = scene_state(self.device, 0)
+        manifest = json.loads(self.device.resources.items[(0, SPLASH_RESOURCE)])
+        self.assertEqual(manifest, {"version": 1, "source": "u/splash_source.png", "durationMs": 3000})
+        self.assertEqual(scene["display"]["phase"], "splash")
+        self.assertEqual(scene["display"]["reboot_revision"], 1)
+        self.assertEqual(scene["components"], [])
+        self.assertEqual(render_layout(self.device, 0).getpixel((400, 240)), (240, 32, 24))
+
+        splash_end = self.device.splash_started_at + 3
+        self.assertEqual(self.device.display_state(splash_end - 0.001)["phase"], "splash")
+        self.assertEqual(self.device.display_state(splash_end)["phase"], "dash")
+        expired = json.loads(self.device.resources.items[(0, SPLASH_RESOURCE)])
+        self.assertEqual(expired["source"], "u/splash_source.png")
+        count = int.from_bytes(self.device.resources.command(b"\x01\0")[1:3], "big")
+        listing = self.device.resources.command(b"\x02\0" + struct.pack(">HH", 0, count - 1))
+        self.assertIn(resource_descriptor(SPLASH_RESOURCE, 0,
+                                          self.device.resources.items[(0, SPLASH_RESOURCE)]), listing)
+        server = start_viewer(self.device, 0)
+        try:
+            base = f"http://127.0.0.1:{server.server_port}"
+            status = json.load(urllib.request.urlopen(base + "/api/status"))
+            self.assertEqual(status["display"]["phase"], "dash")
+            fetched = urllib.request.urlopen(base + "/api/resource?kind=0&name=" +
+                                             urllib.parse.quote(SPLASH_RESOURCE)).read()
+            self.assertEqual(json.loads(fetched)["source"], "u/splash_source.png")
+        finally:
+            server.shutdown()
+            server.server_close()
+        self.device.save()
+        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
+        self.assertTrue(restored.map_loaded)
+        self.assertEqual(restored.display_state()["phase"], "dash")
+
+    def test_selected_mp4_manifest_survives_expiry_and_repeated_reboot(self):
+        manifest = json.dumps({"version": 1, "source": "u/selected.mp4", "durationMs": 3000}).encode()
+        self.device.resources.put("u/selected.mp4", 0, b"\0\0\0\x18ftypmp42")
+        self.device.resources.put(SPLASH_RESOURCE, 0, manifest)
+        self.device.map_loaded = True
+        for revision in (1, 2):
+            self.device.respond(request(1, revision, 0, 2, b"\0\0"))
+            state = self.device.display_state()
+            self.assertEqual(state["phase"], "splash")
+            self.assertEqual(state["splash_source"], "u/selected.mp4")
+            self.assertEqual(state["reboot_revision"], revision)
+            self.assertEqual(self.device.display_state(self.device.splash_started_at + 3)["phase"], "dash")
+            self.assertEqual(self.device.resources.items[(0, SPLASH_RESOURCE)], manifest)
+        self.device.save()
+        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
+        self.assertEqual(restored.resources.items[(0, SPLASH_RESOURCE)], manifest)
+
+    def test_unconfigured_and_disabled_splash_do_not_use_dashboard_background(self):
+        self.device.map_loaded = True
+        self.device.respond(request(1, 1, 0, 2, b"\0\0"))
+        self.assertEqual(self.device.display_state()["phase"], "dash")
+        self.assertNotIn((0, SPLASH_RESOURCE), self.device.resources.items)
+        manifest = json.dumps({"version": 1, "source": "", "durationMs": 3000}).encode()
+        self.device.resources.put(SPLASH_RESOURCE, 0, manifest)
+        self.device.respond(request(1, 2, 0, 2, b"\0\0"))
+        self.assertEqual(self.device.display_state()["phase"], "dash")
+        self.assertEqual(self.device.resources.items[(0, SPLASH_RESOURCE)], manifest)
 
     def test_boot_mode_identity_roundtrip(self):
         original = self.device.respond(request(2, 1, 0, 1024))[12:-4]

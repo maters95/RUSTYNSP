@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -52,6 +53,20 @@ internal class Control14 : Control11
 	private bool BmQ;
 
 	private string Bmq = string.Empty;
+
+	private Image splashImage;
+
+	private Stream splashStream;
+
+	private System.Windows.Forms.Timer splashTimer;
+
+	private int splashFrame;
+
+	private int splashFrameCount;
+
+	private byte[] splashFrameDelays;
+
+	private bool splashVideo;
 
 	internal Control14(DataIdAndAttrId dataIdAndAttrId_1, Framework framework_2, Framework framework_3, Class286 class286_0, bool bool_2, bool bool_3)
 	{
@@ -446,50 +461,141 @@ internal class Control14 : Control11
 		}
 	}
 
+	private void ClearSplashPreview()
+	{
+		splashTimer?.Dispose();
+		splashTimer = null;
+		splashImage?.Dispose();
+		splashImage = null;
+		splashStream?.Dispose();
+		splashStream = null;
+		splashFrame = 0;
+		splashFrameCount = 0;
+		splashFrameDelays = null;
+		splashVideo = false;
+	}
+
+	private int SplashFrameInterval()
+	{
+		int offset = splashFrame * 4;
+		uint delay = splashFrameDelays != null && offset + 4 <= splashFrameDelays.Length
+			? BitConverter.ToUInt32(splashFrameDelays, offset) : 10;
+		return (int)Math.Clamp((long)delay * 10, 20, int.MaxValue);
+	}
+
+	private void AdvanceSplashFrame(object sender, EventArgs e)
+	{
+		if (splashImage == null || splashFrameCount < 2 || BmO == null || BmO.IsDisposed)
+		{
+			ClearSplashPreview();
+			return;
+		}
+		try
+		{
+			splashFrame = (splashFrame + 1) % splashFrameCount;
+			splashImage.SelectActiveFrame(FrameDimension.Time, splashFrame);
+			splashTimer.Interval = SplashFrameInterval();
+			RenderSplashPreview();
+		}
+		catch (Exception ex)
+		{
+			ClearSplashPreview();
+			Class23.smethod_3(Class333.BcK() + ex.Message);
+		}
+	}
+
+	private void RenderSplashPreview()
+	{
+		Image image = BmO.Image;
+		Bitmap image2 = new Bitmap(BmO.Width, BmO.Height);
+		using (Graphics graphics = Graphics.FromImage(image2))
+		{
+			graphics.Clear(Color.Black);
+			if (splashImage != null)
+			{
+				float num = (float)BmO.Width / (float)setting_0.method_178().Width;
+				Size size = Class25.smethod_1(new Size((int)((float)splashImage.Width * num), (int)((float)splashImage.Height * num)), BmO.Size);
+				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+				graphics.DrawImage(splashImage, BmO.Width / 2 - size.Width / 2, BmO.Height / 2 - size.Height / 2, size.Width, size.Height);
+			}
+			else if (splashVideo)
+			{
+				TextRenderer.DrawText(graphics, "MP4 startup video\n" + Bmo + "\n\nPlays on the dash at boot",
+					Bmm.Font, new Rectangle(0, 0, BmO.Width, BmO.Height), Color.White,
+					TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak);
+			}
+		}
+		BmO.Image = image2;
+		image?.Dispose();
+	}
+
 	private void method_11()
 	{
 		if (!setting_0.method_176())
 		{
 			return;
 		}
-		Image image = BmO.Image;
-		Bitmap image2 = new Bitmap(BmO.Width, BmO.Height);
-		using (Graphics graphics = Graphics.FromImage(image2))
+		ClearSplashPreview();
+		string text = setting_0.method_260();
+		bool flag;
+		string text2;
+		if (text.StartsWith(Class333.smethod_1469()))
 		{
-			graphics.Clear(Color.Black);
-			string text = setting_0.method_260();
-			bool flag;
-			string text2;
-			if (text.StartsWith(Class333.smethod_1469()))
-			{
-				flag = true;
-				text2 = text.Substring(Class333.smethod_1469().Length);
-			}
-			else
-			{
-				flag = false;
-				text2 = ((!text.StartsWith(Class333.smethod_1472())) ? text : text.Substring(Class333.smethod_1472().Length));
-			}
+			flag = true;
+			text2 = text.Substring(Class333.smethod_1469().Length);
+		}
+		else
+		{
+			flag = false;
+			text2 = ((!text.StartsWith(Class333.smethod_1472())) ? text : text.Substring(Class333.smethod_1472().Length));
+		}
+		if (!string.IsNullOrEmpty(text2))
+		{
 			try
 			{
 				string path = ((!flag) ? (Form23.string_3 + Class333.smethod_1474() + text2) : (Form23.string_10 + Class333.smethod_1473() + text2));
-				using FileStream stream = File.OpenRead(path);
-				using Image image3 = Image.FromStream(stream);
-				float num = (float)BmO.Width / (float)setting_0.method_178().Width;
-				Size size = Class25.smethod_1(new Size((int)((float)image3.Width * num), (int)((float)image3.Height * num)), BmO.Size);
-				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				graphics.SmoothingMode = SmoothingMode.HighQuality;
-				graphics.CompositingQuality = CompositingQuality.HighQuality;
-				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-				graphics.DrawImage(image3, BmO.Width / 2 - size.Width / 2, BmO.Height / 2 - size.Height / 2, size.Width, size.Height);
+				byte[] header = new byte[12];
+				int read;
+				using (FileStream probe = File.OpenRead(path))
+				{
+					read = probe.Read(header, 0, header.Length);
+				}
+				if (NSP.MediaResource.HasMp4Header(header.AsSpan(0, read)))
+				{
+					splashVideo = true;
+				}
+				else
+				{
+					// GDI+ keeps reading frames from the stream; an in-memory copy avoids locking the image file.
+					splashStream = new MemoryStream(File.ReadAllBytes(path));
+					splashImage = Image.FromStream(splashStream);
+					if (Array.IndexOf(splashImage.FrameDimensionsList, FrameDimension.Time.Guid) >= 0)
+					{
+						splashFrameCount = splashImage.GetFrameCount(FrameDimension.Time);
+						if (splashFrameCount > 1)
+						{
+							if (Array.IndexOf(splashImage.PropertyIdList, 0x5100) >= 0)
+							{
+								splashFrameDelays = splashImage.GetPropertyItem(0x5100).Value;
+							}
+							splashTimer = new System.Windows.Forms.Timer();
+							splashTimer.Interval = SplashFrameInterval();
+							splashTimer.Tick += AdvanceSplashFrame;
+							splashTimer.Start();
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{
+				ClearSplashPreview();
 				Class23.smethod_3(Class333.BcK() + ex.Message);
 			}
-			BmO.Image = image2;
 		}
-		image?.Dispose();
+		RenderSplashPreview();
 	}
 
 	private void method_12()
@@ -584,6 +690,7 @@ internal class Control14 : Control11
 	protected override void Dispose(bool disposing)
 	{
 		method_13();
+		ClearSplashPreview();
 		if (Form23.pictureBox_1 == pictureBox_0)
 		{
 			Form23.pictureBox_1 = null;

@@ -37,18 +37,15 @@ Boot2Qt / Yocto SDK so your binary links against the same Qt:
    ```
    You get an armv7 `ic7dash`. `CMakeLists.txt` already enables SocketCAN on Linux
    and links Positioning + Location.
-4. GPS: the app reads checksummed NMEA GGA/RMC sentences over Qt SerialPort
-   (9600 baud, 8-N-1). The service sets `IC7_GPS_DEVICE=/dev/ttyUSB0` and
-   `IC7_SIM_GPS=0`; change the device path for your receiver. Without
-   `IC7_SIM_GPS=0`, the app uses its simulated route. The stock rootfs contains
-   Qt SerialPort, but its Positioning plugins are geoclue and positionpoll;
-   there is no serial NMEA position plugin in the captured inventory. No
-   internal iC-7 GPS receiver has been confirmed.
-5. Offline maps: the bundle's current tiles are only a test area. Prepare an
-   offline tile tree for the area you plan to drive from a map source/license
-   that explicitly permits offline extraction and caching; do not scrape public
-   tile servers or redistribute tiles without permission. GPS can move the
-   marker, but areas without tiles remain blank. The car has no internet.
+4. GPS: a USB NMEA receiver works through QtPositioning's **serialnmea** plugin;
+   the service sets `QT_NMEA_SERIAL_PORT=/dev/ttyUSB0` and `IC7_SIM_GPS=0`.
+   Change the serial device for your receiver. Without `IC7_SIM_GPS=0`, the app
+   uses its simulated route for desktop demos. Confirm the plugin is in your Qt
+   build (`qml/QtPositioning` was present in the dash rootfs).
+5. Offline maps: the bundle's current 294 tiles are only a test area. Seed an
+   offline tile tree for the area you plan to drive and bundle it with the app
+   (see app README); GPS can move the marker, but areas without tiles remain
+   blank. The car has no internet.
 
 ## 2. Stage it on a COPY of the rootfs first (no dash yet)
 Work on the extracted Haltech rootfs, never the live dash:

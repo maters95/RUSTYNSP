@@ -6,6 +6,19 @@ renamed with de4dot's unknown-protector symbol pass, then rebuilt as an x86
 
 The media changes cover import, persistence and the native dash renderer:
 
+The experimental startup-splash extension additionally embeds the root QML and
+`HalSplash.qml`, preserves selected GIF/MP4 splash bytes via ordinary resource
+uploads, and saves `ic7_splash.json` with the map. The overlay lasts at most
+three seconds at the Qt/application stage; it does not animate the earlier
+kernel logo. See the [splash test guide](../ic7-custom-dash/deploy/nsp/SPLASH-TEST.md).
+
+The combined alert candidate additionally embeds `HalAlarmPopup.qml` and adds
+**Alert GIF banners and placement...** to the main menu. It stores exact
+alert-text-to-image/rectangle overrides in `u/ic7_alerts.json`, offers drag/resize
+and numeric placement, and keeps warning text and the application's alarm
+logic intact. Ordinary screen media reuses the existing per-screen image
+editor. See the [alert test guide](../ic7-custom-dash/deploy/nsp/ALERTS-TEST.md).
+
 - `ns5/Class237.cs` adds `gif` and `mp4` to Image resource extensions.
 - `ns4/Form40.cs` validates GIF bytes through the image decoder and preserves
   the original animated bytes; MP4 is accepted only with an ISO-BMFF `ftyp`
@@ -18,6 +31,11 @@ The media changes cover import, persistence and the native dash renderer:
   v2.36 component is replaced after each HDEF extraction, not just in the picker.
 - `ns2.Control3.resx` preserves the original serialized image-list resource
   contract so the rebuilt application can start.
+- Text-valued enums, sizes, points and padding in six form/control resource
+  sets use string conversion rather than byte-array conversion. This fixes
+  the channel selector's `EnumConverter cannot convert from System.Byte[]`
+  exception without changing map data or the dash firmware. Binary image and
+  image-list serialization is preserved.
 
 Use the [native media setup and test guide](../ic7-custom-dash/deploy/nsp/NATIVE-MEDIA-TEST.md)
 with the matching bundle. Replacing the DLL alone is not sufficient: the native

@@ -1,5 +1,30 @@
 # Native NSP dash media test (iC-7 v2.36 / NSP 1.48.5)
 
+## Owner-confirmed baseline (2026-10-28)
+
+The owner reports GIF and MP4 working on the physical dash after flashing the
+NEX supplied in `ic7-nsp-native-media-test-2.36-videofix`, using the separate
+`NSP-native-media-videofix` copy. This supersedes the earlier unverified physical
+playback status below; it does not establish every codec, long-term reliability,
+or recovery. See [baseline, SL4 CAN findings, and design options](../DESIGN-POSSIBILITIES.md).
+
+## Earlier setup and validation notes
+
+### Windows resource-conversion fix
+
+The `resourcefix` bundle retains the videofix media runtime and matching NEX.
+It corrects reconstructed Windows form resources that caused
+`EnumConverter cannot convert from System.Byte[]` when opening the channel
+selector or other affected panels. This is a Windows NSP resource error, not
+evidence of a corrupt map or failed dash flash.
+
+Use the resourcefix bundle with the setup command below and a new destination
+such as `NSP-native-media-resourcefix`, keeping the working videofix copy.
+The firmware candidate is unchanged: **do not reflash for this fix**.
+First test opening the channel selector and affected panels with a backup map
+and the dash disconnected. Automated resource/packaging checks and the Linux
+cross-build pass; the corrected Windows GUI still needs an on-PC check.
+
 Use the **videofix** download rather than the earlier native-media ZIPs.
 GIF playback was confirmed on the owner's Windows dashboard canvas. The
 following video error, `The QMediaPlayer object does not have a valid service`,

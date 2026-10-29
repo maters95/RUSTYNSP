@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-windows-nexmap-alerts.zip",
+  "bytes": 30983440,
+  "sha256": "43348a727aaef768a8b37389c55f72e078cbf0f4b5969e61f7622d240ed985c4",
+  "files": 60,
+  "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"
+}

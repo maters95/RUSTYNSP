@@ -11,6 +11,8 @@ and the ILSpy command-line tool is in `tools/ilspy/`.
 - `ic7-custom-dash/` — companion dash application, deployment guides, tests,
   and experimental resource builds.
 - `ic7-emulator/` — isolated Windows NSP protocol and renderer workbench.
+- [`nexmap-web/`](nexmap-web/README.md) — free, account-free browser-based map
+  recovery; files are processed locally and never uploaded.
 - `nsp_src/` and `nsp-rebuild/` — NSP source snapshot and rebuild project.
 - `fw/` — firmware packages, definitions, and extracted firmware references.
 - `reference/stock-dash-extract/` — extracted stock QML/resources used for

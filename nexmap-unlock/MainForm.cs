@@ -14,6 +14,9 @@ public sealed class MainForm : Form
 
     public MainForm(string[]? initialFiles = null)
     {
+        SuspendLayout();
+        AutoScaleDimensions = new SizeF(96f, 96f);
+        AutoScaleMode = AutoScaleMode.Dpi;
         // ---- window chrome ----
         FormBorderStyle = FormBorderStyle.None;
         StartPosition = FormStartPosition.CenterScreen;
@@ -22,6 +25,7 @@ public sealed class MainForm : Form
         BackColor = Theme.Charcoal;
         Font = new Font("Segoe UI", 9f);
         Text = "Nexmap Unlock";
+        Icon = AppBrand.Icon;
         DoubleBuffered = true;
         AllowDrop = true;
 
@@ -30,85 +34,109 @@ public sealed class MainForm : Form
         _statusLeft = (Label)status.Controls["statusLeft"]!;
 
         // ---- body ----
-        var body = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Charcoal };
+        var body = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Theme.Charcoal,
+            Padding = new Padding(24, 14, 24, 16),
+            ColumnCount = 1,
+            RowCount = 6,
+        };
+        body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        body.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+        body.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+        body.RowStyles.Add(new RowStyle(SizeType.Absolute, 168));
+        body.RowStyles.Add(new RowStyle(SizeType.Absolute, 64));
+        body.RowStyles.Add(new RowStyle(SizeType.Absolute, 24));
+        body.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
         var title = new Label
         {
             Text = "REMOVE MAP PASSWORD PROTECTION",
             ForeColor = Theme.Yellow,
             Font = new Font("Segoe UI Semibold", 10.5f, FontStyle.Bold),
-            AutoSize = true,
-            Location = new Point(24, 14),
+            Dock = DockStyle.Fill,
+            Margin = Padding.Empty,
         };
         var subtitle = new Label
         {
             Text = "Recover .nexmap files locked by an uncontactable tuner.",
             ForeColor = Theme.TextDim,
             Font = new Font("Segoe UI", 9f),
-            AutoSize = true,
-            Location = new Point(24, 38),
+            Dock = DockStyle.Fill,
+            Margin = Padding.Empty,
         };
-        body.Controls.Add(title);
-        body.Controls.Add(subtitle);
+        body.Controls.Add(title, 0, 0);
+        body.Controls.Add(subtitle, 0, 1);
 
         _drop = new DropZone
         {
-            Location = new Point(24, 68),
-            Size = new Size(Width - 48, 168),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+            Dock = DockStyle.Fill,
+            Margin = Padding.Empty,
         };
         _drop.FilesDropped += files => ProcessFiles(files);
         _drop.Clicked += (_, _) => BrowseAndUnlock();
-        body.Controls.Add(_drop);
+        body.Controls.Add(_drop, 0, 2);
+
+        var actions = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            Margin = Padding.Empty,
+            ColumnCount = 3,
+            RowCount = 1,
+        };
+        actions.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
+        actions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        actions.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 46));
+        actions.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
         var browse = new HaltechButton
         {
             Text = "CHOOSE FILES",
             Primary = true,
             Size = new Size(150, 40),
-            Location = new Point(24, 250),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left,
+            Anchor = AnchorStyles.Left,
+            Margin = Padding.Empty,
         };
         browse.Click += (_, _) => BrowseAndUnlock();
-        body.Controls.Add(browse);
+        actions.Controls.Add(browse, 0, 0);
 
         _suffixToggle = new ToggleSwitch
         {
             On = true,
-            Location = new Point(Width - 48 - 46, 258),
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
+            Anchor = AnchorStyles.Right,
+            Margin = Padding.Empty,
         };
         _toggleLabel = new Label
         {
             Text = "Save as a copy  \u201c(unlocked)\u201d",
             ForeColor = Theme.TextDim,
             Font = new Font("Segoe UI", 8.5f),
-            AutoSize = true,
+            Dock = DockStyle.Fill,
+            Margin = new Padding(8, 0, 10, 0),
             TextAlign = ContentAlignment.MiddleRight,
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
         };
-        _toggleLabel.Location = new Point(_suffixToggle.Left - 196, 262);
         _suffixToggle.Toggled += (_, _) =>
             _toggleLabel.Text = _suffixToggle.On ? "Save as a copy  \u201c(unlocked)\u201d" : "Overwrite the original file";
-        body.Controls.Add(_suffixToggle);
-        body.Controls.Add(_toggleLabel);
+        actions.Controls.Add(_toggleLabel, 1, 0);
+        actions.Controls.Add(_suffixToggle, 2, 0);
+        body.Controls.Add(actions, 0, 3);
 
         var logLabel = new Label
         {
             Text = "ACTIVITY",
             ForeColor = Theme.TextDim,
             Font = new Font("Segoe UI Semibold", 8f, FontStyle.Bold),
-            AutoSize = true,
-            Location = new Point(24, 306),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left,
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleLeft,
+            Margin = Padding.Empty,
         };
-        body.Controls.Add(logLabel);
+        body.Controls.Add(logLabel, 0, 4);
 
         _log = new RichTextBox
         {
-            Location = new Point(24, 326),
-            Size = new Size(Width - 48, Height - 326 - 48 - 28 - 12),
-            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+            Dock = DockStyle.Fill,
+            Margin = Padding.Empty,
             BorderStyle = BorderStyle.None,
             BackColor = Theme.Panel,
             ForeColor = Theme.Text,
@@ -116,11 +144,12 @@ public sealed class MainForm : Form
             Font = new Font("Consolas", 9f),
             WordWrap = false,
         };
-        body.Controls.Add(_log);
+        body.Controls.Add(_log, 0, 5);
 
         Controls.Add(body);
         Controls.Add(status);
         Controls.Add(header);
+        ResumeLayout(true);
 
         LogLine("Ready.", Theme.TextDim);
         LogLine("Archive key loaded \u00b7 WinZip AES-256.", Theme.TextDim);
@@ -135,30 +164,69 @@ public sealed class MainForm : Form
     private Panel BuildHeader()
     {
         var header = new Panel { Dock = DockStyle.Top, Height = 48, BackColor = Theme.Ink };
-        header.Paint += (_, e) =>
+        var layout = new TableLayoutPanel
         {
-            var g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var b = new SolidBrush(Theme.Yellow))
-                g.FillRectangle(b, 0, header.Height - 3, header.Width, 3);
-
-            var mark = new Rectangle(14, 11, 24, 24);
-            Theme.FillRounded(g, mark, 5, Theme.Yellow);
-            DrawOpenLock(g, mark, Theme.Ink);
-
-            TextRenderer.DrawText(g, "HALTECH", new Font("Segoe UI", 11f, FontStyle.Bold),
-                new Point(47, 7), Theme.Text, TextFormatFlags.NoPadding);
-            TextRenderer.DrawText(g, "NEXMAP UNLOCK", new Font("Segoe UI Semibold", 8f, FontStyle.Bold),
-                new Point(48, 27), Theme.Yellow, TextFormatFlags.NoPadding);
+            Dock = DockStyle.Fill,
+            ColumnCount = 3,
+            RowCount = 1,
+            Margin = Padding.Empty,
         };
-        header.MouseDown += DragMove;
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40));
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
-        var close = new ChromeButton { IsClose = true, Dock = DockStyle.Right };
+        var brand = new Panel { Dock = DockStyle.Fill, Margin = Padding.Empty };
+        var logo = new PictureBox
+        {
+            Image = AppBrand.Logo,
+            SizeMode = PictureBoxSizeMode.Zoom,
+            Dock = DockStyle.Left,
+            Width = 48,
+            Padding = new Padding(10, 6, 6, 6),
+        };
+        var name = new Label
+        {
+            Text = "NEXMAP UNLOCK",
+            ForeColor = Theme.Text,
+            Font = new Font("Segoe UI", 11f, FontStyle.Bold),
+            Dock = DockStyle.Top,
+            Height = 25,
+            TextAlign = ContentAlignment.BottomLeft,
+        };
+        var detail = new Label
+        {
+            Text = "HALTECH MAP RECOVERY",
+            ForeColor = Theme.Yellow,
+            Font = new Font("Segoe UI", 7.5f),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.TopLeft,
+        };
+        brand.Controls.Add(detail);
+        brand.Controls.Add(name);
+        brand.Controls.Add(logo);
+        header.MouseDown += DragMove;
+        layout.MouseDown += DragMove;
+        brand.MouseDown += DragMove;
+        logo.MouseDown += DragMove;
+        name.MouseDown += DragMove;
+        detail.MouseDown += DragMove;
+
+        var close = new ChromeButton
+        {
+            IsClose = true, Dock = DockStyle.Fill, Margin = Padding.Empty, AccessibleName = "Close",
+        };
         close.Click += (_, _) => Close();
-        var min = new ChromeButton { Dock = DockStyle.Right };
+        var min = new ChromeButton
+        {
+            Dock = DockStyle.Fill, Margin = Padding.Empty, AccessibleName = "Minimise",
+        };
         min.Click += (_, _) => WindowState = FormWindowState.Minimized;
-        header.Controls.Add(close);
-        header.Controls.Add(min);
+        layout.Controls.Add(brand, 0, 0);
+        layout.Controls.Add(min, 1, 0);
+        layout.Controls.Add(close, 2, 0);
+        header.Controls.Add(layout);
+        header.Controls.Add(new Panel { Dock = DockStyle.Bottom, Height = 3, BackColor = Theme.Yellow });
         return header;
     }
 
@@ -181,7 +249,7 @@ public sealed class MainForm : Form
         };
         var right = new Label
         {
-            Text = "v1.0.0  ",
+            Text = $"v{Application.ProductVersion.Split('+')[0]}  ",
             ForeColor = Theme.YellowDim,
             Font = new Font("Segoe UI", 8.5f),
             Width = 80,
@@ -191,16 +259,6 @@ public sealed class MainForm : Form
         bar.Controls.Add(left);
         bar.Controls.Add(right);
         return bar;
-    }
-
-    private static void DrawOpenLock(Graphics g, Rectangle box, Color color)
-    {
-        using var pen = new Pen(color, 2f) { StartCap = LineCap.Round, EndCap = LineCap.Round };
-        using var brush = new SolidBrush(color);
-        var bodyRect = new Rectangle(box.X + 6, box.Y + 12, 12, 9);
-        g.FillRectangle(brush, bodyRect);
-        g.DrawArc(pen, box.X + 3, box.Y + 3, 9, 9, 150, 240);
-        g.DrawLine(pen, box.X + 12, box.Y + 5, box.X + 12, box.Y + 9);
     }
 
     // Draggable + resizable borderless window.
@@ -214,9 +272,10 @@ public sealed class MainForm : Form
         if (m.Msg == WM_NCHITTEST)
         {
             base.WndProc(ref m);
-            var pos = PointToClient(new Point(m.LParam.ToInt32()));
-            bool l = pos.X <= GRIP, r = pos.X >= ClientSize.Width - GRIP;
-            bool t = pos.Y <= GRIP, b = pos.Y >= ClientSize.Height - GRIP;
+            var pos = PointToClient(new Point(unchecked((int)m.LParam.ToInt64())));
+            int grip = LogicalToDeviceUnits(GRIP);
+            bool l = pos.X <= grip, r = pos.X >= ClientSize.Width - grip;
+            bool t = pos.Y <= grip, b = pos.Y >= ClientSize.Height - grip;
             int hit = (t && l) ? HTTOPLEFT : (t && r) ? HTTOPRIGHT :
                       (b && l) ? HTBOTTOMLEFT : (b && r) ? HTBOTTOMRIGHT :
                       l ? HTLEFT : r ? HTRIGHT : t ? HTTOP : b ? HTBOTTOM : 0;
@@ -271,7 +330,7 @@ public sealed class MainForm : Form
 
         var (ok, skipped, failed) = await Task.Run(() => RunBatch(list, suffix));
 
-        SetStatus($"Done \u2014 {ok} unlocked, {failed} failed");
+        SetStatus($"Done: {ok} unlocked, {failed} failed");
         LogLine($"Finished: {ok} unlocked, {skipped} skipped, {failed} failed.",
             failed > 0 ? Theme.Bad : Theme.Good);
         _drop.Enabled = true;
@@ -312,7 +371,7 @@ public sealed class MainForm : Form
             }
             catch (Exception ex)
             {
-                LogLine($"fail  {name}  \u2014 {ex.Message}", Theme.Bad);
+                LogLine($"fail  {name}: {ex.Message}", Theme.Bad);
                 failed++;
             }
         }
@@ -357,7 +416,8 @@ internal sealed class DropZone : Control
     public DropZone()
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
-                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
+                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor |
+                 ControlStyles.ResizeRedraw, true);
         BackColor = Color.Transparent;
         AllowDrop = true;
         Cursor = Cursors.Hand;
@@ -398,28 +458,19 @@ internal sealed class DropZone : Control
         using (var pen = new Pen(accent, 1.6f) { DashStyle = DashStyle.Dash, DashPattern = new[] { 4f, 3f } })
             g.DrawPath(pen, path);
 
-        int cx = Width / 2, cy = Height / 2 - 20;
-        DrawBigUnlock(g, new Rectangle(cx - 17, cy - 16, 34, 32), accent);
+        int cx = Width / 2, cy = Height / 2 - LogicalToDeviceUnits(20);
+        int logoSize = LogicalToDeviceUnits(40);
+        g.DrawImage(AppBrand.Logo, new Rectangle(cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize));
 
         string head = Enabled ? "Drag .nexmap files here" : "Working \u2026";
         string sub = Enabled ? "or click to browse" : "please wait";
-        TextRenderer.DrawText(g, head, new Font("Segoe UI Semibold", 11f, FontStyle.Bold),
-            new Rectangle(0, cy + 26, Width, 24), Enabled ? Theme.Text : Theme.TextDim,
+        using var headFont = new Font("Segoe UI Semibold", 11f, FontStyle.Bold);
+        using var subFont = new Font("Segoe UI", 9f);
+        TextRenderer.DrawText(g, head, headFont,
+            new Rectangle(0, cy + LogicalToDeviceUnits(26), Width, LogicalToDeviceUnits(24)), Enabled ? Theme.Text : Theme.TextDim,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-        TextRenderer.DrawText(g, sub, new Font("Segoe UI", 9f),
-            new Rectangle(0, cy + 50, Width, 20), Theme.TextDim,
+        TextRenderer.DrawText(g, sub, subFont,
+            new Rectangle(0, cy + LogicalToDeviceUnits(50), Width, LogicalToDeviceUnits(20)), Theme.TextDim,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-    }
-
-    private static void DrawBigUnlock(Graphics g, Rectangle box, Color color)
-    {
-        using var brush = new SolidBrush(color);
-        using var pen = new Pen(color, 3f) { StartCap = LineCap.Round, EndCap = LineCap.Round };
-        var body = new Rectangle(box.X + 4, box.Y + 14, box.Width - 8, box.Height - 14);
-        using (var p = Theme.RoundedRect(body, 4)) g.FillPath(brush, p);
-        g.DrawArc(pen, box.X - 2, box.Y, 16, 16, 140, 250);
-        g.DrawLine(pen, box.X + 13, box.Y + 4, box.X + 13, box.Y + 12);
-        using var hole = new SolidBrush(Theme.Panel);
-        g.FillEllipse(hole, box.X + box.Width / 2 - 2, box.Y + 20, 5, 5);
     }
 }

@@ -107,7 +107,15 @@ public class VirtualDashAppPanel : Panel
 		{
 			if (framework_0.awZ == 21 && framework_0.awz == 11)
 			{
-				NSP.NativeMediaRenderer.Prepare(processStartInfo, Path.Combine(AppContext.BaseDirectory, "ic7-media-runtime"));
+				try
+				{
+					NSP.NativeMediaRenderer.Prepare(processStartInfo, Path.Combine(AppContext.BaseDirectory, "ic7-media-runtime"));
+				}
+				catch (Exception mediaError)
+				{
+					// Keep the stock renderer usable; only GIF/MP4/splash/alert previews need the add-on.
+					Class23.smethod_3("Native media preview unavailable; using the stock dash renderer: " + mediaError.Message);
+				}
 			}
 			renderer = Process.Start(processStartInfo)
 				?? throw new InvalidOperationException("The NSP dash renderer did not start.");

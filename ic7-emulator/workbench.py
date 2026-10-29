@@ -8,6 +8,9 @@ from pathlib import Path
 import re
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 import uuid
 
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QProcess, Qt, QThread, QTimer, QUrl, pyqtSignal
@@ -18,7 +21,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QComboBox, QFileDialog, QFor
                             QPushButton, QSizePolicy, QSplitter, QStyle, QTabWidget,
                             QTableWidget, QTableWidgetItem, QToolBar, QVBoxLayout, QWidget)
 
-from ic7_emulator import Device, serve_stream
+from ic7_emulator import ALERT_RESOURCE, Device, SPLASH_RESOURCE, serve_stream
 from viewer import is_video_resource, render_layout, start_viewer
 from virtual_pair import load_pair_config
 
@@ -38,6 +41,21 @@ def virtual_ports(ports):
                   if any(marker in " ".join(str(getattr(port, field, ""))
                          for field in ("description", "manufacturer", "hwid")).lower()
                          for marker in markers))
+
+
+def alert_preview_texts(payload):
+    """Return configured alert texts from an uploaded ic7_alerts.json manifest."""
+    if not payload:
+        return []
+    manifest = json.loads(payload.decode("utf-8"))
+    if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("banners"), list):
+        raise ValueError("Unsupported alert manifest")
+    texts = []
+    for banner in manifest["banners"]:
+        text = banner.get("text") if isinstance(banner, dict) else None
+        if isinstance(text, str) and text.strip() and text not in texts:
+            texts.append(text)
+    return texts
 
 
 def configured_nsp_port(ports):
@@ -100,7 +118,8 @@ class SessionWorker(QThread):
         with device.lock:
             if self.asset_revision != device.resources.revision:
                 self.assets = [{"kind": kind, "name": name, "bytes": len(payload)}
-                               for (kind, name), payload in sorted(device.resources.items.items())]
+                               for (kind, name), payload in sorted(device.resources.items.items())
+                               if name not in (SPLASH_RESOURCE, ALERT_RESOURCE)]
                 self.asset_revision = device.resources.revision
             update = device.sandbox.summary() if device.sandbox else None
             state = {"mode": "boot" if device.boot_mode else "main", "requests": device.requests,
@@ -213,6 +232,7 @@ class Workbench(QMainWindow):
         self.closing = False
         self.available_ports = []
         self.port_setup_process = None
+        self.alert_previews = []
         self.setWindowTitle("iC-7 NSP Sandbox | Unofficial Workbench")
         self.resize(1200, 800)
         self.setMinimumSize(800, 600)
@@ -239,6 +259,8 @@ class Workbench(QMainWindow):
         toolbar.addSeparator()
         self.renderer_action = self.action(toolbar, "Stock Renderer", QStyle.SP_ComputerIcon, self.start_renderer)
         self.renderer_action.setEnabled(False)
+        self.alert_action = self.action(toolbar, "Preview Alert", QStyle.SP_MessageBoxWarning, self.preview_alert)
+        self.alert_action.setEnabled(False)
         self.action(toolbar, "Launch NSP", QStyle.SP_DesktopIcon, self.launch_nsp)
         self.folder_action = self.action(toolbar, "Session Folder", QStyle.SP_DirOpenIcon, self.open_state)
         self.folder_action.setEnabled(False)
@@ -468,12 +490,15 @@ class Workbench(QMainWindow):
             self.mode_label.setText("Saving session")
         if self.renderer is not None:
             self.renderer.terminate()
+        for process in list(self.alert_previews):
+            process.terminate()
 
     def session_finished(self):
         self.worker.deleteLater()
         self.worker = None
         self.set_running(False)
         self.renderer_action.setEnabled(False)
+        self.alert_action.setEnabled(False)
         self.mode_label.setText("Stopped | session saved" if self.state else "Stopped")
         if self.closing:
             self.close()
@@ -489,6 +514,7 @@ class Workbench(QMainWindow):
         self.state = Path(state["state"])
         self.folder_action.setEnabled(True)
         self.renderer_action.setEnabled(sys.platform == "win32" and self.renderer is None)
+        self.alert_action.setEnabled(True)
         self.mode_label.setText(f"{state['mode'].upper()} | {state['requests']:,} requests | {self.state.name[:8]}")
         update = state["update"] or {}
         values = {"Mode": state["mode"].upper(), "Package": update.get("package", "None"),
@@ -568,6 +594,41 @@ class Workbench(QMainWindow):
         self.renderer.deleteLater()
         self.renderer = None
         self.renderer_action.setEnabled(self.worker is not None and sys.platform == "win32")
+
+    def preview_alert(self):
+        if not self.snapshot:
+            return
+        url = self.snapshot["url"]
+        texts = []
+        try:
+            query = urllib.parse.urlencode({"kind": 0, "name": ALERT_RESOURCE})
+            with urllib.request.urlopen(url.rstrip("/") + "/api/resource?" + query, timeout=2) as response:
+                texts = alert_preview_texts(response.read())
+        except urllib.error.HTTPError as error:
+            if error.code != 404:
+                self.session_error("Could not read the uploaded alert configuration: " + str(error))
+                return
+        except (OSError, ValueError) as error:
+            self.session_error("Could not read the uploaded alert configuration: " + str(error))
+            return
+        prompt = ("Exact alarm Message text to display (uploaded overrides listed). "
+                  "This is a synthetic preview; it does not evaluate thresholds."
+                  if texts else
+                  "No alert overrides have been uploaded yet; the stock bottom banner will be shown. "
+                  "Enter the exact alarm Message text:")
+        text, accepted = QInputDialog.getItem(self, "Preview alert", prompt, texts or ["ENGINE RPM OVERREV"], 0, True)
+        if not accepted or not text.strip():
+            return
+        process = QProcess(self)
+        process.setProcessChannelMode(QProcess.MergedChannels)
+        process.readyReadStandardOutput.connect(lambda: self.log.appendPlainText(
+            bytes(process.readAllStandardOutput()).decode("utf-8", "replace").rstrip()))
+        process.errorOccurred.connect(lambda error: self.log.appendPlainText("Alert preview: " + process.errorString()))
+        process.finished.connect(lambda *_: (self.alert_previews.remove(process)
+                                             if process in self.alert_previews else None, process.deleteLater()))
+        self.alert_previews.append(process)
+        self.log.appendPlainText("Synthetic alert preview: " + text)
+        process.start(sys.executable, [str(ROOT / "native_view.py"), "--url", url, "--preview-alert", text])
 
     def launch_nsp(self):
         path, _ = QFileDialog.getOpenFileName(self, "Select installed NSP executable", "", "Windows executable (*.exe)")

@@ -23,6 +23,12 @@
   <ItemGroup>
     <EmbeddedResource Include="../ic7-custom-dash/deploy/nsp/HalImage.qml"
                       LogicalName="NSP.Media.HalImage.qml" />
+    <EmbeddedResource Include="../ic7-custom-dash/deploy/nsp/HalSplash.qml"
+                      LogicalName="NSP.Media.HalSplash.qml" />
+    <EmbeddedResource Include="../ic7-custom-dash/deploy/nsp/main.qml"
+                      LogicalName="NSP.Media.main.qml" />
+    <EmbeddedResource Include="../ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
+                      LogicalName="NSP.Media.HalAlarmPopup.qml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ServiceModel.Primitives">

@@ -26,6 +26,7 @@ internal class Form40 : Form
 	private Image previewImage;
 	private Stream previewStream;
 	private string previewImagePath;
+	private (long Length, DateTime Written) previewImageStamp;
 	private System.Windows.Forms.Timer previewTimer;
 	private int previewFrame;
 	private int previewFrameCount;
@@ -55,16 +56,21 @@ internal class Form40 : Form
 
 	private Image LoadPreviewImage(string path)
 	{
-		if (previewImagePath == path && previewImage != null)
+		FileInfo file = new FileInfo(path);
+		(long, DateTime) stamp = (file.Length, file.LastWriteTimeUtc);
+		// Same-name imports replace the file, so the cache also tracks size and write time.
+		if (previewImagePath == path && previewImage != null && previewImageStamp == stamp)
 		{
 			return previewImage;
 		}
 		ClearAnimatedPreview();
 		try
 		{
-			previewStream = File.OpenRead(path);
+			// Decode from memory so NSP can still export, replace or delete the selected file.
+			previewStream = new MemoryStream(File.ReadAllBytes(path));
 			previewImage = Image.FromStream(previewStream);
 			previewImagePath = path;
+			previewImageStamp = stamp;
 			if (Array.IndexOf(previewImage.FrameDimensionsList, FrameDimension.Time.Guid) >= 0)
 			{
 				previewFrameCount = previewImage.GetFrameCount(FrameDimension.Time);
@@ -1036,6 +1042,23 @@ internal class Form40 : Form
 			}
 			else
 			{
+				if (bool_1 && framework_0.awZ == 21 && framework_0.awz == 11)
+				{
+					try
+					{
+						string path = class226_0.method_1();
+						byte[] bytes = File.ReadAllBytes(path);
+						byte[] manifest = NSP.SplashMedia.CreateManifest(
+							(bool_2 ? "u/" : "h/") + string_9, NSP.SplashMedia.IsAnimated(path, bytes));
+						NSP.SplashMedia.SaveManifest(Path.Combine(Form23.string_10, "images"), manifest);
+					}
+					catch (Exception error)
+					{
+						Form54.smethod_6(this, "Cannot configure startup splash: " + error.Message,
+							Class333.smethod_390(), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						return;
+					}
+				}
 				DialogResult = DialogResult.OK;
 				Close();
 			}
@@ -1472,7 +1495,8 @@ internal class Form40 : Form
 		{
 			try
 			{
-				File.Copy(class226_0.method_1(), saveFileDialog.FileName);
+				// SaveFileDialog has already confirmed replacing an existing file.
+				File.Copy(class226_0.method_1(), saveFileDialog.FileName, overwrite: true);
 			}
 			catch (Exception ex2)
 			{

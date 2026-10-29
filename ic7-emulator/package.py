@@ -22,12 +22,17 @@ def main():
                 continue
             archive.write(source, "ic7-emulator/" + relative.as_posix())
             included.append(relative.as_posix())
+        alarm = root.parent / "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
+        if alarm.is_file():
+            relative = "qml/stock_renderer/HalAlarmPopup.qml"
+            archive.write(alarm, "ic7-emulator/" + relative)
+            included.append(relative)
     with zipfile.ZipFile(destination) as archive:
         if archive.testzip() is not None:
             raise ValueError("Distribution integrity check failed")
     report = {"file": destination.name, "bytes": destination.stat().st_size,
               "sha256": hashlib.sha256(destination.read_bytes()).hexdigest(), "files": len(included),
-              "status": "Main/boot identity and exact-package resource sandbox locally tested; Windows NSP update retest, target decryption, hardware flash and recovery unverified"}
+              "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"}
     destination.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

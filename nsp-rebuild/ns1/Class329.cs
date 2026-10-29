@@ -252,11 +252,13 @@ internal class Class329
 			}
 			try
 			{
-				if (Bdy != null && Bdy.class55_0 != null && Bdy.class55_0.BiE)
+				bool simulating = Bdy != null && Bdy.class55_0 != null && Bdy.class55_0.BiE;
+				if (simulating)
 				{
 					Array.Clear(Bdz, 0, Bdz.Length);
 					Bdy.method_7(ref Bdz);
 				}
+				NSP.LiveDataMirror.Publish(Bdx, simulating ? Bdz : byte_0, BdY, simulating);
 				if (BdV != null && BdV.method_0())
 				{
 					bool flag = false;

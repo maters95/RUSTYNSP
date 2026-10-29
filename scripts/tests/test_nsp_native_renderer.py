@@ -26,6 +26,9 @@ class NativeRendererTests(unittest.TestCase):
             resource = ET.SubElement(items, "EmbeddedResource",
                                      Include=str(DEPLOY / "HalImage.qml"))
             ET.SubElement(resource, "LogicalName").text = "NSP.Media.HalImage.qml"
+            for name in ("main.qml", "HalSplash.qml", "HalAlarmPopup.qml"):
+                item = ET.SubElement(items, "EmbeddedResource", Include=str(DEPLOY / name))
+                ET.SubElement(item, "LogicalName").text = "NSP.Media." + name
             ET.ElementTree(project).write(path / "NativeTest.csproj")
             (path / "Program.cs").write_text(
                 """
@@ -42,6 +45,37 @@ string root = args[0];
 string runtime = Path.Combine(args[1], "runtime");
 string target = Path.Combine(runtime, "qml_components_data/qml/user_components/HalImage.qml");
 Directory.CreateDirectory(Path.GetDirectoryName(target));
+string rootQml = Path.Combine(runtime, "qml_components_data/qml/factory_screens/main.qml");
+Directory.CreateDirectory(Path.GetDirectoryName(rootQml));
+File.Copy(Path.Combine(root, "reference/stock-dash-extract/qml_components_data/qml/factory_screens/main.qml"), rootQml);
+File.WriteAllText(rootQml + "c", "stale compiled QML");
+string alarmQml = Path.Combine(runtime, "qml_components_data/qml/user_components/HalAlarmPopup.qml");
+File.Copy(Path.Combine(root, "reference/stock-dash-extract/qml_components_data/qml/user_components/HalAlarmPopup.qml"), alarmQml);
+File.WriteAllText(alarmQml + "c", "stale alarm QML");
+NativeMediaRenderer.InstallSplashComponents(runtime);
+NativeMediaRenderer.InstallAlertComponent(runtime);
+if (File.Exists(alarmQml + "c")) throw new Exception("Stale alert cache retained");
+if (!File.ReadAllBytes(alarmQml).AsSpan().SequenceEqual(File.ReadAllBytes(
+    Path.Combine(root, "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml")))) throw new Exception("Alert QML mismatch");
+NativeMediaRenderer.InstallAlertComponent(runtime);
+File.WriteAllText(alarmQml, "unknown alarm");
+try {
+    NativeMediaRenderer.InstallAlertComponent(runtime);
+    throw new Exception("Unknown alarm accepted");
+} catch (InvalidDataException) {}
+if (File.ReadAllText(alarmQml) != "unknown alarm") throw new Exception("Unknown alarm overwritten");
+File.Copy(Path.Combine(root, "reference/stock-dash-extract/qml_components_data/qml/user_components/HalAlarmPopup.qml"), alarmQml, true);
+if (File.Exists(rootQml + "c")) throw new Exception("Stale startup cache retained");
+if (!File.ReadAllBytes(rootQml).AsSpan().SequenceEqual(File.ReadAllBytes(
+    Path.Combine(root, "ic7-custom-dash/deploy/nsp/main.qml")))) throw new Exception("Root QML mismatch");
+NativeMediaRenderer.InstallSplashComponents(runtime);
+File.WriteAllText(rootQml, "unknown root");
+try {
+    NativeMediaRenderer.InstallSplashComponents(runtime);
+    throw new Exception("Unknown root accepted");
+} catch (InvalidDataException) {}
+if (File.ReadAllText(rootQml) != "unknown root") throw new Exception("Unknown root overwritten");
+File.Copy(Path.Combine(root, "reference/stock-dash-extract/qml_components_data/qml/factory_screens/main.qml"), rootQml, true);
 File.Copy(Path.Combine(root, "reference/stock-dash-extract/qml_components_data/qml/user_components/HalImage.qml"), target);
 byte[] stock = File.ReadAllBytes(target);
 File.WriteAllText(target + "c", "stale compiled QML");

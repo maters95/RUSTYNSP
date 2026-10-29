@@ -12,7 +12,7 @@ async function checkVideo(name) {
     const element = id => {
         if (!elements.has(id)) elements.set(id, {
             value: 'layout', complete: false, hidden: true, src: '',
-            append() {}, load() {}, pause() {}, play() { return Promise.resolve(); },
+            append() {}, load() {}, pause() {}, removeAttribute() {}, play() { return Promise.resolve(); },
         });
         return elements.get(id);
     };
@@ -37,6 +37,14 @@ async function checkVideo(name) {
     vm.runInContext('showImage(true);', context);
     await Promise.resolve();
     assert.match(element('#empty').textContent, /Autoplay blocked/);
+    video.play = () => Promise.resolve();
+    vm.runInContext("mode.value='layout'; displayState={phase:'splash',splash_source:" +
+                    JSON.stringify(name) + "}; showImage(true);", context);
+    assert.equal(video.hidden, false);
+    assert.equal(new URL(video.src, 'http://localhost').searchParams.get('name'), name);
+    vm.runInContext("displayState={phase:'dash'}; showImage(true);", context);
+    assert.equal(video.hidden, true);
+    assert.match(element('#display').src, /^\/layout.png/);
 }
 
 (async () => {

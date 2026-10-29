@@ -1,5 +1,6 @@
 import argparse
 import base64
+from functools import lru_cache
 import hashlib
 import io
 import json
@@ -19,9 +20,33 @@ import zlib
 
 HEADER = struct.Struct(">BB6sI")
 MAX_TRANSFER = 16384
+MAX_RESOURCE_SIZE = 128 * 1024 * 1024
 PAGE_SIZE = 4096
 RESOURCE_ADDRESS = 0x70000000
 RESOURCE_STAGE_ADDRESS = 0x25000000
+SETTINGS_BASE = 0x20000
+SPLASH_RESOURCE = "u/ic7_splash.json"
+ALERT_RESOURCE = "u/ic7_alerts.json"
+SPLASH_DURATION_MS = 3300
+
+
+@lru_cache(maxsize=1)
+def dashboard_setting_spans():
+    schema_path = Path(__file__).with_name("viewer-schema.json")
+    if not schema_path.is_file():
+        return ()
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    return tuple(
+        (SETTINGS_BASE + field["address"], SETTINGS_BASE + field["address"] + field["bytes"])
+        for component in schema.get("components", [])
+        for field in component.get("fields", {}).values()
+    )
+
+
+def overlaps_dashboard_settings(address, length):
+    end = address + length
+    return length > 0 and any(address < span_end and span_start < end
+                              for span_start, span_end in dashboard_setting_spans())
 
 
 class UpdateSandbox:
@@ -373,6 +398,7 @@ class Resources:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.items = {}
+        self.checksums = {}
         self.pending = {}
         self.revision = 0
         for kind in (0, 1):
@@ -380,7 +406,10 @@ class Resources:
             if folder.exists():
                 for path in folder.rglob("*"):
                     if path.is_file():
-                        self.items[(kind, path.relative_to(folder).as_posix())] = path.read_bytes()
+                        key = (kind, path.relative_to(folder).as_posix())
+                        payload = path.read_bytes()
+                        self.items[key] = payload
+                        self.checksums[key] = zlib.crc32(payload)
 
     def put(self, name, kind, payload):
         parse_descriptor(resource_descriptor(name, kind, payload))
@@ -388,12 +417,14 @@ class Resources:
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(payload)
         self.items[(kind, name)] = payload
+        self.checksums[(kind, name)] = zlib.crc32(payload)
         self.revision += 1
 
     def command(self, payload):
         try:
             return self._command(payload)
-        except (ValueError, KeyError, IndexError, struct.error, UnicodeError):
+        except (ValueError, KeyError, IndexError, struct.error, UnicodeError) as error:
+            logging.getLogger("ic7").warning("resource-command-rejected: %s", error)
             return b"\x01"
 
     def _command(self, payload):
@@ -424,23 +455,37 @@ class Resources:
         if operation == 6 and len(payload) >= 68:
             offset = int.from_bytes(payload[64:68], "big")
             fragment = payload[68:]
-            if size > 32 * 1024 * 1024 or offset + len(fragment) > size:
-                return b"\x01"
-            if offset == 0:
-                self.pending[key] = bytearray()
-            pending = self.pending[key]
+            if size > MAX_RESOURCE_SIZE or offset + len(fragment) > size or (size and not fragment):
+                raise ValueError(f"Resource {name} has invalid size/offset: size={size} offset={offset} "
+                                 f"fragment={len(fragment)} limit={MAX_RESOURCE_SIZE}")
+            committed = self.items.get(key)
+            if (committed is not None and len(committed) == size and self.checksums.get(key) == checksum and
+                    committed[offset:offset + len(fragment)] == fragment):
+                return b"\0"
+            previous = self.pending.get(key)
+            if offset == 0 and (previous is None or previous[:2] != (size, checksum) or
+                                previous[2][:len(fragment)] != fragment):
+                self.pending[key] = (size, checksum, bytearray())
+            expected_size, expected_checksum, pending = self.pending[key]
+            if (size, checksum) != (expected_size, expected_checksum):
+                raise ValueError(f"Resource descriptor changed during upload: {name}")
+            if offset < len(pending) and offset + len(fragment) <= len(pending):
+                if pending[offset:offset + len(fragment)] == fragment:
+                    return b"\0"
+                raise ValueError(f"Conflicting resource retry: {name} offset={offset}")
             if offset != len(pending):
-                return b"\x01"
+                raise ValueError(f"Noncontiguous resource fragment: {name} offset={offset} expected={len(pending)}")
             pending.extend(fragment)
             if len(pending) == size:
                 if zlib.crc32(pending) != checksum:
                     del self.pending[key]
-                    return b"\x01"
+                    raise ValueError(f"Resource CRC mismatch: {name}")
                 self.put(name, kind, bytes(pending))
                 del self.pending[key]
             return b"\0"
         if operation == 5 and len(payload) == 64:
             del self.items[key]
+            self.checksums.pop(key, None)
             (self.root / str(kind) / name).unlink(missing_ok=True)
             self.revision += 1
             return b"\0"
@@ -450,6 +495,7 @@ class Resources:
                 return b"\x01"
             self.put(new_name, new_kind, self.items[key])
             del self.items[key]
+            self.checksums.pop(key, None)
             (self.root / str(kind) / name).unlink(missing_ok=True)
             return b"\0"
         return b"\x01"
@@ -469,6 +515,9 @@ class Device:
         self.last_activity = None
         self.lock = threading.RLock()
         self.boot_mode = False
+        self.map_loaded = False
+        self.reboot_revision = 0
+        self.splash_started_at = None
         self.sandbox = UpdateSandbox(sandbox_package, self.state / "sandbox") if sandbox_package else None
         self.last_screen = None
         self.screen_buffer = bytearray()
@@ -487,6 +536,12 @@ class Device:
                     self.resources.put(resource["name"], resource["kind"], archive.read(resource["file"]))
         if (self.state / "memory.zip").exists():
             self.memory.load(self.state / "memory.zip")
+        session_path = self.state / "session.json"
+        if session_path.is_file():
+            try:
+                self.map_loaded = json.loads(session_path.read_text(encoding="utf-8")).get("map_loaded") is True
+            except (OSError, ValueError, UnicodeError):
+                self.map_loaded = False
         identity = bytes.fromhex(serial_number)
         if len(identity) != 6:
             raise ValueError("Serial number must be twelve hexadecimal digits")
@@ -505,6 +560,48 @@ class Device:
                     self.capture.close()
                     self.capture = None
             return response
+
+    def _prepare_splash(self):
+        self.splash_started_at = time.monotonic()
+
+    def display_state(self, now=None):
+        if now is None:
+            now = time.monotonic()
+        source = None
+        if self.boot_mode or not self.map_loaded:
+            phase = "blank"
+        else:
+            manifest = self.resources.items.get((0, SPLASH_RESOURCE))
+            duration_ms = SPLASH_DURATION_MS
+            if manifest:
+                try:
+                    info = json.loads(manifest)
+                    if not isinstance(info, dict):
+                        raise ValueError("Splash manifest must be an object")
+                    candidate = info.get("source", "")
+                    duration = info.get("durationMs")
+                    if (info.get("version") == 1 and isinstance(candidate, str) and
+                            isinstance(duration, (int, float)) and not isinstance(duration, bool) and
+                            0 < duration <= SPLASH_DURATION_MS and
+                            candidate.startswith(("u/", "h/")) and (0, candidate) in self.resources.items and
+                            "/" not in candidate[2:] and "\\" not in candidate[2:] and "\0" not in candidate and
+                            candidate != SPLASH_RESOURCE and
+                            candidate.rsplit("/", 1)[-1].lower().endswith(
+                                (".png", ".jpg", ".jpeg", ".gif", ".mp4", ".webp", ".bmp"))):
+                        source = candidate
+                        duration_ms = duration
+                except (TypeError, ValueError, UnicodeError):
+                    self.log.exception("invalid-startup-splash-manifest")
+                    source = None
+            splash_active = (source is not None and self.splash_started_at is not None and
+                             now - self.splash_started_at < duration_ms / 1000)
+            if source is not None and not splash_active and self.splash_started_at is not None:
+                self.splash_started_at = None
+            phase = "splash" if splash_active else "dash"
+            if phase != "splash":
+                source = None
+        return {"phase": phase, "map_loaded": self.map_loaded, "reboot_revision": self.reboot_revision,
+                "splash_source": source, "duration_ms": SPLASH_DURATION_MS}
 
     def _respond(self, packet):
         opcode, sequence, raw_address, length = HEADER.unpack_from(packet)
@@ -563,6 +660,12 @@ class Device:
                     return seal(bytes((opcode | 0x80,)) + packet[1:12])
             if payload in (b"\0\x01", b"\0\0"):
                 self.boot_mode = payload == b"\0\x01"
+                if self.boot_mode:
+                    self.splash_started_at = None
+                else:
+                    self.reboot_revision += 1
+                    if self.map_loaded:
+                        self._prepare_splash()
                 if not self.boot_mode and self.sandbox is not None:
                     self.sandbox.returned_to_main()
                     if self.sandbox.component_active:
@@ -589,6 +692,9 @@ class Device:
                 self.settings_revision += 1
                 self.dirty_settings.append({"revision": self.settings_revision, "address": address, "length": len(payload)})
                 self.dirty_settings = self.dirty_settings[-4096:]
+                if overlaps_dashboard_settings(address, len(payload)) and not self.map_loaded:
+                    self.map_loaded = True
+                    self.log.info("nexmap-settings-loaded address=%#x bytes=%d", address, length)
             if address == 0x70400000 and payload.startswith(b"BM"):
                 self.screen_buffer = bytearray()
             if address == 0x70400000 + len(self.screen_buffer):
@@ -610,6 +716,7 @@ class Device:
         (self.state / "session.json").write_text(json.dumps({
             "requests": self.requests, "staged_regions": sorted(self.staged),
             "mode": "boot" if self.boot_mode else "main",
+            "map_loaded": self.map_loaded,
             "sandbox_update": self.sandbox.summary() if self.sandbox else None,
             "firmware_execution": False,
         }, indent=2) + "\n", encoding="utf-8")

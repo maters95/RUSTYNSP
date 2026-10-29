@@ -1,0 +1,21 @@
+{
+  "name": "nexmap-unlock-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test tests/unlock.test.js",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.0.1",
+    "@zip.js/zip.js": "^2.8.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "vite": "^7.1.12"
+  }
+}

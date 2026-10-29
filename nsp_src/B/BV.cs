@@ -2567,13 +2567,13 @@ namespace b
 						setting.A((global::A.A.C)int.Parse(attribute9));
 						if (setting.z() == global::A.A.C.BFH)
 						{
-							if (!fileExtensions.Exists(extension => string.Equals(extension, "gif", StringComparison.OrdinalIgnoreCase)))
+							if (!fileExtensions.Exists(extension => string.Equals(extension, ".gif", StringComparison.OrdinalIgnoreCase)))
 							{
-								fileExtensions.Add("gif");
+								fileExtensions.Add(".gif");
 							}
-							if (!fileExtensions.Exists(extension => string.Equals(extension, "mp4", StringComparison.OrdinalIgnoreCase)))
+							if (!fileExtensions.Exists(extension => string.Equals(extension, ".mp4", StringComparison.OrdinalIgnoreCase)))
 							{
-								fileExtensions.Add("mp4");
+								fileExtensions.Add(".mp4");
 							}
 						}
 						aXO.awv.Add(setting);

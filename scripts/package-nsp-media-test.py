@@ -2,11 +2,13 @@
 """Package a Windows NSP media-import and dash-disconnected NEX test bundle."""
 
 import argparse
+from contextlib import ExitStack
 from datetime import datetime, timezone
 import hashlib
 import json
 import os
 from pathlib import Path
+import runpy
 import struct
 import tempfile
 import zipfile
@@ -51,8 +53,9 @@ def validate_nsp_dll(path: Path) -> None:
 
 
 def validate_inputs(nsp_dll: Path, media_nex: Path = MEDIA_NEX,
-                    build_report: Path = BUILD_REPORT, guide: Path = GUIDE) -> None:
-    for path in (media_nex, build_report, MAP_ARCHIVE, guide):
+                    build_report: Path = BUILD_REPORT, guide: Path = GUIDE,
+                    splash: bool = False, test_map: Path | None = None, alerts: bool = False) -> None:
+    for path in (media_nex, build_report, test_map or MAP_ARCHIVE, guide):
         if not path.is_file():
             raise FileNotFoundError(f"required test-bundle input is missing: {path}")
     validate_nsp_dll(nsp_dll)
@@ -62,9 +65,14 @@ def validate_inputs(nsp_dll: Path, media_nex: Path = MEDIA_NEX,
     expected_hash = report["packages"][media_nex.name]["sha256"]
     if sha256(media_nex) != expected_hash:
         raise ValueError("media NEX does not match its build report")
-    if report["changed_members"] != [
-        "qml_components_data/qml/user_components/HalImage.qml"
-    ] or report["preserved_members"] != 338:
+    expected = {"qml_components_data/qml/user_components/HalImage.qml"}
+    if splash:
+        expected.add("qml_components_data/qml/factory_screens/main.qml")
+    if alerts:
+        expected.add("qml_components_data/qml/user_components/HalAlarmPopup.qml")
+    if (set(report["changed_members"]) != expected or report["preserved_members"] != 339 - len(expected)
+            or set(report.get("added_members", [])) != (
+                {"qml_components_data/qml/user_components/HalSplash.qml"} if splash else set())):
         raise ValueError("NEX build report does not describe the resource-only patch")
     with zipfile.ZipFile(media_nex) as nex:
         if nex.testzip() is not None:
@@ -74,14 +82,20 @@ def validate_inputs(nsp_dll: Path, media_nex: Path = MEDIA_NEX,
         if b'res_ic-7.qzip' not in nex.read("manifest.xml"):
             raise ValueError("media NEX manifest does not reference its resource stage")
 
-    with zipfile.ZipFile(MAP_ARCHIVE) as maps:
-        if maps.testzip() is not None:
-            raise ValueError("NSP map test archive integrity check failed")
-        if MAP_NAME not in maps.namelist():
-            raise ValueError(f"NSP map test archive is missing {MAP_NAME}")
+    if test_map:
+        inspector = runpy.run_path(str(ROOT / "scripts/inspect-nexmap.py"))
+        if "_map" not in inspector["read_map"](test_map):
+            raise ValueError("NSP map test archive is missing _map")
+    else:
+        with zipfile.ZipFile(MAP_ARCHIVE) as maps:
+            if maps.testzip() is not None:
+                raise ValueError("NSP map test archive integrity check failed")
+            if MAP_NAME not in maps.namelist():
+                raise ValueError(f"NSP map test archive is missing {MAP_NAME}")
 
 
-def validate_native_component(nsp_dll: Path, media_nex: Path, build_report: Path) -> str:
+def validate_native_component(nsp_dll: Path, media_nex: Path, build_report: Path,
+                              splash: bool = False, alerts: bool = False) -> str:
     component = (media_nex.parent / "HalImage.qml").read_bytes()
     report = json.loads(build_report.read_text(encoding="utf-8"))
     component_hash = hashlib.sha256(component).hexdigest()
@@ -92,6 +106,13 @@ def validate_native_component(nsp_dll: Path, media_nex: Path, build_report: Path
     resource_blob = struct.pack("<I", len(component)) + component
     if nsp_dll.read_bytes().count(resource_blob) != 1:
         raise ValueError("NSP DLL does not contain the matching embedded media component")
+    if splash:
+        for name in ("main.qml", "HalSplash.qml") + (("HalAlarmPopup.qml",) if alerts else ()):
+            data = (media_nex.parent / name).read_bytes()
+            if data != (GUIDE.parent / name).read_bytes():
+                raise ValueError("Startup component is stale: " + name)
+            if nsp_dll.read_bytes().count(struct.pack("<I", len(data)) + data) != 1:
+                raise ValueError("NSP DLL does not contain the matching startup component: " + name)
     return component_hash
 
 
@@ -103,15 +124,22 @@ def main() -> int:
     parser.add_argument("--build-report", type=Path, default=BUILD_REPORT)
     parser.add_argument("--native-media", action="store_true",
                         help="Include native renderer setup and pinned Qt download metadata")
+    parser.add_argument("--splash", action="store_true", help="Package the matched startup-splash candidate")
+    parser.add_argument("--alerts", action="store_true", help="Include the matching animated alert renderer")
+    parser.add_argument("--test-map", type=Path, help="Include this map byte-for-byte instead of the old probe")
     args = parser.parse_args()
     nsp_dll = args.nsp_dll.resolve()
     output = args.output.resolve()
     if output.exists():
         parser.error(f"refusing to overwrite existing output: {output}")
-    guide = GUIDE.with_name("NATIVE-MEDIA-TEST.md") if args.native_media else GUIDE
-    validate_inputs(nsp_dll, args.media_nex, args.build_report, guide)
+    if args.splash and not args.native_media:
+        parser.error("--splash requires --native-media")
+    if args.alerts and not args.splash:
+        parser.error("--alerts requires --splash")
+    guide = GUIDE.with_name("ALERTS-TEST.md" if args.alerts else "SPLASH-TEST.md" if args.splash else "NATIVE-MEDIA-TEST.md") if args.native_media else GUIDE
+    validate_inputs(nsp_dll, args.media_nex, args.build_report, guide, args.splash, args.test_map, args.alerts)
     component_hash = (
-        validate_native_component(nsp_dll, args.media_nex, args.build_report)
+        validate_native_component(nsp_dll, args.media_nex, args.build_report, args.splash, args.alerts)
         if args.native_media else None
     )
 
@@ -145,6 +173,12 @@ def main() -> int:
                         ROOT / "ic7-custom-dash/build-nsp-tests" / name,
                         "samples/" + name,
                     ))
+                if args.splash:
+                    for name in ("main.qml", "HalSplash.qml"):
+                        files.append((args.media_nex.parent / name, "firmware/" + name))
+                if args.alerts:
+                    files.append((args.media_nex.parent / "HalAlarmPopup.qml", "firmware/HalAlarmPopup.qml"))
+                    files.append((GUIDE.with_name("SPLASH-TEST.md"), "SPLASH-TEST.md"))
             for source, destination in files:
                 archive.write(source, destination, compress_type=zipfile.ZIP_STORED)
                 entries.append({
@@ -155,16 +189,19 @@ def main() -> int:
 
             map_digest = hashlib.sha256()
             map_size = 0
-            with zipfile.ZipFile(MAP_ARCHIVE) as maps:
-                with maps.open(MAP_NAME) as source, archive.open(
-                    "map/" + MAP_NAME, "w"
+            map_name = args.test_map.name if args.test_map else MAP_NAME
+            with ExitStack() as inputs:
+                source = inputs.enter_context(args.test_map.open("rb") if args.test_map else
+                    inputs.enter_context(zipfile.ZipFile(MAP_ARCHIVE)).open(MAP_NAME))
+                with archive.open(
+                    "map/" + map_name, "w"
                 ) as destination:
                     while block := source.read(1024 * 1024):
                         destination.write(block)
                         map_digest.update(block)
                         map_size += len(block)
             entries.append({
-                "path": "map/" + MAP_NAME,
+                "path": "map/" + map_name,
                 "bytes": map_size,
                 "sha256": map_digest.hexdigest(),
             })
@@ -176,6 +213,8 @@ def main() -> int:
                 "created_utc": datetime.now(timezone.utc).isoformat(),
                 "physical_installation_tested": False,
                 "native_renderer": args.native_media,
+                "startup_splash": args.splash,
+                "alert_media": args.alerts,
                 "component_sha256": component_hash,
                 "artifacts": entries,
             }

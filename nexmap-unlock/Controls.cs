@@ -12,7 +12,8 @@ internal sealed class HaltechButton : Button
     public HaltechButton()
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
-                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
+                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor |
+                 ControlStyles.ResizeRedraw, true);
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         BackColor = Color.Transparent;
@@ -62,7 +63,7 @@ internal sealed class ChromeButton : Button
     public ChromeButton()
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
-                 ControlStyles.OptimizedDoubleBuffer, true);
+                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
         BackColor = Theme.Ink;
@@ -82,15 +83,16 @@ internal sealed class ChromeButton : Button
 
         Color glyph = _hover && IsClose ? Color.White : Theme.Text;
         int cx = Width / 2, cy = Height / 2;
-        using var pen = new Pen(glyph, 1.6f);
+        int half = LogicalToDeviceUnits(5);
+        using var pen = new Pen(glyph, 1.6f * DeviceDpi / 96f);
         if (IsClose)
         {
-            g.DrawLine(pen, cx - 5, cy - 5, cx + 5, cy + 5);
-            g.DrawLine(pen, cx + 5, cy - 5, cx - 5, cy + 5);
+            g.DrawLine(pen, cx - half, cy - half, cx + half, cy + half);
+            g.DrawLine(pen, cx + half, cy - half, cx - half, cy + half);
         }
         else
         {
-            g.DrawLine(pen, cx - 5, cy + 4, cx + 5, cy + 4);
+            g.DrawLine(pen, cx - half, cy + LogicalToDeviceUnits(4), cx + half, cy + LogicalToDeviceUnits(4));
         }
     }
 }
@@ -111,7 +113,8 @@ internal sealed class ToggleSwitch : Control
     public ToggleSwitch()
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint |
-                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
+                 ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor |
+                 ControlStyles.ResizeRedraw, true);
         BackColor = Color.Transparent;
         Size = new Size(46, 24);
         Cursor = Cursors.Hand;
@@ -123,12 +126,14 @@ internal sealed class ToggleSwitch : Control
     {
         var g = e.Graphics;
         g.SmoothingMode = SmoothingMode.AntiAlias;
-        var track = new Rectangle(0, (Height - 22) / 2, 46, 22);
-        Theme.FillRounded(g, track, 11, _on ? Theme.Yellow : Theme.Line);
+        int trackHeight = LogicalToDeviceUnits(22);
+        int inset = LogicalToDeviceUnits(2);
+        var track = new Rectangle(0, (Height - trackHeight) / 2, Width, trackHeight);
+        Theme.FillRounded(g, track, trackHeight / 2, _on ? Theme.Yellow : Theme.Line);
 
-        int knob = 18;
-        int x = _on ? track.Right - knob - 2 : track.Left + 2;
-        var knobRect = new Rectangle(x, track.Top + 2, knob, knob);
+        int knob = LogicalToDeviceUnits(18);
+        int x = _on ? track.Right - knob - inset : track.Left + inset;
+        var knobRect = new Rectangle(x, track.Top + inset, knob, knob);
         using var b = new SolidBrush(_on ? Theme.Ink : Theme.TextDim);
         g.FillEllipse(b, knobRect);
     }

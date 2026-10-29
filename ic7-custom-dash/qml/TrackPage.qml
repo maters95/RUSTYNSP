@@ -7,8 +7,8 @@ import QtMultimedia 5.9
 
 // Moving map + GPS lap timing.
 // PC demo: a simulated car drives a loop so lap timing works with no GPS.
-// In the car: disable simulated GPS to read NMEA sentences from the configured
-// serial device, and provide offline map tiles (see README) since there's no net.
+// In the car: set `useSimulatedGps: false` to use the real PositionSource,
+// and provide offline map tiles (see README) since there's usually no network.
 Rectangle {
     id: page
     color: "#15181c"
@@ -60,27 +60,6 @@ Rectangle {
                 id: dot; width: 16; height: 16; radius: 8
                 color: "#39c0ed"; border.color: "white"; border.width: 2
             }
-        }
-    }
-
-    Rectangle {
-        z: 3
-        visible: page.backgroundMode === "map"
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 6
-        height: attributionText.implicitHeight + 8
-        color: "#b815181c"
-
-        Text {
-            id: attributionText
-            anchors.fill: parent
-            anchors.margins: 4
-            text: mapAttribution
-            color: "#f4f4f4"
-            font.pixelSize: 9
-            wrapMode: Text.WordWrap
         }
     }
 
@@ -201,12 +180,15 @@ Rectangle {
         }
     }
 
-    Connections {
-        target: gpsSource
-        onFixReceived: {
-            if (!page.useSimulatedGps) {
-                carMarker.coordinate = QtPositioning.coordinate(latitude, longitude);
-                lapTimer.addFix(latitude, longitude);
+    // --- Real GPS (used when useSimulatedGps is false) ---
+    PositionSource {
+        id: gps
+        active: !page.useSimulatedGps
+        updateInterval: 200
+        onPositionChanged: {
+            if (position.latitudeValid && position.longitudeValid) {
+                carMarker.coordinate = position.coordinate;
+                lapTimer.addFix(position.coordinate.latitude, position.coordinate.longitude);
             }
         }
     }

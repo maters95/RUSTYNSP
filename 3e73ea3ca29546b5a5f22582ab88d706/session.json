@@ -1,0 +1,23 @@
+{
+  "requests": 12500,
+  "staged_regions": [
+    620756992,
+    637534208
+  ],
+  "mode": "main",
+  "map_loaded": true,
+  "sandbox_update": {
+    "package": "ic7-2.36-native-media-alerts-experimental.nex",
+    "status": "transfer-complete",
+    "error": null,
+    "migration_definition": "ic-7.hdef",
+    "expected_bytes": 17387520,
+    "received_bytes": 17387520,
+    "expected_sha256": "b2e6ccc3c2f07d2acb6d0ace7696582cd55acdbf0e8e0d27577f569320b795d5",
+    "main_returned": true,
+    "component_available": true,
+    "component_active": true,
+    "verification": "NSP returned to main after an exact payload transfer; target install unverified"
+  },
+  "firmware_execution": false
+}

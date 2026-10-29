@@ -3337,6 +3337,15 @@ internal class Control4 : UserControl
 				toolStripMenuItem8.Tag = menuNode.method_46();
 				toolStripMenuItem8.Click += method_87;
 				contextMenuStrip.Items.Add(toolStripMenuItem8);
+				int alarmIndex = menuNode.method_46();
+				ToolStripMenuItem alertBannerItem = new ToolStripMenuItem("Banner GIF && position...");
+				alertBannerItem.Click += (_, _) => {
+					var alarms = Form23.framework_1?.awp?.method_73();
+					string message = alarms != null && alarmIndex >= 0 && alarmIndex < alarms.Count
+						? NSP.UserInterface.AlertBannerEditor.AlarmText(alarms[alarmIndex]) : null;
+					Form23.OpenAlertBannerEditor(message);
+				};
+				contextMenuStrip.Items.Add(alertBannerItem);
 			}
 			if (Form23.framework_1.method_4())
 			{

@@ -349,6 +349,7 @@ internal class Class117 : Class109, Interface3
 			method_18(ref int_, ref int_2, bool_0);
 		}
 		method_16();
+		AddAlertBannerButton(bool_0);
 		if (BXE != Rectangle.Empty)
 		{
 			if (bool_0)
@@ -448,6 +449,57 @@ internal class Class117 : Class109, Interface3
 			bool_0 = true;
 			method_29();
 		}
+	}
+
+	private const string AlertBannerButtonName = "ic7AlertBannerButton";
+
+	private void AddAlertBannerButton(bool create)
+	{
+		if (BXD == null || BXb == null || BXb != Form23.framework_1 || BXb.awZ != 21 || BXb.awz != 11)
+		{
+			return;
+		}
+		SettingOrSpecialObject alarm = BXD;
+		while (alarm != null && !(alarm is Class248))
+		{
+			alarm = alarm.method_6();
+		}
+		if (alarm == null)
+		{
+			return;
+		}
+		Setting message = NSP.UserInterface.AlertBannerEditor.AlarmTextSetting(alarm);
+		if (message == null || !BXD.method_66().CurrentUIListSettingsIdsAndIndents.Any(item => item.DataId == message.method_64()))
+		{
+			return;
+		}
+		ThemedButton button = method_12().Controls[AlertBannerButtonName] as ThemedButton;
+		if (button == null)
+		{
+			if (!create)
+			{
+				return;
+			}
+			button = new ThemedButton
+			{
+				Name = AlertBannerButtonName,
+				Text = "Banner GIF && position...",
+				AutoSize = true,
+				Height = 24
+			};
+			button.Click += (_, _) => Form23.OpenAlertBannerEditor(NSP.UserInterface.AlertBannerEditor.AlarmText(alarm));
+			method_12().Controls.Add(button);
+		}
+		int bottom = 0;
+		foreach (Control control in method_12().Controls)
+		{
+			if (control != button && control.Visible)
+			{
+				bottom = Math.Max(bottom, control.Bottom);
+			}
+		}
+		button.Left = 5;
+		button.Top = bottom + 6;
 	}
 
 	private void method_16()

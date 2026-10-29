@@ -42,9 +42,23 @@ unprotected map exactly).
 You can also pass file paths on the command line (or use "Open with"); each is
 unlocked next to the original.
 
+## Interface
+
+- The title bar places **Minimise** to the left of **Close**, with Close at the
+  far right.
+- The drop area, copy/overwrite toggle, and activity log stay within the window
+  when it is resized. Layout and custom controls support Windows DPI scaling.
+- A matching yellow unlock/N logo appears in the title bar and drop area, and
+  is embedded in the EXE for Explorer, the taskbar, and Alt+Tab.
+- Completion and error messages use colons rather than em dashes.
+
+The current self-contained Windows x64 build is
+`dist/NexmapUnlock-v1.0.1-win-x64.zip`. Extract it and run `NexmapUnlock.exe`.
+
 ## Building
 
 Requires the .NET 8 SDK (or newer) on Windows.
+Cross-publishing from Linux also works with the same `dotnet publish` command.
 
 Self-contained single-file exe (no .NET install needed on the target machine,
 ~63 MB):
@@ -67,6 +81,29 @@ Smaller framework-dependent build (~2 MB, requires the
 dotnet publish -c Release -r win-x64 --no-self-contained -p:PublishSingleFile=true
 ```
 
+### UI regression checks
+
+On Windows with the .NET 8 SDK and Desktop Runtime:
+
+```cmd
+dotnet run --project tests/UiSmokeTests.csproj -c Release
+```
+
+The checks cover default/minimum/enlarged layouts at 100%, 150%, and 200%
+layout scales, control and label bounds, painting, title-bar button order and
+actions, the logo, and copy/overwrite toggle behavior. Scaling in these checks
+is simulated; also check the app on a high-DPI Windows display.
+
+### Logo assets
+
+`Assets/logo.svg` is the editable logo source. The generated `logo.png` is
+embedded in the app, and `app.ico` supplies Windows icon sizes from 16 to 256 px.
+To regenerate them (Python with Pillow and CairoSVG installed):
+
+```sh
+python Assets/generate-icons.py
+```
+
 ## Project layout
 
 - `NexmapUnlocker.cs` — the core transform (archive key derivation, protection
@@ -74,6 +111,14 @@ dotnet publish -c Release -r win-x64 --no-self-contained -p:PublishSingleFile=tr
   so it can be reused elsewhere.
 - `MainForm.cs` — drag-and-drop WinForms UI.
 - `Program.cs` — entry point with command-line / "Open with" support.
+
+## Browser version
+
+The [self-contained website](../nexmap-web/README.md) provides the same recovery
+workflow without installing the Windows app. Users choose a file, confirm
+permission, and download an unlocked copy. All processing happens locally in
+the browser, with no account, payment, or file upload. See its README for local
+development, static hosting, limits, and validation.
 
 ## Notes
 

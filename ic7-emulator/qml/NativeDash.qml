@@ -10,9 +10,16 @@ ApplicationWindow {
     minimumWidth: 640
     minimumHeight: 410
     title: "iC-7 Live QML Simulator"
-    color: "#101314"
+    color: "black"
     property var items: ({})
     property string statusText: "Connecting"
+    property string displayPhase: "blank"
+    property string splashManifest: ""
+    property string userImageBase: ""
+    property string stockImageBase: ""
+    property int rebootRevision: -1
+    property string alertManifest: ""
+    property var previewAlerts: []
 
     Rectangle {
         id: toolbar
@@ -51,12 +58,67 @@ ApplicationWindow {
             width: 860
             height: 480
             transform: Scale { xScale: dash.parent.width / 860; yScale: dash.parent.height / 480 }
+            Rectangle {
+                anchors.fill: parent
+                color: "black"
+                z: -1
+            }
+            Loader {
+                id: alertLoader
+                objectName: "alertPreviewLoader"
+                anchors.fill: parent
+                z: 9000
+                active: false
+                onLoaded: {
+                    item.manifestUrl = window.alertManifest;
+                    item.userImageBaseUrl = window.userImageBase;
+                    item.stockImageBaseUrl = window.stockImageBase;
+                    item.halFontPath = "";
+                    item.reloadAlertMedia();
+                    item.reInitAlarmScreen(JSON.stringify(window.previewAlerts));
+                }
+                onStatusChanged: {
+                    if (status === Loader.Error)
+                        window.statusText = "Alert preview QML failed to load";
+                }
+            }
+            Loader {
+                id: splashLoader
+                anchors.fill: parent
+                z: 10000
+                active: false
+                source: Qt.resolvedUrl("stock_renderer/HalSplash.qml")
+                onLoaded: {
+                    item.manifestUrl = window.splashManifest;
+                    item.userImageBaseUrl = window.userImageBase;
+                    item.stockImageBaseUrl = window.stockImageBase;
+                    item.start();
+                }
+                onStatusChanged: {
+                    if (status === Loader.Error)
+                        window.statusText = "Splash media unavailable: QtMultimedia runtime failed to load";
+                }
+            }
         }
     }
 
     function update() {
         var scene = JSON.parse(simulator.scene);
         statusText = scene.status;
+        if (rebootRevision !== scene.display.reboot_revision)
+            splashLoader.active = false;
+        rebootRevision = scene.display.reboot_revision;
+        splashManifest = scene.display.splash_manifest || "";
+        userImageBase = scene.display.user_image_base || "";
+        stockImageBase = scene.display.stock_image_base || "";
+        displayPhase = scene.display.phase;
+        splashLoader.active = displayPhase === "splash";
+        alertManifest = scene.display.alert_manifest || "";
+        previewAlerts = scene.display.preview_alerts || [];
+        alertLoader.source = scene.display.alert_component || "";
+        alertLoader.active = displayPhase !== "blank" && previewAlerts.length > 0;
+        if (alertLoader.item)
+            alertLoader.item.reInitAlarmScreen(JSON.stringify(previewAlerts));
         var alive = {};
         for (var index = 0; index < scene.components.length; index++) {
             var record = scene.components[index];

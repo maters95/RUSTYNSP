@@ -37,6 +37,74 @@ browser-supported video codec. This asset preview is independent of the selected
 NEX and does not verify firmware playback. On Windows, **Stock Renderer**
 uses NSP's private original renderer when its installed runtime is available.
 
+## Emulator Display Lifecycle
+
+The desktop display starts black instead of showing the example dashboard seeded
+in the simulator profile. It stays blank until NSP writes map component settings;
+the emulator then renders those received settings. Entering boot mode blanks the
+display. NSP's `00 00` return-to-main/reboot command resets the emulated display;
+when a map is loaded, the stock renderer process is restarted so its QML startup
+loader reads the selected splash manifest and plays its GIF/MP4 for at most
+3.3 seconds before returning to the dashboard. It does not substitute a
+dashboard background for an unconfigured or disabled splash.
+
+The reserved kind-0 resource `u/ic7_splash.json` contains a version-1 JSON
+manifest (`source` is an existing `u/` or `h/` image resource and
+`durationMs` is capped at 3300). It is exposed through the normal resource RPC
+and renderer resource API, not the special BMP screen-upload address. The
+manifest persists after playback and across repeated reboots; an empty source
+disables the overlay. This is a desktop Qt-stage simulation only; the
+physical dash's earlier static kernel logo is unchanged and is not emulated.
+
+The alerts bundle also installs the matching `HalAlarmPopup.qml`. It reads
+`u/ic7_alerts.json` for exact-text GIF backgrounds and per-alert rectangles,
+without replacing the application's activation or clearing logic. To preview
+an active popup explicitly (after uploading map settings/resources), click the
+workbench **Preview Alert** toolbar button (it lists texts from the uploaded
+`u/ic7_alerts.json`), or run:
+
+```powershell
+.\.venv\Scripts\python.exe .\native_view.py --preview-alert "OIL PRESSURE"
+```
+
+Repeat the argument for multiple alerts. This is labelled **synthetic alert
+preview**, uses the shared popup and emulator resource API, and does not
+evaluate sensor thresholds or write device settings. Configure alert media
+and drag/numeric placement in the matching NSP **Alert GIF banners and
+placement...** editor, save the map, then apply/upload its resources. For real
+alarm activation and acknowledgement testing, use the normal Windows stock
+renderer; Linux QML/synthetic tests do not establish that behavior.
+
+**Matching NSP exactly:** the rebuilt NSP publishes the live-data block it
+sends to its own dash renderer (device data or its **Simulate** panel) to the
+read-only local shared memory `HaltechNSP_iC7_LiveData`. `stock_renderer.py`
+applies the newest block to the original renderer every 50 ms, so alarms
+raised in NSP appear, stack, use the same GIF/GIF-only overrides and clear in
+the emulator exactly as in NSP's renderer. It falls back to emulator memory
+when NSP stops updating for more than one second. Alerts marked **GIF only**
+hide the stock coloured banner and text unless the media fails to load.
+
+The isolated renderer installs the same `main.qml`, `HalSplash.qml`,
+`HalAlarmPopup.qml` and GIF/MP4-capable `HalImage.qml` as the combined
+NSP splash/resourcefix/alerts bundle.
+Run that bundle's `setup-native-media.ps1`, open an iC-7 map in the new NSP copy
+once to stage its Qt add-ons, then close its renderer before starting the
+emulator renderer (the isolated renderer uses a separate pipe). The bridge
+copies the staged `ic7-media-qml` and `ic7-media-plugins` into its private runtime
+and requires the DirectShow **dsengine** player; `wmfengine` alone is not a
+video-player backend. Missing multimedia/GIF dependencies produce an explicit
+startup error, not an Image-only fallback.
+
+Validated on Linux with real PyQt5: 90 Python tests, including a real Qt 5.15
+test of staged GIF and MP4 playback, muting, timeout/unloading, and two startups
+per format, plus a shared GIF alert preview over HTTP with rendered-pixel
+verification. Browser tests cover MP4/alias playback and splash-to-layout handoff.
+Windows Qt 5.11 renderer operation and physical startup remain unverified.
+Run `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s ic7-emulator/tests`
+from the repository root with its Python dependencies, Qt QML test runner,
+multimedia modules/plugins and ffmpeg installed; then run
+`node ic7-emulator/tests/test_viewer.js`.
+
 ## Windows Setup
 
 1. Extract the complete simulator ZIP to a normal writable folder.
@@ -97,6 +165,13 @@ uses NSP's private original renderer when its installed runtime is available.
    This uses the verified `dash_virtual.exe` and 32-bit Qt runtime already
    installed at `%APPDATA%\Haltech\Nexus`. If your path differs, pass
    `-Runtime 'C:\path\to\Haltech\Nexus'`.
+
+The bridge stages the maintained `main.qml`, `HalSplash.qml`, and
+`HalImage.qml` into its isolated renderer tree. GIF and MP4 playback requires
+the matching Qt 5.11 Multimedia QML module/runtime, GIF image-format plugin,
+and DirectShow or WMF media-service plugin in that private runtime. Startup
+stops with an explicit missing-dependency error if any are absent; there is no
+static-image fallback that could appear to play unsupported media.
 
 The driver installation and port-description change are Windows-local setup
 steps; this container cannot install or verify them on your PC.
@@ -264,8 +339,8 @@ encrypted resource. Start the private renderer after the update:
 It automatically loads an active sandbox component. Explicit `-Component` or
 `-PatchedImages` overrides take precedence. If the component changes while the
 renderer runs, the bridge stops and asks for a restart because QML is cached.
-The GIF/MP4 candidate requires QtMultimedia in the Windows preview runtime;
-the GIF-only candidate does not. Missing modules remain a reported failure,
+Startup playback requires QtMultimedia in the Windows preview runtime even
+when a GIF-only component override is selected. Missing modules remain a reported failure,
 not something the emulator can substitute for hardware.
 
 This is a bounded resource-update test environment, not a complete machine
@@ -326,13 +401,15 @@ after these same-length namespace substitutions; this is not bypassing Windows
 signing policy. Antivirus may flag modified executables. Do not disable it;
 report the error and use the fallback viewer while investigating.
 
-To compare the bundled GIF/MP4-capable component in this **private renderer only**:
+To compare the older GIF-only component in this **private renderer only**:
 
 ```powershell
 .\start-stock-renderer.cmd -PatchedImages
 ```
 
-This selects the candidate `HalImage.qml` in the isolated runtime. For a custom
+The default now uses the shared GIF/MP4 component; this flag selects the older
+GIF-only `HalImage.qml` instead (MP4 splash playback will not work with that
+override). For a custom
 component candidate, pass its source path instead:
 
 ```powershell

@@ -11,6 +11,8 @@ internal static class NativeMediaRenderer
 {
 	internal const string ComponentResource = "NSP.Media.HalImage.qml";
 	internal const string StockComponentHash = "32BAF88AC62D670E905BC30FD6C4DCB7ABDBFC4A9C3B248254B98FDD07F5C6FB";
+	internal const string StockRootHash = "6A8AFA8496F589799A6593EB27F9AA641BB1CB65249FD520C4D471427BAC5968";
+	internal const string StockAlarmHash = "63494B94C898537A8E9E443693987D6DDB6A188A9D8A05BDC12EDB344D1678CC";
 
 	internal static readonly string[] RuntimeFiles =
 	{
@@ -104,6 +106,7 @@ internal static class NativeMediaRenderer
 	{
 		string runtime = startInfo.WorkingDirectory;
 		ValidateLibrary(Path.Combine(runtime, "Qt5Core.dll"));
+		ValidateSplashComponents(runtime);
 		foreach (string relative in RuntimeFiles)
 		{
 			string source = Path.Combine(addonDirectory, relative);
@@ -125,8 +128,55 @@ internal static class NativeMediaRenderer
 			File.Copy(Path.Combine(addonDirectory, relative), destination, overwrite: true);
 		}
 		InstallComponent(runtime);
+		InstallSplashComponents(runtime);
+		InstallAlertComponent(runtime);
 		PrependPath(startInfo, "QML2_IMPORT_PATH", Path.Combine(runtime, "ic7-media-qml"));
 		PrependPath(startInfo, "QT_PLUGIN_PATH", Path.Combine(runtime, "ic7-media-plugins"));
+	}
+
+	private static byte[] ReadComponent(string name)
+	{
+		using Stream resource = typeof(NativeMediaRenderer).Assembly.GetManifestResourceStream("NSP.Media." + name)
+			?? throw new InvalidOperationException("The startup splash component is missing: " + name);
+		using MemoryStream buffer = new MemoryStream();
+		resource.CopyTo(buffer);
+		return buffer.ToArray();
+	}
+
+	private static void ValidateSplashComponents(string runtime)
+	{
+		string root = Path.Combine(runtime, "qml_components_data", "qml");
+		foreach (var item in new[] {
+			(Path.Combine(root, "factory_screens", "main.qml"), "main.qml", StockRootHash),
+			(Path.Combine(root, "user_components", "HalSplash.qml"), "HalSplash.qml", (string)null),
+			(Path.Combine(root, "user_components", "HalAlarmPopup.qml"), "HalAlarmPopup.qml", StockAlarmHash)
+		})
+		{
+			byte[] replacement = ReadComponent(item.Item2);
+			if (!File.Exists(item.Item1) && item.Item3 == null)
+				continue;
+			string hash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(item.Item1)));
+			if (hash != item.Item3 && hash != Convert.ToHexString(SHA256.HashData(replacement)))
+				throw new InvalidDataException("Startup QML differs from the verified baseline: " + item.Item1);
+		}
+	}
+
+	internal static void InstallSplashComponents(string runtime)
+	{
+		ValidateSplashComponents(runtime);
+		string root = Path.Combine(runtime, "qml_components_data", "qml");
+		File.WriteAllBytes(Path.Combine(root, "factory_screens", "main.qml"), ReadComponent("main.qml"));
+		File.WriteAllBytes(Path.Combine(root, "user_components", "HalSplash.qml"), ReadComponent("HalSplash.qml"));
+		File.Delete(Path.Combine(root, "factory_screens", "main.qmlc"));
+		File.Delete(Path.Combine(root, "user_components", "HalSplash.qmlc"));
+	}
+
+	internal static void InstallAlertComponent(string runtime)
+	{
+		ValidateSplashComponents(runtime);
+		string target = Path.Combine(runtime, "qml_components_data", "qml", "user_components", "HalAlarmPopup.qml");
+		File.WriteAllBytes(target, ReadComponent("HalAlarmPopup.qml"));
+		File.Delete(target + "c");
 	}
 
 	private static void PrependPath(ProcessStartInfo info, string name, string path)

@@ -68,6 +68,15 @@ def validate_ack(payload):
         raise ValueError("Stock renderer rejected update")
 
 
+def renderer_ready(display):
+    return display.get("phase") in ("dash", "splash")
+
+
+def renderer_restart_required(display, launched_reboot_revision):
+    return (display.get("phase") == "blank" or
+            display.get("reboot_revision") != launched_reboot_revision)
+
+
 class WindowsPipe:
     def __init__(self):
         if os.name != "nt":
@@ -129,6 +138,84 @@ class WindowsPipe:
         self.api.CloseHandle(self.handle)
 
 
+NSP_LIVE_MAPPING = "Local\\HaltechNSP_iC7_LiveData"
+NSP_LIVE_MAGIC = 0x4C374349
+NSP_LIVE_HEADER = 32
+NSP_LIVE_CAPACITY = NSP_LIVE_HEADER + 65536
+NSP_LIVE_STALE_SECONDS = 1.0
+
+
+def decode_live_mirror(header, payload, header_after):
+    """Decode one consistent NSP live-data snapshot, or return None while NSP is writing."""
+    if len(header) < NSP_LIVE_HEADER or header != header_after:
+        return None
+    magic, version, sequence, address, length, simulating = struct.unpack_from("<IIIIII", header)
+    if magic != NSP_LIVE_MAGIC or version != 1 or sequence == 0 or sequence & 1:
+        return None
+    if not 0 < length <= NSP_LIVE_CAPACITY - NSP_LIVE_HEADER or len(payload) < length:
+        return None
+    if address < 0x1000 or address + length > 0x20000:
+        return None
+    return {"sequence": sequence, "address": address, "data": bytes(payload[:length]),
+            "simulating": bool(simulating)}
+
+
+class NspLiveMirror:
+    """Read-only view of the live-data block NSP sends to its own dash renderer."""
+
+    def __init__(self, clock=time.monotonic):
+        self.clock = clock
+        self.view = None
+        self.handle = None
+        self.last_sequence = None
+        self.changed_at = 0.0
+        self.api = ctypes.WinDLL("kernel32", use_last_error=True) if os.name == "nt" else None
+        if self.api:
+            self.api.OpenFileMappingW.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.LPCWSTR]
+            self.api.OpenFileMappingW.restype = wintypes.HANDLE
+            self.api.MapViewOfFile.argtypes = [wintypes.HANDLE, wintypes.DWORD, wintypes.DWORD,
+                                               wintypes.DWORD, ctypes.c_size_t]
+            self.api.MapViewOfFile.restype = ctypes.c_void_p
+            self.api.UnmapViewOfFile.argtypes = [ctypes.c_void_p]
+            self.api.CloseHandle.argtypes = [wintypes.HANDLE]
+
+    def _snapshot(self):
+        if self.api is None:
+            return None
+        if self.view is None:
+            handle = self.api.OpenFileMappingW(4, False, NSP_LIVE_MAPPING)  # FILE_MAP_READ
+            if not handle:
+                return None
+            view = self.api.MapViewOfFile(handle, 4, 0, 0, NSP_LIVE_CAPACITY)
+            if not view:
+                self.api.CloseHandle(handle)
+                return None
+            self.handle, self.view = handle, view
+        header = ctypes.string_at(self.view, NSP_LIVE_HEADER)
+        length = struct.unpack_from("<I", header, 16)[0]
+        payload = ctypes.string_at(self.view + NSP_LIVE_HEADER,
+                                   min(length, NSP_LIVE_CAPACITY - NSP_LIVE_HEADER))
+        return header, payload, ctypes.string_at(self.view, NSP_LIVE_HEADER)
+
+    def latest(self, snapshot=None):
+        """Return the newest NSP block while NSP is actively updating it, else None."""
+        snapshot = snapshot if snapshot is not None else self._snapshot()
+        block = decode_live_mirror(*snapshot) if snapshot else None
+        now = self.clock()
+        if block is None:
+            return None
+        if block["sequence"] != self.last_sequence:
+            self.last_sequence = block["sequence"]
+            self.changed_at = now
+        return block if now - self.changed_at <= NSP_LIVE_STALE_SECONDS else None
+
+    def close(self):
+        if self.view:
+            self.api.UnmapViewOfFile(self.view)
+            self.api.CloseHandle(self.handle)
+        self.view = self.handle = None
+
+
 def get(base, path):
     attempts = 4
     for attempt in range(attempts):
@@ -162,13 +249,13 @@ def prepare_runtime(runtime, destination, patched):
     executable.write_bytes(isolated)
     for library in runtime.glob("*.dll"):
         target = destination / library.name
-        if not target.exists() or target.stat().st_size != library.stat().st_size:
-            shutil.copy2(library, target)
+        shutil.copy2(library, target)
     if (runtime / "qt.conf").exists():
         shutil.copy2(runtime / "qt.conf", destination / "qt.conf")
     for name in ("platforms", "imageformats", "bearer", "styles", "qml", "plugins"):
         if (runtime / name).is_dir():
             shutil.copytree(runtime / name, destination / name, dirs_exist_ok=True)
+    stage_multimedia_addons(runtime, destination)
     stage_windows_platform_plugin(runtime, destination)
     resource_archive = Path(__file__).with_name("renderer-resources.zip")
     with zipfile.ZipFile(resource_archive) as archive:
@@ -179,9 +266,73 @@ def prepare_runtime(runtime, destination, patched):
             target = destination / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(archive.read(entry))
+    install_startup_qml(destination)
     if patched:
         install_component_override(destination, Path(__file__).with_name("qml") / "patched-gif" / "HalImage.qml")
+    validate_multimedia_runtime(destination)
     return executable
+
+
+def stage_multimedia_addons(runtime, destination):
+    for source_name, target_name in (("ic7-media-qml", "qml"),
+                                     ("ic7-media-plugins", "plugins")):
+        source = Path(runtime) / source_name
+        if source.is_dir():
+            shutil.copytree(source, Path(destination) / target_name, dirs_exist_ok=True)
+
+
+def alert_component_source():
+    alarm_source = Path(__file__).with_name("qml") / "stock_renderer" / "HalAlarmPopup.qml"
+    if not alarm_source.is_file():
+        alarm_source = Path(__file__).resolve().parent.parent / "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
+    return alarm_source
+
+
+def install_startup_qml(destination):
+    destination = Path(destination)
+    sources = {
+        destination / "qml_components_data/qml/factory_screens/main.qml":
+            Path(__file__).with_name("qml") / "stock_renderer" / "main.qml",
+        destination / "qml_components_data/qml/user_components/HalSplash.qml":
+            Path(__file__).with_name("qml") / "stock_renderer" / "HalSplash.qml",
+        destination / "qml_components_data/qml/user_components/HalImage.qml":
+            Path(__file__).with_name("qml") / "stock_renderer" / "HalImage.qml",
+        destination / "qml_components_data/qml/user_components/HalAlarmPopup.qml": alert_component_source(),
+    }
+    for target, source in sources.items():
+        if not source.is_file() or not target.parent.is_dir():
+            raise FileNotFoundError(f"Stock renderer startup QML is missing: {source if not source.is_file() else target.parent}")
+        shutil.copyfile(source, target)
+        target.with_suffix(target.suffix + "c").unlink(missing_ok=True)
+    return tuple(sources)
+
+
+def validate_multimedia_runtime(destination):
+    destination = Path(destination)
+    required = (
+        ("qml/QtMultimedia/qmldir", "QtMultimedia QML module"),
+        ("qml/QtMultimedia/Video.qml", "QtMultimedia Video component"),
+        ("qml/QtMultimedia/declarative_multimedia.dll", "QtMultimedia QML plugin"),
+        ("Qt5Multimedia.dll", "QtMultimedia runtime"),
+        ("Qt5MultimediaQuick.dll", "QtMultimedia Quick runtime"),
+        ("Qt5Widgets.dll", "Qt Widgets runtime"),
+    )
+    missing = [label for relative, label in required if not (destination / relative).is_file()]
+    image_plugin_paths = (destination / "plugins/imageformats", destination / "imageformats")
+    if not any((folder / "qgif.dll").is_file() or (folder / "libqgif.dll").is_file()
+               for folder in image_plugin_paths):
+        missing.append("Qt GIF image-format plugin (imageformats/qgif.dll)")
+    media_plugins = destination / "plugins/mediaservice"
+    if not (media_plugins / "dsengine.dll").is_file():
+        missing.append("Qt Multimedia DirectShow media-player plugin (dsengine.dll)")
+    if missing:
+        raise RuntimeError(
+            "The isolated NSP renderer cannot load the maintained GIF/MP4 splash QML; "
+            "the Qt 5.11 Multimedia runtime is incomplete: " + ", ".join(missing) +
+            ". Run the combined NSP bundle's setup-native-media.ps1, open an iC-7 map "
+            "in that NSP copy to stage its runtime, close its renderer, then retry."
+        )
+    return True
 
 
 def sync_resources(base, destination, previous):
@@ -189,21 +340,36 @@ def sync_resources(base, destination, previous):
     current = {}
     for resource in state["assets"]:
         name = resource["name"]
-        if not name.startswith("u/"):
+        namespace, separator, relative_name = name.partition("/")
+        if not separator or namespace not in ("h", "u") or not relative_name:
             continue
         key = (resource["kind"], name)
         current[key] = resource["sha256"]
         if previous.get(key) == resource["sha256"]:
             continue
-        folder = "images" if resource["kind"] == 0 else "fonts"
-        target = destination / "user_resources" / folder / name[2:]
+        target = _resource_target(destination, resource["kind"], namespace, relative_name)
         target.parent.mkdir(parents=True, exist_ok=True)
         encoded = urllib.parse.urlencode({"kind": resource["kind"], "name": name})
         target.write_bytes(get(base, "/api/resource?" + encoded))
     for kind, name in previous.keys() - current.keys():
-        folder = "images" if kind == 0 else "fonts"
-        (destination / "user_resources" / folder / name[2:]).unlink(missing_ok=True)
+        namespace, separator, relative_name = name.partition("/")
+        if not separator or namespace not in ("h", "u") or not relative_name:
+            continue
+        target = _resource_target(destination, kind, namespace, relative_name)
+        if namespace == "h":
+            archive_name = target.relative_to(destination).as_posix()
+            with zipfile.ZipFile(Path(__file__).with_name("renderer-resources.zip")) as archive:
+                if archive_name in archive.namelist():
+                    target.write_bytes(archive.read(archive_name))
+                    continue
+        target.unlink(missing_ok=True)
     return current
+
+
+def _resource_target(destination, kind, namespace, relative_name):
+    folder = "images" if kind == 0 else "fonts"
+    base_folder = "user_resources" if namespace == "u" else "qml_components_data"
+    return Path(destination) / base_folder / folder / relative_name
 
 
 def install_component_override(destination, component):
@@ -241,7 +407,7 @@ def renderer_environment(work):
     if platform_dir is None:
         raise FileNotFoundError("The isolated Qt runtime has no qwindows.dll platform plugin")
     environment = os.environ.copy()
-    environment["QT_PLUGIN_PATH"] = str(work)
+    environment["QT_PLUGIN_PATH"] = os.pathsep.join((str(work / "plugins"), str(work)))
     environment["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(platform_dir)
     environment["QML2_IMPORT_PATH"] = str(work / "qml")
     return environment
@@ -265,18 +431,60 @@ def main():
         install_component_override(args.work, args.component)
     explicit_component = args.component is not None or args.patched_images
     component_checksum = None if explicit_component else install_sandbox_component(base, args.work)
-    resources = sync_resources(base, args.work, {})
-    pipe = WindowsPipe()
+    resources = {}
+    pipe = None
     process = None
+    launched_reboot_revision = None
+    revision = -1
+    resource_revision = None
+    last_channels = 0
+    live_mirror = NspLiveMirror()
+    live_source = None
     try:
-        process = subprocess.Popen([str(executable.resolve()), "./qml_components_data/qml", "54000", "21", "11"],
-                                   cwd=args.work, env=renderer_environment(args.work))
-        pipe.connect()
-        print("Original dash renderer connected to isolated SIM_Dash_Pipe.", flush=True)
-        revision = -1
-        resource_revision = None
-        last_channels = 0
-        while process.poll() is None:
+        while True:
+            if process is not None and process.poll() is not None:
+                break
+            status = json.loads(get(base, "/api/status"))
+            display = status.get("display", {"phase": "blank", "reboot_revision": 0})
+            if process is not None and renderer_restart_required(display, launched_reboot_revision):
+                print("Stopping the isolated renderer for the emulator display lifecycle change.", flush=True)
+                pipe.close()
+                pipe = None
+                if process.poll() is None:
+                    process.terminate()
+                    process.wait(timeout=5)
+                process = None
+                revision = -1
+                resource_revision = None
+                last_channels = 0
+                if display["phase"] == "blank":
+                    time.sleep(0.05)
+                    continue
+            if process is None:
+                if not renderer_ready(display):
+                    time.sleep(0.05)
+                    continue
+                resources = sync_resources(base, args.work, resources)
+                pipe = WindowsPipe()
+                process = subprocess.Popen(
+                    [str(executable.resolve()), "./qml_components_data/qml", "54000", "21", "11"],
+                    cwd=args.work, env=renderer_environment(args.work))
+                try:
+                    pipe.connect()
+                except Exception:
+                    pipe.close()
+                    pipe = None
+                    if process.poll() is None:
+                        process.terminate()
+                        process.wait(timeout=5)
+                    process = None
+                    raise
+                launched_reboot_revision = display["reboot_revision"]
+                revision = -1
+                resource_revision = None
+                last_channels = 0
+                print("Original dash renderer connected to isolated SIM_Dash_Pipe.", flush=True)
+                continue
             changes = json.loads(get(base, f"/api/changes?after={revision}"))
             if not explicit_component and changes.get("component_sha256") != component_checksum:
                 print("Sandbox component changed. Restart the renderer to reload its QML.", flush=True)
@@ -298,18 +506,36 @@ def main():
             revision = changes["revision"]
             if ranges or resources_changed:
                 pipe.update(0, b"\0\x17")
-            if time.monotonic() - last_channels >= 0.1:
-                for offset in (0, 16384):
-                    payload = get(base, f"/api/memory?address={0x1400 + offset}&length=16384")
-                    pipe.update(0x1400 + offset, payload)
-                last_channels = time.monotonic()
+            if time.monotonic() - last_channels >= 0.05:
+                block = live_mirror.latest()
+                source = ("NSP Simulate" if block and block["simulating"] else
+                          "NSP live data" if block else "emulator memory")
+                if source != live_source:
+                    print(f"Live channels and alarms now follow {source}.", flush=True)
+                    live_source = source
+                if block:
+                    for offset in range(0, len(block["data"]), 16384):
+                        pipe.update(block["address"] + offset, block["data"][offset:offset + 16384])
+                    last_channels = time.monotonic()
+                elif time.monotonic() - last_channels >= 0.1:
+                    for offset in (0, 16384):
+                        payload = get(base, f"/api/memory?address={0x1400 + offset}&length=16384")
+                        pipe.update(0x1400 + offset, payload)
+                    last_channels = time.monotonic()
             time.sleep(0.02)
     except KeyboardInterrupt:
         pass
     finally:
-        pipe.close()
+        live_mirror.close()
+        if pipe is not None:
+            pipe.close()
         if process and process.poll() is None:
             process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
 
 
 if __name__ == "__main__":

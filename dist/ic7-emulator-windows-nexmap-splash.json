@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-windows-nexmap-splash.zip",
+  "bytes": 30974726,
+  "sha256": "5dae336951e8005da0d27bfc23fd6864ad5079b65620bf02d6e7a47969b2d291",
+  "files": 59,
+  "status": "Map-gated lifecycle and staged GIF/MP4 splash playback locally tested with Qt 5.15; Windows Qt 5.11 NSP renderer, target decryption, hardware flash and recovery unverified"
+}

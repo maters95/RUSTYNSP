@@ -30,6 +30,7 @@ def scene_state(device, screen):
     schema = json.loads(schema_path.read_text(encoding="utf-8")) if schema_path.exists() else {"components": []}
     with device.lock:
         settings = device.memory.read(0x20000, 651264)
+        display = device.display_state()
         revision = [device.settings_revision, device.resources.revision]
 
     def value(field, default=0):
@@ -42,9 +43,9 @@ def scene_state(device, screen):
         return int.from_bytes(data, "little", signed=field.get("signed", False))
 
     components = [component for component in schema["components"] if component["screen"] == screen]
-    return {"screen": screen, "revision": revision, "components": [
+    return {"screen": screen, "revision": revision, "display": display, "components": [
         {"index": component["component"], "values": {name: value(field) for name, field in component["fields"].items()}}
-        for component in components
+        for component in components if display["phase"] == "dash"
     ]}
 
 
@@ -230,7 +231,22 @@ def render_layout(device, screen):
     with device.lock:
         resources = dict(device.resources.items)
     now = time.monotonic()
-    canvas = Image.new("RGBA", (860, 480), (10, 13, 15, 255))
+    canvas = Image.new("RGBA", (860, 480), (0, 0, 0, 255))
+    display = scene["display"]
+    if display["phase"] == "splash":
+        payload = resources.get((0, display["splash_source"]))
+        if payload:
+            try:
+                with Image.open(io.BytesIO(payload)) as image:
+                    _seek_frame(image, now)
+                    item = ImageOps.contain(image.convert("RGBA"), canvas.size)
+                    canvas.alpha_composite(item, ((canvas.width - item.width) // 2,
+                                                  (canvas.height - item.height) // 2))
+            except (OSError, ValueError):
+                pass
+        return canvas.convert("RGB").resize((800, 480), Image.Resampling.LANCZOS)
+    if display["phase"] == "blank":
+        return canvas.convert("RGB").resize((800, 480), Image.Resampling.LANCZOS)
     draw = ImageDraw.Draw(canvas)
     components = sorted(scene["components"], key=lambda component: component["values"].get("Z_POS", 0))
     for component in components:
@@ -301,6 +317,7 @@ def start_viewer(device, port=8765):
                 self.send(Path(__file__).with_name("viewer.html").read_bytes(), "text/html; charset=utf-8")
             elif parsed.path == "/api/status":
                 with device.lock:
+                    display = device.display_state()
                     recent = device.last_activity is not None and time.monotonic() - device.last_activity < 3
                     result = {"requests": device.requests, "connection": device.connection if recent else "Waiting for NSP",
                               "revision": [device.settings_revision, device.resources.revision],
@@ -312,6 +329,7 @@ def start_viewer(device, port=8765):
                                          for (kind, name), payload in sorted(device.resources.items.items())],
                               "staged_regions": sorted(device.staged),
                               "mode": "boot" if device.boot_mode else "main",
+                              "display": display,
                               "sandbox_update": device.sandbox.summary() if device.sandbox else None,
                               "firmware_execution": False}
                 self.send(json.dumps(result).encode("utf-8"))
