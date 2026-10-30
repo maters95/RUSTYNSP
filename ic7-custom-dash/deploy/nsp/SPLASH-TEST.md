@@ -29,6 +29,15 @@ found, and the dash silently kept stock behaviour. Uploads were not the
 problem: the dash's resource write path stores `.json`, `.gif` and `.mp4`
 without an extension check.
 
+This also explains why the decoders were never the problem: the owner's
+2026-10-28 flash of the videofix NEX played GIF and MP4 on this same dash through
+`HalImage.qml` ([baseline](../DESIGN-POSSIBILITIES.md#working-baseline-owner-report-2026-10-28)).
+`HalImage` works because the application hands it a correct path; the splash and
+alert components built their own. NSP's map sync (`Form23.method_226`) uploads
+every file in the map's resource folders, unfiltered, and the dash's index never
+lists `.json`/`.gif`/`.mp4`, so these are re-sent on each sync. That is
+harmless; the files arrive by either route.
+
 The components now look in the dash location first and fall back to the
 Windows layout. A new test runtime reproduces the dash's real
 `/opt/applications/dtn` tree. The previous components fail it on both splash
