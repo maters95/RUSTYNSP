@@ -10,7 +10,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "ic7-emulator"))
-from ic7_emulator import Device, RESOURCE_ADDRESS, resource_descriptor, request
+from ic7_emulator import Device, INSTANT_TIMING, RESOURCE_ADDRESS, resource_descriptor, request
 
 
 class ResourceUploadTests(unittest.TestCase):
@@ -83,7 +83,8 @@ Console.WriteLine("Chunking, acknowledged progress, bounded failure and cancella
                 map_path = path / "original.nexmap"
                 map_path.write_bytes(archive.read(names[0]))
             entries = inspector["read_map"](map_path)
-            device = Device(ROOT / "ic7-emulator/device-profile.zip", path / "state")
+            # The dash restarts its application on 0000 (about 2 s); model it instantly.
+            device = Device(ROOT / "ic7-emulator/device-profile.zip", path / "state", timing=INSTANT_TIMING)
             largest = 0
             count = 0
 
