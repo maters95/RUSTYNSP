@@ -1,0 +1,21 @@
+{
+  "indicators": [
+    {"image": "ic7_shift_light.png", "image_file": "media/ic7_shift_light.png", "on": "media/shift_on.gif", "off": "media/shift_off.png"},
+    {"image": "ic7_check_engine.png", "image_file": "media/ic7_check_engine.png", "on": "media/check_engine.mp4"},
+    {"image": "ic7_gear.png", "image_file": "media/ic7_gear.png", "hysteresis": 0.1, "frames": [
+      {"min": -1.5, "max": -0.5, "file": "media/gear_r.png"},
+      {"min": -0.5, "max": 0.5, "file": "media/gear_n.png"},
+      {"min": 0.5, "max": 1.5, "file": "media/gear_1.png"},
+      {"min": 1.5, "max": 2.5, "file": "media/gear_2.png"},
+      {"min": 2.5, "max": 3.5, "file": "media/gear_3.png"},
+      {"min": 3.5, "max": 4.5, "file": "media/gear_4.png"},
+      {"min": 4.5, "max": 5.5, "file": "media/gear_5.png"},
+      {"min": 5.5, "max": 6.5, "file": "media/gear_6.png"}
+    ]}
+  ],
+  "gauge_fx": [
+    {"channel": "Engine Speed", "trigger": "above", "threshold": 6800, "effect": "flash", "rateHz": 3, "colour": "#FF2020"},
+    {"channel": "Coolant Temp", "trigger": "warn", "effect": "pulse", "rateHz": 1},
+    {"channel": "Oil Pressure", "trigger": "warn", "effect": "solid", "width": 6}
+  ]
+}

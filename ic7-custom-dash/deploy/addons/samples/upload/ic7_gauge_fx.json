@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "gauges": [
+    {
+      "channel": "Engine Speed",
+      "trigger": "above",
+      "threshold": 6800,
+      "effect": "flash",
+      "rateHz": 3,
+      "colour": "#FF2020"
+    },
+    {
+      "channel": "Coolant Temp",
+      "trigger": "warn",
+      "effect": "pulse",
+      "rateHz": 1
+    },
+    {
+      "channel": "Oil Pressure",
+      "trigger": "warn",
+      "effect": "solid",
+      "width": 6
+    }
+  ]
+}
