@@ -9,7 +9,7 @@ Item {
 
     Candidate.HalSplash {
         id: candidate
-        width: 800
+        width: 860
         height: 480
         manifestUrl: Qt.resolvedUrl("fixtures/disabled-splash.json")
         userImageBaseUrl: Qt.resolvedUrl("../../../build-nsp-tests/")
@@ -73,6 +73,43 @@ Item {
             start("gif-splash.json");
             tryCompare(candidate, "visible", true);
             verify(findChild(candidate, "animatedImage") !== null);
+        }
+
+        // Bounds of the drawn media in the 860 x 480 logical canvas.
+        function drawnRect(item) {
+            return item.mapToItem(candidate, 0, 0, item.width, item.height);
+        }
+
+        function test_panelSizedGifFillsThePanel() {
+            start("panel-splash.json");
+            var animation = findChild(candidate, "animatedImage");
+            tryCompare(animation, "status", Image.Ready);
+            compare(animation.implicitWidth, 800);
+            var panel = findChild(candidate, "splashPanel");
+            // 800 x 480 panel pixels; main.qml's 800/860 squeeze maps 860 back to 800.
+            compare(panel.width, 800);
+            compare([animation.width, animation.height], [800, 480]);
+            var rect = drawnRect(animation);
+            fuzzyCompare(rect.x, 0, 0.01);
+            fuzzyCompare(rect.width, 860, 0.01);
+            fuzzyCompare(rect.height, 480, 0.01);
+        }
+
+        function test_smallGifIsCentredNotUpscaled() {
+            start("gif-splash.json");
+            var animation = findChild(candidate, "animatedImage");
+            tryCompare(animation, "status", Image.Ready);
+            compare([animation.width, animation.height], [32, 20]);
+            compare([animation.x, animation.y], [384, 230]);
+        }
+
+        function test_canvasSizedGifKeepsAspectOnThePanel() {
+            start("canvas-splash.json");
+            var animation = findChild(candidate, "animatedImage");
+            tryCompare(animation, "status", Image.Ready);
+            fuzzyCompare(animation.width, 800, 0.01);
+            fuzzyCompare(animation.height, 480 * 800 / 860, 0.01);
+            fuzzyCompare(drawnRect(animation).width, 860, 0.01);
         }
 
         function test_durationLimitIs3300Ms() {

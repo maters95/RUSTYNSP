@@ -1,9 +1,25 @@
-# Experimental iC-7 GIF alert banners and placement
+# Experimental iC-7 GIF alert banners, placement and per-screen rules
 
 This combined candidate retains the verified screen GIF/MP4 component, startup
-splash, and all 28 embedded resources from the resourcefix bundle. Keep the
-working videofix/resourcefix/splash copies and your original map unchanged.
+splash, and all 28 embedded resources from the resourcefix bundle. It adds
+alert rules for specific dash screens and removes the alarm popup's
+dependency on QtMultimedia. Keep the working videofix/resourcefix/splash
+copies and your original map unchanged.
 Windows GUI operation and a physical flash/boot have **not** been performed.
+
+## What changed from the alerts candidate
+
+- **Alert GIFs per dash screen.** An alarm can have one "All" rule plus rules
+  for particular screens (for example a full-screen GIF on screen 3 only).
+- **Alarm banners no longer depend on QtMultimedia.** The owner's emulator log
+  showed `HalAlarmPopup.qml:223 Type HalImage unavailable`: when the
+  multimedia plugin failed to load, the earlier popup failed as a whole, so
+  *no* alarm banners could appear. Alert media now decodes with QtQuick's own
+  GIF/image support. A regression test reproduces that failure.
+- **Startup splash is placed like stock NSP's splash** and a GIF splash no
+  longer needs QtMultimedia either. See the [startup guide](SPLASH-TEST.md).
+- `HalImage.qml`, the owner-confirmed screen GIF/MP4 component, is
+  byte-for-byte unchanged.
 
 ## Install the matching pair
 
@@ -16,8 +32,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup-native-media.ps1
   -Destination "$env:USERPROFILE\Downloads\NSP-native-media-alerts"
 ```
 
-Use the **new DLL and new alerts NEX together**. The earlier splash NEX does
-not contain the new popup component. No firmware is flashed automatically.
+Use the **new DLL and new screens NEX together**
+(`firmware/ic7-2.36-native-media-screens-experimental.nex`). Earlier NEX
+files do not understand per-screen rules: they reject such a manifest and show
+stock alarm banners instead. No firmware is flashed automatically.
 See the included [startup guide](SPLASH-TEST.md) for the emulator COM pair,
 Qt runtime setup, GIF/MP4 splash tests and physical-validation boundary.
 Qt libraries are downloaded from the pinned official archives, not redistributed.
@@ -67,10 +85,39 @@ The popup remains above ordinary dashboard components and below startup media.
 Invalid configuration logs an error and keeps stock warning banners; a failed
 GIF decoder logs an error while the warning text/background remain.
 
-Placement applies wherever that alarm normally appears, across screen changes.
-It does not suppress alerts on selected screens or create a new alarm engine.
-Unconfigured alerts keep their original bottom-stacked layout; other dash
-variants do not use the custom rectangle manifest.
+## Different alert GIFs on different screens
+
+The **Screens** column holds `All` or one-based screen numbers such as
+`1, 3`. On a listed screen that rule replaces the alarm's `All` rule; on
+other screens the `All` rule applies, or the stock bottom banner if there is
+none. A rule never hides an alarm: per-screen rules change only its media and
+placement. An alarm may have one `All` rule, and each screen may be claimed by
+only one rule for that alarm; the editor and the dash both reject overlaps.
+
+To add a screen-only rule, choose **Preview: Screen N**, enter the alarm
+text and click **Add alarm**. If the alarm already has a rule, the new rule
+applies to screen N only. The layout preview always shows what the dash draws
+on the chosen screen; selecting a row switches to a screen where that rule is
+drawn. Manifests without screen rules are still saved as version 1.
+
+### How the dash knows the active screen
+
+This uses the stock v2.36 application's own screen switching, with no
+application patch. Disassembly of the decoded `nic-7` ELF (SHA-256
+`d86bde81...7248`) shows `ui_module::UIMain::UIMain` always creating exactly
+five `UIScreen` objects in screen order (`cmp r4, #5`). Each constructor
+creates an unnamed `QQuickItem` and parents it to `QQuickView::rootObject()`.
+The constructor then creates `Alarm_Module`, which parents `HalAlarmPopup`
+to the same root. `UIMain::handle_screen_change` switches screens through
+`UIScreen::set_visibility`, a tail call to `QQuickItem::setVisible`. The
+per-screen settings stride is `0xab08` bytes, matching the emulator's settings
+schema of five screens 43,784 bytes apart.
+
+The popup therefore takes its five preceding siblings as the screens and
+follows their `visibleChanged` signals. The named items declared in `main.qml`
+are never mistaken for screens. If the layout does not match, for example in
+another renderer, or no single screen is visible (an error screen), only
+`All` rules apply. Other dash variants do not use the custom rectangle manifest.
 
 ## Place ordinary GIF/MP4 screen elements
 
@@ -84,7 +131,7 @@ screen components.
 
 ## Test on the Windows emulator
 
-Use `ic7-emulator-windows-nexmap-alerts.zip` in a separate directory.
+Use the emulator from the same combined kit, in a separate directory.
 Open an iC-7 map once in the new NSP copy to stage its Qt add-ons; close its
 renderer. Run `.\start-workbench.cmd`; **Dash Display** opens automatically on
 Windows. Do not start a second `start-stock-renderer.cmd` alongside it.
@@ -113,14 +160,19 @@ text, or run:
 ```
 
 Use the exact text configured in NSP; repeat `--preview-alert` to show multiple
-alerts. This exercises the shared popup and GIF/rectangle manifest over the
+alerts. The preview window's screen selector switches screens like the dash,
+so per-screen rules change as you select screens; `--screen 3` starts on
+screen 3. This exercises the shared popup and GIF/rectangle manifest over the
 emulator HTTP resource API. It does **not** trigger a real threshold, modify
 device settings, or validate alarm evaluation/acknowledgement. The normal stock
 renderer path remains separate. Test a real alarm condition and its clearing
 on the Windows renderer before any separately authorized bench test.
 
 Repeat startup with GIF and MP4, reboot twice, then test an alert GIF, a static
-alert image, an empty source, and removal of the override. Reopen the saved map
+alert image, an empty source, and removal of the override. Add a rule for one
+screen, raise the alarm with NSP's **Simulate** panel, and change screens
+while it is active: the GIF and placement should change on that screen only,
+and the alarm must stay visible on every screen. Reopen the saved map
 and re-upload to check persistence. Open the channel selector to verify the
 resourcefix GUI fix remains present. Check ordinary screen positioning and
 switch screens while alerts are active.
@@ -134,7 +186,8 @@ byte-identical. Application, kernel, bootloader and kernel-logo tooling are
 unchanged. The earliest kernel logo remains static.
 
 Build with `scripts/build-nsp-gif-preview.py --splash --alerts` and a new output
-directory; package with `scripts/package-nsp-media-test.py --native-media
+directory (this candidate: `ic7-custom-dash/build-cfw-native-media-screens-236/`);
+package with `scripts/package-nsp-media-test.py --native-media
 --splash --alerts`. The included map is the supplied original, byte-for-byte,
 not preconfigured with new alert rules.
 
@@ -147,9 +200,15 @@ physical alarm behavior, or a recovery method. Retain the working NEX, back
 up the map and establish recovery before any bench flash; do not test while
 driving.
 
-Verified locally: x86 DLL build with zero compiler errors (402 existing
-decompilation warnings); **24** Python/.NET regressions; **37** desktop QML
-checks; **33** firmware ARM/QEMU QML checks; **110** emulator Python tests with
-real PyQt5; and browser checks. ZIP hashes and all packaged QML bytes are
-checked against the tested sources. Windows Forms editor interaction remains
-an on-PC validation step, not a result of the Linux cross-build.
+Verified locally: x86 DLL build with zero compiler errors (404 existing
+decompilation warnings); its external references are the shipped DLL's
+52 assemblies, 728 types and 2,549 members with none removed, plus four .NET
+base-library members and two `System.Text.Json` types; **42** Python/.NET
+regressions passed (9 need PowerShell or tshark and were skipped); **51**
+desktop Qt 5.15 QML checks; **47** QML checks on the firmware's own
+Qt 5.9.6 ARM userspace under QEMU, including per-screen switching and the
+missing-multimedia case; and **111** emulator Python tests with real PyQt5,
+including rendered per-screen alert previews. ZIP hashes and all packaged QML
+bytes are checked against the tested sources. Windows Forms editor
+interaction remains an on-PC validation step, not a result of the Linux
+cross-build.

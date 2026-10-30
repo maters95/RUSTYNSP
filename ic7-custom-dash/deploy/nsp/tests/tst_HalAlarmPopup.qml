@@ -77,7 +77,7 @@ Item {
             compare(banner.y, 80);
             compare(banner.width, 300);
             compare(banner.height, 80);
-            var image = findChild(banner, "animatedImage");
+            var image = findChild(banner, "alertBannerMedia");
             verify(image !== null);
             tryCompare(image, "status", Image.Ready);
             var frame = image.currentFrame;
@@ -124,7 +124,7 @@ Item {
             compare(banner.y, 80);
             compare(banner.color.a, 0);
             compare(findChild(banner, "alertMessage").visible, false);
-            var image = findChild(banner, "animatedImage");
+            var image = findChild(banner, "alertBannerMedia");
             tryCompare(image, "status", Image.Ready);
             compare(findChild(banner, "alertBannerMedia").visible, true);
             var stock = findChild(popup, "alertBanner:TEMP");
@@ -153,6 +153,124 @@ Item {
             var banner = findChild(popup, "alertBanner:OIL PRESSURE");
             compare(banner.y, 420);
             compare(findChild(banner, "alertMessage").visible, true);
+        }
+
+        // Mirrors UIMain: five unnamed UIScreen containers, then the popup is
+        // created unparented and setParentItem'd to the same root.
+        function createNativeRoot(manifest, visibleScreen) {
+            var root = Qt.createQmlObject("import QtQuick 2.9; Item { width: 860; height: 480 }",
+                testWindow);
+            var screens = [];
+            for (var i = 0; i < 5; i++) {
+                screens.push(Qt.createQmlObject("import QtQuick 2.9; Item { width: 860; height: 480 }", root));
+                screens[i].visible = i === visibleScreen;
+            }
+            var component = Qt.createComponent(
+                "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
+            compare(component.status, Component.Ready, component.errorString());
+            popup = component.createObject(null, {
+                manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: ""
+            });
+            popup.parent = root;
+            return {root: root, screens: screens};
+        }
+
+        function showScreen(screens, index) {
+            for (var i = 0; i < screens.length; i++)
+                screens[i].visible = i === index;
+        }
+
+        function test_screenSpecificBannersFollowNativeScreenChanges() {
+            var dash = createNativeRoot("alerts-screens.json", 0);
+            tryVerify(function() { return popup.bannerConfig.length === 3; });
+            compare(popup.screenItems.length, 5);
+            compare(popup.currentScreen, 0);
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE"), active("FUEL")]));
+            var oil = findChild(popup, "alertBanner:OIL PRESSURE");
+            compare([oil.x, oil.y, oil.width, oil.height], [100, 80, 300, 80]);
+            compare(findChild(oil, "alertMessage").visible, true);
+            compare(findChild(popup, "alertBanner:FUEL").y, 420);
+
+            showScreen(dash.screens, 2);
+            compare(popup.currentScreen, 2);
+            oil = findChild(popup, "alertBanner:OIL PRESSURE");
+            compare([oil.x, oil.y, oil.width, oil.height], [0, 0, 860, 200]);
+            tryCompare(findChild(oil, "alertBannerMedia"), "status", Image.Ready);
+            tryCompare(findChild(oil, "alertMessage"), "visible", false);
+            compare(findChild(popup, "alertBanner:FUEL").y, 420);
+
+            showScreen(dash.screens, 1);
+            oil = findChild(popup, "alertBanner:OIL PRESSURE");
+            compare([oil.x, oil.y], [100, 80]);
+            var fuel = findChild(popup, "alertBanner:FUEL");
+            compare([fuel.x, fuel.y, fuel.width], [500, 10, 300]);
+            compare(findChild(fuel, "alertMessage").text, "FUEL");
+
+            showScreen(dash.screens, 4);
+            compare(findChild(popup, "alertBanner:OIL PRESSURE").height, 200);
+
+            // An error/suspended UI hides every screen: only all-screens rules apply.
+            showScreen(dash.screens, -1);
+            compare(popup.currentScreen, -1);
+            compare(findChild(popup, "alertBanner:OIL PRESSURE").y, 80);
+            compare(findChild(popup, "alertBanner:FUEL").y, 420);
+            popup.reInitAlarmScreen("[]");
+            wait(1);
+            compare(findChild(popup, "alertBanner:OIL PRESSURE"), null);
+            popup.destroy();
+            popup = null;
+            dash.root.destroy();
+        }
+
+        function test_namedRootItemsAreNotScreens() {
+            var root = Qt.createQmlObject("import QtQuick 2.9; Item {}", testWindow);
+            for (var i = 0; i < 5; i++)
+                Qt.createQmlObject("import QtQuick 2.9; Item { objectName: 'declared" + i + "' }", root);
+            var component = Qt.createComponent(
+                "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
+            popup = component.createObject(null, {
+                manifestUrl: Qt.resolvedUrl("fixtures/alerts-screens.json"), halFontPath: ""
+            });
+            popup.parent = root;
+            compare(popup.screenItems.length, 0);
+            compare(popup.currentScreen, -1);
+            tryVerify(function() { return popup.bannerConfig.length === 3; });
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE"), active("FUEL")]));
+            compare(findChild(popup, "alertBanner:OIL PRESSURE").y, 80);
+            compare(findChild(popup, "alertBanner:FUEL").y, 420);
+            popup.destroy();
+            popup = null;
+            root.destroy();
+        }
+
+        function test_invalidScreenRulesKeepStockWarnings_data() {
+            return [
+                {tag: "overlapping screens", manifest: "alerts-screens-overlap.json"},
+                {tag: "two all-screens rules", manifest: "alerts-screens-duplicate.json"},
+                {tag: "screen out of range", manifest: "alerts-screens-range.json"},
+                {tag: "screens in version 1", manifest: "alerts-screens-v1.json"}
+            ];
+        }
+
+        function test_invalidScreenRulesKeepStockWarnings(data) {
+            createPopup(data.manifest);
+            tryVerify(function() { return popup.configurationError !== ""; });
+            compare(popup.bannerConfig.length, 0);
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE")]));
+            var banner = findChild(popup, "alertBanner:OIL PRESSURE");
+            compare([banner.x, banner.y], [0, 420]);
+            compare(findChild(banner, "alertMessage").visible, true);
+        }
+
+        function test_staticImageBanner() {
+            createPopup("alerts-static.json");
+            tryVerify(function() { return popup.bannerConfig.length === 1; });
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE")]));
+            var banner = findChild(popup, "alertBanner:OIL PRESSURE");
+            var media = findChild(banner, "alertBannerMedia");
+            tryCompare(media, "status", Image.Ready);
+            verify(media.paintedWidth > 0);
+            compare(findChild(banner, "alertMessage").visible, false);
         }
 
         function test_missingMediaKeepsWarningTextAndClearsNormally() {

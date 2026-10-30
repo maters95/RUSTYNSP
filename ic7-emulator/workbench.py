@@ -66,8 +66,12 @@ def preferred_first(candidates, preferred):
 
 
 def bundled_package():
-    candidate = ROOT.parent / "NSP-test-kit/firmware/ic7-2.36-native-media-alerts-experimental.nex"
-    return candidate if candidate.is_file() else None
+    firmware = ROOT.parent / "NSP-test-kit/firmware"
+    for name in ("ic7-2.36-native-media-screens-experimental.nex",
+                 "ic7-2.36-native-media-alerts-experimental.nex"):
+        if (firmware / name).is_file():
+            return firmware / name
+    return None
 
 
 def virtual_ports(ports):
@@ -83,7 +87,8 @@ def alert_preview_texts(payload):
     if not payload:
         return []
     manifest = json.loads(payload.decode("utf-8"))
-    if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("banners"), list):
+    # Version 2 adds optional per-screen rules; the same text may then appear more than once.
+    if not isinstance(manifest, dict) or manifest.get("version") not in (1, 2) or not isinstance(manifest.get("banners"), list):
         raise ValueError("Unsupported alert manifest")
     texts = []
     for banner in manifest["banners"]:

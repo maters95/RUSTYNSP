@@ -31,6 +31,13 @@ Item {
     property var activeAlarms: []
     property string configurationError: ""
     property int requestGeneration: 0
+    // v2.36 UIMain always creates five UIScreen containers in screen order, then
+    // Alarm_Module parents this popup to the same root item. Screen changes are
+    // QQuickItem::setVisible calls on those containers, so the five preceding
+    // siblings identify the native active screen without patching the application.
+    readonly property int nativeScreenCount: 5
+    property var screenItems: []
+    property int currentScreen: -1
 
     ListModel { id: alarmModel }
 
@@ -63,6 +70,89 @@ Item {
         console.error("HalAlarmPopup: " + message);
         bannerConfig = [];
         rebuildAlarms();
+    }
+
+    function findNativeScreens() {
+        if (!parent)
+            return [];
+        var siblings = parent.children;
+        var index = -1;
+        for (var i = 0; i < siblings.length; i++) {
+            if (siblings[i] === alertPopup) {
+                index = i;
+                break;
+            }
+        }
+        if (index < nativeScreenCount)
+            return [];
+        var screens = [];
+        for (var s = index - nativeScreenCount; s < index; s++) {
+            // QML-declared root items are named; UIScreen containers are not.
+            if (siblings[s].objectName !== "")
+                return [];
+            screens.push(siblings[s]);
+        }
+        return screens;
+    }
+
+    function attachNativeScreens() {
+        for (var i = 0; i < screenItems.length; i++)
+            screenItems[i].visibleChanged.disconnect(updateCurrentScreen);
+        screenItems = findNativeScreens();
+        for (i = 0; i < screenItems.length; i++)
+            screenItems[i].visibleChanged.connect(updateCurrentScreen);
+        updateCurrentScreen();
+    }
+
+    function updateCurrentScreen() {
+        var active = -1;
+        for (var i = 0; i < screenItems.length; i++) {
+            if (!screenItems[i].visible)
+                continue;
+            if (active >= 0) {
+                active = -1;
+                break;
+            }
+            active = i;
+        }
+        if (active !== currentScreen) {
+            currentScreen = active;
+            rebuildAlarms();
+        }
+    }
+
+    function validScreens(entry) {
+        if (entry.screens === undefined)
+            return true;
+        if (!Array.isArray(entry.screens) || entry.screens.length < 1 ||
+                entry.screens.length > nativeScreenCount)
+            return false;
+        for (var i = 0; i < entry.screens.length; i++) {
+            var screen = entry.screens[i];
+            if (typeof screen !== "number" || Math.floor(screen) !== screen || screen < 0 ||
+                    screen >= nativeScreenCount || entry.screens.indexOf(screen) !== i)
+                return false;
+        }
+        return true;
+    }
+
+    // Per alarm text: at most one all-screens entry, and screen-specific entries
+    // must not claim the same screen twice.
+    function overlapsExisting(entry, previous) {
+        for (var i = 0; i < previous.length; i++) {
+            var other = previous[i];
+            if (other.text !== entry.text)
+                continue;
+            if (entry.screens === undefined && other.screens === undefined)
+                return true;
+            if (entry.screens === undefined || other.screens === undefined)
+                continue;
+            for (var j = 0; j < entry.screens.length; j++) {
+                if (other.screens.indexOf(entry.screens[j]) >= 0)
+                    return true;
+            }
+        }
+        return false;
     }
 
     function validRectangle(entry) {
@@ -101,16 +191,21 @@ Item {
                 configurationFailed("Invalid alert-media JSON: " + error);
                 return;
             }
-            if (!config || config.version !== 1 || !Array.isArray(config.banners) ||
-                    config.banners.length > 100) {
+            if (!config || (config.version !== 1 && config.version !== 2) ||
+                    !Array.isArray(config.banners) || config.banners.length > 100) {
                 configurationFailed("Unsupported alert-media manifest");
                 return;
             }
-            var names = [];
+            var accepted = [];
             for (var i = 0; i < config.banners.length; i++) {
                 var entry = config.banners[i];
+                // Same as NSP's reader: a null screen list means every screen.
+                if (entry && entry.screens === null)
+                    delete entry.screens;
                 if (!entry || typeof entry.text !== "string" || entry.text.trim() === "" ||
-                        entry.text.length > 200 || names.indexOf(entry.text) >= 0 ||
+                        entry.text.length > 200 ||
+                        (config.version === 1 && entry.screens !== undefined) ||
+                        !validScreens(entry) || overlapsExisting(entry, accepted) ||
                         typeof entry.source !== "string" || !validRectangle(entry) ||
                         (entry.gifOnly !== undefined && typeof entry.gifOnly !== "boolean") ||
                         (entry.gifOnly === true && entry.source === "") ||
@@ -118,7 +213,7 @@ Item {
                     configurationFailed("Invalid alert-media entry " + i);
                     return;
                 }
-                names.push(entry.text);
+                accepted.push(entry);
             }
             configurationError = "";
             bannerConfig = config.banners;
@@ -135,6 +230,22 @@ Item {
         return base + encodeURIComponent(source.substring(2));
     }
 
+    // A rule for the active native screen wins over the alarm's all-screens rule.
+    function bannerFor(text) {
+        var general = null;
+        for (var i = 0; i < bannerConfig.length; i++) {
+            var entry = bannerConfig[i];
+            if (entry.text !== text)
+                continue;
+            if (entry.screens === undefined) {
+                general = entry;
+            } else if (currentScreen >= 0 && entry.screens.indexOf(currentScreen) >= 0) {
+                return entry;
+            }
+        }
+        return general;
+    }
+
     function rebuildAlarms() {
         alarmModel.clear();
         var offset = 0;
@@ -144,15 +255,7 @@ Item {
             var rowHeight = parseInt(alarm.height);
             if (!isFinite(rowHeight) || rowHeight < alertHeight)
                 rowHeight = alertHeight;
-            var custom = null;
-            if (dashVariant === 11) {
-                for (var j = 0; j < bannerConfig.length; j++) {
-                    if (bannerConfig[j].text === alarm.text) {
-                        custom = bannerConfig[j];
-                        break;
-                    }
-                }
-            }
+            var custom = dashVariant === 11 ? bannerFor(alarm.text) : null;
             rows.push({text: alarm.text || "", bc: alarm.bc || "black",
                 fc: alarm.fc || "white", icon: alarm.img || "",
                 banner: custom ? resolveImage(custom.source) : "",
@@ -214,20 +317,29 @@ Item {
                 y: model.rowY
                 width: model.rowWidth
                 height: model.rowHeight
-                // GIF-only hides the stock banner, but restores it if the media cannot load.
-                property bool mediaOnly: model.gifOnly && bannerMedia.mediaError === ""
+                // GIF-only hides the stock banner only once its media has decoded.
+                property bool mediaOnly: model.gifOnly && bannerMedia.status === Image.Ready
                 color: mediaOnly ? "transparent" : model.bc
                 radius: alarmRadius
                 clip: true
 
-                HalImage {
+                // QtQuick-only decoding: alarm warnings never depend on QtMultimedia.
+                AnimatedImage {
                     id: bannerMedia
                     objectName: "alertBannerMedia"
                     anchors.fill: parent
-                    halImagePath: model.banner
-                    halImageOpacity: 1000
+                    source: model.banner
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    cache: false
                     visible: model.banner !== ""
-                    Component.onCompleted: repaintAll()
+                    playing: visible && alertPopup.visible
+                    property string mediaError: status === Image.Error
+                        ? "Alert media could not be decoded" : ""
+                    onStatusChanged: {
+                        if (status === Image.Error)
+                            console.error("HalAlarmPopup: " + model.banner + ": " + mediaError);
+                    }
                 }
                 // Same element and geometry as the stock popup's alarm icon.
                 Image {
@@ -258,5 +370,6 @@ Item {
             }
         }
     }
+    onParentChanged: attachNativeScreens()
     Component.onCompleted: reloadAlertMedia()
 }

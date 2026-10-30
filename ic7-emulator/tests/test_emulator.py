@@ -61,7 +61,12 @@ class ProtocolTests(unittest.TestCase):
             {"text": " ", "source": ""}, "invalid"]}).encode()
         self.assertEqual(alert_preview_texts(payload), ["Engine RPM Overrev", "Oil Pressure"])
         self.assertEqual(alert_preview_texts(b""), [])
-        for invalid in (b"[]", b'{"version":2,"banners":[]}', b"not json", b"\xff"):
+        screens = json.dumps({"version": 2, "banners": [
+            {"text": "Oil Pressure", "source": "", "x": 0, "y": 0, "width": 860, "height": 60},
+            {"text": "Oil Pressure", "source": "u/a.gif", "x": 0, "y": 0, "width": 860, "height": 60,
+             "screens": [2]}]}).encode()
+        self.assertEqual(alert_preview_texts(screens), ["Oil Pressure"])
+        for invalid in (b"[]", b'{"version":3,"banners":[]}', b"not json", b"\xff"):
             with self.assertRaises(ValueError):
                 alert_preview_texts(invalid)
 

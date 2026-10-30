@@ -53,6 +53,56 @@ class StartupQmlTests(unittest.TestCase):
                 server.shutdown()
                 server.server_close()
 
+    def test_alert_preview_applies_screen_specific_rule(self):
+        from PIL import Image
+        from ic7_emulator import ALERT_RESOURCE, Device
+        from viewer import start_viewer
+
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory(prefix="ic7-alert-screens-") as directory:
+            path = Path(directory)
+            image = path / "alert.gif"
+            Image.new("RGB", (32, 20), "green").save(
+                image, save_all=True, append_images=[Image.new("RGB", (32, 20), "green")],
+                duration=120, loop=0)
+            device = Device(root / "device-profile.zip", path / "state")
+            device.map_loaded = True
+            device.resources.put("u/alert.gif", 0, image.read_bytes())
+            device.resources.put(ALERT_RESOURCE, 0, json.dumps({
+                "version": 2, "banners": [
+                    {"text": "TEST ALERT", "source": "", "x": 0, "y": 360, "width": 860, "height": 120},
+                    {"text": "TEST ALERT", "source": "u/alert.gif", "x": 0, "y": 0, "width": 860,
+                     "height": 120, "gifOnly": True, "screens": [2]}]
+            }).encode())
+            server = start_viewer(device, 0)
+            try:
+                environment = os.environ.copy()
+                environment.update(QT_QPA_PLATFORM="offscreen", QT_QUICK_BACKEND="software",
+                                   QML_DISABLE_DISK_CACHE="1")
+                captures = {}
+                for screen in (1, 3):
+                    screenshot = path / f"screen{screen}.png"
+                    result = subprocess.run([
+                        sys.executable, str(root / "native_view.py"),
+                        "--url", "http://127.0.0.1:" + str(server.server_port),
+                        "--preview-alert", "TEST ALERT", "--screen", str(screen),
+                        "--screenshot", str(screenshot)
+                    ], env=environment, capture_output=True, text=True, timeout=30)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    with Image.open(screenshot) as captured:
+                        rgb = captured.convert("RGB")
+                        # The dash area starts below the 50-pixel toolbar.
+                        captures[screen] = (rgb.getpixel((400, 110)), rgb.getpixel((40, 470)))
+                (top, bottom) = captures[1]
+                self.assertLess(max(top), 60, f"Screen 1 must not show the screen-3 GIF: {captures}")
+                self.assertTrue(bottom[0] > 120 and bottom[1] < 60, f"Screen 1 stock banner missing: {captures}")
+                (top, bottom) = captures[3]
+                self.assertTrue(top[1] > 80 and top[0] < 100, f"Screen 3 GIF not rendered: {captures}")
+                self.assertLess(max(bottom), 60, f"Screen 3 must not show the general rule: {captures}")
+            finally:
+                server.shutdown()
+                server.server_close()
+
     def test_staged_shared_media_replays_gif_and_mp4(self):
         from PIL import Image
 

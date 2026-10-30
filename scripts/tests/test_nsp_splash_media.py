@@ -74,7 +74,8 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             self.assertIn("resourcefix resources retained byte-for-byte", result.stdout)
 
     def test_splash_nex_preserves_every_other_resource(self):
-        nex = ROOT / "ic7-custom-dash/build-cfw-native-media-splash-236/ic7-2.36-native-media-splash-experimental.nex"
+        # The current candidate carries the splash alongside the alert/screen components.
+        nex = ROOT / "ic7-custom-dash/build-cfw-native-media-screens-236/ic7-2.36-native-media-screens-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the splash NEX first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))
@@ -92,11 +93,12 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             (builder["TARGET"], "HalImage.qml"),
             (builder["ROOT_TARGET"], "main.qml"),
             (builder["SPLASH_TARGET"], "HalSplash.qml"),
+            (builder["ALERT_TARGET"], "HalAlarmPopup.qml"),
         ):
             self.assertEqual(after.pop(member), (ROOT / "ic7-custom-dash/deploy/nsp" / filename).read_bytes())
             before.pop(member, None)
         self.assertEqual(after, before)
-        self.assertEqual(len(after), 337)
+        self.assertEqual(len(after), 336)
 
     def test_manifest_validation_and_persistence(self):
         with tempfile.TemporaryDirectory(prefix="nsp-splash-") as directory:

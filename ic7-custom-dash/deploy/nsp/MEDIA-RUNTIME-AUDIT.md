@@ -136,3 +136,18 @@ decompilation export is
 script is `scripts/ghidra/ExportMediaFunctions.java`. This is a focused
 decompilation of the dash application and media/resource paths, not a claim
 that every OS binary or all firmware source has been recovered.
+## Screen Switching and the Alarm Popup
+
+The same decoded v2.36 application shows how screens and the alarm popup
+share the QML root. `UIMain::UIMain` always creates five `UIScreen` objects,
+each with an unnamed `QQuickItem` parented to `QQuickView::rootObject()`,
+then creates `Alarm_Module`, which parents `HalAlarmPopup.qml` to that root.
+`UIMain::handle_screen_change` calls `UIScreen::set_visibility(index == target)`
+for all five screens; that is a tail call to `QQuickItem::setVisible`. The
+only QML methods the application invokes are the eleven in the stock
+components (`reInitAlarmScreen`, `setDashVariant`, `setGaugeProperties`, ...);
+there is no call that reports the active screen. The per-screen alert rules
+therefore observe the screen containers' visibility. Excerpts are in
+[analysis/screen-switching.s](analysis/screen-switching.s), produced by
+`scripts/disassemble-nsp-app.py`; the design is described in
+[ALERTS-TEST.md](ALERTS-TEST.md).

@@ -77,6 +77,19 @@ on the owner's PC; physical firmware execution is not emulated.
 For the virtual GIF test, use the [updated map test kit](dist/ic7-nsp-media-map-test-autosetup.zip)
 with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
+## Per-Screen Alert GIFs and Splash Placement (2026-10-30)
+
+Use the [combined Windows test kit](dist/ic7-final-windows-test-2026-10-30.zip)
+and its `START-HERE.md`. Its NEX and DLL add alert GIF rules for specific
+dash screens, using the stock application's own screen switching, and a
+startup splash placed the way stock NSP places a static splash: an
+800 x 480 GIF now fills the panel. Alarm banners and GIF splashes no longer
+depend on QtMultimedia; in the previous kit, a failure to load it removed every
+alarm banner. `HalImage.qml`, the owner-confirmed screen media component, is
+unchanged. See the [alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md) and
+[startup guide](ic7-custom-dash/deploy/nsp/SPLASH-TEST.md). Not flashed or
+tested on hardware; Windows NSP/emulator acceptance is still required.
+
 ## Build Results (2026-10-28)
 
 For **native dash-canvas GIF/MP4 testing**, use the

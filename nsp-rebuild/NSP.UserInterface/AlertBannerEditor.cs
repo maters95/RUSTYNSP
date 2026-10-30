@@ -17,11 +17,20 @@ internal sealed class AlertBannerEditor : Form
 	private readonly BindingList<NSP.AlertBanner> banners;
 	private readonly DataGridView grid = new DataGridView();
 	private readonly Panel canvas = new Panel();
+	private readonly ComboBox previewScreen = new ComboBox { Width = 190, DropDownStyle = ComboBoxStyle.DropDownList };
 	private Point dragStart;
 	private Rectangle original;
 	private bool resizing;
 	private bool dragging;
 	private NSP.AlertBanner Selected => grid.CurrentRow?.DataBoundItem as NSP.AlertBanner;
+	// Zero-based screen shown in the layout preview; -1 shows the all-screens rules.
+	private int PreviewScreen => previewScreen.SelectedIndex - 1;
+
+	// The rules the dash draws on the previewed screen, in manifest order.
+	private System.Collections.Generic.List<NSP.AlertBanner> DisplayedBanners() => banners
+		.Where(banner => PreviewScreen < 0 ? banner.Screens == null
+			: NSP.AlertMedia.Resolve(banners, banner.Text, PreviewScreen) == banner)
+		.ToList();
 
 	internal AlertBannerEditor(Framework currentFramework, string focusText = null)
 	{
@@ -29,6 +38,11 @@ internal sealed class AlertBannerEditor : Form
 		banners = new BindingList<NSP.AlertBanner>(NSP.AlertMedia.Read(
 			Path.Combine(Form23.string_10, "images", NSP.AlertMedia.ManifestName)));
 		Text = "iC-7 alert GIF banners and placement";
+		// Populated before the grid can raise SelectionChanged, which switches it.
+		previewScreen.Items.Add("Preview: All-screens rules");
+		for (int screen = 1; screen <= NSP.AlertMedia.ScreenCount; screen++)
+			previewScreen.Items.Add("Preview: Screen " + screen);
+		previewScreen.SelectedIndex = 0;
 		Width = 1000;
 		Height = 760;
 		MinimumSize = new Size(920, 680);
@@ -37,7 +51,7 @@ internal sealed class AlertBannerEditor : Form
 		ForeColor = Form23.color_12;
 
 		var layout = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 4, ColumnCount = 1 };
-		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 55));
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 72));
 		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 190));
 		layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
@@ -46,7 +60,8 @@ internal sealed class AlertBannerEditor : Form
 			Dock = DockStyle.Fill,
 			Text = "Match the alarm's exact Message text (as shown on the dash, case-sensitive). Colour, priority and clearing remain controlled by the dash.\r\n" +
 				"Drag a rectangle to move; drag its bottom-right corner to resize. Numeric values use the 860 x 480 dash canvas. GIFs animate in this preview.\r\n" +
-				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning."
+				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning.\r\n" +
+				"Screens: \"All\", or screen numbers such as \"1, 3\". On those screens that rule replaces the alarm's \"All\" rule; alarms are never hidden."
 		});
 		grid.Dock = DockStyle.Fill;
 		grid.AutoGenerateColumns = false;
@@ -54,10 +69,11 @@ internal sealed class AlertBannerEditor : Form
 		grid.AllowUserToDeleteRows = false;
 		grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 		grid.MultiSelect = false;
-		foreach (string name in new[] { "Text", "Source", "X", "Y", "Width", "Height" })
+		foreach (string name in new[] { "Text", "Screens", "Source", "X", "Y", "Width", "Height" })
 			grid.Columns.Add(new DataGridViewTextBoxColumn {
-				DataPropertyName = name, HeaderText = name == "Text" ? "Exact alarm text" : name,
-				Width = name == "Text" || name == "Source" ? 260 : 65, ReadOnly = name == "Source"
+				DataPropertyName = name == "Screens" ? "ScreensText" : name,
+				HeaderText = name == "Text" ? "Exact alarm text" : name == "Screens" ? "Screens (All or 1-5)" : name,
+				Width = name == "Text" || name == "Source" ? 230 : name == "Screens" ? 110 : 65, ReadOnly = name == "Source"
 			});
 		grid.Columns.Add(new DataGridViewCheckBoxColumn {
 			DataPropertyName = "GifOnly", HeaderText = "GIF only (hide text/banner)", Width = 110
@@ -67,10 +83,28 @@ internal sealed class AlertBannerEditor : Form
 			if (grid.IsCurrentCellDirty && grid.CurrentCell is DataGridViewCheckBoxCell)
 				grid.CommitEdit(DataGridViewDataErrorContexts.Commit);
 		};
-		grid.SelectionChanged += (_, _) => canvas.Invalidate();
+		grid.SelectionChanged += (_, _) => {
+			// Show a screen on which the selected rule is actually drawn.
+			if (Selected != null && !DisplayedBanners().Contains(Selected))
+				previewScreen.SelectedIndex = Selected.Screens == null ? 0 : Selected.Screens[0] + 1;
+			canvas.Invalidate();
+		};
 		grid.CellValueChanged += (_, _) => canvas.Invalidate();
 		grid.CellValidating += (_, e) => {
 			string property = grid.Columns[e.ColumnIndex].DataPropertyName;
+			if (property == "ScreensText")
+			{
+				try
+				{
+					NSP.AlertMedia.ParseScreens(Convert.ToString(e.FormattedValue));
+				}
+				catch (FormatException error)
+				{
+					e.Cancel = true;
+					MessageBox.Show(this, error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				}
+				return;
+			}
 			if (property != "X" && property != "Y" && property != "Width" && property != "Height")
 				return;
 			int minimum = property == "Height" ? 60 : property == "Width" ? 1 : 0;
@@ -98,6 +132,8 @@ internal sealed class AlertBannerEditor : Form
 		layout.Controls.Add(canvas);
 
 		var buttons = new FlowLayoutPanel { Dock = DockStyle.Fill };
+		previewScreen.SelectedIndexChanged += (_, _) => canvas.Invalidate();
+		buttons.Controls.Add(previewScreen);
 		var names = new ComboBox { Width = 210, DropDownStyle = ComboBoxStyle.DropDown };
 		if (framework.awp != null)
 			foreach (var alarm in framework.awp.method_73())
@@ -109,9 +145,17 @@ internal sealed class AlertBannerEditor : Form
 		buttons.Controls.Add(names);
 		AddButton(buttons, "Add alarm", () => {
 			string text = names.Text;
-			if (string.IsNullOrWhiteSpace(text) || banners.Any(banner => banner.Text == text))
-				throw new InvalidDataException("Choose a nonempty, unique alarm name.");
-			banners.Add(new NSP.AlertBanner { Text = text });
+			if (string.IsNullOrWhiteSpace(text))
+				throw new InvalidDataException("Choose an alarm name.");
+			var banner = new NSP.AlertBanner { Text = text };
+			if (banners.Any(existing => existing.Text == text))
+			{
+				if (PreviewScreen < 0)
+					throw new InvalidDataException("\"" + text + "\" already has a rule. Choose a preview screen to add a rule for that screen only.");
+				banner.Screens = new System.Collections.Generic.List<int> { PreviewScreen };
+			}
+			NSP.AlertMedia.Validate(banners.Append(banner));
+			banners.Add(banner);
 			grid.CurrentCell = grid.Rows[banners.Count - 1].Cells[0];
 		});
 		AddButton(buttons, "Choose GIF/image", ChooseImage);
@@ -303,7 +347,7 @@ internal sealed class AlertBannerEditor : Form
 		ImageAnimator.UpdateFrames();
 		using var textFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using var bannerFont = new Font(FontFamily.GenericSansSerif, 22f, FontStyle.Bold, GraphicsUnit.Pixel);
-		foreach (var banner in banners)
+		foreach (var banner in DisplayedBanners())
 		{
 			var bounds = new Rectangle(banner.X, banner.Y, Math.Max(1, banner.Width), Math.Max(1, banner.Height));
 			Image image = PreviewImage(banner.Source);
@@ -333,13 +377,14 @@ internal sealed class AlertBannerEditor : Form
 			return;
 		grid.EndEdit();
 		var point = new Point((int)(e.X / ScaleFactor), (int)(e.Y / ScaleFactor));
-		for (int index = banners.Count - 1; index >= 0; index--)
+		var displayed = DisplayedBanners();
+		for (int index = displayed.Count - 1; index >= 0; index--)
 		{
-			var banner = banners[index];
+			var banner = displayed[index];
 			var bounds = new Rectangle(banner.X, banner.Y, banner.Width, banner.Height);
 			if (!bounds.Contains(point))
 				continue;
-			grid.CurrentCell = grid.Rows[index].Cells[0];
+			grid.CurrentCell = grid.Rows[banners.IndexOf(banner)].Cells[0];
 			dragStart = point;
 			original = bounds;
 			resizing = point.X >= bounds.Right - 16 && point.Y >= bounds.Bottom - 16;

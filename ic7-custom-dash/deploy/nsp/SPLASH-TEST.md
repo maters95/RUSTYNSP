@@ -31,6 +31,29 @@ the Windows resourcefix alone.
   selection does not write media bytes into the fixed-size BMP/kernel path.
 - Choosing a static splash disables the animated overlay and retains NSP's
   existing static BMP upload. Other products retain their original workflow.
+- A GIF splash is decoded with QtQuick's own GIF support. Only an MP4 splash
+  loads the shared `HalImage.qml` video player. If QtMultimedia cannot load,
+  a GIF splash still plays and an MP4 splash is skipped with a logged error.
+
+## Where the splash is drawn
+
+Stock NSP converts a static splash by fitting it into the **physical
+800 x 480 panel**, centred on black, keeping its aspect ratio and never
+upscaling a smaller image (`Form23.smethod_24` with `Class25.smethod_1`). The
+animated splash now follows the same rule. On the dash, `main.qml` squeezes
+its 860-wide canvas by 800/860, so the splash lays media out in panel pixels
+and reverses that squeeze.
+
+| Source | Earlier candidate on the panel | Now |
+| --- | --- | --- |
+| 800 x 480 GIF (your current splash) | 744 x 480, black bars and horizontal squash | full 800 x 480, pixel-exact |
+| 860 x 480 GIF | full width, squashed like dash backgrounds | 800 x 446, correct aspect |
+| 320 x 160 GIF | scaled up | 320 x 160, centred like stock |
+
+MP4 splash keeps aspect ratio in the same panel area; unlike the GIF and
+static paths, a smaller video is still scaled up to fit. NSP's Windows renderer
+does not squeeze its canvas, so there an 800 x 480 splash shows narrow black
+side bars; that preview difference is expected.
 
 The desktop renderer uses the same three QML files as the NEX. Startup QML
 overrides are hash-guarded against the verified v2.36 baseline, and stale
@@ -132,7 +155,10 @@ existing inspector and included unchanged, never rewritten.
 
 Verified locally: the x86 DLL builds with zero compiler errors; 25 desktop
 QML checks pass (including rendered media pixels); 21 ARM Qt 5.9.6/QEMU checks
-pass; and 18 focused Python/.NET regression tests pass. Production root-QML
+pass; and 18 focused Python/.NET regression tests pass. The later screens
+candidate adds panel-geometry and missing-multimedia checks, run on both
+desktop Qt and the firmware's Qt 5.9.6 under QEMU; see the
+[alert guide](ALERTS-TEST.md) for its totals. Production root-QML
 tests exercise the real relative resource paths and repeated startup/handoff.
 The decoded candidate preserves all 337 other stock resource members and the
 original resource wrapper. Windows GUI operation and physical startup timing

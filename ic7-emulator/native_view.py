@@ -79,12 +79,13 @@ def resource_api_url(name, base_url):
 class Bridge(QObject):
     changed = pyqtSignal()
 
-    def __init__(self, url, patched=False, preview_alerts=()):
+    def __init__(self, url, patched=False, preview_alerts=(), screen=0):
         super().__init__()
         self.url = url.rstrip("/")
         self.patched = patched
         self.preview_alerts = tuple(preview_alerts)
-        self.screen = 0
+        self.screen = screen
+        self.initial_screen = screen
         self.value = json.dumps({"components": [], "display": {"phase": "blank"}, "status": "Connecting"})
         self.last = None
         self.last_poll = 0
@@ -95,6 +96,10 @@ class Bridge(QObject):
     @pyqtProperty(str, notify=changed)
     def scene(self):
         return self.value
+
+    @pyqtProperty(int, constant=True)
+    def initialScreen(self):
+        return self.initial_screen
 
     @pyqtSlot(int)
     def setScreen(self, screen):
@@ -161,10 +166,12 @@ def main():
     parser.add_argument("--screenshot", type=Path)
     parser.add_argument("--preview-alert", action="append", default=[],
                         help="Preview this exact active-alert text using the shared popup; synthetic, no device writes")
+    parser.add_argument("--screen", type=int, choices=range(1, 6), default=1,
+                        help="Dash screen (1-5) to show first, e.g. to preview screen-specific alert rules")
     args = parser.parse_args()
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    bridge = Bridge(args.url, args.patched_images, args.preview_alert)
+    bridge = Bridge(args.url, args.patched_images, args.preview_alert, args.screen - 1)
     engine.rootContext().setContextProperty("simulator", bridge)
     engine.load(QUrl.fromLocalFile(str(Path(__file__).with_name("qml") / "NativeDash.qml")))
     if not engine.rootObjects():

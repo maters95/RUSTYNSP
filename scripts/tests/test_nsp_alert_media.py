@@ -10,12 +10,12 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-native-media-alerts-236"
+CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-native-media-screens-236"
 
 
 class AlertMediaTests(unittest.TestCase):
     def test_alert_bundle_contains_matching_components_and_guide(self):
-        nex = CANDIDATE / "ic7-2.36-native-media-alerts-experimental.nex"
+        nex = CANDIDATE / "ic7-2.36-native-media-screens-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the alert candidate first")
         with tempfile.TemporaryDirectory(prefix="nsp-alert-package-") as directory:
@@ -95,7 +95,8 @@ try {
     AlertMedia.Serialize(new List<AlertBanner>{banners[0], banners[0]});
     throw new Exception("Duplicate accepted");
 } catch (InvalidDataException) {}
-foreach (string invalid in new[] {"null", "{}", "{\\"version\\":1}", "{\\"version\\":2,\\"banners\\":[]}",
+foreach (string invalid in new[] {"null", "{}", "{\\"version\\":1}", "{\\"version\\":3,\\"banners\\":[]}",
+    "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"T\\",\\"source\\":\\"\\",\\"x\\":0,\\"y\\":0,\\"width\\":860,\\"height\\":60,\\"screens\\":[0]}]}",
     "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"TEST\\"}]}",
     "{\\"version\\":1,\\"banners\\":null}"}) {
     File.WriteAllText(target, invalid);
@@ -107,6 +108,38 @@ File.WriteAllText(target, "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"OLD\\"
 if (AlertMedia.Read(target)[0].GifOnly) throw new Exception("Older manifests must keep the stock banner");
 if (!System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).Contains("\\"gifOnly\\":true"))
     throw new Exception("gifOnly serialization");
+if (!System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).StartsWith("{\\"version\\":1,")
+    || System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).Contains("screens"))
+    throw new Exception("Manifests without screen rules must stay version 1");
+var screenRules = new List<AlertBanner> {
+    new AlertBanner { Text="OIL", Source="", X=0, Y=420, Width=860, Height=60 },
+    new AlertBanner { Text="OIL", Source="u/a.gif", X=0, Y=0, Width=860, Height=200, GifOnly=true, ScreensText="3, 5" },
+    new AlertBanner { Text="OIL", Source="", X=10, Y=10, Width=300, Height=60, ScreensText="1" }
+};
+File.WriteAllBytes(target, AlertMedia.Serialize(screenRules));
+var screenRead = AlertMedia.Read(target);
+if (!File.ReadAllText(target).StartsWith("{\\"version\\":2,") || screenRead[0].Screens != null
+    || string.Join(",", screenRead[1].Screens) != "2,4" || screenRead[1].ScreensText != "3, 5")
+    throw new Exception("Screen rule round trip");
+if (AlertMedia.Resolve(screenRead, "OIL", 2) != screenRead[1] || AlertMedia.Resolve(screenRead, "OIL", 0) != screenRead[2]
+    || AlertMedia.Resolve(screenRead, "OIL", 1) != screenRead[0] || AlertMedia.Resolve(screenRead, "OIL", -1) != screenRead[0]
+    || AlertMedia.Resolve(screenRead, "OTHER", 2) != null)
+    throw new Exception("Screen rule resolution");
+foreach (var invalid in new[] {
+    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, ScreensText="1, 2" },
+                            new AlertBanner { Text="OIL", Source="", Height=60, ScreensText="2" } },
+    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>{5} } },
+    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>() } },
+    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>{1, 1} } } }) {
+    try { AlertMedia.Serialize(invalid); throw new Exception("Invalid screen rule accepted"); }
+    catch (InvalidDataException) {}
+}
+foreach (string invalid in new[] {"0", "6", "1,1", "x", "1;2"}) {
+    try { AlertMedia.ParseScreens(invalid); throw new Exception("Invalid screen text accepted: " + invalid); }
+    catch (FormatException) {}
+}
+if (AlertMedia.ParseScreens(" all ") != null || AlertMedia.ParseScreens("") != null)
+    throw new Exception("All-screens text");
 File.WriteAllBytes(target, AlertMedia.Serialize(new List<AlertBanner>()));
 if (AlertMedia.Read(target).Count != 0) throw new Exception("Removing overrides");
 Console.WriteLine("Alert manifest geometry, matching, source, parsing and round-trip checks passed");
@@ -118,7 +151,7 @@ Console.WriteLine("Alert manifest geometry, matching, source, parsing and round-
             self.assertIn("checks passed", result.stdout)
 
     def test_alert_nex_and_dll_preserve_matching_components(self):
-        nex = CANDIDATE / "ic7-2.36-native-media-alerts-experimental.nex"
+        nex = CANDIDATE / "ic7-2.36-native-media-screens-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the alert candidate first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))
