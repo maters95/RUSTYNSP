@@ -86,9 +86,16 @@ startup splash placed the way stock NSP places a static splash: an
 800 x 480 GIF now fills the panel. Alarm banners and GIF splashes no longer
 depend on QtMultimedia; in the previous kit, a failure to load it removed every
 alarm banner. `HalImage.qml`, the owner-confirmed screen media component, is
-unchanged. See the [alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md) and
+unchanged. The NSP alert editor now places banners against a live preview of
+the real screen (its actual background and gauges, read from the loaded map)
+and opens on the screen NSP has active, so configuring an alert feels native.
+See the [alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md) and
 [startup guide](ic7-custom-dash/deploy/nsp/SPLASH-TEST.md). Not flashed or
 tested on hardware; Windows NSP/emulator acceptance is still required.
+
+For what else the firmware could be made to do — camera, Wi-Fi, night mode,
+datalogging, lap timer, custom fonts and more, ranked by risk — see the
+[firmware capability deep-dive](ic7-custom-dash/deploy/nsp/FIRMWARE-CAPABILITIES.md).
 
 ## Build Results (2026-10-28)
 

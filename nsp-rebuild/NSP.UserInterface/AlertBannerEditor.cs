@@ -23,6 +23,9 @@ internal sealed class AlertBannerEditor : Form
 	private bool resizing;
 	private bool dragging;
 	private NSP.AlertBanner Selected => grid.CurrentRow?.DataBoundItem as NSP.AlertBanner;
+	// Number of screens the editor offers: the map's real screens, capped at the
+	// five the v2.36 dash actually renders.
+	private readonly int screenCount;
 	// Zero-based screen shown in the layout preview; -1 shows the all-screens rules.
 	private int PreviewScreen => previewScreen.SelectedIndex - 1;
 
@@ -38,11 +41,14 @@ internal sealed class AlertBannerEditor : Form
 		banners = new BindingList<NSP.AlertBanner>(NSP.AlertMedia.Read(
 			Path.Combine(Form23.string_10, "images", NSP.AlertMedia.ManifestName)));
 		Text = "iC-7 alert GIF banners and placement";
+		screenCount = RealScreenCount();
 		// Populated before the grid can raise SelectionChanged, which switches it.
+		// The preview uses the map's real screens so it matches what NSP shows.
 		previewScreen.Items.Add("Preview: All-screens rules");
-		for (int screen = 1; screen <= NSP.AlertMedia.ScreenCount; screen++)
+		for (int screen = 1; screen <= screenCount; screen++)
 			previewScreen.Items.Add("Preview: Screen " + screen);
-		previewScreen.SelectedIndex = 0;
+		// Open on the screen NSP currently has active, so editing lines up with the dash.
+		previewScreen.SelectedIndex = Math.Clamp(ActiveScreenIndex() + 1, 0, screenCount);
 		Width = 1000;
 		Height = 760;
 		MinimumSize = new Size(920, 680);
@@ -59,7 +65,7 @@ internal sealed class AlertBannerEditor : Form
 		layout.Controls.Add(new Label {
 			Dock = DockStyle.Fill,
 			Text = "Match the alarm's exact Message text (as shown on the dash, case-sensitive). Colour, priority and clearing remain controlled by the dash.\r\n" +
-				"Drag a rectangle to move; drag its bottom-right corner to resize. Numeric values use the 860 x 480 dash canvas. GIFs animate in this preview.\r\n" +
+				"The preview shows the selected screen exactly as the dash draws it, with your alert over it. Drag a rectangle to move; drag its bottom-right corner to resize.\r\n" +
 				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning.\r\n" +
 				"Screens: \"All\", or screen numbers such as \"1, 3\". On those screens that rule replaces the alarm's \"All\" rule; alarms are never hidden."
 		});
@@ -72,7 +78,7 @@ internal sealed class AlertBannerEditor : Form
 		foreach (string name in new[] { "Text", "Screens", "Source", "X", "Y", "Width", "Height" })
 			grid.Columns.Add(new DataGridViewTextBoxColumn {
 				DataPropertyName = name == "Screens" ? "ScreensText" : name,
-				HeaderText = name == "Text" ? "Exact alarm text" : name == "Screens" ? "Screens (All or 1-5)" : name,
+				HeaderText = name == "Text" ? "Exact alarm text" : name == "Screens" ? "Screens (All or 1-" + screenCount + ")" : name,
 				Width = name == "Text" || name == "Source" ? 230 : name == "Screens" ? 110 : 65, ReadOnly = name == "Source"
 			});
 		grid.Columns.Add(new DataGridViewCheckBoxColumn {
@@ -335,6 +341,82 @@ internal sealed class AlertBannerEditor : Form
 			Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 	}
 
+	// ---- Native map preview: show the selected screen's real backdrop ----------
+
+	private int RealScreenCount()
+	{
+		try { return Math.Clamp(framework?.awP?.method_79()?.Count ?? NSP.AlertMedia.ScreenCount, 1, NSP.AlertMedia.ScreenCount); }
+		catch { return NSP.AlertMedia.ScreenCount; }
+	}
+
+	private int ActiveScreenIndex()
+	{
+		try { return framework?.awP?.method_78()?.method_256() ?? -1; }
+		catch { return -1; }
+	}
+
+	private static bool IsImageSource(string source) => source != null
+		&& (source.StartsWith("h/", StringComparison.Ordinal) || source.StartsWith("u/", StringComparison.Ordinal))
+		&& new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" }
+			.Any(extension => source.EndsWith(extension, StringComparison.OrdinalIgnoreCase));
+
+	// The selected screen's enabled components (rectangle, image source, label), drawn
+	// in z-order so a full-screen background sits behind the gauges, matching the dash.
+	private System.Collections.Generic.List<(Rectangle rect, string source, string label)> ScreenComponents(int screenIndex)
+	{
+		var ordered = new System.Collections.Generic.List<(int z, Rectangle rect, string source, string label)>();
+		try
+		{
+			var screens = framework?.awP?.method_79();
+			if (screens == null || screenIndex < 0 || screenIndex >= screens.Count)
+				return new System.Collections.Generic.List<(Rectangle, string, string)>();
+			foreach (var component in screens[screenIndex].method_72())
+			{
+				if (component.method_297().method_256() == 0)
+					continue;
+				int w = component.method_302().method_256();
+				int h = component.method_303().method_256();
+				if (w <= 0 || h <= 0)
+					continue;
+				var rect = new Rectangle(component.method_299().method_256(), component.method_300().method_256(), w, h);
+				string source = null, label = null;
+				try { source = component.method_298()?.method_260()?.TrimEnd('\0'); } catch { }
+				try { label = component.method_304()?.method_260()?.TrimEnd('\0'); } catch { }
+				ordered.Add((component.method_301().method_256(), rect, source, label));
+			}
+			ordered.Sort((a, b) => a.z.CompareTo(b.z));
+		}
+		catch (Exception error)
+		{
+			Class23.smethod_3("Alert banner preview backdrop: " + error.Message, bool_1: false);
+		}
+		return ordered.Select(entry => (entry.rect, entry.source, entry.label)).ToList();
+	}
+
+	private void DrawScreenBackdrop(Graphics graphics, int screenIndex)
+	{
+		foreach (var (rect, source, label) in ScreenComponents(screenIndex))
+		{
+			Image image = IsImageSource(source) ? PreviewImage(source) : null;
+			if (image != null && image.Width > 0 && image.Height > 0)
+			{
+				// Dash image components stretch to their rectangle.
+				graphics.DrawImage(image, rect);
+				continue;
+			}
+			using var fill = new SolidBrush(Color.FromArgb(55, 70, 80, 95));
+			graphics.FillRectangle(fill, rect);
+			using var outline = new Pen(Color.FromArgb(120, 110, 120, 130));
+			graphics.DrawRectangle(outline, rect);
+			if (!string.IsNullOrWhiteSpace(label))
+			{
+				using var labelFont = new Font(FontFamily.GenericSansSerif, 12f, FontStyle.Regular, GraphicsUnit.Pixel);
+				using var labelBrush = new SolidBrush(Color.FromArgb(150, Color.White));
+				graphics.DrawString(label, labelFont, labelBrush, rect.X + 3, rect.Y + 3);
+			}
+		}
+	}
+
 	private float ScaleFactor => Math.Min(canvas.ClientSize.Width / 860f, canvas.ClientSize.Height / 480f);
 
 	private void PaintCanvas(object sender, PaintEventArgs e)
@@ -345,6 +427,9 @@ internal sealed class AlertBannerEditor : Form
 		e.Graphics.ScaleTransform(scale, scale);
 		e.Graphics.DrawRectangle(Pens.DimGray, 0, 0, 859, 479);
 		ImageAnimator.UpdateFrames();
+		// Behind the alert rectangles, show the real screen as the dash composes it.
+		if (PreviewScreen >= 0)
+			DrawScreenBackdrop(e.Graphics, PreviewScreen);
 		using var textFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using var bannerFont = new Font(FontFamily.GenericSansSerif, 22f, FontStyle.Bold, GraphicsUnit.Pixel);
 		foreach (var banner in DisplayedBanners())

@@ -55,12 +55,16 @@ Qt libraries are downloaded from the pinned official archives, not redistributed
    Start with the bundled `samples/animated.gif`. GIF bytes are preserved;
    static PNG/JPEG/BMP images also work. MP4 is supported on screens and at
    startup, **not in this alert-banner selector**.
-5. Move the rectangle in the layout preview; drag its bottom-right corner
-   to resize. Or edit **X / Y / Width / Height** numerically in the grid.
-   Coordinates use the dash's **860 x 480 logical canvas**, scaled to the
-   physical 800 x 480 display. Rectangles must fit and be at least 60 pixels
-   tall. The editor canvas animates the GIF with the text over it; it is
-   not an alarm trigger.
+5. The preview shows **the selected screen as the dash composes it** — the
+   real background and gauges from your map, read live from the loaded map —
+   with your alert drawn over it, so you can place it against actual content.
+   It opens on the screen NSP currently has active. Move the rectangle; drag
+   its bottom-right corner to resize. Or edit **X / Y / Width / Height**
+   numerically in the grid. Coordinates use the dash's **860 x 480 logical
+   canvas**, scaled to the physical 800 x 480 display. Rectangles must fit and
+   be at least 60 pixels tall. The preview animates the GIF; it is not an alarm
+   trigger. (If a map's screen data cannot be read, the preview falls back to a
+   plain canvas and placement still works.)
 6. **Save / apply** writes `u/ic7_alerts.json` into user image resources.
    Online, selected user images and the manifest are uploaded via the normal
    resource RPC. Offline, upload/apply the normal map resources afterward.
