@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-resource-selection-fix.zip",
+  "bytes": 30995380,
+  "sha256": "7960e7ebb7aa1b5f17b5e81458bf8d1562764f029168ec9ff6d7fe448fa52679",
+  "files": 62,
+  "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"
+}

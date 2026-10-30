@@ -14,12 +14,6 @@ then targets the iC-7's SoM (Variscite VAR-SOM-MX6, i.MX6) or any Linux board.
 > IC7_SHOT=<dir> to grab page PNGs and exit.
 
 ## What's inside
-
-For the owner-confirmed physical GIF/MP4 baseline, Emtron SL4 accelerometer
-and Custom CAN TX findings, and next visual upgrades, see
-[design possibilities and verified boundaries](deploy/DESIGN-POSSIBILITIES.md).
-The standalone app described here remains separate from that resource-only patch.
-
 ```
 CMakeLists.txt            build (Qt5 or Qt6; SocketCAN auto-enabled on Linux)
 src/

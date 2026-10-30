@@ -5,9 +5,16 @@ splash, and all 28 embedded resources from the resourcefix bundle. Keep the
 working videofix/resourcefix/splash copies and your original map unchanged.
 Windows GUI operation and a physical flash/boot have **not** been performed.
 
+The pathfix candidate corrects splash/alarm user-resource lookup for the real
+dash's directory layout while preserving the desktop preview layout. Loose QML
+files beside the NEX are emulator/reference sidecars: the dash receives those
+components inside the encrypted NEX resource archive, not as separate copies.
+The earlier screen-alarm candidate must not be used to validate this correction.
+See the [real-device audit](MEDIA-RUNTIME-AUDIT.md#real-device-resource-path-correction).
+
 ## Install the matching pair
 
-Extract `ic7-nsp-native-media-alerts-test-2.36.zip` into a new directory and use
+Extract the new native-integration test ZIP into a new directory and use
 its setup script with the official NSP install as the source:
 
 ```powershell
@@ -21,18 +28,26 @@ not contain the new popup component. No firmware is flashed automatically.
 See the included [startup guide](SPLASH-TEST.md) for the emulator COM pair,
 Qt runtime setup, GIF/MP4 splash tests and physical-validation boundary.
 Qt libraries are downloaded from the pinned official archives, not redistributed.
+The included map is an optional diagnostic example; use a backup of your own map
+for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
 
 ## Configure alerts in NSP
 
 1. Disconnect the physical dash. Open a backup iC-7 v2.36 map in the new NSP.
-2. Open the editor: click **Banner GIF & position...** below the Message
+2. Open the editor: click **Appearance...** below the Message
    setting on an alarm's page, right-click the alarm in the tree and choose
-   **Banner GIF & position...**, or use **Alert GIF banners and placement...**
+   **Appearance...**, or use **Alarm appearance...**
    from NSP's main menu. The first two preselect that alarm.
-3. Matching is the exact, case-sensitive text received by the stock popup:
+3. Opening from an alarm page/tree edits that alarm only, keeps other alarms'
+   appearances intact and locks the Message column. No manual matching is needed
+   in this contextual editor. The bulk menu editor still matches the exact,
+   case-sensitive text received by the stock popup:
    the alarm's **Message** setting, not its tree name. If its runtime text
-   differs, enter that exact text instead. Changing the Message requires
-   updating its override. Alarms with identical Message text share it.
+   differs, enter that exact text instead. Applying appearance binds a uniquely
+   named alarm to its native Message setting ID, so later Message edits and
+   setting undo/redo retain its appearance without manually renaming an override.
+   Older manifests acquire this binding when applied in the new editor. Alarms
+   with identical Message text still share an unbound text-based appearance.
 4. **Choose GIF/image** opens NSP's existing image library/import picker.
    Start with the bundled `samples/animated.gif`. GIF bytes are preserved;
    static PNG/JPEG/BMP images also work. MP4 is supported on screens and at
@@ -43,14 +58,28 @@ Qt libraries are downloaded from the pinned official archives, not redistributed
    physical 800 x 480 display. Rectangles must fit and be at least 60 pixels
    tall. The editor canvas animates the GIF with the text over it; it is
    not an alarm trigger.
-6. **Save / apply** writes `u/ic7_alerts.json` into user image resources.
-   Online, selected user images and the manifest are uploaded via the normal
-   resource RPC. Offline, upload/apply the normal map resources afterward.
-   **Save the map under a new name**; it is not saved automatically.
-7. Reopen the desktop map renderer or reboot the emulator/dash to reload the
-   manifest. **Stock background** keeps placement but removes the custom
-   media; **Remove override**, followed by saving/applying, restores the
+6. **Apply**, or **OK**, updates the map's working resources and renderer cache,
+   then requests NSP's existing native preview refresh. Changed media marks the
+   map modified using NSP's normal save/close prompt. **Cancel** discards unapplied
+   appearance edits; images imported into the library remain there, as with the
+   normal image picker. Save/Save As normally to retain the map on disk;
+   no separate resource save, mandatory new filename or desktop reopen is needed.
+   Editing does not silently upload to a connected physical dash: explicitly tick
+   **Also upload to connected dash** when wanted. Otherwise use the normal map
+   resource upload. Transfer errors are shown, not reported as success.
+7. The updated popup reloads its manifest on native property/repaint/alarm updates.
+   Unchanged updates retain the existing GIF instance instead of restarting its
+   animation. **Stock background** keeps placement but removes the custom
+   media; **Remove override**, followed by Apply, restores the
    stock bottom-stacked placement for that alert.
+
+The screen-aware integration build is in `build-cfw-screen-alarms-236`.
+The original owner-confirmed videofix bundle is unchanged; the new `HalImage.qml`
+adds transparent screen tracking while retaining its media playback logic.
+This build still needs Windows acceptance testing of the actual
+native refresh/renderer-pipe path. A physical dash needs the matching updated
+popup and transferred resources; desktop hot reload alone does not establish
+hardware hot reload or authorize flashing.
 
 By default the GIF is the banner background and the warning text is drawn
 over it. Tick **GIF only (hide text/banner)** for an alert to show only the GIF
@@ -67,10 +96,46 @@ The popup remains above ordinary dashboard components and below startup media.
 Invalid configuration logs an error and keeps stock warning banners; a failed
 GIF decoder logs an error while the warning text/background remain.
 
-Placement applies wherever that alarm normally appears, across screen changes.
-It does not suppress alerts on selected screens or create a new alarm engine.
+Without a screen restriction, placement applies wherever that alarm normally
+appears, across screen changes. This does not create a new alarm engine.
 Unconfigured alerts keep their original bottom-stacked layout; other dash
 variants do not use the custom rectangle manifest.
+
+## Show an alarm on selected screens
+
+In **Alarm appearance...**, set **Screens (All or 1, 3, 5)** to `5` for
+**KFC LIMITER**. Use `1, 3, 5` for multiple screens or `All` to restore global
+visibility. Screen numbers are the same one-based numbers shown in NSP.
+The map must contain every selected screen. Apply and save normally.
+Old manifests without `screens` retain global visibility.
+
+The restriction hides the entire popup row, not just its GIF. An already-active
+alarm appears when entering an allowed screen and disappears when leaving it,
+without waiting for a new alarm trigger or reloading the manifest. Native
+triggering, clearing, acknowledgement, priority and LED behaviour are unchanged.
+For example, KFC LIMITER can show its full-screen GIF only on screen 5 while
+Low Oil Pressure continues to show on every screen.
+
+The stock executable does not export its selected screen to QML. Applying the
+first restriction therefore installs a transparent 1 x 1 image component in one
+unused component slot on each configured screen, with zero day/night opacity.
+These managed `ic7_screen_1.png` through `ic7_screen_5.png` resources report
+the native screen container's visibility directly, without a polling timer or
+an executable patch. Existing components are not overwritten. If a screen is
+full, Apply reports an error before changing any marker settings. Do not edit
+or move these bridge components. After copying/replacing a screen layout or
+adding screens, reapply alarm appearance to repair/recreate the bridge.
+Removing all restrictions leaves the harmless bridge components in place.
+
+On the first Apply, disconnect the physical dash or explicitly select **Also
+upload to connected dash**, because the bridge requires ordinary map-setting
+changes as well as image resources. On a dash, transfer both map settings and
+resources using the matching screen-aware DLL and resource-only NEX. A JSON-only
+edit cannot add this feature to an older renderer. The native emulator uses the
+same QML; its synthetic preview also receives the selected preview screen.
+If screen identity is unavailable, restricted alarms remain visible and QML
+logs a warning rather than silently hiding a potentially important warning.
+Windows native operation and physical-dash acceptance still require testing.
 
 ## Place ordinary GIF/MP4 screen elements
 
@@ -93,13 +158,14 @@ It requires the matching Qt 5.11 x86 multimedia/GIF add-ons and DirectShow
 `dsengine`; missing dependencies are explicit errors. Upload map settings from
 NSP: the display must remain blank until those settings arrive.
 
-**The emulator renderer mirrors exactly what NSP shows.** While this NSP is
+**The emulator mirrors NSP's live-data input, not its rendered frames.** While this NSP is
 open, it publishes the same live-data block it sends to its own dash renderer
 (read-only, local shared memory `HaltechNSP_iC7_LiveData`). The workbench's
 **Dash Display** window applies that block to the original renderer,
-so when NSP's **Simulate** panel (or live data) raises an alarm, the emulator
-shows the same stock popup with the same colours, stacking, GIF override and
-GIF-only setting, and clears it at the same time. Its console prints
+so NSP's **Simulate** panel (or live data) can drive the matching popup
+with the same map/resources. The bridge polls independently at roughly 50 ms;
+it does not synchronize frames, GIF clocks or clearing instants. Exact
+simultaneous NSP/emulator display remains unresolved. Its console prints
 `Live channels and alarms now follow NSP Simulate` (or `NSP live data`); when
 NSP stops updating for a second it falls back to emulator memory. Nothing is
 written to a dash.

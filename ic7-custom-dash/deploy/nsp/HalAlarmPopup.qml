@@ -24,13 +24,24 @@ Item {
     property real alertOpacity: 1.0
     property real imageMargin: 10
     property string halFontPath: "../../fonts/D-DINCondensed-Bold-Dash.ttf"
-    property url manifestUrl: Qt.resolvedUrl("../../../user_resources/images/ic7_alerts.json")
-    property url userImageBaseUrl: Qt.resolvedUrl("../../../user_resources/images/")
+    property url manifestUrl: userImageBaseUrl + "ic7_alerts.json"
+    // On the dash, QML lives under dtn/resources; user_resources is under dtn.
+    property url userImageBaseUrl: Qt.resolvedUrl(
+        Qt.resolvedUrl(".").toString().indexOf("/resources/qml_components_data/") >= 0
+        ? "../../../../user_resources/images/" : "../../../user_resources/images/")
     property url stockImageBaseUrl: Qt.resolvedUrl("../../images/")
     property var bannerConfig: []
     property var activeAlarms: []
+    property string activeAlarmMessage: ""
     property string configurationError: ""
     property int requestGeneration: 0
+    property bool mediaRequestPending: false
+    property bool mediaReloadQueued: false
+    property string loadedManifest: ""
+    property int activeScreenNumber: parent && typeof parent.activeScreenNumber === "number"
+        ? parent.activeScreenNumber : 0
+    property bool screenWarningReported: false
+    onActiveScreenNumberChanged: rebuildAlarms()
 
     ListModel { id: alarmModel }
 
@@ -39,6 +50,7 @@ Item {
             if (alertPopup.hasOwnProperty(k))
                 alertPopup[k] = params[k];
         }
+        reloadAlertMedia();
         return 0;
     }
 
@@ -72,19 +84,47 @@ Item {
             if (typeof value !== "number" || !isFinite(value) || Math.floor(value) !== value)
                 return false;
         }
+
         return entry.x >= 0 && entry.y >= 0 && entry.width > 0 && entry.height >= 60 &&
             entry.width <= 860 && entry.height <= 480 &&
             entry.x <= 860 - entry.width && entry.y <= 480 - entry.height;
     }
 
+    function validScreens(screens) {
+        if (screens === undefined || screens === null)
+            return true;
+        if (!Array.isArray(screens) || screens.length < 1 || screens.length > 5)
+            return false;
+        for (var index = 0; index < screens.length; index++) {
+            var screen = screens[index];
+            if (typeof screen !== "number" || Math.floor(screen) !== screen ||
+                    screen < 1 || screen > 5 || screens.indexOf(screen) !== index)
+                return false;
+        }
+        return true;
+    }
+
     function reloadAlertMedia() {
+        if (mediaRequestPending) {
+            mediaReloadQueued = true;
+            return;
+        }
+        mediaRequestPending = true;
         requestGeneration++;
         var generation = requestGeneration;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (request.readyState !== XMLHttpRequest.DONE || generation !== requestGeneration)
                 return;
+            mediaRequestPending = false;
+            if (mediaReloadQueued) {
+                mediaReloadQueued = false;
+                Qt.callLater(reloadAlertMedia);
+            }
             if (request.status === 0 && request.responseText === "") {
+                if (loadedManifest === "" && configurationError === "")
+                    return;
+                loadedManifest = "";
                 configurationError = "";
                 bannerConfig = [];
                 rebuildAlarms();
@@ -94,6 +134,9 @@ Item {
                 configurationFailed("Cannot read alert-media manifest: " + request.status);
                 return;
             }
+            if (request.responseText === loadedManifest)
+                return;
+            loadedManifest = request.responseText;
             var config;
             try {
                 config = JSON.parse(request.responseText);
@@ -112,6 +155,7 @@ Item {
                 if (!entry || typeof entry.text !== "string" || entry.text.trim() === "" ||
                         entry.text.length > 200 || names.indexOf(entry.text) >= 0 ||
                         typeof entry.source !== "string" || !validRectangle(entry) ||
+                        !validScreens(entry.screens) ||
                         (entry.gifOnly !== undefined && typeof entry.gifOnly !== "boolean") ||
                         (entry.gifOnly === true && entry.source === "") ||
                         (entry.source !== "" && !/^[uh]\/[^\/\\\x00]+\.(gif|png|jpe?g|bmp)$/i.test(entry.source))) {
@@ -128,6 +172,10 @@ Item {
         request.send();
     }
 
+    function repaintAll() {
+        reloadAlertMedia();
+    }
+
     function resolveImage(source) {
         if (source === "")
             return "";
@@ -136,7 +184,6 @@ Item {
     }
 
     function rebuildAlarms() {
-        alarmModel.clear();
         var offset = 0;
         var rows = [];
         for (var i = 0; i < activeAlarms.length; i++) {
@@ -153,6 +200,15 @@ Item {
                     }
                 }
             }
+            if (custom && custom.screens !== undefined && custom.screens !== null) {
+                if (activeScreenNumber >= 1 && activeScreenNumber <= 5) {
+                    if (custom.screens.indexOf(activeScreenNumber) < 0)
+                        continue;
+                } else if (!screenWarningReported) {
+                    console.warn("HalAlarmPopup: active screen unavailable; showing restricted alarms for safety");
+                    screenWarningReported = true;
+                }
+            }
             rows.push({text: alarm.text || "", bc: alarm.bc || "black",
                 fc: alarm.fc || "white", icon: alarm.img || "",
                 banner: custom ? resolveImage(custom.source) : "",
@@ -165,10 +221,15 @@ Item {
                 offset += rowHeight;
         }
         startLocation = height - offset;
+        if (alarmModel.count > rows.length)
+            alarmModel.remove(rows.length, alarmModel.count - rows.length);
         for (var index = 0; index < rows.length; index++) {
             if (!rows[index].positioned)
                 rows[index].rowY += startLocation;
-            alarmModel.append(rows[index]);
+            if (index < alarmModel.count)
+                alarmModel.set(index, rows[index]);
+            else
+                alarmModel.append(rows[index]);
         }
     }
 
@@ -190,8 +251,12 @@ Item {
                 return;
             }
         }
-        activeAlarms = alarms;
-        rebuildAlarms();
+        if (msg !== activeAlarmMessage) {
+            activeAlarmMessage = msg;
+            activeAlarms = alarms;
+            rebuildAlarms();
+        }
+        reloadAlertMedia();
     }
 
     FontLoader { id: dinFont; source: halFontPath }

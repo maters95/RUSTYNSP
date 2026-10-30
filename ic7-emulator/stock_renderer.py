@@ -300,22 +300,24 @@ def stage_multimedia_addons(runtime, destination):
             shutil.copytree(source, Path(destination) / target_name, dirs_exist_ok=True)
 
 
+def shared_component_source(name):
+    maintained = Path(__file__).resolve().parent.parent / "ic7-custom-dash/deploy/nsp" / name
+    return maintained if maintained.is_file() else Path(__file__).with_name("qml") / "stock_renderer" / name
+
+
 def alert_component_source():
-    alarm_source = Path(__file__).with_name("qml") / "stock_renderer" / "HalAlarmPopup.qml"
-    if not alarm_source.is_file():
-        alarm_source = Path(__file__).resolve().parent.parent / "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
-    return alarm_source
+    return shared_component_source("HalAlarmPopup.qml")
 
 
 def install_startup_qml(destination):
     destination = Path(destination)
     sources = {
         destination / "qml_components_data/qml/factory_screens/main.qml":
-            Path(__file__).with_name("qml") / "stock_renderer" / "main.qml",
+            shared_component_source("main.qml"),
         destination / "qml_components_data/qml/user_components/HalSplash.qml":
-            Path(__file__).with_name("qml") / "stock_renderer" / "HalSplash.qml",
+            shared_component_source("HalSplash.qml"),
         destination / "qml_components_data/qml/user_components/HalImage.qml":
-            Path(__file__).with_name("qml") / "stock_renderer" / "HalImage.qml",
+            shared_component_source("HalImage.qml"),
         destination / "qml_components_data/qml/user_components/HalAlarmPopup.qml": alert_component_source(),
     }
     for target, source in sources.items():

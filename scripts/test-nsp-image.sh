@@ -10,6 +10,7 @@ mkdir -p "$FIXTURES"
 import sys
 import json
 import shutil
+import base64
 from pathlib import Path
 from PIL import Image
 
@@ -22,9 +23,12 @@ first.save(destination / "animated.gif", save_all=True, append_images=[second],
 with Image.open(destination / "animated.gif") as animation:
     assert animation.n_frames == 2
 (destination / "ic7_animation_probe.png").write_bytes((destination / "animated.gif").read_bytes())
+marker = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==")
+for screen in range(1, 6):
+    (destination / f"ic7_screen_{screen}.png").write_bytes(marker)
 
 runtime = destination / "splash-runtime"
-qml = runtime / "qml_components_data/qml"
+qml = runtime / "resources/qml_components_data/qml"
 for folder in ("factory_screens", "user_components"):
     (qml / folder).mkdir(parents=True, exist_ok=True)
 maintained = destination.parent / "deploy/nsp"
@@ -33,10 +37,12 @@ for filename, folder in (("main.qml", "factory_screens"),
                          ("HalSplash.qml", "user_components"),
                          ("HalAlarmPopup.qml", "user_components")):
     shutil.copyfile(maintained / filename, qml / folder / filename)
-(runtime / "qml_components_data/fonts").mkdir(exist_ok=True)
+(runtime / "resources/qml_components_data/fonts").mkdir(exist_ok=True)
 images = runtime / "user_resources/images"
 images.mkdir(parents=True, exist_ok=True)
 shutil.copyfile(destination / "animated.gif", images / "animated.gif")
+shutil.copyfile(destination / "static.png", images / "static.png")
+shutil.copyfile(maintained / "tests/fixtures/alerts-screens.json", images / "ic7_alerts.json")
 (images / "ic7_splash.json").write_text(json.dumps({
     "version": 1, "source": "u/animated.gif", "durationMs": 1500
 }))
@@ -52,7 +58,7 @@ ffmpeg -nostdin -hide_banner -loglevel error -y \
 cp "$FIXTURES/video.mp4" "$FIXTURES/ic7_video_probe.png"
 
 if [[ -n "${IC7_SYSROOT:-}" ]]; then
-    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml; do
+    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_AlarmScreens.qml; do
         qemu-arm -L "$IC7_SYSROOT" \
             -E QML_DISABLE_DISK_CACHE=1 \
             -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \

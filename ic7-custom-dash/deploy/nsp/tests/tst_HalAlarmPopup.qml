@@ -12,7 +12,7 @@ Item {
 
         function createPopup(manifest) {
             var component = Qt.createComponent(
-                "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
+                "../../../build-nsp-tests/splash-runtime/resources/qml_components_data/qml/user_components/HalAlarmPopup.qml");
             compare(component.status, Component.Ready, component.errorString());
             popup = component.createObject(testWindow, {
                 manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: ""
@@ -90,6 +90,63 @@ Item {
             popup.reInitAlarmScreen("[]");
             wait(1);
             compare(findChild(popup, "alertBanner:OIL PRESSURE"), null);
+        }
+
+        function test_nativeAlarmUpdateReloadsAppearanceWithoutReopening() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            var message = JSON.stringify([active("OIL PRESSURE")]);
+            popup.reInitAlarmScreen(message);
+            compare(findChild(popup, "alertBanner:OIL PRESSURE").x, 100);
+            popup.manifestUrl = Qt.resolvedUrl("fixtures/alerts-gif-only.json");
+            popup.reInitAlarmScreen(message);
+            tryVerify(function() {
+                var banner = findChild(popup, "alertBanner:OIL PRESSURE");
+                return banner !== null && banner.mediaOnly;
+            });
+            compare(popup.activeAlarms.length, 1);
+        }
+
+        function test_repeatedNativeUpdatesKeepAnimationInstance() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            var message = JSON.stringify([active("OIL PRESSURE")]);
+            popup.reInitAlarmScreen(message);
+            var image = findChild(popup, "animatedImage");
+            verify(image !== null);
+            tryCompare(image, "status", Image.Ready);
+            for (var index = 0; index < 5; index++) {
+                popup.reInitAlarmScreen(message);
+                popup.repaintAll();
+                wait(40);
+                compare(findChild(popup, "animatedImage"), image);
+            }
+            var frame = image.currentFrame;
+            tryVerify(function() { return image.currentFrame !== frame; });
+        }
+
+        function test_nativePropertyRefreshReloadsAppearance() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            popup.manifestUrl = Qt.resolvedUrl("fixtures/alerts-gif-only.json");
+            popup.setGaugeProperties({});
+            tryVerify(function() { return popup.bannerConfig.length === 2 && popup.bannerConfig[0].gifOnly; });
+            compare(popup.bannerConfig[0].gifOnly, true);
+        }
+
+        function test_otherAlarmChangesDoNotRestartExistingMedia() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE")]));
+            var image = findChild(popup, "animatedImage");
+            verify(image !== null);
+            tryCompare(image, "status", Image.Ready);
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE"), active("OTHER")]));
+            wait(40);
+            compare(findChild(popup, "animatedImage"), image);
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE")]));
+            wait(40);
+            compare(findChild(popup, "animatedImage"), image);
         }
 
         function test_exactMatchingAndVariantGate() {

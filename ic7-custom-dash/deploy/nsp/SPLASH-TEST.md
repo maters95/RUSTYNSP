@@ -75,7 +75,9 @@ The emulator recognizes the first NSP write overlapping a dashboard-component
 setting; it does not have a separate whole-map-upload-complete signal.
 
 1. In NSP's existing splash resource selector, import `samples/animated.gif`
-   and select it. Save the map under a new name. Apply/upload to the emulator.
+   and select it. The startup manifest is stored in both the working map and
+   NSP's renderer resource cache. Save/Save As normally; upload the resources
+   to the emulator. No desktop map reopen is required to persist the selection.
 2. Trigger the existing **Reboot** action in NSP. Confirm a fresh GIF splash,
    followed by the dashboard within 3.3 seconds.
 3. Repeat with `samples/video.mp4`; confirm moving, muted video and handoff.
@@ -85,6 +87,10 @@ setting; it does not have a separate whole-map-upload-complete signal.
 6. Confirm gauges, screen changes and alarms still work after handoff.
 7. Open the channel selector and affected configuration panels to confirm the
    resourcefix GUI behavior is retained.
+
+Clearing the startup-image setting now also disables the animated manifest.
+It does not modify the early kernel logo or automatically flash anything.
+Startup playback itself is still a reboot-time action, not an alarm preview.
 
 The bundled user map is included byte-for-byte, not edited or preconfigured
 with a new splash. The samples provide small deterministic baselines; start

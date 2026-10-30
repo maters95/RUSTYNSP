@@ -10,9 +10,28 @@ Item {
         name: "StartupRootIntegration"
         when: windowShown
 
+        function test_staticMediaWithDevicePaths() {
+            var component = Qt.createComponent(
+                "../../../build-nsp-tests/splash-runtime/resources/qml_components_data/qml/user_components/HalSplash.qml");
+            compare(component.status, Component.Ready, component.errorString());
+            var splash = component.createObject(testWindow, {
+                manifestUrl: Qt.resolvedUrl("fixtures/png-splash.json"),
+                width: 860, height: 480
+            });
+            verify(splash !== null);
+            tryCompare(splash, "visible", true);
+            var image = findChild(splash, "staticImage");
+            verify(image !== null);
+            tryCompare(image, "status", Image.Ready);
+            compare(splash.mediaError, "");
+            splash.finish();
+            splash.destroy();
+            wait(1);
+        }
+
         function test_productionPathsAndReboot() {
             var component = Qt.createComponent(
-                "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/factory_screens/main.qml");
+                "../../../build-nsp-tests/splash-runtime/resources/qml_components_data/qml/factory_screens/main.qml");
             compare(component.status, Component.Ready, component.errorString());
             for (var boot = 0; boot < 2; boot++) {
                 var root = component.createObject(testWindow);

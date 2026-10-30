@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,6 +17,30 @@ internal sealed class AlertBanner
 	[JsonRequired] public int Height { get; set; } = 60;
 	// Optional for older manifests: show only the image, without the stock colour and text.
 	public bool GifOnly { get; set; }
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	public int? MessageDataId { get; set; }
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	public int[] Screens { get; set; }
+	[JsonIgnore]
+	public string ScreensText
+	{
+		get => Screens == null ? "All" : string.Join(", ", Screens);
+		set
+		{
+			if (string.Equals(value?.Trim(), "All", StringComparison.OrdinalIgnoreCase))
+			{
+				Screens = null;
+				return;
+			}
+			string[] parts = (value ?? "").Split(',');
+			if (parts.Any(part => !int.TryParse(part.Trim(), out int screen) || screen < 1 || screen > 5))
+				throw new InvalidDataException("Screens must be All or comma-separated screen numbers from 1 to 5.");
+			int[] screens = parts.Select(part => int.Parse(part.Trim())).ToArray();
+			if (screens.Distinct().Count() != screens.Length)
+				throw new InvalidDataException("Choose each screen only once.");
+			Screens = screens;
+		}
+	}
 }
 
 internal static class AlertMedia
@@ -35,12 +60,19 @@ internal static class AlertMedia
 	internal static void Validate(IEnumerable<AlertBanner> banners)
 	{
 		HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+		HashSet<int> messageIds = new HashSet<int>();
 		int count = 0;
 		foreach (AlertBanner banner in banners)
 		{
 			if (banner == null || string.IsNullOrWhiteSpace(banner.Text) || banner.Text.Length > 200
 				|| !names.Add(banner.Text) || ++count > 100)
 				throw new InvalidDataException("Alert names must be nonempty and unique (at most 100 banners).");
+			if (banner.MessageDataId.HasValue && (banner.MessageDataId.Value < 1 || !messageIds.Add(banner.MessageDataId.Value)))
+				throw new InvalidDataException("Alarm Message bindings must identify unique, valid settings.");
+			if (banner.Screens != null && (banner.Screens.Length == 0 || banner.Screens.Length > 5
+				|| banner.Screens.Any(screen => screen < 1 || screen > 5)
+				|| banner.Screens.Distinct().Count() != banner.Screens.Length))
+				throw new InvalidDataException("Choose one or more distinct screens from 1 to 5, or All.");
 			if (banner.X < 0 || banner.Y < 0 || banner.Width < 1 || banner.Height < 60
 				|| banner.Width > 860 || banner.Height > 480
 				|| banner.X > 860 - banner.Width || banner.Y > 480 - banner.Height)
@@ -64,6 +96,23 @@ internal static class AlertMedia
 	{
 		Validate(banners);
 		return JsonSerializer.SerializeToUtf8Bytes(new Manifest { Banners = banners }, Options);
+	}
+
+	internal static bool RenameMessages(List<AlertBanner> banners, IReadOnlyDictionary<int, string> messages)
+	{
+		bool changed = false;
+		foreach (AlertBanner banner in banners)
+		{
+			if (banner.MessageDataId.HasValue && messages.TryGetValue(banner.MessageDataId.Value, out string text)
+				&& banner.Text != text)
+			{
+				banner.Text = text;
+				changed = true;
+			}
+		}
+		if (changed)
+			Validate(banners);
+		return changed;
 	}
 
 	internal static List<AlertBanner> Read(string path)

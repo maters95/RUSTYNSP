@@ -3677,7 +3677,8 @@ internal class Form23 : Form
 						Class23.smethod_3("Could not disable the animated startup splash: " + manifestError.Message);
 					}
 				}
-				NSP.SplashMedia.SaveManifest(Path.Combine(string_10, "images"), manifest);
+				SaveMediaResource(framework_1, NSP.SplashMedia.ManifestName, manifest);
+				RefreshMediaPreview(framework_1);
 				if (animated)
 				{
 					Class23.smethod_3("Animated startup splash uploaded; the early kernel logo is unchanged.");
@@ -3834,6 +3835,54 @@ internal class Form23 : Form
 			Class23.smethod_3("Cannot open alert banner editor: " + error.Message);
 			MessageBox.Show(owner, error.Message, "Alert banners", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 		}
+	}
+
+	internal static void SaveMediaResource(Framework framework, string name, byte[] payload)
+	{
+		if (NSP.MediaResource.Save(Path.Combine(string_10, "images"), name, payload))
+			framework.aXd = true;
+		NSP.MediaResource.Save(Path.Combine(smethod_14(framework), "images"), name, payload);
+	}
+
+	internal static void SyncAlertMessage(Framework framework, Setting setting)
+	{
+		if (framework != framework_1 || framework.awZ != 21 || framework.awz != 11
+			|| (setting != null && setting.method_70() == 0))
+			return;
+		try
+		{
+			string path = Path.Combine(string_10, "images", NSP.AlertMedia.ManifestName);
+			var banners = NSP.AlertMedia.Read(path);
+			var messages = new Dictionary<int, string>();
+			foreach (var banner in banners.Where(banner => banner.MessageDataId.HasValue))
+			{
+				int id = banner.MessageDataId.Value;
+				Setting message = framework.method_31(id);
+				if (message != null && message.method_70() != 0)
+					messages[id] = message.method_260().TrimEnd('\0').Trim();
+			}
+			if (NSP.AlertMedia.RenameMessages(banners, messages))
+			{
+				SaveMediaResource(framework, NSP.AlertMedia.ManifestName, NSP.AlertMedia.Serialize(banners));
+				if (VirtualDashAppPanel.framework_0 == framework && Class329.smethod_3()
+					&& !Class329.smethod_10())
+					throw new IOException("The desktop renderer did not acknowledge the alarm appearance refresh.");
+			}
+		}
+		catch (Exception error) when (error is IOException || error is InvalidDataException || error is UnauthorizedAccessException
+			|| error is System.Text.Json.JsonException)
+		{
+			Class23.smethod_3("Cannot update the alarm appearance Message binding: " + error.Message);
+		}
+	}
+
+	internal static bool RefreshMediaPreview(Framework framework)
+	{
+		bool previewRunning = NSP.UserInterface.VirtualDashAppPanel.framework_0 == framework && Class329.smethod_3();
+		if (previewRunning && !Class329.smethod_10())
+			throw new IOException("Map media was updated, but the desktop renderer did not acknowledge the refresh.");
+		framework.method_54(bool_0: true);
+		return previewRunning;
 	}
 
 	internal static void UploadImageResource(string name, byte[] payload, BackgroundWorker worker = null,
@@ -4676,7 +4725,7 @@ internal class Form23 : Form
 		toolStripMenuItem_30.Text = Class333.smethod_1272();
 		toolStripMenuItem_30.Click += toolStripMenuItem_30_Click;
 		toolStripMenuItem_3.DropDownItems.AddRange(toolStripMenuItem_31, toolStripMenuItem_32, toolStripMenuItem_6, toolStripMenuItem_10, toolStripMenuItem_58, toolStripMenuItem_59, toolStripMenuItem_28);
-		var alertMediaMenu = new ToolStripMenuItem("Alert GIF banners and placement...");
+		var alertMediaMenu = new ToolStripMenuItem("Alarm appearance...");
 		alertMediaMenu.Click += (_, _) => OpenAlertBannerEditor(null);
 		toolStripMenuItem_3.DropDownItems.Add(alertMediaMenu);
 		toolStripMenuItem_3.Name = Class333.smethod_1563();

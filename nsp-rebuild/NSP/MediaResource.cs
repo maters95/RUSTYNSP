@@ -5,6 +5,28 @@ namespace NSP;
 
 internal static class MediaResource
 {
+	internal static bool Save(string directory, string name, byte[] payload)
+	{
+		if (string.IsNullOrEmpty(name) || name == "." || name == ".."
+			|| name.IndexOfAny(new[] { '/', '\\', '\0' }) >= 0)
+			throw new InvalidDataException("Invalid media resource filename.");
+		Directory.CreateDirectory(directory);
+		string target = Path.Combine(directory, name);
+		if (File.Exists(target) && File.ReadAllBytes(target).AsSpan().SequenceEqual(payload))
+			return false;
+		string temporary = Path.Combine(directory, "." + name + "." + Guid.NewGuid().ToString("N") + ".tmp");
+		try
+		{
+			File.WriteAllBytes(temporary, payload);
+			File.Move(temporary, target, overwrite: true);
+		}
+		finally
+		{
+			File.Delete(temporary);
+		}
+		return true;
+	}
+
 	internal static bool HasMp4Header(ReadOnlySpan<byte> data)
 	{
 		return data.Length >= 12 && data[4] == (byte)'f' && data[5] == (byte)'t'

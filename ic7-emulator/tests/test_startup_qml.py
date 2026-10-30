@@ -27,28 +27,43 @@ class StartupQmlTests(unittest.TestCase):
             device = Device(root / "device-profile.zip", path / "state")
             device.map_loaded = True
             device.resources.put("u/alert.gif", 0, image.read_bytes())
-            device.resources.put(ALERT_RESOURCE, 0, json.dumps({
-                "version": 1, "banners": [{"text": "TEST ALERT", "source": "u/alert.gif",
-                                          "x": 0, "y": 0, "width": 860, "height": 120}]
-            }).encode())
             server = start_viewer(device, 0)
             try:
                 screenshot = path / "preview.png"
                 environment = os.environ.copy()
                 environment.update(QT_QPA_PLATFORM="offscreen", QT_QUICK_BACKEND="software",
                                    QML_DISABLE_DISK_CACHE="1")
-                result = subprocess.run([
+                baseline = subprocess.run([
                     sys.executable, str(root / "native_view.py"),
                     "--url", "http://127.0.0.1:" + str(server.server_port),
-                    "--preview-alert", "TEST ALERT", "--screenshot", str(screenshot)
+                    "--screenshot", str(screenshot)
                 ], env=environment, capture_output=True, text=True, timeout=30)
-                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-                self.assertNotIn("failed to load", result.stderr.lower())
+                self.assertEqual(baseline.returncode, 0, baseline.stdout + baseline.stderr)
                 with Image.open(screenshot) as captured:
-                    red, green, blue = captured.convert("RGB").getpixel((400, 60))
-                    self.assertTrue((red > 180 and green < 100 and blue < 100) or
-                                    (green > 80 and red < 100 and blue < 100),
-                                    f"Selected GIF pixel not rendered: {(red, green, blue)}\n{result.stderr}")
+                    background = captured.convert("RGB").getpixel((400, 60))
+                for screens in (None, [1], [5]):
+                    with self.subTest(screens=screens):
+                        banner = {"text": "TEST ALERT", "source": "u/alert.gif",
+                                  "x": 0, "y": 0, "width": 860, "height": 120}
+                        if screens is not None:
+                            banner["screens"] = screens
+                        device.resources.put(ALERT_RESOURCE, 0, json.dumps({
+                            "version": 1, "banners": [banner]}).encode())
+                        result = subprocess.run([
+                            sys.executable, str(root / "native_view.py"),
+                            "--url", "http://127.0.0.1:" + str(server.server_port),
+                            "--preview-alert", "TEST ALERT", "--screenshot", str(screenshot)
+                        ], env=environment, capture_output=True, text=True, timeout=30)
+                        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                        self.assertNotIn("failed to load", result.stderr.lower())
+                        with Image.open(screenshot) as captured:
+                            red, green, blue = captured.convert("RGB").getpixel((400, 60))
+                            if screens == [5]:
+                                self.assertEqual((red, green, blue), background)
+                            else:
+                                self.assertTrue((red > 180 and green < 100 and blue < 100) or
+                                                (green > 80 and red < 100 and blue < 100),
+                                                f"Selected GIF pixel not rendered: {(red, green, blue)}\n{result.stderr}")
             finally:
                 server.shutdown()
                 server.server_close()

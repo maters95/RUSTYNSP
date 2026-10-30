@@ -16,14 +16,95 @@ screen playback, not evidence that an animated startup splash works.
 
 Offline comparison of that exact ZIP confirmed:
 
-- Its `NSP-test/NSP.dll` matches the maintained rebuild output, SHA-256
+- At the time of the screen-playback audit, its `NSP-test/NSP.dll` matched
+  the maintained rebuild output, SHA-256
   `5f726f93fa67fefa95ded5a8670ad79a715bd0998e34ae61e913586e87b12478`.
 - Its `firmware/HalImage.qml` matches the maintained media component, SHA-256
   `8c9f2fc49765471e115053a7a50a7efb4453a5545bcdd4e36782ca42ee64d6c7`.
 - The decoded NEX resource archive has 339 members. Only
   `qml_components_data/qml/user_components/HalImage.qml` differs from stock.
 
+### Subsequent native integration build
+
+The videofix ZIP was decoded and compared against stock again before the native
+integration work. The maintained `HalImage.qml` still matches that exact
+owner-confirmed component. The new DLL adds native contextual alarm appearance
+editing, normal map-modified/save handling, Message-setting bindings and native
+preview-refresh notification. Atomic manifest/cache writes avoid partial reads;
+unchanged media is not rewritten while the renderer may hold it open.
+
+The separate resource-only candidate in
+`build-cfw-native-media-alerts-integration-236` retains 336 stock archive members,
+changes `HalImage.qml`, `main.qml` and `HalAlarmPopup.qml`, and adds `HalSplash.qml`.
+It retains the stock HDEF and resource wrapper and does not replace the app,
+kernel, bootloader or STM32 code. Older working packages are not overwritten.
+Hot-reload component tests include updating a manifest at the same path without
+recreating the popup and retaining active GIF instances across native updates.
+ARM/QEMU Qt tests do not establish Windows GUI acceptance, exact simultaneous
+emulator output, physical flashing or cold-boot safety.
+
+### Screen-scoped alarm extension
+
+The screen-aware candidate extends `HalImage.qml` with a reserved transparent
+marker path; ordinary GIF/MP4 playback logic is retained, but this component is
+no longer byte-identical to the owner-confirmed videofix baseline. Native
+v2.36 `UIMain::handle_screen_change` (`0x00116a14`) switches screen containers
+through `UIScreen::set_visibility` (`0x00117f20`). The bridge uses inherited QML
+visibility changes on explicitly numbered marker images, not inferred container
+ordering or the old SWU application's layout. The application executable, HDEF,
+bootloader, kernel and alarm engine remain unchanged. A missing bridge fails
+visible and logs a warning. See the [screen-scoping instructions](ALERTS-TEST.md).
+
 ## Actual v2.36 Startup Splash Path
+
+### Real-device resource-path correction
+
+The 2026-10-29 `fail.pcapng` capture contains an exact 17,397,760-byte
+transfer of the screen-alarm candidate's encrypted resource body. It also
+contains successful resource-RPC acknowledgements for the splash GIF and
+manifest, followed later by the KFC GIF and its screen-5-only manifest.
+This proves transfer, not target-side installation or cold-boot success.
+
+The actual v2.36 binary names QML under
+`/opt/applications/dtn/resources/qml_components_data/qml` and user images under
+`/opt/applications/dtn/user_resources/images/`. From a user-component QML file,
+the latter needs **four** parent traversals, not the Windows preview's three.
+The earlier splash and alarm components incorrectly used the Windows path on
+the dash, preventing their manifests from being found. Both now select the
+appropriate relative path from the component's resource-directory layout;
+manifest and media URLs share one base. This also preserves Linux-hosted
+desktop-layout emulator tests without pretending that they use the dash layout.
+Stock-image paths are unchanged.
+
+The old integration fixture also used the Windows layout on Linux. Moving it
+to the dash's `resources/qml_components_data` layout reproduced the startup
+failure before the fix. Tests now load default splash/alarm URLs in that layout,
+including decoded PNG/GIF media and an active alarm moving onto/off screen 5.
+ARM/QEMU success still does not verify physical installation or kernel-logo
+behaviour. Static splash selection in NSP continues to use its stock BMP/kernel
+workflow; a PNG tested as Qt-stage media is not a test of that kernel workflow.
+
+Loose QML files next to a packaged NEX are hash-checked emulator/reference
+sidecars. The dash receives the QML inside the NEX's encrypted resource archive;
+the loose copies do not need to be copied separately to the dash.
+
+The subsequent surgical review additionally confirmed in the decoded v2.36
+binary that `UIScreen` constructs a `QQuickItem` container, parents it to
+`QQuickView::rootObject()` (`0x001188f0` / `0x001188fc`), and changes its
+visibility with `QQuickItem::setVisible()` (`0x00117f20`). Component reload
+parents the QML item to that container (`0x0010ef68` / `0x0010ef70`).
+Thus the screen marker's visual-parent traversal and inherited visibility have
+a native-code basis; they are not established solely by a fabricated test tree.
+This still does not verify installed components on the physical dash.
+
+Desktop tests now assert PNG/GIF pixels actually paint over the splash
+background and that GIF pixels change, in addition to decode status. ARM Qt
+5.9.6/QEMU offscreen tests verify paths, decoding, timing and screen logic only:
+its image-grab API returns black even for an independent plain red rectangle.
+The desktop pixel tests are not reported as ARM pixel verification.
+Black on the physical display alone does not establish that `HalSplash` was
+visible: the kernel-logo path is separate, and no display/console output is
+present in the USB capture.
 
 The decompiled NSP and the actual v2.36 application establish this chain:
 

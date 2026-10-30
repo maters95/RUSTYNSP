@@ -20,6 +20,16 @@ ApplicationWindow {
     property int rebootRevision: -1
     property string alertManifest: ""
     property var previewAlerts: []
+    property int activeScreenNumber: 0
+    property bool alarmScreenTrackingEnabled: true
+    Component.onDestruction: alarmScreenTrackingEnabled = false
+
+    function reportAlarmScreen(number, shown) {
+        if (shown)
+            activeScreenNumber = number;
+        else if (activeScreenNumber === number)
+            activeScreenNumber = 0;
+    }
 
     Rectangle {
         id: toolbar
@@ -74,6 +84,7 @@ ApplicationWindow {
                     item.userImageBaseUrl = window.userImageBase;
                     item.stockImageBaseUrl = window.stockImageBase;
                     item.halFontPath = "";
+                    item.activeScreenNumber = Qt.binding(function() { return window.activeScreenNumber; });
                     item.reloadAlertMedia();
                     item.reInitAlarmScreen(JSON.stringify(window.previewAlerts));
                 }
@@ -151,6 +162,7 @@ ApplicationWindow {
                 delete items[name];
             }
         }
+        activeScreenNumber = scene.screen === undefined ? 0 : scene.screen + 1;
     }
     Connections { target: simulator; onChanged: window.update() }
 }

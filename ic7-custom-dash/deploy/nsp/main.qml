@@ -7,6 +7,9 @@ Item {
     objectName: "mainWindow"
     property int userScalePercentage: 100
     property int dashVariantId: 11
+    property int activeScreenNumber: 0
+    property bool alarmScreenTrackingEnabled: true
+    Component.onDestruction: alarmScreenTrackingEnabled = false
     visible: true
     z: 100
     x: 0
@@ -90,6 +93,13 @@ Item {
     function setScreenSize(width, height) {
         mainWindowId.width = width;
         mainWindowId.height = height;
+    }
+
+    function reportAlarmScreen(number, shown) {
+        if (shown)
+            activeScreenNumber = number;
+        else if (activeScreenNumber === number)
+            activeScreenNumber = 0;
     }
 
     function setBgColour(colour) {

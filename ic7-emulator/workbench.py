@@ -66,8 +66,13 @@ def preferred_first(candidates, preferred):
 
 
 def bundled_package():
-    candidate = ROOT.parent / "NSP-test-kit/firmware/ic7-2.36-native-media-alerts-experimental.nex"
-    return candidate if candidate.is_file() else None
+    firmware = ROOT.parent / "NSP-test-kit/firmware"
+    for name in ("ic7-2.36-screen-alarms-experimental.nex",
+                 "ic7-2.36-native-media-alerts-experimental.nex"):
+        candidate = firmware / name
+        if candidate.is_file():
+            return candidate
+    return None
 
 
 def virtual_ports(ports):

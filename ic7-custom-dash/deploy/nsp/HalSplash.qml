@@ -4,8 +4,11 @@ Item {
     id: splash
     objectName: "startupSplash"
     visible: false
-    property url manifestUrl: Qt.resolvedUrl("../../../user_resources/images/ic7_splash.json")
-    property url userImageBaseUrl: Qt.resolvedUrl("../../../user_resources/images/")
+    property url manifestUrl: userImageBaseUrl + "ic7_splash.json"
+    // On the dash, QML lives under dtn/resources; user_resources is under dtn.
+    property url userImageBaseUrl: Qt.resolvedUrl(
+        Qt.resolvedUrl(".").toString().indexOf("/resources/qml_components_data/") >= 0
+        ? "../../../../user_resources/images/" : "../../../user_resources/images/")
     property url stockImageBaseUrl: Qt.resolvedUrl("../../images/")
     property int maximumDurationMs: 3300
     property string mediaPath: ""

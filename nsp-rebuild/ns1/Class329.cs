@@ -275,12 +275,13 @@ internal class Class329
 		return false;
 	}
 
-	internal static void smethod_10()
+	internal static bool smethod_10()
 	{
 		if (BdV != null)
 		{
-			BdV.method_8();
+			return BdV.method_8();
 		}
+		return false;
 	}
 
 	internal static void smethod_11(bool bool_0 = true)

@@ -1,13 +1,37 @@
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 import time
 import urllib.request
 
-from PyQt5.QtCore import QObject, QTimer, QUrl, pyqtProperty, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QLibraryInfo, QObject, QTimer, QUrl, pyqtProperty, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtQml import QQmlApplicationEngine
+from PyQt5.QtQml import QQmlApplicationEngine, QQmlComponent
+
+
+def configure_qt_dll_search():
+    if os.name != "nt":
+        return None
+    binaries = QLibraryInfo.location(QLibraryInfo.BinariesPath)
+    if not Path(binaries).is_dir():
+        raise FileNotFoundError("The PyQt5 runtime DLL directory is missing: " + binaries)
+    # QML's native plugin loader also needs PATH, unlike Python's extension loader.
+    os.environ["PATH"] = binaries + os.pathsep + os.environ.get("PATH", "")
+    return os.add_dll_directory(binaries)
+
+
+def validate_media_qml(engine):
+    component = QQmlComponent(engine)
+    component.setData(b"import QtQuick 2.9\nimport QtMultimedia 5.9\nVideo {}", QUrl())
+    if component.status() != QQmlComponent.Ready:
+        errors = "\n".join(error.toString() for error in component.errors())
+        raise RuntimeError(
+            "The Python preview cannot load its own QtMultimedia runtime. "
+            "Repair the emulator's PyQt5 environment; do not copy NSP's Qt 5.11 "
+            "DLLs into the Python Qt 5.15 runtime.\n" + errors
+        )
 
 
 COMPONENTS = {
@@ -142,7 +166,7 @@ class Bridge(QObject):
                 status += " - unsupported types " + ",".join(map(str, sorted(set(unsupported))))
             if self.preview_alerts:
                 status += " - SYNTHETIC ALERT PREVIEW (not live alarm evaluation)"
-            self.value = json.dumps({"components": components, "display": display, "status": status})
+            self.value = json.dumps({"screen": self.screen, "components": components, "display": display, "status": status})
             self.last = signature
             self.changed.emit()
         except Exception as error:
@@ -162,8 +186,10 @@ def main():
     parser.add_argument("--preview-alert", action="append", default=[],
                         help="Preview this exact active-alert text using the shared popup; synthetic, no device writes")
     args = parser.parse_args()
+    dll_directory = configure_qt_dll_search()
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
+    validate_media_qml(engine)
     bridge = Bridge(args.url, args.patched_images, args.preview_alert)
     engine.rootContext().setContextProperty("simulator", bridge)
     engine.load(QUrl.fromLocalFile(str(Path(__file__).with_name("qml") / "NativeDash.qml")))
@@ -175,7 +201,11 @@ def main():
             image = window.screen().grabWindow(window.winId())
             app.exit(0 if image.save(str(args.screenshot)) else 1)
         QTimer.singleShot(2500, screenshot)
-    return app.exec_()
+    try:
+        return app.exec_()
+    finally:
+        if dll_directory is not None:
+            dll_directory.close()
 
 
 if __name__ == "__main__":

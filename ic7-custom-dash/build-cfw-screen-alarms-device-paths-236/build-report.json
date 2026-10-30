@@ -1,0 +1,43 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "label": "screen-alarms",
+  "package_version": "2.36.0.0.0",
+  "changed_members": [
+    "qml_components_data/qml/factory_screens/main.qml",
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 336,
+  "added_members": [
+    "qml_components_data/qml/user_components/HalSplash.qml"
+  ],
+  "startup_splash": true,
+  "alert_media": true,
+  "runtime_components": {
+    "HalImage.qml": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+    "main.qml": "cf282c7077fcddb3c4a2052665c9506d0f8b36350700bd3b1d800e1137461b83",
+    "HalSplash.qml": "8622e242be00df6352b0b180e4fab902e7fb7db0215216625be7fd2f40752920",
+    "HalAlarmPopup.qml": "c22d2cb107670c19a83f109ed3ad56cfc72136b49431bd6c0e3da58fe36d4fee"
+  },
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+  "wrapper_preserved": true,
+  "migration_definition": {
+    "name": "ic-7.hdef",
+    "bytes": 7971401,
+    "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+    "listed_for_device_update": false
+  },
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-screen-alarms-experimental.nex": {
+      "bytes": 25369879,
+      "sha256": "9f4f449f57b2aba20088fdee3ca5c14503fce5956bdfec1fb500259e2d084683"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 25343767,
+      "sha256": "da4c15288c9205830a91e196b88bdcd37902530a9341ba97bc75d1bbc9f2ec88"
+    }
+  }
+}

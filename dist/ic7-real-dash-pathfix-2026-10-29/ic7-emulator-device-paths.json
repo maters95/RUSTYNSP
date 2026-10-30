@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-device-paths.zip",
+  "bytes": 30995566,
+  "sha256": "fdcc9c211a7aa889bd315eff825fa9a658c17232151c75a6b9f9aae6f3468baf",
+  "files": 62,
+  "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"
+}

@@ -54,7 +54,8 @@ foreach (string name in new[] {"main.qml", "HalSplash.qml", "HalAlarmPopup.qml",
         throw new Exception("Media component differs from deploy source: " + name);
 }
 foreach (var entry in baseline) {
-    if (entry.Key == "NSP.Media.main.qml" || entry.Key == "NSP.Media.HalSplash.qml") continue;
+    if (entry.Key == "NSP.Media.main.qml" || entry.Key == "NSP.Media.HalSplash.qml" ||
+        entry.Key == "NSP.Media.HalAlarmPopup.qml" || entry.Key == "NSP.Media.HalImage.qml") continue;
     if (!candidate.TryGetValue(entry.Key, out byte[] value) ||
         !entry.Value.AsSpan().SequenceEqual(value)) throw new Exception("Resourcefix mismatch: " + entry.Key);
 }
@@ -74,7 +75,7 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             self.assertIn("resourcefix resources retained byte-for-byte", result.stdout)
 
     def test_splash_nex_preserves_every_other_resource(self):
-        nex = ROOT / "ic7-custom-dash/build-cfw-native-media-splash-236/ic7-2.36-native-media-splash-experimental.nex"
+        nex = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-device-paths-236/ic7-2.36-screen-alarms-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the splash NEX first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))
@@ -92,11 +93,12 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             (builder["TARGET"], "HalImage.qml"),
             (builder["ROOT_TARGET"], "main.qml"),
             (builder["SPLASH_TARGET"], "HalSplash.qml"),
+            (builder["ALERT_TARGET"], "HalAlarmPopup.qml"),
         ):
             self.assertEqual(after.pop(member), (ROOT / "ic7-custom-dash/deploy/nsp" / filename).read_bytes())
             before.pop(member, None)
         self.assertEqual(after, before)
-        self.assertEqual(len(after), 337)
+        self.assertEqual(len(after), 336)
 
     def test_manifest_validation_and_persistence(self):
         with tempfile.TemporaryDirectory(prefix="nsp-splash-") as directory:
@@ -142,10 +144,28 @@ if (doc.RootElement.GetProperty("source").GetString() != "u/clip with spaces.mp4
 SplashMedia.SaveManifest(args[0], manifest);
 if (!File.ReadAllBytes(Path.Combine(args[0], SplashMedia.ManifestName)).AsSpan().SequenceEqual(manifest))
     throw new Exception("Persisted bytes");
+string target = Path.Combine(args[0], SplashMedia.ManifestName);
+File.SetLastWriteTimeUtc(target, new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+DateTime saved = File.GetLastWriteTimeUtc(target);
+using (FileStream held = new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+    SplashMedia.SaveManifest(args[0], manifest);
+    if (File.GetLastWriteTimeUtc(target) != saved) throw new Exception("Unchanged media was rewritten");
+    if (MediaResource.Save(args[0], SplashMedia.ManifestName, manifest))
+        throw new Exception("Unchanged resource reported as a map edit");
+}
 SplashMedia.SaveManifest(args[0], SplashMedia.CreateManifest("h/static.png", false));
 using JsonDocument disabled = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(args[0], SplashMedia.ManifestName)));
 if (disabled.RootElement.GetProperty("source").GetString() != "") throw new Exception("Disable");
+using JsonDocument cleared = JsonDocument.Parse(SplashMedia.CreateManifest("", false));
+if (cleared.RootElement.GetProperty("source").GetString() != "") throw new Exception("Clear startup selection");
+if (!MediaResource.Save(args[0], "fresh.json", manifest))
+    throw new Exception("New resource did not report a map edit");
 if (File.Exists(Path.Combine(args[0], SplashMedia.ManifestName + ".tmp"))) throw new Exception("Temp retained");
+if (Directory.GetFiles(args[0], "*.tmp").Length != 0) throw new Exception("Atomic media temp retained");
+foreach (string name in new[] {"", "..", "../bad", "sub/file.gif", "sub\\\\file.gif"}) {
+    try { MediaResource.Save(args[0], name, manifest); throw new Exception("Unsafe resource filename"); }
+    catch (InvalidDataException) {}
+}
 Console.WriteLine("Splash manifest checks passed");
 """)
             result = subprocess.run(

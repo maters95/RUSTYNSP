@@ -1050,7 +1050,8 @@ internal class Form40 : Form
 						byte[] bytes = File.ReadAllBytes(path);
 						byte[] manifest = NSP.SplashMedia.CreateManifest(
 							(bool_2 ? "u/" : "h/") + string_9, NSP.SplashMedia.IsAnimated(path, bytes));
-						NSP.SplashMedia.SaveManifest(Path.Combine(Form23.string_10, "images"), manifest);
+						Form23.SaveMediaResource(framework_0, NSP.SplashMedia.ManifestName, manifest);
+						Form23.RefreshMediaPreview(framework_0);
 					}
 					catch (Exception error)
 					{

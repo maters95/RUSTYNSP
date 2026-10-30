@@ -13,19 +13,24 @@ def main():
     destination = parser.parse_args().output.resolve()
     destination.parent.mkdir(parents=True, exist_ok=True)
     included = []
+    maintained = root.parent / "ic7-custom-dash/deploy/nsp"
+    shared = {f"qml/stock_renderer/{name}": maintained / name
+              for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")}
     with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for source in sorted(root.rglob("*")):
             relative = source.relative_to(root)
+            if relative.as_posix() in shared:
+                continue
             if not source.is_file() or any(part in ("__pycache__", "state", "sandbox-state", "workbench-state", ".venv") for part in relative.parts):
                 continue
             if source.name.startswith("port-") or source.suffix in (".pyc", ".jsc", ".qmlc"):
                 continue
             archive.write(source, "ic7-emulator/" + relative.as_posix())
             included.append(relative.as_posix())
-        alarm = root.parent / "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
-        if alarm.is_file():
-            relative = "qml/stock_renderer/HalAlarmPopup.qml"
-            archive.write(alarm, "ic7-emulator/" + relative)
+        for relative, source in shared.items():
+            if not source.is_file():
+                raise FileNotFoundError("The shared dash component is missing: " + str(source))
+            archive.write(source, "ic7-emulator/" + relative)
             included.append(relative)
     with zipfile.ZipFile(destination) as archive:
         if archive.testzip() is not None:
