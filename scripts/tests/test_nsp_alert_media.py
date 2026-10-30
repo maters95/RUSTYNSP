@@ -14,7 +14,7 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-native-236"
+CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236"
 
 
 class AlertMediaTests(unittest.TestCase):
@@ -91,8 +91,12 @@ Item {
             compare(original.width, 300);
             compare(findChild(popup, "alertBanner:OIL PRESSURE"), original);
             edit("reset");
-            popup.reInitAlarmScreen(alarm);
-            tryCompare(original, "x", 0);
+            // The application calls reInitAlarmScreen on every update tick; the popup
+            // re-reads the manifest at most every manifestRefreshMs.
+            tryVerify(function() {
+                popup.reInitAlarmScreen(alarm);
+                return original.x === 0;
+            }, popup.manifestRefreshMs + 3000);
             compare(original.y, 420);
             compare(popup.activeAlarms.length, 1);
             popup.destroy();

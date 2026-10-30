@@ -61,6 +61,7 @@ Item {
                 {text: "OIL PRESSURE", height: "60", bc: "red", fc: "white"},
                 {text: "KFC LIMITER", height: "60", bc: "red", fc: "white"}
             ]));
+            popup.z = 99;  // as Alarm_Module::draw_alarms does after every update
         }
 
         function test_restrictedAlarmFollowsNativeScreensWithoutMarkers() {

@@ -95,10 +95,12 @@ Item {
         function test_nativeAlarmUpdateReloadsAppearanceWithoutReopening() {
             createPopup("alerts-valid.json");
             tryVerify(function() { return popup.bannerConfig.length === 2; });
+            popup.manifestRefreshMs = 100;
             var message = JSON.stringify([active("OIL PRESSURE")]);
             popup.reInitAlarmScreen(message);
             compare(findChild(popup, "alertBanner:OIL PRESSURE").x, 100);
             popup.manifestUrl = Qt.resolvedUrl("fixtures/alerts-gif-only.json");
+            wait(150);
             popup.reInitAlarmScreen(message);
             tryVerify(function() {
                 var banner = findChild(popup, "alertBanner:OIL PRESSURE");
@@ -125,6 +127,24 @@ Item {
             tryVerify(function() { return image.currentFrame !== frame; });
         }
 
+        function test_nativeTicksThrottleManifestReads() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            var requests = popup.manifestRequestCount;
+            var started = Date.now();
+            var message = JSON.stringify([active("OIL PRESSURE")]);
+            for (var tick = 0; tick < 30; tick++) {
+                popup.reInitAlarmScreen(tick % 2 ? message : "[]");
+                popup.z = 99;
+                wait(5);
+            }
+            var allowed = 1 + Math.floor((Date.now() - started) / popup.manifestRefreshMs);
+            verify(popup.manifestRequestCount - requests <= allowed,
+                   (popup.manifestRequestCount - requests) + " manifest reads in 30 ticks");
+            popup.reInitAlarmScreen(message);
+            verify(findChild(popup, "alertBanner:OIL PRESSURE") !== null);
+        }
+
         function test_nativePropertyRefreshReloadsAppearance() {
             createPopup("alerts-valid.json");
             tryVerify(function() { return popup.bannerConfig.length === 2; });
@@ -147,6 +167,13 @@ Item {
             popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE")]));
             wait(40);
             compare(findChild(popup, "animatedImage"), image);
+        }
+
+        function test_paddedNativeTextStillMatches() {
+            createPopup("alerts-valid.json");
+            tryVerify(function() { return popup.bannerConfig.length === 2; });
+            popup.reInitAlarmScreen(JSON.stringify([active("OIL PRESSURE  ")]));
+            compare(findChild(popup, "alertBanner:OIL PRESSURE  ").x, 100);
         }
 
         function test_exactMatchingAndVariantGate() {

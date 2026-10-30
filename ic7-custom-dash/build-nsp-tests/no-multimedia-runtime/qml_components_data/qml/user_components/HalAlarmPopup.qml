@@ -9,6 +9,8 @@ Item {
     id: alertPopup
     x: 0
     y: 0
+    // On the dash Alarm_Module::draw_alarms sets z to 99 after every reInitAlarmScreen,
+    // which still stacks the popup above the five UIScreen containers (z 0).
     z: 9000
     width: 860
     height: 480
@@ -38,6 +40,11 @@ Item {
     property bool mediaRequestPending: false
     property bool mediaReloadQueued: false
     property string loadedManifest: ""
+    // draw_alarms calls reInitAlarmScreen on every UIMain::update tick (update reschedules
+    // itself with QTimer::singleShot), so native updates re-read the manifest at most this often.
+    property int manifestRefreshMs: 2000
+    property real lastManifestRequest: 0
+    property int manifestRequestCount: 0
     property int activeScreenNumber: parent && typeof parent.activeScreenNumber === "number"
         ? parent.activeScreenNumber : 0
     property bool screenWarningReported: false
@@ -169,6 +176,8 @@ Item {
             return;
         }
         mediaRequestPending = true;
+        lastManifestRequest = Date.now();
+        manifestRequestCount++;
         requestGeneration++;
         var generation = requestGeneration;
         var request = new XMLHttpRequest();
@@ -252,8 +261,11 @@ Item {
                 rowHeight = alertHeight;
             var custom = null;
             if (dashVariant === 11) {
+                // The app copies the map's fixed-width alarm text verbatim; NSP saves the
+                // banner's text trimmed, so padding must not defeat the (case-exact) match.
+                var key = alarm.text.trim();
                 for (var j = 0; j < bannerConfig.length; j++) {
-                    if (bannerConfig[j].text === alarm.text) {
+                    if (bannerConfig[j].text === key) {
                         custom = bannerConfig[j];
                         break;
                     }
@@ -316,7 +328,9 @@ Item {
             activeAlarms = alarms;
             rebuildAlarms();
         }
-        reloadAlertMedia();
+        var elapsed = Date.now() - lastManifestRequest;
+        if (elapsed < 0 || elapsed >= manifestRefreshMs)
+            reloadAlertMedia();
     }
 
     FontLoader { id: dinFont; source: halFontPath }

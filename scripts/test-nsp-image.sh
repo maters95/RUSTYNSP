@@ -75,7 +75,7 @@ ffmpeg -nostdin -hide_banner -loglevel error -y \
 cp "$FIXTURES/video.mp4" "$FIXTURES/ic7_video_probe.png"
 
 if [[ -n "${IC7_SYSROOT:-}" ]]; then
-    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_AlarmScreens.qml tst_NoMultimedia.qml tst_NativeScreens.qml; do
+    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_AlarmScreens.qml tst_NoMultimedia.qml tst_NativeScreens.qml tst_StartupTiming.qml tst_DeviceUrls.qml; do
         qemu-arm -L "$IC7_SYSROOT" \
             -E QML_DISABLE_DISK_CACHE=1 \
             -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \

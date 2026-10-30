@@ -66,8 +66,9 @@ Item {
     property var alarmScreenRoot: null
     property int reportedAlarmScreen: 0
 
+    // Inert for ordinary images: only a marker, or one that just stopped being one, reports.
     function reportAlarmScreen(shown) {
-        if (screenshotMode)
+        if (screenshotMode || (!alarmScreenMarker && !reportedAlarmScreen))
             return;
         var root = parent;
         while (root && typeof root.reportAlarmScreen !== "function")
@@ -100,10 +101,9 @@ Item {
 
     onVideoSourceChanged: syncVideoPlayback()
     onVisibleChanged: {
-        if (thisComp) {
-            syncVideoPlayback();
+        syncVideoPlayback();
+        if (thisComp)
             reportAlarmScreen(visible);
-        }
     }
     onScreenshotModeChanged: {
         syncVideoPlayback();
