@@ -88,6 +88,9 @@ VARIANTS = {
     "bad-fx-rate.json": json.dumps({"version": 1, "gauges": [
         {"channel": "Engine Speed", "trigger": "warn", "effect": "flash", "rateHz": 30}]}),
     "empty.json": "",
+    # The helper's --off manifests: valid, with no entries.
+    "off.json": json.dumps({"version": 1, "indicators": []}),
+    "off-fx.json": json.dumps({"version": 1, "gauges": []}),
 }
 
 

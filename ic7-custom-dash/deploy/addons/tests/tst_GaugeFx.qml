@@ -175,6 +175,18 @@ Item {
             compare(findChild(item, "ic7GaugeFxFrame").visible, false);
         }
 
+        function test_offManifestIsStock() {
+            var item = gauge("device", "HalNumeric.qml", {halChanNameText: "Engine Speed"});
+            var fx = fxOf(item);
+            tryVerify(function() { return fx.entries.length === 3; });
+            fx.manifestUrl = Qt.resolvedUrl("runtime/manifests/off-fx.json");
+            fx.reload();
+            tryVerify(function() { return fx.entries.length === 0; });
+            compare(fx.configurationError, "");
+            setValue(item, 9000);
+            compare(findChild(item, "ic7GaugeFxFrame").visible, false);
+        }
+
         function test_screenshotAndHiddenStopEffect() {
             var item = gauge("device", "HalNumeric.qml", {halChanNameText: "Engine Speed"});
             var fx = fxOf(item);

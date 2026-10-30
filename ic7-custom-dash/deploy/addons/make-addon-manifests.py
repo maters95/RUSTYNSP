@@ -3,6 +3,7 @@
 
     python make-addon-manifests.py spec.json --output upload-folder
     python make-addon-manifests.py --check upload-folder
+    python make-addon-manifests.py --off [indicators|gauge_fx] --output off-folder
 
 The spec is JSON with optional "indicators" and "gauge_fx" lists (see
 samples/spec.json). Media may be given as a local file path (copied into the output
@@ -12,6 +13,10 @@ to put in the map's user_resources\\images folder: ic7_indicators.json,
 ic7_gauge_fx.json and the media. Standard library only; works on Windows, macOS and
 Linux. The rules match ic7addons.js on the dash: anything it would reject is rejected
 here first.
+
+--off writes empty "off" manifests (all, or just one kind). NSP's resource write never
+deletes a file from the dash, so turning an add-on off means uploading one of these in
+place of the old manifest, then power-cycling the dash.
 """
 import argparse
 import json
@@ -38,6 +43,11 @@ FX_KEYS = {"channel", "trigger", "threshold", "effect", "colour", "rateHz", "wid
 SIZE_WARN = {".gif": 2 * 1024 * 1024, ".mp4": 8 * 1024 * 1024}
 SIZE_LIMIT = 24 * 1024 * 1024
 RESERVED = {"ic7_indicators.json", "ic7_gauge_fx.json", "ic7_alerts.json", "ic7_splash.json"}
+# Valid manifests with no entries: every component they configure draws as stock.
+OFF_MANIFESTS = {
+    "indicators": ("ic7_indicators.json", {"version": VERSION, "indicators": []}),
+    "gauge_fx": ("ic7_gauge_fx.json", {"version": VERSION, "gauges": []}),
+}
 
 
 class SpecError(ValueError):
@@ -51,8 +61,8 @@ def number(value):
 def validate_indicators(manifest):
     if not isinstance(manifest, dict) or manifest.get("version") != VERSION or \
             set(manifest) != {"version", "indicators"} or not isinstance(manifest["indicators"], list) or \
-            not 1 <= len(manifest["indicators"]) <= MAX_ENTRIES:
-        raise SpecError("indicators manifest needs version 1 and 1-64 indicators")
+            len(manifest["indicators"]) > MAX_ENTRIES:
+        raise SpecError("indicators manifest needs version 1 and 0-64 indicators")
     names = set()
     for i, entry in enumerate(manifest["indicators"]):
         where = f"indicator {i}"
@@ -84,8 +94,8 @@ def validate_indicators(manifest):
 def validate_gauge_fx(manifest):
     if not isinstance(manifest, dict) or manifest.get("version") != VERSION or \
             set(manifest) != {"version", "gauges"} or not isinstance(manifest["gauges"], list) or \
-            not 1 <= len(manifest["gauges"]) <= MAX_ENTRIES:
-        raise SpecError("gauge_fx manifest needs version 1 and 1-64 gauges")
+            len(manifest["gauges"]) > MAX_ENTRIES:
+        raise SpecError("gauge_fx manifest needs version 1 and 0-64 gauges")
     names = set()
     for i, entry in enumerate(manifest["gauges"]):
         where = f"gauge {i}"
@@ -215,6 +225,16 @@ def build(spec, spec_dir, output):
     return sorted(manifests) + sorted(collector.files), warnings
 
 
+def write_off(output, which="all"):
+    output.mkdir(parents=True, exist_ok=True)
+    written = []
+    for kind, (name, manifest) in OFF_MANIFESTS.items():
+        if which in ("all", kind):
+            (output / name).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+            written.append(name)
+    return written
+
+
 def check(folder):
     problems = []
     found = False
@@ -246,7 +266,16 @@ def main(argv=None):
     parser.add_argument("spec", nargs="?", type=Path, help="Spec JSON (see samples/spec.json)")
     parser.add_argument("--output", type=Path, help="Folder to write manifests and media into")
     parser.add_argument("--check", type=Path, metavar="FOLDER", help="Validate manifests already in FOLDER")
+    parser.add_argument("--off", nargs="?", const="all", choices=["all", *OFF_MANIFESTS],
+                        help="Write empty 'off' manifests (all, or one kind) into --output")
     args = parser.parse_args(argv)
+    if args.off:
+        if not args.output or args.spec or args.check:
+            parser.error("--off takes only --output")
+        written = write_off(args.output, args.off)
+        print(f"Wrote {len(written)} off manifests to {args.output}: {', '.join(written)}")
+        print("Upload them in place of the old manifests, then power-cycle the dash.")
+        return 0
     if args.check:
         problems = check(args.check)
         for problem in problems:

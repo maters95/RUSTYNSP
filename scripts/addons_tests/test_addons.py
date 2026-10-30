@@ -82,11 +82,26 @@ class ManifestHelper(unittest.TestCase):
 
     def test_test_fixture_bad_manifests_rejected(self):
         for name, text in FIXTURES["VARIANTS"].items():
-            if name == "empty.json":
+            if name == "empty.json" or name.startswith("off"):
                 continue
             validate = HELPER["validate_gauge_fx"] if "-fx" in name else HELPER["validate_indicators"]
             with self.assertRaises((ValueError, HELPER["SpecError"]), msg=name):
                 validate(json.loads(text))
+
+    def test_off_manifests_are_valid_and_match_the_fixtures(self):
+        with tempfile.TemporaryDirectory() as out:
+            result = subprocess.run([sys.executable, str(ADDONS / "make-addon-manifests.py"), "--off",
+                                     "--output", out], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("power-cycle", result.stdout)
+            self.assertEqual(HELPER["check"](Path(out)), [])
+            indicators = json.loads((Path(out) / "ic7_indicators.json").read_text())
+            gauges = json.loads((Path(out) / "ic7_gauge_fx.json").read_text())
+            self.assertEqual(indicators, json.loads(FIXTURES["VARIANTS"]["off.json"]))
+            self.assertEqual(gauges, json.loads(FIXTURES["VARIANTS"]["off-fx.json"]))
+        with tempfile.TemporaryDirectory() as out:
+            self.assertEqual(HELPER["write_off"](Path(out), "gauge_fx"), ["ic7_gauge_fx.json"])
+            self.assertFalse((Path(out) / "ic7_indicators.json").exists())
 
     def test_rejects_wrong_content_type(self):
         with self.assertRaisesRegex(HELPER["SpecError"], "content is .png"):

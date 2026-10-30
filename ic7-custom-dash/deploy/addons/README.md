@@ -28,10 +28,12 @@ repaints are a real CPU risk on the i.MX6, for little benefit). See `RESEARCH.md
   stock warning colour (pixel-tested).
 - **Fails closed to stock.** A missing, unreadable or invalid manifest (any bad entry
   rejects the whole file), missing media, a media decode error, or a missing add-on
-  file all leave the stock drawing. Add-on media replaces the stock icon only after it
-  has decoded, so the icon is never blank.
+  file all leave the stock drawing. Add-on GIF/image media replaces the stock icon only
+  after it has decoded, so the icon is never blank. MP4 media never hides the stock
+  icon: it plays over it, because a video player reports "loaded" before it has drawn
+  a frame.
 - **Bounded cost.** Each component reads its manifest once when it loads (no per-value
-  file access). Frame choice is at most 32 comparisons per value update. Effects
+  file access), so a new manifest takes effect after a power cycle. Frame choice is at most 32 comparisons per value update. Effects
   update at 10 Hz or less and only while triggered and on screen. An MP4 decoder is held
   only while that indicator is showing it. GIFs use `cache: false` and pause when hidden.
 
@@ -47,6 +49,10 @@ repaints are a real CPU risk on the i.MX6, for little benefit). See `RESEARCH.md
    python make-addon-manifests.py --check my-upload
    ```
 
+   `python make-addon-manifests.py --off --output off-upload` writes the empty "off"
+   manifests `{"version": 1, "indicators": []}` and `{"version": 1, "gauges": []}`
+   (`--off indicators` or `--off gauge_fx` for just one).
+
 ### `ic7_indicators.json` (version 1)
 
 ```json
@@ -61,7 +67,8 @@ repaints are a real CPU risk on the i.MX6, for little benefit). See `RESEARCH.md
 - `image`: filename of the picture selected for the indicator in NSP (png/jpg/bmp).
   Indicators showing any other image stay stock.
 - `on` / `off`: `u/<file>` (uploaded) or `h/<file>` (stock dash image); gif, png, jpg,
-  bmp or mp4. `off` applies only when no frame range matches.
+  bmp or mp4. `off` applies only when no frame range matches. An MP4 is drawn over the
+  stock tinted icon (which stays visible around and under it), never instead of it.
 - `frames`: 1-32 ranges, `min <= value < max`, first match wins; gif/png/jpg/bmp.
   `hysteresis` keeps the current range until the value leaves it by that much.
 - For a gear-style indicator, set its NSP warning limits outside the gear range, or it
@@ -100,9 +107,13 @@ NSP's **Write Settings and Resources** sends every file in its working
    `ic7_alerts.json` to (`Form23.SaveMediaResource`).
 3. Open the map, select the indicator images listed in `image` for your indicators,
    save, then connect and **Write Settings and Resources**.
-4. Flash the add-on NEX (below) only when you accept the risk.
-5. To turn an add-on off, delete its manifest from both folders, or upload a manifest
-   without that entry, and write resources again.
+4. Flash the add-on NEX (below) only when you accept the risk, then power-cycle the dash.
+5. To turn an add-on off, **replace** its manifest: deleting it does nothing on the dash,
+   because `Form23.method_226` only writes files and never deletes them there. Put an
+   "off" manifest (`--off` above), or one without that entry, in both folders under the
+   same name, write resources again, then **power-cycle the dash**: each component reads
+   its manifest once, when it loads (`Component.onCompleted`). An invalid manifest also
+   turns every entry off (stock drawing), but logs an error.
 
 ## Try it first
 
@@ -118,22 +129,29 @@ NSP's **Write Settings and Resources** sends every file in its working
 
 ```
 python3 scripts/build-ic7-addons.py \
-  --base ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236/ic7-2.36-screen-alarms-experimental.nex \
+  --base ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex \
   --sysroot <extracted dash rootfs>
 ```
 
 `--base` is required and its SHA-256 is recorded. Output in
 `ic7-custom-dash/build-addons-experimental-236/`: the NEX, `build-report.json` and
-`audit-report.json` (plus `audit-nex-report.json` from `scripts/audit-nex.py`). The builder refuses a base that already changes one of the add-on
-members. Only the add-on QML differs from the base; the wrapper, `manifest.xml`,
+`audit-report.json` (plus `audit-nex-report.json` from `scripts/audit-nex.py`). The current
+base is `build-cfw-screen-alarms-r3-236`. The builder refuses a base that already changes
+one of the add-on members. Only the add-on QML differs from the base; the wrapper, `manifest.xml`,
 `ic-7.hdef` and every other member (bytes and tar metadata) are copied. Add-on members
-get a fresh mtime so a stale Qt disk cache cannot run old code. `scripts/audit-nex.py`
-also runs cleanly on the output, apart from its expected "does not match maintained
-source" lines (it compares against the main work's `deploy/nsp` folder).
+get a fresh mtime as a precaution against a stale Qt disk cache.
+
+`audit-nex-report.json` lists "Packaged QML does not match maintained source" for
+every add-on member and so says `suitable: false`. That is expected: `audit-nex.py`
+compares changed QML with the main work's `deploy/nsp` folder, where the add-on
+files do not live. Every other check in it (stock members, wrapper, imports on the
+dash) must still pass. `audit-report.json` is the add-on check: the add-on members
+must equal `deploy/addons/qml` and every other member must equal the base.
 
 ## Rollback
 
-- Remove the manifests (see Upload step 5): every component is stock again.
+- Upload "off" manifests and power-cycle (see Upload step 5): every component is stock
+  again. Deleting the files on the PC does not remove them from the dash.
 - Re-flash the **base** NEX you built from (its SHA-256 is in `build-report.json`) to
   drop the add-on QML entirely, or the stock `fw/Dash-V2-36-0-Release.nex` to drop
   everything custom. Never interrupt an update; keep stable bench power.
@@ -143,8 +161,11 @@ source" lines (it compares against the main work's `deploy/nsp` folder).
 - New QML in the firmware resources: a component that failed to load would show as a
   gauge error. The add-on code sits in separately loaded files so a failure there leaves
   the stock gauge, but the four changed gauge files themselves must still load.
-- The manifest/media path depends on the dash storing and serving `.json`, `.gif` and
-  `.mp4` user resources, which is still unproven on hardware (same as the main work).
+- The dash stores `.gif`, `.mp4` and `.json` user resources: the owner has played
+  uploaded GIF and MP4 files in screen image components on hardware, and the captures
+  show the dash's user index listing `.gif`, `.mp4` and `.json` uploads. Still unproven
+  on hardware: QML on the dash reading a `.json` user resource (the same dependency as
+  the main work's `ic7_alerts.json`).
 - GPU/CPU: GIF decoding is on the CPU; many large or fast GIFs, or several MP4s at once,
   can slow the display. Keep media small (about 96 x 96, few frames); the helper warns
   above 2 MB GIF / 8 MB MP4. MP4 on the i.MX6 goes through GStreamer and was only tested
@@ -157,7 +178,7 @@ source" lines (it compares against the main work's `deploy/nsp` folder).
 
 | Check | Result |
 |---|---|
-| Desktop Qt 5.15 (`scripts/addons_tests/run.sh`) | 69 passed: both folder layouts, no manifest, 9 bad-manifest cases, missing media, GIF and MP4, threshold transitions with hysteresis, stock API equality, pixel comparisons |
-| Dash Qt 5.9.6 under QEMU (`IC7_SYSROOT=... run.sh`) | 54 passed (no pixel tests: offscreen grab is black on ARM); MP4 decoded |
-| Builder/helper (`python3 -m unittest discover -s scripts/addons_tests`) | 15 passed |
+| Desktop Qt 5.15 (`scripts/addons_tests/run.sh`) | 71 passed: both folder layouts, no manifest, "off" manifests, 9 bad-manifest cases, missing media, GIF and MP4 (stock icon kept under MP4), threshold transitions with hysteresis, stock API equality, pixel comparisons |
+| Dash Qt 5.9.6 under QEMU (`IC7_SYSROOT=... run.sh`) | 56 passed (no pixel tests: offscreen grab is black on ARM); MP4 decoded |
+| Builder/helper (`python3 -m unittest discover -s scripts/addons_tests`) | 16 passed |
 | Hardware | **None.** Not flashed, not run on a dash or in NSP. |

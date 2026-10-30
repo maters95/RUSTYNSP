@@ -9,14 +9,17 @@
 >    `../../images/`, after checking the absolute `/opt/applications/dtn/...` file with
 >    `QDir::exists` (it logs "Component image file does not exist" otherwise). Only the
 >    **filename** survives, so the add-ons key on the basename, never the whole path.
-> 2. **"Already-proven" configuration channel is not proven on hardware.** The JSON
->    manifests travel like `ic7_alerts.json`; the 2026-10-29 capture shows the dash
->    acknowledging `.json`/`.gif` resource writes, but the flash that carried them failed
->    because the components looked in the wrong folder, and the corrected path has not yet
->    been seen working on a dash. It is the same unverified dependency the main
->    splash/alarm work has. (`FIRMWARE-CAPABILITIES.md` says only `*.png *.jpg *.jpeg *.bmp`
->    and fonts are writable; `MEDIA-RUNTIME-AUDIT.md` says the write handler stores any
->    extension. The capture supports the latter; device-side readability is unverified.)
+> 2. **"Already-proven" configuration channel is only partly proven on hardware.** The
+>    dash stores and serves `.gif`/`.mp4` user resources: the owner has played uploaded
+>    GIF and MP4 files in screen `HalImage` components on the dash, and the captures show
+>    the dash's user index listing `.gif`, `.mp4` and `.json` uploads (the 2026-10-29
+>    capture also shows `.json`/`.gif` writes acknowledged). What is unproven is QML on
+>    the dash reading a `.json` user resource: the flash that carried `ic7_alerts.json`
+>    failed because the components looked in the wrong folder, and the corrected path
+>    has not yet been seen working on a dash. It is the same unverified dependency the
+>    main splash/alarm work has. (`FIRMWARE-CAPABILITIES.md` says only `*.png *.jpg
+>    *.jpeg *.bmp` and fonts are writable; the hardware playback and captures show the
+>    write handler stores any extension, as `MEDIA-RUNTIME-AUDIT.md` says.)
 > 3. **How an arbitrary-name file reaches the dash** (`nsp-rebuild/ns4/Form23.cs`,
 >    `method_226`, "WriteUserResources"): for every sub-folder of
 >    `%APPDATA%\Haltech\Nexus\user_resources` (`string_10`), `Directory.GetFiles(folder)`

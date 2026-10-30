@@ -18,6 +18,10 @@ Item {
         (kind === "mp4" && (video.status === Loader.Error ||
                             (video.item !== null && video.item.errorString !== "")))
     visible: shown && ready
+    // Whether the stock rendering underneath may be hidden. Never for MP4: MediaPlayer
+    // reports Loaded/Buffered before any frame is drawn, so the stock icon stays drawn
+    // under the video and a warning can never go blank.
+    readonly property bool covers: visible && kind !== "mp4"
     onFailedChanged: {
         if (failed)
             console.error("Ic7AddonMedia: cannot show " + source + "; stock rendering kept");

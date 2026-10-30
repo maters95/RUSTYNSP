@@ -50,7 +50,8 @@ function resolve(source, userBase, stockBase) {
     return base.toString() + encodeURIComponent(source.substring(2));
 }
 
-// Returns {entries: [...], error: ""}; any defect rejects the whole manifest.
+// Returns {entries: [...], error: ""}; any defect rejects the whole manifest. An empty
+// list is valid: it is the "off" manifest that turns every entry back to stock.
 function parseIndicators(text) {
     var config;
     try {
@@ -59,9 +60,9 @@ function parseIndicators(text) {
         return {entries: [], error: "invalid JSON: " + error};
     }
     if (!isObject(config) || config.version !== 1 || !Array.isArray(config.indicators) ||
-            config.indicators.length < 1 || config.indicators.length > MAX_ENTRIES ||
+            config.indicators.length > MAX_ENTRIES ||
             !onlyKeys(config, ["version", "indicators"]))
-        return {entries: [], error: "unsupported manifest (need version 1 and 1-64 indicators)"};
+        return {entries: [], error: "unsupported manifest (need version 1 and 0-64 indicators)"};
     var names = [];
     for (var i = 0; i < config.indicators.length; i++) {
         var entry = config.indicators[i];
@@ -103,9 +104,9 @@ function parseGaugeFx(text) {
         return {entries: [], error: "invalid JSON: " + error};
     }
     if (!isObject(config) || config.version !== 1 || !Array.isArray(config.gauges) ||
-            config.gauges.length < 1 || config.gauges.length > MAX_ENTRIES ||
+            config.gauges.length > MAX_ENTRIES ||
             !onlyKeys(config, ["version", "gauges"]))
-        return {entries: [], error: "unsupported manifest (need version 1 and 1-64 gauges)"};
+        return {entries: [], error: "unsupported manifest (need version 1 and 0-64 gauges)"};
     var names = [];
     for (var i = 0; i < config.gauges.length; i++) {
         var entry = config.gauges[i];

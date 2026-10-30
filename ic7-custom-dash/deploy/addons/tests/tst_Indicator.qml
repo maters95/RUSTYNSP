@@ -210,6 +210,21 @@ Item {
             tryCompare(addon, "covering", false);
         }
 
+        function test_offManifestIsStock() {
+            var item = indicator("device", "shift.png");
+            var addon = addonOf(item);
+            tryVerify(function() { return addon.entries.length === 4; });
+            tryCompare(addon, "covering", true);
+            addon.manifestUrl = Qt.resolvedUrl("runtime/manifests/off.json");
+            addon.reload();
+            tryVerify(function() { return addon.entries.length === 0; });
+            compare(addon.configurationError, "");
+            tryCompare(addon, "covering", false);
+            compare(findChild(item, "ic7StockMask").visible, true);
+            setValue(item, 9);
+            compare(addon.covering, false);
+        }
+
         function test_missingMediaFallsBackToStock() {
             var item = indicator("device", "missing.png");
             var addon = addonOf(item);
@@ -235,15 +250,24 @@ Item {
             // No decoder is held while the indicator is off.
             compare(findChild(on, "ic7AddonVideo"), null);
             compare(addon.covering, false);
+            var mask = findChild(item, "ic7StockMask");
             setValue(item, 9);
-            // Either the video decodes and covers, or it fails and the stock warning stays.
+            // MediaPlayer reports Loaded/Buffered before a frame is drawn, so MP4 never
+            // hides the stock warning: it stays drawn underneath while loading, playing
+            // or after a failure.
+            compare(addon.warning, true);
+            compare(mask.visible, true);
+            compare(addon.covering, false);
             tryVerify(function() { return on.visible || on.failed; }, 8000);
             console.log("mp4 outcome: " + (on.visible ? "decoded and shown" : "failed, stock warning kept"));
             if (on.visible) {
                 verify(findChild(on, "ic7AddonVideo").ready);
-                compare(findChild(item, "ic7StockMask").visible, false);
-            } else {
-                compare(findChild(item, "ic7StockMask").visible, true);
+                compare(on.covers, false);
+            }
+            for (var tick = 0; tick < 5; tick++) {
+                compare(mask.visible, true);
+                compare(addon.covering, false);
+                wait(100);
             }
             setValue(item, 0);
             tryCompare(on, "visible", false);
