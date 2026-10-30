@@ -57,6 +57,39 @@ Item {
 
     readonly property bool animatedSource: /(?:\.gif|\/ic7_animation_[^/]*\.png)(?:[?#].*)?$/i.test(halImagePath)
     readonly property bool videoSource: /(?:\.mp4|\/ic7_video_[^/]*\.png)(?:[?#].*)?$/i.test(halImagePath)
+    readonly property int alarmScreenMarker: {
+        if (width !== 1 || height !== 1 || halImageOpacity !== 0)
+            return 0;
+        var match = /\/ic7_screen_([1-5])\.png(?:[?&#].*)?$/.exec(halImagePath);
+        return match ? Number(match[1]) : 0;
+    }
+    property var alarmScreenRoot: null
+    property int reportedAlarmScreen: 0
+
+    function reportAlarmScreen(shown) {
+        if (screenshotMode)
+            return;
+        var root = parent;
+        while (root && typeof root.reportAlarmScreen !== "function")
+            root = root.parent;
+        if (reportedAlarmScreen && alarmScreenRoot && alarmScreenRoot.alarmScreenTrackingEnabled === true &&
+                (!shown || root !== alarmScreenRoot || alarmScreenMarker !== reportedAlarmScreen))
+            alarmScreenRoot.reportAlarmScreen(reportedAlarmScreen, false);
+        reportedAlarmScreen = 0;
+        alarmScreenRoot = root;
+        if (!alarmScreenMarker || !shown)
+            return;
+        if (root && root.alarmScreenTrackingEnabled === true) {
+            root.reportAlarmScreen(alarmScreenMarker, shown);
+            reportedAlarmScreen = alarmScreenMarker;
+        } else if (!root) {
+            console.error("HalImage: alarm screen marker has no screen-aware root");
+        }
+    }
+
+    onAlarmScreenMarkerChanged: if (thisComp) reportAlarmScreen(visible)
+    onParentChanged: if (thisComp) reportAlarmScreen(visible)
+    Component.onDestruction: if (thisComp) reportAlarmScreen(false)
 
     function syncVideoPlayback() {
         if (videoSource && visible && !screenshotMode)
@@ -66,8 +99,16 @@ Item {
     }
 
     onVideoSourceChanged: syncVideoPlayback()
-    onVisibleChanged: syncVideoPlayback()
-    onScreenshotModeChanged: syncVideoPlayback()
+    onVisibleChanged: {
+        if (thisComp) {
+            syncVideoPlayback();
+            reportAlarmScreen(visible);
+        }
+    }
+    onScreenshotModeChanged: {
+        syncVideoPlayback();
+        reportAlarmScreen(visible);
+    }
     onHalImagePathChanged: mediaError = ""
 
     function reportMediaError(message) {

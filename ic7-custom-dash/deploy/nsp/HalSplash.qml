@@ -15,6 +15,11 @@ Item {
     property string mediaError: ""
     property bool completed: false
     property int generation: 0
+    // On the dash main.qml squeezes the 860-wide canvas into the 800-pixel panel.
+    readonly property real panelXScale: Qt.platform.os === "windows" ? 1.0 : 800 / 860
+    // Same source classification as HalImage.
+    readonly property bool videoMedia: /(?:\.mp4|\/ic7_video_[^\/]*\.png)(?:[?#].*)?$/i.test(mediaPath)
+    readonly property bool animatedMedia: /(?:\.gif|\/ic7_animation_[^\/]*\.png)(?:[?#].*)?$/i.test(mediaPath)
     signal finished()
 
     function finish() {
@@ -23,7 +28,8 @@ Item {
         completed = true;
         visible = false;
         timeout.stop();
-        media.active = false;
+        video.active = false;
+        mediaPath = "";
         finished();
     }
 
@@ -38,7 +44,7 @@ Item {
         var requestGeneration = generation;
         completed = false;
         visible = false;
-        media.active = false;
+        video.active = false;
         mediaPath = "";
         mediaError = "";
         timeout.interval = maximumDurationMs;
@@ -85,7 +91,7 @@ Item {
             timeout.interval = config.durationMs;
             timeout.restart();
             visible = true;
-            media.active = true;
+            video.active = videoMedia;
         };
         request.open("GET", manifestUrl);
         request.send();
@@ -96,21 +102,78 @@ Item {
         color: "black"
     }
 
-    Loader {
-        id: media
-        objectName: "splashMediaLoader"
-        anchors.fill: parent
-        active: false
-        sourceComponent: Component {
-            HalImage {
-                objectName: "splashMedia"
-                halImagePath: splash.mediaPath
-                halImageOpacity: 1000
-                Component.onCompleted: repaintAll()
-                onMediaErrorChanged: {
-                    if (mediaError !== "")
-                        splash.fail(mediaError);
-                }
+    // Stock NSP converts a static splash by fitting it, centred on black and never
+    // upscaled, into the physical 800 x 480 panel (Form23.smethod_24 with
+    // Class25.smethod_1). Lay media out in panel pixels and undo main.qml's squeeze so
+    // animated media lands where the stock splash would; an 800 x 480 source fills it.
+    Item {
+        id: panel
+        objectName: "splashPanel"
+        width: splash.width * splash.panelXScale
+        height: splash.height
+        transform: Scale { xScale: 1 / splash.panelXScale }
+
+        // QtQuick-only decoding: PNG/JPEG and GIF splashes never depend on QtMultimedia.
+        Image {
+            id: still
+            objectName: "staticImage"
+            readonly property real fit: implicitWidth > 0 && implicitHeight > 0
+                ? Math.min(1, panel.width / implicitWidth, panel.height / implicitHeight) : 1
+            anchors.centerIn: parent
+            width: implicitWidth * fit
+            height: implicitHeight * fit
+            source: splash.animatedMedia || splash.videoMedia ? "" : splash.mediaPath
+            cache: false
+            smooth: true
+            onStatusChanged: {
+                if (status === Image.Error)
+                    splash.fail("Startup image could not be decoded");
+            }
+        }
+
+        AnimatedImage {
+            id: animation
+            objectName: "animatedImage"
+            readonly property real fit: implicitWidth > 0 && implicitHeight > 0
+                ? Math.min(1, panel.width / implicitWidth, panel.height / implicitHeight) : 1
+            anchors.centerIn: parent
+            width: implicitWidth * fit
+            height: implicitHeight * fit
+            source: splash.animatedMedia ? splash.mediaPath : ""
+            cache: false
+            smooth: true
+            playing: splash.visible
+            onStatusChanged: {
+                if (status === Image.Error)
+                    splash.fail("Startup GIF could not be decoded");
+            }
+        }
+
+        // Loaded by URL so only MP4 startup media needs the multimedia component.
+        Loader {
+            id: video
+            objectName: "splashMediaLoader"
+            anchors.fill: parent
+            active: false
+            source: "HalImage.qml"
+            onLoaded: {
+                item.objectName = "splashMedia";
+                item.halImageOpacity = 1000;
+                item.halImagePath = splash.mediaPath;
+                item.repaintAll();
+            }
+            onStatusChanged: {
+                if (status === Loader.Error)
+                    splash.fail("Startup video component could not be loaded");
+            }
+        }
+
+        Connections {
+            target: video.item
+            ignoreUnknownSignals: true
+            onMediaErrorChanged: {
+                if (video.item.mediaError !== "")
+                    splash.fail(video.item.mediaError);
             }
         }
     }

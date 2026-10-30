@@ -58,7 +58,7 @@ internal sealed class AlertBannerEditor : Form
 			Dock = DockStyle.Fill,
 			Text = (focused ? "Appearance for " + focusText + ". Colour, priority and clearing remain controlled by the dash.\r\n"
 				: "Choose an alarm's Message text. Colour, priority and clearing remain controlled by the dash.\r\n") +
-				"Drag a rectangle to move; drag its bottom-right corner to resize. Numeric values use the 860 x 480 dash canvas. GIFs animate in this preview.\r\n" +
+				"The preview shows the rule's screen as the dash composes it (or NSP's active screen for All). Drag to move; drag the bottom-right corner to resize.\r\n" +
 				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning.\r\n" +
 				"Screens: All, a single number (5), or a list (1, 3, 5). Restrictions hide the popup only; native alarm and LED logic is unchanged."
 		});
@@ -404,6 +404,89 @@ internal sealed class AlertBannerEditor : Form
 			+ (online ? "; uploaded to dash." : ".") + " Save the map normally to keep changes.";
 	}
 
+	// ---- Preview against the real screen ------------------------------------
+	// The canvas shows the screen a rule applies to, composed from the loaded map the way
+	// the dash composes it, so placement is judged against the actual background and gauges.
+
+	// One-based screen to preview: the selected rule's first screen, else NSP's active one.
+	private int PreviewScreenNumber()
+	{
+		int count = 0;
+		try { count = framework?.awP?.method_79()?.Count ?? 0; } catch { }
+		if (Selected?.Screens != null && Selected.Screens.Length > 0)
+			return Selected.Screens[0] <= count ? Selected.Screens[0] : 0;
+		int active = -1;
+		try { active = framework?.awP?.method_78()?.method_256() ?? -1; } catch { }
+		return active >= 0 && active < count ? active + 1 : 0;
+	}
+
+	private static bool IsImageSource(string source) => source != null
+		&& (source.StartsWith("h/", StringComparison.Ordinal) || source.StartsWith("u/", StringComparison.Ordinal))
+		&& new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" }
+			.Any(extension => source.EndsWith(extension, StringComparison.OrdinalIgnoreCase));
+
+	// Enabled components of a one-based screen (rectangle, image source, label) in z-order.
+	private System.Collections.Generic.List<(Rectangle rect, string source, string label)> ScreenComponents(int screenNumber)
+	{
+		var ordered = new System.Collections.Generic.List<(int z, Rectangle rect, string source, string label)>();
+		try
+		{
+			var screens = framework?.awP?.method_79();
+			if (screens == null || screenNumber < 1 || screenNumber > screens.Count)
+				return new System.Collections.Generic.List<(Rectangle, string, string)>();
+			foreach (var component in screens[screenNumber - 1].method_72())
+			{
+				if (component.method_297().method_256() == 0)
+					continue;
+				int w = component.method_302().method_256();
+				int h = component.method_303().method_256();
+				if (w <= 1 && h <= 1)
+					continue; // empty or a transparent alarm screen marker
+				var rect = new Rectangle(component.method_299().method_256(), component.method_300().method_256(), w, h);
+				string source = null, label = null;
+				try { source = component.method_298()?.method_260()?.TrimEnd('\0'); } catch { }
+				try { label = component.method_304()?.method_260()?.TrimEnd('\0'); } catch { }
+				ordered.Add((component.method_301().method_256(), rect, source, label));
+			}
+			ordered.Sort((a, b) => a.z.CompareTo(b.z));
+		}
+		catch (Exception error)
+		{
+			Class23.smethod_3("Alarm appearance preview: " + error.Message, bool_1: false);
+		}
+		return ordered.Select(entry => (entry.rect, entry.source, entry.label)).ToList();
+	}
+
+	private void DrawScreenBackdrop(Graphics graphics, int screenNumber)
+	{
+		foreach (var (rect, source, label) in ScreenComponents(screenNumber))
+		{
+			Image image = IsImageSource(source) ? PreviewImage(source) : null;
+			if (image != null && image.Width > 0 && image.Height > 0)
+			{
+				// Dash image components stretch to their rectangle.
+				graphics.DrawImage(image, rect);
+				continue;
+			}
+			using var fill = new SolidBrush(Color.FromArgb(55, 70, 80, 95));
+			graphics.FillRectangle(fill, rect);
+			using var outline = new Pen(Color.FromArgb(120, 110, 120, 130));
+			graphics.DrawRectangle(outline, rect);
+			if (!string.IsNullOrWhiteSpace(label))
+			{
+				using var labelFont = new Font(FontFamily.GenericSansSerif, 12f, FontStyle.Regular, GraphicsUnit.Pixel);
+				using var labelBrush = new SolidBrush(Color.FromArgb(150, Color.White));
+				graphics.DrawString(label, labelFont, labelBrush, rect.X + 3, rect.Y + 3);
+			}
+		}
+		using var captionFont = new Font(FontFamily.GenericSansSerif, 14f, FontStyle.Bold, GraphicsUnit.Pixel);
+		using var captionBack = new SolidBrush(Color.FromArgb(170, Color.Black));
+		string caption = "Screen " + screenNumber;
+		var size = graphics.MeasureString(caption, captionFont);
+		graphics.FillRectangle(captionBack, 4, 4, size.Width + 8, size.Height + 4);
+		graphics.DrawString(caption, captionFont, Brushes.White, 8, 6);
+	}
+
 	private float ScaleFactor => Math.Min(canvas.ClientSize.Width / 860f, canvas.ClientSize.Height / 480f);
 
 	private void PaintCanvas(object sender, PaintEventArgs e)
@@ -414,10 +497,16 @@ internal sealed class AlertBannerEditor : Form
 		e.Graphics.ScaleTransform(scale, scale);
 		e.Graphics.DrawRectangle(Pens.DimGray, 0, 0, 859, 479);
 		ImageAnimator.UpdateFrames();
+		int previewScreen = PreviewScreenNumber();
+		if (previewScreen > 0)
+			DrawScreenBackdrop(e.Graphics, previewScreen);
 		using var textFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using var bannerFont = new Font(FontFamily.GenericSansSerif, 22f, FontStyle.Bold, GraphicsUnit.Pixel);
 		foreach (var banner in banners)
 		{
+			// On a screen preview, draw only the rules the dash would show on that screen.
+			if (previewScreen > 0 && banner.Screens != null && !banner.Screens.Contains(previewScreen))
+				continue;
 			var bounds = new Rectangle(banner.X, banner.Y, Math.Max(1, banner.Width), Math.Max(1, banner.Height));
 			Image image = PreviewImage(banner.Source);
 			bool mediaOnly = banner.GifOnly && image != null;
@@ -446,9 +535,13 @@ internal sealed class AlertBannerEditor : Form
 			return;
 		grid.EndEdit();
 		var point = new Point((int)(e.X / ScaleFactor), (int)(e.Y / ScaleFactor));
+		int previewScreen = PreviewScreenNumber();
 		for (int index = banners.Count - 1; index >= 0; index--)
 		{
 			var banner = banners[index];
+			// Only rules drawn on the previewed screen can be picked up.
+			if (previewScreen > 0 && banner.Screens != null && !banner.Screens.Contains(previewScreen))
+				continue;
 			var bounds = new Rectangle(banner.X, banner.Y, banner.Width, banner.Height);
 			if (!bounds.Contains(point))
 				continue;

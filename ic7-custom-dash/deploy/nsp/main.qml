@@ -25,8 +25,11 @@ Item {
         Translate { x: 0; y: 0 }
     ]
 
+    // Root items declared here are named so HalAlarmPopup's native screen fallback
+    // can tell them apart from the application's unnamed UIScreen containers.
     Rectangle {
         id: selectionRect
+        objectName: "selectionRect"
         height: 70
         width: 140
         x: 100
@@ -40,6 +43,7 @@ Item {
 
     Rectangle {
         id: hoverRect
+        objectName: "hoverRect"
         height: 70
         width: 140
         x: 100
@@ -53,6 +57,7 @@ Item {
 
     Rectangle {
         id: bg_rect
+        objectName: "bg_rect"
         x: 0
         y: 0
         z: 0
@@ -63,6 +68,7 @@ Item {
 
     Rectangle {
         id: fg_tint
+        objectName: "fg_tint"
         x: 0
         y: 0
         z: 999

@@ -12,13 +12,33 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGER = ROOT / "scripts/package-nsp-media-test.py"
 NSP_DLL = ROOT / "nsp-rebuild/bin/Release/net9.0-windows10.0.19041.0/NSP.dll"
-NATIVE = ROOT / "ic7-custom-dash/build-cfw-native-media-236"
+STOCK = ROOT / "fw/Dash-V2-36-0-Release.nex"
+GUIDE = ROOT / "ic7-custom-dash/deploy/nsp/NATIVE-MEDIA-TEST.md"
+# A HalImage-only candidate is built from the maintained component for these tests.
+# The archived owner-confirmed videofix NEX keeps its original HalImage, so it no
+# longer matches the current DLL's embedded component and must not be repackaged
+# with it; it stays untouched as the historical baseline.
+_BUILD = tempfile.TemporaryDirectory(prefix="nsp-native-candidate-")
+NATIVE = Path(_BUILD.name) / "candidate"
 NEX = NATIVE / "ic7-2.36-native-media-experimental.nex"
 REPORT = NATIVE / "build-report.json"
-GUIDE = ROOT / "ic7-custom-dash/deploy/nsp/NATIVE-MEDIA-TEST.md"
 
 
-@unittest.skipUnless(NSP_DLL.is_file() and NEX.is_file(), "Build native NSP and NEX first")
+def setUpModule():
+    if not (NSP_DLL.is_file() and STOCK.is_file()) or NEX.is_file():
+        return
+    subprocess.run([
+        sys.executable, str(ROOT / "scripts/build-nsp-gif-preview.py"), "--stock-nex", str(STOCK),
+        "--reference", str(ROOT / "fw/opt/dtn/app/dash_watchdog"),
+        "--component", str(GUIDE.parent / "HalImage.qml"),
+        "--label", "native-media", "--output", str(NATIVE)], check=True, capture_output=True, timeout=300)
+
+
+def tearDownModule():
+    _BUILD.cleanup()
+
+
+@unittest.skipUnless(NSP_DLL.is_file() and STOCK.is_file(), "Build native NSP first")
 class NativePackagingTests(unittest.TestCase):
     def test_existing_and_custom_validation_call_signatures(self):
         packager = runpy.run_path(str(PACKAGER))

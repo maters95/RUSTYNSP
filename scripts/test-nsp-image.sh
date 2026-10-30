@@ -23,6 +23,11 @@ first.save(destination / "animated.gif", save_all=True, append_images=[second],
 with Image.open(destination / "animated.gif") as animation:
     assert animation.n_frames == 2
 (destination / "ic7_animation_probe.png").write_bytes((destination / "animated.gif").read_bytes())
+# Splash geometry: panel-native 800 x 480 and NSP-canvas 860 x 480 animations.
+for name, size in (("panel.gif", (800, 480)), ("canvas.gif", (860, 480))):
+    Image.new("RGB", size, (220, 40, 50)).save(
+        destination / name, save_all=True, append_images=[Image.new("RGB", size, (40, 210, 100))],
+        duration=120, loop=0, optimize=False)
 marker = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGBgAAAABQABpfZFQAAAAABJRU5ErkJggg==")
 for screen in range(1, 6):
     (destination / f"ic7_screen_{screen}.png").write_bytes(marker)
@@ -46,6 +51,18 @@ shutil.copyfile(maintained / "tests/fixtures/alerts-screens.json", images / "ic7
 (images / "ic7_splash.json").write_text(json.dumps({
     "version": 1, "source": "u/animated.gif", "durationMs": 1500
 }))
+
+# NSP's Windows renderer layout (user_resources beside qml_components_data), where
+# HalImage cannot load (as when QtMultimedia is unavailable): alarm banners and GIF
+# splash must still work, and MP4 splash must fail open.
+broken = destination / "no-multimedia-runtime"
+broken_components = broken / "qml_components_data/qml/user_components"
+broken_components.mkdir(parents=True, exist_ok=True)
+for filename in ("HalSplash.qml", "HalAlarmPopup.qml"):
+    shutil.copyfile(maintained / filename, broken_components / filename)
+(broken_components / "HalImage.qml").write_text(
+    "import QtQuick 2.9\nimport QtMultimediaUnavailable 5.9\nItem {}\n")
+shutil.copytree(images, broken / "user_resources/images", dirs_exist_ok=True)
 PY
 
 if ! command -v ffmpeg >/dev/null; then
@@ -58,7 +75,7 @@ ffmpeg -nostdin -hide_banner -loglevel error -y \
 cp "$FIXTURES/video.mp4" "$FIXTURES/ic7_video_probe.png"
 
 if [[ -n "${IC7_SYSROOT:-}" ]]; then
-    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_AlarmScreens.qml; do
+    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_AlarmScreens.qml tst_NoMultimedia.qml tst_NativeScreens.qml; do
         qemu-arm -L "$IC7_SYSROOT" \
             -E QML_DISABLE_DISK_CACHE=1 \
             -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \

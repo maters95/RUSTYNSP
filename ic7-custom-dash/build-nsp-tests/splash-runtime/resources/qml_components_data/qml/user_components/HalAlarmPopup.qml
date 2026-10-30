@@ -42,6 +42,65 @@ Item {
         ? parent.activeScreenNumber : 0
     property bool screenWarningReported: false
     onActiveScreenNumberChanged: rebuildAlarms()
+    // Fallback when no screen marker reports: v2.36 UIMain always creates five unnamed
+    // UIScreen containers in screen order, then Alarm_Module parents this popup to the
+    // same root, and screen changes are QQuickItem::setVisible calls on those containers
+    // (analysis/screen-switching.s). The visible one of the five preceding siblings is
+    // the active screen. Named items declared in main.qml are never taken as screens.
+    readonly property int nativeScreenCount: 5
+    property var nativeScreenItems: []
+    property int nativeScreenNumber: 0
+    onNativeScreenNumberChanged: {
+        if (activeScreenNumber < 1)
+            rebuildAlarms();
+    }
+
+    function findNativeScreens() {
+        if (!parent)
+            return [];
+        var siblings = parent.children;
+        var index = -1;
+        for (var i = 0; i < siblings.length; i++) {
+            if (siblings[i] === alertPopup) {
+                index = i;
+                break;
+            }
+        }
+        if (index < nativeScreenCount)
+            return [];
+        var screens = [];
+        for (var s = index - nativeScreenCount; s < index; s++) {
+            if (siblings[s].objectName !== "")
+                return [];
+            screens.push(siblings[s]);
+        }
+        return screens;
+    }
+
+    function attachNativeScreens() {
+        for (var i = 0; i < nativeScreenItems.length; i++)
+            nativeScreenItems[i].visibleChanged.disconnect(updateNativeScreen);
+        nativeScreenItems = findNativeScreens();
+        for (i = 0; i < nativeScreenItems.length; i++)
+            nativeScreenItems[i].visibleChanged.connect(updateNativeScreen);
+        updateNativeScreen();
+    }
+
+    function updateNativeScreen() {
+        var shown = 0;
+        for (var i = 0; i < nativeScreenItems.length; i++) {
+            if (!nativeScreenItems[i].visible)
+                continue;
+            if (shown > 0) {
+                shown = 0;
+                break;
+            }
+            shown = i + 1;
+        }
+        nativeScreenNumber = shown;
+    }
+
+    onParentChanged: attachNativeScreens()
 
     ListModel { id: alarmModel }
 
@@ -201,8 +260,9 @@ Item {
                 }
             }
             if (custom && custom.screens !== undefined && custom.screens !== null) {
-                if (activeScreenNumber >= 1 && activeScreenNumber <= 5) {
-                    if (custom.screens.indexOf(activeScreenNumber) < 0)
+                var screen = activeScreenNumber >= 1 ? activeScreenNumber : nativeScreenNumber;
+                if (screen >= 1 && screen <= 5) {
+                    if (custom.screens.indexOf(screen) < 0)
                         continue;
                 } else if (!screenWarningReported) {
                     console.warn("HalAlarmPopup: active screen unavailable; showing restricted alarms for safety");
@@ -279,20 +339,37 @@ Item {
                 y: model.rowY
                 width: model.rowWidth
                 height: model.rowHeight
-                // GIF-only hides the stock banner, but restores it if the media cannot load.
-                property bool mediaOnly: model.gifOnly && bannerMedia.mediaError === ""
+                // GIF-only hides the stock banner only once its media has decoded, so a
+                // banner is never blank while loading or after a decode failure.
+                property bool mediaOnly: model.gifOnly && bannerMedia.status === Image.Ready
                 color: mediaOnly ? "transparent" : model.bc
                 radius: alarmRadius
                 clip: true
 
-                HalImage {
+                // QtQuick-only decoding: alarm warnings never depend on QtMultimedia, so a
+                // multimedia load failure cannot take the whole popup down.
+                Item {
                     id: bannerMedia
                     objectName: "alertBannerMedia"
                     anchors.fill: parent
-                    halImagePath: model.banner
-                    halImageOpacity: 1000
                     visible: model.banner !== ""
-                    Component.onCompleted: repaintAll()
+                    readonly property alias status: bannerAnimation.status
+                    readonly property string mediaError: bannerAnimation.status === Image.Error
+                        ? "Alert media could not be decoded" : ""
+                    AnimatedImage {
+                        id: bannerAnimation
+                        objectName: "animatedImage"
+                        anchors.fill: parent
+                        source: model.banner
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        cache: false
+                        playing: bannerMedia.visible && alertPopup.visible
+                        onStatusChanged: {
+                            if (status === Image.Error)
+                                console.error("HalAlarmPopup: " + model.banner + ": " + bannerMedia.mediaError);
+                        }
+                    }
                 }
                 // Same element and geometry as the stock popup's alarm icon.
                 Image {

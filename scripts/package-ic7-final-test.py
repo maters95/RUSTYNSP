@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--guide", type=Path, default=ROOT / "ic7-custom-dash/deploy/nsp/FINAL-START-HERE.md")
     parser.add_argument("--checks", required=True, type=Path,
                         help="JSON object of local verification results to record")
+    parser.add_argument("--audit", type=Path, help="scripts/audit-nex.py report for the candidate NEX")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
 
@@ -47,6 +48,12 @@ def main():
     for name, checksum in report["runtime_components"].items():
         if hashlib.sha256(files["NSP-test-kit/firmware/" + name]).hexdigest() != checksum:
             raise ValueError("Packaged component does not match the build report: " + name)
+
+    if args.audit:
+        audit = json.loads(args.audit.read_text(encoding="utf-8"))
+        if not audit.get("suitable") or audit.get("candidate_sha256") != package["sha256"]:
+            raise ValueError("The NEX audit report does not pass for this exact candidate")
+        files["NSP-test-kit/firmware/audit-report.json"] = args.audit.read_bytes()
 
     files["START-HERE.md"] = args.guide.read_bytes()
     files["START-EMULATOR.cmd"] = START_EMULATOR.encode()
