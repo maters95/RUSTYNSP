@@ -154,7 +154,7 @@ wait about 25 s after an update. `start-stock-renderer.cmd` gains
 
 Conformance: `tests/test_capture_conformance.py` replays every request in
 `fail.pcapng`, `ic7 real flash cfw.pcapng`, the stock update and both screen
-uploads (36,428 exchanges, all devices) through the emulator and diffs the
+uploads (36,450 exchanges, all devices) through the emulator and diffs the
 answers. There are no differences (the previous emulator had 476). Reboot
 and logo durations are calibrated per capture there; live use uses medians.
 

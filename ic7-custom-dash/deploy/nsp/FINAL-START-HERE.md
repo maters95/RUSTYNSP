@@ -1,13 +1,39 @@
-# iC-7 Windows test package - 2026-10-30, revision 3
+# iC-7 Windows test package - 2026-10-30, revision 4
 
 This package combines the rebuilt NSP DLL, the Windows emulator/workbench, the
 resource-only v2.36 NEX, your restored KFC map, samples and setup scripts. It
-supersedes r2 and every earlier kit; their NEX files must not be flashed (see
-below). Use this clean package instead of mixing files from earlier downloads.
+supersedes r3, r2 and every earlier kit. The NEX is the same as r3; r2 and
+earlier NEX files must not be flashed (see below). Use this clean package instead of mixing files from earlier downloads.
 This is a TEST package, not a verified physical-flash release. Disconnect the
 physical dash during desktop/emulator setup; nothing here flashes it automatically.
 
-## What changed since r2
+## What changed since r3
+
+- **NSP alarm appearance UI follows NSP's own conventions.** Open it from
+  **Setup > Dash Alarm Appearance** or the alarm page's **Alarm
+  Appearance...** button (iC-7 v2.36 maps only). Rule names longer than 20
+  characters, containing `"` or padded with spaces are rejected, because the
+  dash sends at most 20 characters; rules that match no alarm in the map ask
+  for confirmation; unsaved edits prompt before closing; prompts use NSP's
+  themed dialogs; the 1x1 screen markers are hidden from the image library;
+  large media (over 4 MB, or GIF frames over 860x480) asks for confirmation.
+  Write all resources now stops at the first failed file instead of reporting
+  a half-written map as complete.
+- **Emulator engine simulation (off by default, labelled SIMULATION).** The
+  workbench **Engine simulation** tab drives your Emtron Generic CAN signals
+  through the dash's own decode, so NSP's gauges, live data, raw CAN view and
+  your map's alarms behave as with a running engine. Presets include low oil
+  pressure, overheat, over-rev, low fuel pressure and low battery; per-signal
+  holds and CAN faults are available. The emulator now also works offline after
+  its first setup and reports a busy COM port clearly.
+- **Check your "Disable when engine off" alarms.** On the dash that option
+  needs the ECU RPM channel above 449 rpm, which Generic CAN does not fill, so
+  Low Oil Pressure, Low Battery Voltage and Low Oil Temp may never fire with
+  only Generic CAN. The emulator's low-oil and battery presets feed that channel
+  so you can see the alarm; clear **Feed ECU RPM channel** to see what the
+  real dash would do.
+
+## Carried over from r3
 
 - **Stock alarm banners always draw over custom media.** In r2 a positioned
   custom banner later in the alarm list, such as your full-screen GIF-only
@@ -16,7 +42,7 @@ physical dash during desktop/emulator setup; nothing here flashes it automatical
   be flashed.
 - **The emulator behaves like the real dash.** It installs the NEX the way the
   dash watchdog does, uses the dash's folder layout, answers NSP as the
-  captures show (36,428 captured exchanges replayed, 0 differences) and writes
+  captures show (36,450 captured exchanges replayed, 0 differences) and writes
   a fidelity report that explains any failed manifest lookup. Its launcher
   installs the new `cryptography` requirement on Windows (`start-workbench.cmd`
   runs `pip install -r requirements.txt`; if that fails, run
@@ -47,7 +73,8 @@ the official install. Do not copy this DLL into the official install.
 
 Launch NSP from the new destination and open
 `NSP-test-kit\map\KFC-screen-5-restored.ic7-2-36-0.nexmap`.
-Open **KFC LIMITER -> Appearance...** Confirm the GIF, **GIF only** and
+Open **Setup > Dash Alarm Appearance** and select KFC LIMITER (or **Alarm
+Appearance...** on its alarm page). Confirm the GIF, **GIF only** and
 Screens `5`; the preview should show screen 5 behind it. Apply -> OK -> Save.
 Your splash GIF is selected in the normal startup-image setting.
 
@@ -108,10 +135,10 @@ popup on other screens; do not restrict safety alarms such as oil pressure.
 | Check | Result |
 |---|---|
 | NSP build | 0 errors; 404 existing decompilation warnings; same 52 referenced assemblies as the shipped DLL, none removed |
-| NSP/.NET regression tests | 46 passed; 8 skipped (need PowerShell) |
+| NSP/.NET regression and UI-convention tests | 51 passed; 8 skipped (need PowerShell) |
 | Desktop QML (Qt 5.15) | 76 passed, including painted splash pixels and a stock banner painted over a full-screen alarm GIF |
 | Dash Qt 5.9.6 under QEMU | 68 passed, including alarm z-order in both orders, markerless screen switching, missing QtMultimedia, a 4.5 s blocked startup and application-style scheme-less component paths |
-| Emulator Python tests | 132 passed, including capture conformance (36,428 exchanges, 0 differences) |
+| Emulator Python tests | 157 passed, including capture conformance (36,450 exchanges, 0 differences) and engine-simulation alarms |
 | NEX audit vs stock | 326 stock files unchanged, none removed; 3 QML changed, 1 added, all with fresh non-stock mtimes; wrapper/HDEF identical; all imports present on the dash |
 | `fail.pcapng` decode | all resources and the NEX body acknowledged complete |
 

@@ -8,7 +8,7 @@ keep the capture or screenshots.
 
 | Use | File | SHA-256 |
 |---|---|---|
-| Kit | `dist/ic7-final-windows-test-2026-10-30-r3.zip` | `f14cc70333f57e339599451c19d8186b30497dd11d2989651c8816c97cf4a380` |
+| Kit (r4) | `dist/ic7-final-windows-test-2026-10-30-r4.zip` | `c1f3ae0e2da6582383f148f73d6ed9a7e6f091b806e7f7b3fcc6bafb71afe3be` |
 | NEX (inside the kit) | `NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex` | `dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c` |
 
 **Do not flash** any earlier custom NEX:
@@ -21,7 +21,8 @@ The folder path is the proven cause of the failed flash. The fresh QML
 timestamps are only a precaution: your earlier GIF/MP4 screen flash shows the
 dash does not reuse its QML cache across updates.
 
-Delete the older kits so they cannot be mixed up with r3.
+Delete the older kits so they cannot be mixed up with r4. The r4 NEX is the
+same file as r3's.
 
 ## Stage 0: preparation (no dash connected)
 
