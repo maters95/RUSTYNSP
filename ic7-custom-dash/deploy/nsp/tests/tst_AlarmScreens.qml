@@ -134,6 +134,33 @@ Item {
             }
         }
 
+        function test_stockWarningDrawsOverFullScreenMedia_data() {
+            return [{tag: "oil-first", kfcFirst: false}, {tag: "kfc-first", kfcFirst: true}];
+        }
+
+        function test_stockWarningDrawsOverFullScreenMedia(data) {
+            // KFC LIMITER is the owner's full-screen GIF-only rule; OIL PRESSURE has no
+            // rule, so it is a stock bottom-stacked banner that must stay on top.
+            popup.manifestRefreshMs = 1000000000;
+            popup.bannerConfig = [popup.bannerConfig[0]];
+            compare(popup.bannerConfig[0].text, "KFC LIMITER");
+            select(5);
+            var oilAlarm = {text: "OIL PRESSURE", height: "60", bc: "blue", fc: "white"};
+            var kfcAlarm = {text: "KFC LIMITER", height: "60", bc: "red", fc: "white"};
+            popup.reInitAlarmScreen(JSON.stringify(data.kfcFirst ? [kfcAlarm, oilAlarm] : [oilAlarm, kfcAlarm]));
+            var kfc = findChild(popup, "alertBanner:KFC LIMITER");
+            var oil = findChild(popup, "alertBanner:OIL PRESSURE");
+            verify(kfc !== null && oil !== null);
+            compare(kfc.width, 860);
+            compare(kfc.height, 480);
+            tryCompare(findChild(kfc, "animatedImage"), "status", Image.Ready);
+            verify(kfc.mediaOnly);
+            compare(oil.y, 420);
+            compare(oil.parent, kfc.parent);
+            verify(oil.z > kfc.z, "stock banner z " + oil.z + " must exceed custom media z " + kfc.z);
+            verify(findChild(oil, "alertMessage").visible);
+        }
+
         function test_validation() {
             verify(popup.validScreens(undefined));
             verify(popup.validScreens(null));

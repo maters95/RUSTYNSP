@@ -124,8 +124,12 @@ text come back automatically, so an alarm is never invisible. Older manifests
 without this setting keep the text. Alarm
 colours, alarm activation, priority/order, clear/acknowledgement logic and
 LED rules remain controlled by the original application. Choose sufficient
-width and contrasting colours so the warning stays readable. Avoid overlapping
-alert rectangles: overlapping alerts retain the application's model order.
+width and contrasting colours so the warning stays readable. Stock
+bottom-stacked banners always draw over custom media, and text-only custom
+rectangles over custom GIF/image rectangles, so a full-screen GIF (such as
+KFC LIMITER) never hides another active warning, whatever order the alarms
+arrive in. Avoid overlapping custom rectangles of the same kind: those keep the
+application's model order.
 The popup remains above ordinary dashboard components and below startup media.
 Invalid configuration logs an error and keeps stock warning banners; a failed
 GIF decoder logs an error while the warning text/background remain.

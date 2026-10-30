@@ -56,6 +56,44 @@ Item {
             }
         }
 
+        function test_stockWarningPixelsOverFullScreenAlarmMedia_data() {
+            return [{tag: "oil-first", kfcFirst: false}, {tag: "kfc-first", kfcFirst: true}];
+        }
+
+        function test_stockWarningPixelsOverFullScreenAlarmMedia(data) {
+            var component = Qt.createComponent(
+                "../../../build-nsp-tests/splash-runtime/resources/qml_components_data/qml/user_components/HalAlarmPopup.qml");
+            compare(component.status, Component.Ready, component.errorString());
+            var popup = component.createObject(testWindow, {
+                manifestUrl: Qt.resolvedUrl("fixtures/alerts-screens.json"), halFontPath: ""
+            });
+            verify(popup !== null);
+            try {
+                tryVerify(function() { return popup.bannerConfig.length === 2; });
+                // Only the full-screen KFC GIF rule: OIL PRESSURE is a stock bottom banner.
+                popup.manifestRefreshMs = 1000000000;
+                popup.bannerConfig = [popup.bannerConfig[0]];
+                var oilAlarm = {text: "OIL PRESSURE", height: "60", bc: "#0000ff", fc: "white"};
+                var kfcAlarm = {text: "KFC LIMITER", height: "60", bc: "#0000ff", fc: "white"};
+                popup.reInitAlarmScreen(JSON.stringify(data.kfcFirst ? [kfcAlarm, oilAlarm] : [oilAlarm, kfcAlarm]));
+                var kfc = findChild(popup, "alertBanner:KFC LIMITER");
+                verify(kfc !== null);
+                var media = findChild(kfc, "animatedImage");
+                tryCompare(media, "status", Image.Ready);
+                media.playing = false;
+                media.currentFrame = 0;
+                waitForRendering(media);
+                var pixels = grabImage(popup);
+                // The GIF's first frame is red; the OIL banner is blue at y 420-480.
+                verify(pixels.red(430, 100) > 150, "The full-screen GIF must paint");
+                verify(pixels.blue(100, 440) > 150 && pixels.red(100, 440) < 80,
+                       "The stock OIL PRESSURE banner must be visible over the GIF");
+            } finally {
+                popup.destroy();
+                wait(1);
+            }
+        }
+
         function test_gifPixelsChange() {
             candidate.halImagePath = Qt.resolvedUrl("../../../build-nsp-tests/animated.gif");
             candidate.repaintAll();

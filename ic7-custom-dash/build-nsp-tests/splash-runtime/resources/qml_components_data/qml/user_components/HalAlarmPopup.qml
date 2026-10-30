@@ -353,6 +353,11 @@ Item {
                 y: model.rowY
                 width: model.rowWidth
                 height: model.rowHeight
+                // Stock bottom-stacked banners always draw above positioned custom rows, and
+                // text-only custom rows above custom media, so a large custom animation (e.g.
+                // a full-screen GIF-only banner) can never cover another active warning,
+                // whatever order the alarms arrive in.
+                z: !model.positioned ? 2 : (model.banner === "" ? 1 : 0)
                 // GIF-only hides the stock banner only once its media has decoded, so a
                 // banner is never blank while loading or after a decode failure.
                 property bool mediaOnly: model.gifOnly && bannerMedia.status === Image.Ready
