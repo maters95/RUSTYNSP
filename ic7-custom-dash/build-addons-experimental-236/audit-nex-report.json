@@ -1,0 +1,192 @@
+{
+  "candidate": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
+  "candidate_sha256": "394de0b8994d9921c910f4cff917f31fc8461924857f128b9d44d1e1a0c4cd17",
+  "package_files": [
+    "ic-7.hdef",
+    "manifest.xml",
+    "res_ic-7.qzip"
+  ],
+  "manifest": {
+    "version": "2.36.0.0.0",
+    "products": [
+      {
+        "name": "iC-7 Dash",
+        "pid": "21",
+        "vid": "11",
+        "hwid": "1,2,40960",
+        "hdefFile": "ic-7.hdef",
+        "files": [
+          {
+            "name": "res_ic-7.qzip",
+            "desc": "Write Resources File",
+            "type": "qzip",
+            "abortOnFailure": "true"
+          }
+        ]
+      }
+    ]
+  },
+  "resources": {
+    "stock_files": 329,
+    "candidate_files": 335,
+    "unchanged": 322,
+    "changed": [
+      "qml_components_data/qml/factory_screens/main.qml",
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+      "qml_components_data/qml/user_components/HalCircularClassic.qml",
+      "qml_components_data/qml/user_components/HalImage.qml",
+      "qml_components_data/qml/user_components/HalIndicator.qml",
+      "qml_components_data/qml/user_components/HalNumeric.qml"
+    ],
+    "added": [
+      "qml_components_data/qml/user_components/HalSplash.qml",
+      "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+      "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+      "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/ic7addons.js"
+    ],
+    "removed": [],
+    "member_mtimes": {
+      "qml_components_data/qml/factory_screens/main.qml": 1767313730,
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml": 1702732384,
+      "qml_components_data/qml/user_components/HalBarHorizontal1.qml": 1719130990,
+      "qml_components_data/qml/user_components/HalCircularClassic.qml": 1703356687,
+      "qml_components_data/qml/user_components/HalImage.qml": 1711391189,
+      "qml_components_data/qml/user_components/HalIndicator.qml": 1736311265,
+      "qml_components_data/qml/user_components/HalNumeric.qml": 1748161796,
+      "qml_components_data/qml/user_components/HalSplash.qml": 1759212789,
+      "qml_components_data/qml/user_components/Ic7AddonMedia.qml": 1736347228,
+      "qml_components_data/qml/user_components/Ic7AddonVideo.qml": 1754192395,
+      "qml_components_data/qml/user_components/Ic7GaugeFx.qml": 1765703969,
+      "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml": 1786250690,
+      "qml_components_data/qml/user_components/ic7addons.js": 1708018351
+    }
+  },
+  "component_checks": [
+    {
+      "file": "qml_components_data/qml/factory_screens/main.qml",
+      "imports": [
+        "QtQuick 2.9",
+        "QtQuick.Controls 2.2",
+        "QtQuick.Window 2.3"
+      ],
+      "loads": [
+        "qml_components_data/qml/user_components/HalSplash.qml"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9",
+        "QtQuick.Controls 2.2",
+        "QtQuick.Controls.Styles 1.4",
+        "QtQuick.Layouts 1.3"
+      ],
+      "loads": [
+        "qml_components_data/fonts/D-DINCondensed-Bold-Dash.ttf"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalCircularClassic.qml",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9",
+        "QtQuick.Controls.Styles 1.4",
+        "QtQuick.Extras 1.4"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalImage.qml",
+      "imports": [
+        "QtMultimedia 5.9",
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalIndicator.qml",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalNumeric.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalSplash.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "qml_components_data/qml/user_components/HalImage.qml"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "imports": [
+        "QtMultimedia 5.9",
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/ic7addons.js",
+      "imports": [],
+      "imports_missing_on_dash": []
+    }
+  ],
+  "problems": [
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/HalCircularClassic.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/HalIndicator.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/HalNumeric.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/ic7addons.js"
+  ],
+  "suitable": false
+}
+
