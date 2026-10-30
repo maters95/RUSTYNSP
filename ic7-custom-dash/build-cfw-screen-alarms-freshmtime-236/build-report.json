@@ -1,0 +1,49 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "label": "screen-alarms",
+  "package_version": "2.36.0.0.0",
+  "changed_members": [
+    "qml_components_data/qml/factory_screens/main.qml",
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 336,
+  "added_members": [
+    "qml_components_data/qml/user_components/HalSplash.qml"
+  ],
+  "member_mtimes": {
+    "qml_components_data/qml/factory_screens/main.qml": 1767313730,
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml": 1702732384,
+    "qml_components_data/qml/user_components/HalImage.qml": 1711391189,
+    "qml_components_data/qml/user_components/HalSplash.qml": 1759212789
+  },
+  "startup_splash": true,
+  "alert_media": true,
+  "runtime_components": {
+    "HalImage.qml": "d0bb83f5e1d5f6a62bda44e195d204074829aace500c91cb158054475fa097b8",
+    "main.qml": "65a5b7c77e4261b1e45d89f3d469d95eaf111d3451b4ddd1b3f745785afe0be1",
+    "HalSplash.qml": "82b8b3079875a7fd25bef8e9f2ae3c64f64452422e61990b0b7b1beb3e3e8a56",
+    "HalAlarmPopup.qml": "ef69a66c7d606aec95196b3d11862f9b634d86c5e6cc8c54b167417865e3cc58"
+  },
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "d0bb83f5e1d5f6a62bda44e195d204074829aace500c91cb158054475fa097b8",
+  "wrapper_preserved": true,
+  "migration_definition": {
+    "name": "ic-7.hdef",
+    "bytes": 7971401,
+    "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+    "listed_for_device_update": false
+  },
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-screen-alarms-experimental.nex": {
+      "bytes": 25369879,
+      "sha256": "3f6d26f1505180a1f2f238020ae71b65bc5ca8a276fcb5fa165b8702ca919838"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 25343767,
+      "sha256": "e144072a0d6b6dc34786bdf4cfc306b57ab0d91675494e8502f49ae510a0afa0"
+    }
+  }
+}

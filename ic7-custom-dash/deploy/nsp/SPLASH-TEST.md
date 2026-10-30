@@ -35,6 +35,13 @@ the Windows resourcefix alone.
 The desktop renderer uses the same three QML files as the NEX. Startup QML
 overrides are hash-guarded against the verified v2.36 baseline, and stale
 compiled caches are removed. A mismatched component produces a startup error.
+On the dash, the NEX gives each replaced QML file a new modification time so
+Qt 5.9.6's QML disk cache cannot keep serving the stock `main.qml`
+([cache audit](MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash)). The
+application builds its screens and alarm popup after loading `main.qml` and
+before its event loop runs; the splash's playback countdown restarts when its
+manifest arrives, which a QEMU test shows happens after such a block, so a slow
+startup does not cut the splash short.
 
 ## Where the splash is drawn
 

@@ -184,6 +184,43 @@ flash (`ic7 real flash cfw.pcapng`) and a stock Haltech update
 So the transfer was correct and complete; the failure was on the dash, where
 the components looked for those resources in the wrong folder.
 
+### Stale QML disk cache on the dash
+
+A second, independent reason the flashed splash and alarm banners could fall
+back to stock, fixed in `build-cfw-screen-alarms-freshmtime-236`:
+
+- The dash's `libQt5Qml.so.5.9.6` writes compiled QML to
+  `QStandardPaths::CacheLocation` + `/qmlcache/` (outside
+  `/opt/applications/dtn/resources`, so the watchdog's "Removing existing
+  resources" does not clear it). Its only freshness check is the source file's
+  modification time ("QML source file has a different time stamp than cached
+  file."); there is no content hash. `gui-launcher.service` runs the
+  application as root with no `HOME`, so the cache would be under `/.cache` on
+  the writable root filesystem.
+- The v2.36 watchdog unpacks resources with GNU `tar -xf ... -C`
+  (`do_resource_upgrade`), which restores each member's archived mtime.
+- Every earlier custom NEX kept the stock mtimes (1790648083/1790648084) on
+  `main.qml`, `HalImage.qml` and `HalAlarmPopup.qml`. Under QEMU, the dash's own
+  `qml` binary given a file rewritten with the same mtime ran the previously
+  cached code; changing the mtime ran the new code
+  (`test_dash_qt_cache_ignores_content_when_mtime_matches`).
+- `main.qml` and `HalAlarmPopup.qml` are compiled on every boot
+  (`QQuickView::setSource` in `UIMain::UIMain` at 0x11728c,
+  `QQmlComponent` in `Alarm_Module::Alarm_Module` at 0xf49bc), so any dash that
+  booted stock v2.36 holds a stock cache entry for them: it would run the stock
+  root, which has no splash loader, and the stock popup. `HalImage.qml` is
+  compiled only when a screen has an image component, which is consistent with
+  the videofix screen media working although it also kept the stock mtime.
+- Whether the cache is actually being written on the hardware (root file
+  system writable) has not been observed on the dash itself.
+
+The builder now gives every replaced or added QML member an mtime derived from
+its content (reproducible, never a stock value), and `scripts/audit-nex.py`
+rejects a candidate that reuses a stock or zero mtime. Re-flashing the stock
+resources returns the stock mtimes, whose cache entries are stock for
+`main.qml` and the popup; for `HalImage.qml` the entry may be an earlier custom
+build's.
+
 ### Implications For Animated Startup
 
 Modifying the rebuilt DLL and resource-only NEX is the established workflow;

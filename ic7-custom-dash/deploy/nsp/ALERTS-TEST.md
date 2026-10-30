@@ -12,8 +12,26 @@ components inside the encrypted NEX resource archive, not as separate copies.
 The earlier screen-alarm candidate must not be used to validate this correction.
 See the [real-device audit](MEDIA-RUNTIME-AUDIT.md#real-device-resource-path-correction).
 
-The current candidate (`build-cfw-screen-alarms-native-236`) keeps that
-correction and adds:
+The current candidate (`build-cfw-screen-alarms-freshmtime-236`) replaces
+`build-cfw-screen-alarms-native-236`, which must not be flashed, and adds:
+
+- **Fresh QML modification times.** The dash's Qt 5.9.6 reuses a compiled QML
+  cache entry whenever path and mtime match, without comparing content, and the
+  cache is outside the folder a NEX update wipes. Earlier candidates kept the
+  stock mtimes, so a dash that had booted stock v2.36 could keep running the
+  stock `main.qml` and `HalAlarmPopup.qml`. See the
+  [cache audit](MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash).
+- **Bounded manifest reads.** `Alarm_Module::draw_alarms` calls
+  `reInitAlarmScreen` on every `UIMain::update` tick and then sets the popup's
+  `z` to 99; the popup re-reads `ic7_alerts.json` at most every
+  `manifestRefreshMs` (2 s) on those calls. `setGaugeProperties` and
+  `repaintAll` still reload at once.
+- **Padded native names match.** The native alarm text is trimmed before the
+  case-exact comparison with a rule, as NSP trims the rule's text when saving.
+  The dash sends at most 20 characters of an alarm name, so keep rule names
+  within 20 characters.
+
+It keeps from `build-cfw-screen-alarms-native-236`:
 
 - **Alarm banners decode with QtQuick only.** Banner GIFs and images use
   QtQuick's own `AnimatedImage` instead of `HalImage`, which imports
@@ -228,7 +246,8 @@ screen-alarms` and a new output directory; package with
 candidate independently with `scripts/audit-nex.py --candidate <nex> --sysroot
 <extracted dash rootfs>`. The audit compares the package with stock and checks
 every QML import against the dash's installed Qt modules. The current candidate's
-report is `build-cfw-screen-alarms-native-236/audit-report.json`. The included
+report is `build-cfw-screen-alarms-freshmtime-236/audit-report.json`. The audit
+also rejects any changed or added QML member that reuses a stock (or zero) mtime. The included
 map is the supplied one, byte-for-byte.
 
 Checks include .NET compilation and manifest validation, stock-root/alert hash
@@ -242,11 +261,13 @@ driving.
 
 Verified locally for the current candidate: x86 DLL build with zero compiler
 errors (404 existing decompilation warnings), referencing the same 52 assemblies
-as the shipped DLL with nothing removed; **43** Python/.NET regressions (9 need
-PowerShell or tshark and were skipped); **63** desktop Qt 5.15 QML checks,
-including painted splash pixels; **57** QML checks on the dash's own Qt 5.9.6
-under QEMU, including markerless native screen switching and a missing
-QtMultimedia; **116** emulator Python tests with real PyQt5; and an independent
+as the shipped DLL with nothing removed; **46** Python/.NET regressions (8 need
+PowerShell and were skipped), including a reproduction of the stale QML cache on
+the dash's Qt; **72** desktop Qt 5.15 QML checks, including painted splash
+pixels; **66** QML checks on the dash's own Qt 5.9.6 under QEMU, including
+markerless native screen switching, a missing QtMultimedia, a splash that
+survives a 4.5 s blocked startup, and components loaded from scheme-less
+absolute paths as the application loads them; **116** emulator Python tests with real PyQt5; and an independent
 NEX audit with no findings. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.

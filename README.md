@@ -79,10 +79,19 @@ with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
 ## Screen Alarms, Splash and Real-Dash Fixes (2026-10-30)
 
-Use the [combined Windows test kit](dist/ic7-final-windows-test-2026-10-30.zip)
-and its `START-HERE.md`; it supersedes the 2026-10-29 screen-alarm, path-fix
-and replacement kits. It combines main's native **Alarm appearance** editor and
+Use the [combined Windows test kit, revision 2](dist/ic7-final-windows-test-2026-10-30-r2.zip)
+and its `START-HERE.md`; it supersedes the first 2026-10-30 kit (whose NEX
+must not be flashed) and the 2026-10-29 screen-alarm, path-fix and replacement
+kits. It combines main's native **Alarm appearance** editor and
 screen-restricted alarms with:
+
+- **Fresh QML modification times.** The dash's Qt 5.9.6 serves compiled QML
+  from a disk cache that a NEX update does not wipe, matching on path and mtime
+  only; earlier NEXs kept the stock mtimes and could keep running the stock
+  root and alarm popup
+  ([cache audit](ic7-custom-dash/deploy/nsp/MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash)).
+  The alarm popup also re-reads its manifest at most every 2 s instead of on
+  every native UI tick.
 
 - **Real-dash path fix.** The dash keeps uploaded media in
   `/opt/applications/dtn/user_resources/images`; the splash and alarm components
