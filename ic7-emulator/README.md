@@ -7,6 +7,68 @@ renderer follows marker visibility, not a separately polled screen selector.
 Synthetic alarm preview filters against its own selected preview screen; it
 does not establish real alarm evaluation or frame-exact Windows NSP parity.
 
+## Dash fidelity
+
+The emulator now behaves like the real iC-7 v2.36 where the evidence allows,
+so a NEX that fails on the dash also fails here.
+
+- **NEX install like the watchdog.** When NSP ends an update, the emulator
+  decrypts the received resource payload with the dash watchdog's key
+  (`dash-reference/dash_watchdog`) and installs *every* member the way
+  `do_resource_upgrade` does: it removes `dtn/resources`, recreates it and
+  extracts the archive with its mtimes. Any member is installed, added files
+  included (for example the add-on NEX). Kit QML sidecars are only a
+  cross-check: a sidecar that differs from its NEX member is refused.
+- **Dash file layout.** Each session has `dash/dtn/resources` (installed
+  members) and the renderer has `stock-renderer/dtn/resources` plus
+  `dtn/user_resources/{images,fonts}` for uploads, as on the dash. Before any
+  update the tree is the factory v2.36 QML, so custom components appear only
+  after their NEX is installed.
+- **NSP's renderer and the 3-level shortcut.** `dash_virtual.exe` resolves
+  native images three folders up and fonts from `./user_resources`, so it runs
+  from `dtn/resources` with a copy of the uploads in
+  `dtn/resources/user_resources`. That copy never contains `ic7_*.json`
+  manifests: components that look three folders up for a manifest (the failed
+  `7d3f8c96` NEX) find nothing, as on the dash; components that detect
+  `/resources/qml_components_data/` and look four up work.
+- **Protocol as captured.** `0001` and the update's `0000` get error replies,
+  as on the dash. After the update the dash answers nothing for about 25 s
+  while it installs and reboots; a normal-mode `0000` is unanswered while the
+  application restarts (about 2 s); `00 0f` reports the kernel-logo patch
+  (busy, then done, about 7 s) after a static splash BMP, and the next
+  `0000` is a full reboot (about 13 s). The user index lists every `u/` upload
+  (`.gif`, `.mp4`, `.json` too) in write order and no `h/` names.
+  `--legacy-acks` restores instant acknowledgements for diagnosis only.
+- **Dash fidelity report.** `fidelity-report.txt`/`.json` in the session
+  folder (also in **Export Logs** and at `/api/fidelity?format=text`) states
+  the installed payload and NEX hashes, every changed/added member with its
+  mtime, the sidecar cross-check, each manifest lookup resolved as on the dash
+  (for example `wrong-folder: looks for ic7_splash.json in
+  /opt/applications/dtn/resources/user_resources/images, which does not exist
+  on the dash`), QML errors from `renderer.log`, and the reboots modelled. The
+  workbench **Update** tab shows the install and any failing lookups.
+- **Previews.** The synthetic alarm preview sends the popup the dash's own
+  unescaped message (names cut to 20 characters) on every tick with the popup
+  at z 99. The Layout Diagnostic can show the 800x480 panel squeeze.
+
+Windows changes: the launcher installs the new `cryptography` requirement;
+transfer the NEX in a fresh session before judging custom QML; expect NSP to
+wait about 25 s after an update. `start-stock-renderer.cmd` gains
+`--maintained-qml` (development only: run the maintained QML without a NEX).
+
+Conformance: `tests/test_capture_conformance.py` replays every request in
+`fail.pcapng`, `ic7 real flash cfw.pcapng`, the stock update and both screen
+uploads (36,428 exchanges, all devices) through the emulator and diffs the
+answers. There are no differences (the previous emulator had 476). Reboot
+and logo durations are calibrated per capture there; live use uses medians.
+
+Remaining differences: NSP's Windows renderer (Qt 5.11) draws instead of the
+dash's Qt 5.9.6 application; it builds the alarm message in a different field
+order and shows the unsqueezed 860-wide canvas; USB re-enumeration is
+silence on a port that stays open; durations are fixed medians; the kernel
+logo is not drawn; the QML disk cache is not modelled; `00 0f` with no
+pending BMP is answered with an error (from the ELF, never captured).
+
 ## Final test-kit workflow
 
 The Windows workbench now opens **Dash Display** automatically using the
@@ -30,11 +92,9 @@ one test NSP instance open; upload the same map/resources to both.
 - **Power Cycle** restarts the display, replays the splash, drops incomplete
   resource transfers and saves the retained map/resources. It is disabled
   during firmware-update mode.
-- NSP reboot commands restart the isolated renderer. A sandbox firmware
-  change reloads verified QML rather than terminating the bridge.
-- Completed sandbox updates publish every available verified sidecar
-  (`main.qml`, `HalImage.qml`, `HalSplash.qml`, `HalAlarmPopup.qml`), not just
-  the screen-image component. New build reports hash every sidecar.
+- NSP reboot commands restart the isolated renderer after the dash's reboot
+  silence. A completed update reinstalls `dtn/resources` from the NEX members
+  and restarts the renderer.
 - Live-data mirroring rejects stale publisher timestamps as well as torn
   snapshots. If NSP stops publishing, the renderer returns to emulator data.
 - After **Stop**, use **Export Logs**. The ZIP includes settings, image/font
@@ -57,8 +117,8 @@ identify which of these conditions occurred.
 
 This is not a full hardware emulator: it does not execute the ARM application,
 kernel, bootloader or STM32 code. CAN/ECU acquisition, LEDs, physical controls,
-hardware video codecs, USB re-enumeration, hardware flashing and recovery
-are not modeled. Live alarms require NSP's own live-data/Simulate panel and
+hardware video codecs, hardware flashing and recovery are not modeled; USB
+re-enumeration is modelled only as silence on the virtual port. Live alarms require NSP's own live-data/Simulate panel and
 the same map settings; the synthetic alert preview is not an alarm engine.
 Windows integration still requires an on-PC acceptance test. Passing the
 Linux/ARM-QEMU component tests is not a physical-firmware safety guarantee.
@@ -165,7 +225,7 @@ and requires the DirectShow **dsengine** player; `wmfengine` alone is not a
 video-player backend. Missing multimedia/GIF dependencies produce an explicit
 startup error, not an Image-only fallback.
 
-Validated on Linux with real PyQt5: 90 Python tests, including a real Qt 5.15
+Validated on Linux with real PyQt5: 132 Python tests (including capture conformance and the 3-level manifest acceptance test), including a real Qt 5.15
 test of staged GIF and MP4 playback, muting, timeout/unloading, and two startups
 per format, plus a shared GIF alert preview over HTTP with rendered-pixel
 verification. Browser tests cover MP4/alias playback and splash-to-layout handoff.
@@ -359,7 +419,8 @@ from the reference updater in memory and never saves/logs the key.
 ## Resource Update Sandbox
 
 The source-confirmed `0001` command now reports boot mode in identity byte 9;
-`0000` restores the normal identity. The mode change is simulated and is not
+`0000` restores the normal identity. Both commands get the dash's error
+reply, as in every captured update. The mode change is simulated and is not
 written into the persisted identity. This fixes the observed stall before
 resource transfer. Windows NSP retesting of this fix is still required.
 
@@ -399,27 +460,27 @@ An exact full payload is saved as `sandbox/received-resource.enc`; the status
 becomes `transfer-complete` only after NSP returns to main mode. This confirms
 transport and mode transition, not target-side decryption or physical flash.
 
-After return to main mode, a candidate QML sidecar is exposed to the private
-renderer only if its hash and the NEX hash match the supplied build report.
-This is a trusted build-sidecar simulation, not extraction of the staged
-encrypted resource. The workbench reloads the private renderer after an update.
+After return to main mode, the received payload is decrypted with the dash
+watchdog key and all of its members are installed (see **Dash fidelity**);
+build-report sidecars are only compared with those members. The workbench
+reloads the private renderer after an update.
 For command-line simulator sessions only, start the bridge:
 
 ```powershell
 .\start-stock-renderer.cmd
 ```
 
-It automatically loads an active sandbox component. Explicit `-Component` or
-`-PatchedImages` overrides take precedence. If components change while the
-renderer runs, the bridge validates the sidecars and restarts its child renderer
-automatically to discard cached QML.
+It mirrors the emulator's installed resources. Explicit `-Component` or
+`-PatchedImages` overrides take precedence. When a new install appears while
+the renderer runs, the bridge fetches and hash-checks every member, replaces
+`dtn/resources` and restarts its child renderer.
 Startup playback requires QtMultimedia in the Windows preview runtime even
 when a GIF-only component override is selected. Missing modules remain a reported failure,
 not something the emulator can substitute for hardware.
 
 This is a bounded resource-update test environment, not a complete machine
 emulator or a security boundary for untrusted QML. Kernel/bootloader execution,
-USB re-enumeration, CAN physics, target AES/decompression checks, physical
+USB re-enumeration (modelled as silence), CAN physics, physical
 hardware codecs and recovery are not modeled. Do not use successful sandbox
 verification as authorization to flash a real dash.
 
