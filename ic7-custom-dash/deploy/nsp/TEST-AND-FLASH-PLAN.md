@@ -1,4 +1,4 @@
-# Test and flash plan: GIF splash and per-screen GIF alarms (2026-10-30, r2)
+# Test and flash plan: GIF splash and per-screen GIF alarms (2026-10-30, r3)
 
 Each stage has a gate: do not start the next stage until every check in the
 current one passes. If anything fails, stop, note which check failed, and
@@ -8,22 +8,24 @@ keep the capture or screenshots.
 
 | Use | File | SHA-256 |
 |---|---|---|
-| Kit | `dist/ic7-final-windows-test-2026-10-30-r2.zip` | `a9b96416b05d9b0940c2c7df4d2f708f88570e7579fe5d94c88356ed8616a752` |
-| NEX (inside the kit) | `NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex` | `3f6d26f1505180a1f2f238020ae71b65bc5ca8a276fcb5fa165b8702ca919838` |
+| Kit | `dist/ic7-final-windows-test-2026-10-30-r3.zip` | `f14cc70333f57e339599451c19d8186b30497dd11d2989651c8816c97cf4a380` |
+| NEX (inside the kit) | `NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex` | `dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c` |
 
 **Do not flash** any earlier custom NEX:
+- `3f6d26f1…` (r2): superseded by the alarm z-order fix. A full-screen custom
+  GIF banner (KFC LIMITER) could cover a stock warning such as OIL PRESSURE.
 - `7d3f8c96…`: has the wrong folder path. This is the one that failed.
-- `9f4f449f…` and `a6c47d35…`: have the path fix, but keep stock file
-  timestamps. r2 adds the fresh-timestamp precaution and the alarm-name and
-  manifest-read fixes, and is the only one audited with them. (Your earlier
-  GIF/MP4 screen flash suggests the QML cache is not reused across updates on
-  your dash, so the folder path is the proven cause of the failure.)
+- `9f4f449f…` and `a6c47d35…`: have the path fix, but lack the later fixes.
 
-Delete the older kits so they cannot be mixed up with r2.
+The folder path is the proven cause of the failed flash. The fresh QML
+timestamps are only a precaution: your earlier GIF/MP4 screen flash shows the
+dash does not reuse its QML cache across updates.
+
+Delete the older kits so they cannot be mixed up with r3.
 
 ## Stage 0: preparation (no dash connected)
 
-1. Download the r2 kit and check its SHA-256 against the table (`Get-FileHash`
+1. Download the r3 kit and check its SHA-256 against the table (`Get-FileHash`
    in PowerShell). Extract it into a new, empty folder.
 2. Keep these backups:
    - the original `Dash-V2-36-0-Release.nex` from Haltech, for rollback;
@@ -54,7 +56,7 @@ Delete the older kits so they cannot be mixed up with r2.
 ## Stage 2: emulator
 
 1. Run `ic7-emulator\start-workbench.cmd` with your virtual COM pair. Make
-   sure both NSP and the workbench point at the r2 NEX (the SHA-256 is in
+   sure both NSP and the workbench point at the r3 NEX (the SHA-256 is in
    `build-report.json`).
 2. Start a fresh emulator session, transfer the NEX, then upload the map's
    settings and resources.
@@ -65,7 +67,7 @@ Delete the older kits so they cannot be mixed up with r2.
 | E1 | Reboot the emulated dash | The splash GIF animates, fills the display, and hands over at about 3.3 s |
 | E2 | Remove the screen restriction from KFC LIMITER, upload, and trigger it with Simulate | The GIF banner shows on every screen and clears normally |
 | E3 | Set Screens back to `5`, upload, and trigger it | The GIF shows on screen 5 only |
-| E4 | Change screens while it is active | It disappears on screens 1-4 and comes back on 5. Other alarms show on every screen. |
+| E4 | Change screens while it is active | It disappears on screens 1-4 and comes back on 5. Other alarms show on every screen, and a stock banner such as OIL PRESSURE stays visible over the KFC GIF. |
 
 **Gate:** E1-E4 all pass. If E1 or E2 fails here, the problem is in NSP or the
 kit, not the dash, so do not flash.
@@ -80,7 +82,7 @@ Conditions:
 
 1. **Start a USB capture** (USBPcap/Wireshark, as for `fail.pcapng`). If
    anything fails, the capture shows exactly what reached the dash.
-2. Flash the r2 NEX in NSP. **Never interrupt an active update.**
+2. Flash the r3 NEX in NSP. **Never interrupt an active update.**
 3. Upload the map's settings and resources (this sends the splash GIF, the
    manifests and the screen markers).
 4. **Power the dash off completely, then on again.** A software restart alone
@@ -92,11 +94,15 @@ Run each check before the next one. Each failure points to one layer.
 
 | # | Check | If it fails |
 |---|---|---|
-| D1 | The splash GIF animates at boot for about 3.3 s | **Stock splash or static image:** the new `main.qml` is not running. Send the capture. |
-| D2 | KFC LIMITER with no screen restriction, triggered | **Plain text banner:** the stock alarm popup is still running. **No banner at all:** the GIF did not decode. **Normal banner but no GIF:** the alarm name doesn't match the rule text, so recheck the names. |
+| D1 | The splash GIF animates at boot for about 3.3 s | **Stock splash or static image:** the new `main.qml`/`HalSplash.qml` is not running, or `ic7_splash.json` is missing or invalid, its source is wrong, or the GIF did not decode. Send the capture. |
+| D2 | KFC LIMITER with no screen restriction, triggered | **Full-screen coloured banner with text:** the rule matched (a matched rule always draws at its own rectangle) but the GIF did not decode; GIF only keeps the stock colour and text until it decodes. **Normal bottom-stacked banner:** the stock popup is still running, or the alarm name does not match the rule text; these look the same, so recheck the names first. **No banner at all:** the popup failed to load, a screen restriction hid it, or the alarm never triggered. |
 | D3 | Screens `5`, triggered on screen 5 | **Missing:** screen detection failed |
 | D4 | Change screens while it is active | **Shows on every screen:** screen detection failed (it fails visible by design) |
 | D5 | Ordinary screen GIF/MP4 images still play | **Regression in HalImage:** report it |
+
+For any failure, reproduce it in the emulator and read its fidelity report
+(workbench **Update** tab, or `fidelity-report.txt` in the session folder): it
+names the installed NEX and says why any manifest lookup failed.
 
 Expect the earliest kernel boot logo to stay static. That is normal: it runs
 before the dash software starts and cannot animate.
@@ -106,10 +112,9 @@ before the dash software starts and cannot animate.
 1. Flash the stock `Dash-V2-36-0-Release.nex` through NSP's normal update.
 2. Re-upload the map you backed up.
 
-The custom QML files carry timestamps that differ from stock, so the dash's
-QML cache recompiles the stock files rather than reusing the custom code. The
-one possible leftover is a cached HalImage from an earlier custom build. It
-only affects GIF/MP4 image components, and the dash still starts normally.
+This restores the stock QML. (The custom QML also carries timestamps that
+differ from stock, so even a dash that kept a QML cache would recompile the
+stock files.)
 
 If the dash does not come up after an update, do not keep power-cycling it.
 Retry the stock NEX update from NSP, and contact Haltech support if NSP cannot
@@ -118,5 +123,8 @@ see the dash.
 ## Stage 6: experimental screen add-ons (later)
 
 The add-on NEX (animated indicators and value-driven images) is separate.
-Try it only after D1-D5 have passed with the r2 NEX, and test it in the
+Try it only after D1-D5 have passed with the r3 NEX, and test it in the
 emulator first. That way a failure can be traced to one change.
+To turn an add-on off, upload its empty "off" manifest and power-cycle the dash;
+deleting the file on the PC does not remove it from the dash (see
+`deploy/addons/README.md`).

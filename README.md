@@ -79,18 +79,23 @@ with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
 ## Screen Alarms, Splash and Real-Dash Fixes (2026-10-30)
 
-Use the [combined Windows test kit, revision 2](dist/ic7-final-windows-test-2026-10-30-r2.zip)
-and its `START-HERE.md`; it supersedes the first 2026-10-30 kit (whose NEX
-must not be flashed) and the 2026-10-29 screen-alarm, path-fix and replacement
-kits. It combines main's native **Alarm appearance** editor and
-screen-restricted alarms with:
+Use the [combined Windows test kit, revision 3](dist/ic7-final-windows-test-2026-10-30-r3.zip)
+(SHA-256 `f14cc70333f57e339599451c19d8186b30497dd11d2989651c8816c97cf4a380`) and its `START-HERE.md`; it supersedes r2 (NEX `3f6d26f1…`,
+which must not be flashed), the first 2026-10-30 kit and the 2026-10-29 kits.
+Its NEX is `build-cfw-screen-alarms-r3-236` (SHA-256 `dec4e3bf…`). It combines
+main's native **Alarm appearance** editor and screen-restricted alarms with:
 
-- **Fresh QML modification times.** The dash's Qt 5.9.6 serves compiled QML
-  from a disk cache that a NEX update does not wipe, matching on path and mtime
-  only; earlier NEXs kept the stock mtimes and could keep running the stock
-  root and alarm popup. A precaution: the owner's videofix flash shows the
-  cache is not reused across updates on their dash, so the wrong resource path
-  remains the proven cause
+- **Stock banners over custom media.** A full-screen GIF-only banner (KFC
+  LIMITER) could cover an earlier stock alarm such as OIL PRESSURE; stock
+  bottom-stacked banners now always draw above custom media.
+- **Real-dash emulator.** The emulator installs the NEX as the dash watchdog
+  does, uses the dash's folder layout, answers NSP as the captures show
+  (36,428 exchanges, 0 differences) and writes a fidelity report that says why
+  any manifest lookup failed. On Windows its launcher installs the new
+  `cryptography` requirement ([emulator README](ic7-emulator/README.md#dash-fidelity)).
+- **Fresh QML modification times**, a precaution only: the owner's videofix
+  flash shows the dash does not reuse its QML cache across updates, so the
+  wrong resource path is the proven cause of the failed flash
   ([cache audit](ic7-custom-dash/deploy/nsp/MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash)).
   The alarm popup also re-reads its manifest at most every 2 s instead of on
   every native UI tick.
