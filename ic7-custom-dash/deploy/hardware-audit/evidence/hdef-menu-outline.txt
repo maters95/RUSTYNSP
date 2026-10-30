@@ -1,0 +1,763 @@
+Splash Screen
+  Splash Settings  [sid 3170]
+Screens
+  DashScreensOverviewPanel
+  Screen Control
+    General  [sid 3171]
+    Wiring
+  Screen 1
+    General  [sid 3173]
+    Day Colors  [sid 3174]
+    Night Colors  [sid 3175]
+    DashScreenPanel
+    Components
+  Screen 2
+    General  [sid 3616]
+    Day Colors  [sid 3617]
+    Night Colors  [sid 3618]
+    DashScreenPanel
+    Components
+  Screen 3
+    General  [sid 4059]
+    Day Colors  [sid 4060]
+    Night Colors  [sid 4061]
+    DashScreenPanel
+    Components
+  Screen 4
+    General  [sid 4502]
+    Day Colors  [sid 4503]
+    Night Colors  [sid 4504]
+    DashScreenPanel
+    Components
+  Screen 5
+    General  [sid 4945]
+    Day Colors  [sid 4946]
+    Night Colors  [sid 4947]
+    DashScreenPanel
+    Components
+  Brightness
+    Day/Night Ambient Light Threshold  [sid 3172]
+    Brightness Table  [sid 1801]
+    Wiring
+Channel Properties  [sid 3168]
+Sensors
+  Engine  [sid 2594]
+  Vehicle Speed  [sid 2603]
+  O2  [sid 2595]
+  Transmission  [sid 2601]
+  Air Con  [sid 2602]
+  Chassis  [sid 2596]
+  Boost/Turbo  [sid 2598]
+  Nitrous  [sid 2599]
+  Atmospheric  [sid 2600]
+  Other  [sid 2597]
+  Tacho Input
+    Tacho Input  [sid 5497]
+    Wiring
+  Manifold Pressure
+    Filter  [sid 137]
+    Derivative Filter  [sid 138]
+    Calibration  [sid 136]
+    Display
+    Diagnostics
+    Wiring
+  Exhaust Manifold Pressure
+    Filter  [sid 448]
+    Exhaust Manifold Pressure  [sid 447]
+    Display
+    Diagnostics
+    Wiring
+  Fuel Pressure
+    Filter  [sid 193]
+    Fuel Pressure  [sid 192]
+    Display
+    Diagnostics
+    Wiring
+  Throttle Position
+    Calibration  [sid 142]
+    Display
+    Diagnostics
+    Wiring
+  Oil Pressure
+    Oil Pressure  [sid 199]
+    Display
+    Diagnostics
+    Wiring
+  Oil Pressure Switch
+    Diagnostics
+  Coolant Pressure
+    Coolant Pressure  [sid 280]
+    Display
+    Diagnostics
+    Wiring
+  Fuel Pressure Pre-Filter
+    Fuel Pressure Pre-Filter  [sid 195]
+    Display
+    Diagnostics
+    Wiring
+  Exhaust Gas Temperature
+    EGT Settings  [sid 3104]
+    Exhaust Gas Temperature 1
+    Exhaust Gas Temperature 2
+    Exhaust Gas Temperature 3
+    Exhaust Gas Temperature 4
+    Exhaust Gas Temperature 5
+    Exhaust Gas Temperature 6
+    Exhaust Gas Temperature 7
+    Exhaust Gas Temperature 8
+    Exhaust Gas Temperature 9
+    Exhaust Gas Temperature 10
+    Exhaust Gas Temperature 11
+    Exhaust Gas Temperature 12
+    Wiring
+  Crank Case Pressure
+    Crank Case Pressure  [sid 479]
+    Display
+    Diagnostics
+    Wiring
+  Intake Air Temperature
+    Intake Air Temperature  [sid 157]
+    Display
+    Diagnostics
+    Wiring
+  Intake Air Temperature Pre-Intercooler
+    Intake Air Temperature Pre-Intercooler  [sid 159]
+    Display
+    Diagnostics
+    Wiring
+  Oil Temperature
+    Oil Temperature  [sid 257]
+    Display
+    Diagnostics
+    Wiring
+  Oil Temperature Return
+    Oil Temperature Return  [sid 259]
+    Display
+    Diagnostics
+    Wiring
+  Coolant Temperature
+    Coolant Temperature  [sid 177]
+    Display
+    Diagnostics
+    Wiring
+  Coolant Temperature Return
+    Coolant Temperature Return  [sid 179]
+    Display
+    Diagnostics
+    Wiring
+  Fuel Temperature
+    Fuel Temperature  [sid 263]
+    Display
+    Diagnostics
+    Wiring
+  Mass Air Flow
+    Mass Air Flow Sensor 1
+    Mass Air Flow Sensor 2
+    Diagnostics
+    Filter  [sid 147]
+    MAF Limit  [sid 1772]
+  Fuel Flow
+    Fuel Feed Flow
+    Fuel Return Flow
+    Diagnostics
+    Filter  [sid 184]
+  Wideband O2
+    Wideband Settings  [sid 3105]
+    Wideband Settings  [sid 3106]
+    Sensor 1
+    Sensor 2
+    Sensor 3
+    Sensor 4
+    Sensor 5
+    Sensor 6
+    Sensor 7
+    Sensor 8
+    Sensor 9
+    Sensor 10
+    Sensor 11
+    Sensor 12
+    Wiring
+  Narrowband O2 1
+    Diagnostics
+    Wiring
+  Narrowband O2 2
+    Diagnostics
+    Wiring
+  Brake Pressure Front
+    Switch  [sid 241]
+    Brake Pressure Front  [sid 240]
+    Display
+    Diagnostics
+    Wiring
+  Brake Pressure Rear
+    Switch  [sid 246]
+    Brake Pressure Rear  [sid 245]
+    Display
+    Diagnostics
+    Wiring
+  Brake Pedal Position
+    Hard Braking  [sid 236]
+    Brake Pedal Position  [sid 235]
+    Display
+    Diagnostics
+    Wiring
+  Brake Pedal Switch
+    Diagnostics
+  Power Steering Pressure
+    Power Steering Pressure  [sid 288]
+    Display
+    Diagnostics
+    Wiring
+  Handbrake Switch
+    Diagnostics
+  Steering Angle
+    Calibration  [sid 351]
+    Display
+    Diagnostics
+    Wiring
+  Shock Travel Sensors
+    Enables  [sid 3085]
+    Calibration  [sid 3086]
+    Front Left
+    Front Right
+    Rear Left
+    Rear Right
+    Wiring
+  Ride Height Sensor Front
+    500  [sid 500]
+    Calibration  [sid 499]
+    Display
+    Diagnostics
+    Wiring
+  Ride Height Sensor Rear
+    505  [sid 505]
+    Calibration  [sid 504]
+    Display
+    Diagnostics
+    Wiring
+  Vehicle Dynamics
+    Accel (G) Sensor Enables  [sid 3099]
+    Angular Rate Sensor Enables  [sid 3100]
+    Settings  [sid 3101]
+    Diagnostics
+    Lateral G
+    Longitudinal G
+    Vertical G
+    G-Force Filter  [sid 514]
+    Pitch Rate
+    Roll Rate
+    Yaw Rate
+    Angular Rate Filter  [sid 512]
+    Wiring
+  ECU Temperature
+    Operating Min  [sid 423]
+    Operating Max  [sid 424]
+  Fuel Tank Pressure
+    Fuel Tank Pressure  [sid 397]
+    Display
+    Diagnostics
+    Wiring
+  Fuel Level Sensor 1
+    Calibration  [sid 379]
+    Display
+    Diagnostics
+    Wiring
+  Fuel Level Sensor 2
+    Calibration  [sid 383]
+    Display
+    Diagnostics
+    Wiring
+  Track Temperature
+    Track Temperature  [sid 167]
+    Display
+    Diagnostics
+    Wiring
+  Wheelie Bar Pressure 
+    Calibration  [sid 201]
+    Display
+    Diagnostics
+    Wiring
+  Wheelie Bar Pressure Left
+    Calibration  [sid 203]
+    Display
+    Diagnostics
+    Wiring
+  Wheelie Bar Pressure Right
+    Calibration  [sid 205]
+    Display
+    Diagnostics
+    Wiring
+  Coolant Level
+    Coolant Level  [sid 388]
+    Display
+    Diagnostics
+    Wiring
+  Oil Level
+    Oil Level  [sid 393]
+    Display
+    Diagnostics
+    Wiring
+  Electrical Load
+    Electrical Load  [sid 510]
+    Display
+    Diagnostics
+    Wiring
+  Inlet DC Motor Feedback Sensor 1
+    Calibration  [sid 401]
+    Display
+    Diagnostics
+    Wiring
+  Inlet DC Motor Feedback Sensor 2
+    Calibration  [sid 405]
+    Display
+    Diagnostics
+    Wiring
+  Rotary Trim Module 1
+    Settings  [sid 3032]
+    State/Switch/Button Input Settings  [sid 3033]
+    Calibration
+    Diagnostics
+    Wiring
+  Rotary Trim Module 2
+    Settings  [sid 3034]
+    State/Switch/Button Input Settings  [sid 3035]
+    Calibration
+    Diagnostics
+    Wiring
+  Rotary Trim Module 3
+    Settings  [sid 3036]
+    State/Switch/Button Input Settings  [sid 3037]
+    Calibration
+    Diagnostics
+    Wiring
+  Rotary Trim Module 4
+    Settings  [sid 3038]
+    State/Switch/Button Input Settings  [sid 3039]
+    Calibration
+    Diagnostics
+    Wiring
+  Rotary Trim Module 5
+    Settings  [sid 3040]
+    State/Switch/Button Input Settings  [sid 3041]
+    Calibration
+    Diagnostics
+    Wiring
+  Rotary Trim Module 6
+    Settings  [sid 3042]
+    State/Switch/Button Input Settings  [sid 3043]
+    Calibration
+    Diagnostics
+    Wiring
+  Boost Pressure
+    Boost Pressure  [sid 468]
+    Display
+    Diagnostics
+    Wiring
+  Boost Pressure Pre-Intercooler
+    Boost Pressure Pre-Intercooler  [sid 470]
+    Display
+    Diagnostics
+    Wiring
+  Wastegate Pressure
+    Filter  [sid 293]
+    Wastegate Pressure  [sid 292]
+    Display
+    Diagnostics
+    Wiring
+  Wastegate 1 Temperature
+    Wastegate 1 Temperature  [sid 298]
+    Display
+    Diagnostics
+    Wiring
+  Wastegate 2 Temperature
+    Wastegate 2 Temperature  [sid 303]
+    Display
+    Diagnostics
+    Wiring
+  Turbo Speed 1
+    Calibration  [sid 408]
+    Display
+    Diagnostics
+    Wiring
+  Turbo Speed 2
+    Calibration  [sid 411]
+    Display
+    Diagnostics
+    Wiring
+  Wastegate Valve Pos 1
+    Calibration  [sid 462]
+    Display
+    Diagnostics
+    Wiring
+  Wastegate Valve Pos 2
+    Calibration  [sid 464]
+    Display
+    Diagnostics
+    Wiring
+  CO2 Bottle Pressure
+    CO2 Bottle Pressure  [sid 233]
+    Display
+    Diagnostics
+    Wiring
+  Nitrous Pressure 1
+    Nitrous Pressure 1  [sid 215]
+    Display
+    Diagnostics
+    Wiring
+  Nitrous Pressure 2
+    Nitrous Pressure 2  [sid 219]
+    Display
+    Diagnostics
+    Wiring
+  Nitrous Pressure 3
+    Nitrous Pressure 3  [sid 223]
+    Display
+    Diagnostics
+    Wiring
+  Nitrous Pressure 4
+    Nitrous Pressure 4  [sid 227]
+    Display
+    Diagnostics
+    Wiring
+  Barometric Pressure
+    Barometric Pressure  [sid 267]
+    Display
+    Diagnostics
+    Wiring
+  Ambient Air Temperature
+    Ambient Air Temperature  [sid 165]
+    Display
+    Diagnostics
+    Wiring
+  Humidity
+    Settings
+    Humidity  [sid 172]
+    Display
+    Diagnostics
+    Wiring
+  Transmission Line Pressure
+    Transmission Line Pressure  [sid 430]
+    Display
+    Diagnostics
+    Wiring
+  Torque Converter Pressure
+    Torque Converter Pressure  [sid 436]
+    Display
+    Diagnostics
+    Wiring
+  Differential Oil Temperature
+    Differential Oil Temperature  [sid 276]
+    Display
+    Diagnostics
+    Wiring
+  Transmission Oil Temperature
+    Over Temperature Setting  [sid 272]
+    Transmission Oil Temperature  [sid 271]
+    Display
+    Diagnostics
+    Wiring
+  Transmission Oil Temperature Switch
+    Diagnostics
+  Transfer Case Pressure
+    Transfer Case Pressure  [sid 441]
+    Display
+    Diagnostics
+    Wiring
+  Clutch Pressure
+    Switch  [sid 251]
+    Clutch Pressure  [sid 250]
+    Display
+    Diagnostics
+    Wiring
+  Transmission Input RPM Sensor
+    Calibration  [sid 473]
+    Display
+    Diagnostics
+    Wiring
+  Clutch Switch
+    Diagnostics
+  Reverse Switch
+    Diagnostics
+  Park Switch
+    Diagnostics
+  Neutral Switch
+    Diagnostics
+  Air Conditioner Pressure
+    Air Conditioner Pressure  [sid 284]
+    Display
+    Diagnostics
+    Wiring
+  Air Conditioner Temperature
+    Air Conditioner Temperature  [sid 347]
+    Display
+    Diagnostics
+    Wiring
+  Vehicle Speed
+    Enables  [sid 3081]
+    Drive Shaft RPM Sensor  [sid 3084]
+    Calibration  [sid 3082]
+    Derived Channels
+    Diagnostics
+    Filter  [sid 1747]
+    Wiring
+Functions
+  Usage Meters  [sid 3108]
+  Lights  [sid 5490]
+  Battery Light  [sid 5489]
+  Other  [sid 5503]
+  Other  [sid 3107]
+  Odometer
+    Odometer  [sid 3109]
+  Trip Meter 1
+  Trip Meter 2
+  Service Indicator
+    Service Indicator  [sid 3159]
+    Reset  [sid 1778]
+  Hour Meter 1
+    Settings  [sid 3160]
+    Run Condition  [sid 3161]
+    Reset  [sid 1780]
+  Hour Meter 2
+    Settings  [sid 3162]
+    Run Condition  [sid 3163]
+    Reset  [sid 1782]
+  Headlights
+    Inputs  [sid 5491]
+    Outputs  [sid 5492]
+    Extra Settings  [sid 5493]
+    Wiring
+  Indicators
+    Indicators  [sid 5494]
+    Wiring
+  Brake Lights
+  Reverse Lights
+    Reverse Lights  [sid 5495]
+    Wiring
+  Battery Light
+    Battery Light  [sid 5496]
+  Speedometer (Discrete)
+    Frequency  [sid 1792]
+  Catalyst Temperature Indicator
+  Alarms
+    Alarm Summary  [sid 5388]
+    Wiring
+    Alarm 1
+    Alarm 2
+    Alarm 3
+    Alarm 4
+    Alarm 5
+    Alarm 6
+    Alarm 7
+    Alarm 8
+    Alarm 9
+    Alarm 10
+    Alarm 11
+    Alarm 12
+    Alarm 13
+    Alarm 14
+    Alarm 15
+    Alarm 16
+    Alarm 17
+    Alarm 18
+    Alarm 19
+    Alarm 20
+    Alarm 21
+    Alarm 22
+    Alarm 23
+    Alarm 24
+    Alarm 25
+  Peak Values
+    Peak Value Settings  [sid 3169]
+    Wiring
+  Shift Lights
+    Shift Lights Setup  [sid 5500]
+  Electric Water Pump
+    Settings  [sid 5504]
+    Duty Cycle  [sid 1789]
+    Wiring
+  Air Conditioner
+    Air Con  [sid 5505]
+    Max Pressure  [sid 1752]
+    Wiring
+  Dual Fuel Tank Transfer
+    Fuel Transfer Settings  [sid 3151]
+    Wiring
+  Intercooler System
+    Spray Switch Settings  [sid 3164]
+    Spray Conditional Settings  [sid 3165]
+    Spray Output Settings  [sid 3166]
+    Fan Settings  [sid 3167]
+    Wiring
+  Thermo Fan 1
+    General  [sid 5506]
+    Additional Enable Conditions  [sid 5507]
+    Duty Cycle  [sid 1755]
+    Wiring
+  Thermo Fan 2
+    General  [sid 5508]
+    Additional Enable Conditions  [sid 5509]
+    Duty Cycle  [sid 1757]
+    Wiring
+  Thermo Fan 3
+    General  [sid 5510]
+    Additional Enable Conditions  [sid 5511]
+    Duty Cycle  [sid 1759]
+    Wiring
+  Thermo Fan 4
+    General  [sid 5512]
+    Additional Enable Conditions  [sid 5513]
+    Duty Cycle  [sid 1761]
+    Wiring
+  Windscreen Washer
+  Windscreen Wipers
+    Settings  [sid 3152]
+    Intermittent
+    Intermittent
+    Wiring
+  Exhaust Cutout
+  Nitrous Bottle Opener
+Transmission
+  Transmission  [sid 5501]
+  Functions  [sid 5502]
+  Gear Ratios
+    Gear Ratio  [sid 3124]
+    Wiring
+  Gear Detection RPM Drop
+    RPM Drop  [sid 3122]
+  Gear Detection Switch
+    Gear Switch  [sid 3125]
+  Gear Detection Position
+    1st  [sid 3127]
+    2nd  [sid 3128]
+    3rd  [sid 3129]
+    4th  [sid 3130]
+    5th  [sid 3131]
+    6th  [sid 3132]
+    7th  [sid 3133]
+    8th  [sid 3134]
+    9th  [sid 3135]
+    10th  [sid 3136]
+    Reverse  [sid 3140]
+    Neutral  [sid 3126]
+  Gear Detection Wiring
+  Selector Position
+    Selector Position  [sid 3123]
+    Park  [sid 3139]
+    Reverse  [sid 3143]
+    Neutral  [sid 3141]
+    Neutral (Alternate)  [sid 3142]
+    Drive  [sid 3138]
+    Low  [sid 3146]
+    Sport  [sid 3137]
+    Manual  [sid 3144]
+    Overdrive  [sid 3145]
+    1st  [sid 3147]
+    2nd  [sid 3148]
+    3rd  [sid 3149]
+    4th  [sid 3150]
+  Selector Position Wiring
+Generics
+  Sensors  [sid 2611]
+  Conditions  [sid 2613]
+  Outputs  [sid 2612]
+  Timers  [sid 2614]
+  PID Controllers  [sid 2615]
+  Other  [sid 2616]
+  Sensors
+    Generic Sensor 1
+    Generic Sensor 2
+    Generic Sensor 3
+    Generic Sensor 4
+    Generic Sensor 5
+    Generic Sensor 6
+    Generic Sensor 7
+    Generic Sensor 8
+    Generic Sensor 9
+    Generic Sensor 10
+    Generic Sensor 11
+    Generic Sensor 12
+    Generic Sensor 13
+    Generic Sensor 14
+    Generic Sensor 15
+    Generic Sensor 16
+    Generic Sensor 17
+    Generic Sensor 18
+    Generic Sensor 19
+    Generic Sensor 20
+  Conditions
+    Generic Condition 1
+    Generic Condition 2
+    Generic Condition 3
+    Generic Condition 4
+    Generic Condition 5
+    Generic Condition 6
+    Generic Condition 7
+    Generic Condition 8
+    Generic Condition 9
+    Generic Condition 10
+    Generic Condition 11
+    Generic Condition 12
+    Generic Condition 13
+    Generic Condition 14
+    Generic Condition 15
+    Generic Condition 16
+    Generic Condition 17
+    Generic Condition 18
+    Generic Condition 19
+    Generic Condition 20
+  Outputs
+    Generic Output 1
+    Generic Output 2
+    Generic Output 3
+    Generic Output 4
+    Generic Output 5
+    Generic Output 6
+    Generic Output 7
+    Generic Output 8
+    Generic Output 9
+    Generic Output 10
+    Generic Output 11
+    Generic Output 12
+    Generic Output 13
+    Generic Output 14
+    Generic Output 15
+    Generic Output 16
+    Generic Output 17
+    Generic Output 18
+    Generic Output 19
+    Generic Output 20
+  Timers
+    Generic Timer 1
+    Generic Timer 2
+    Generic Timer 3
+    Generic Timer 4
+    Generic Timer 5
+    Generic Timer 6
+    Generic Timer 7
+    Generic Timer 8
+    Generic Timer 9
+    Generic Timer 10
+  PID Controllers
+    Generic PID Controller 1
+    Generic PID Controller 2
+    Generic PID Controller 3
+    Generic PID Controller 4
+    Generic PID Controller 5
+  Switches
+Connections
+  CAN  [sid 2604]
+  CAN
+    Haltech CAN System
+    Third Party CAN
+Datalog
+  Enable  [sid 3113]
+  Channel Selection  [sid 3120]
+  Conditions
+    Conditional  [sid 3114]
+    Operation 0  [sid 3115]
+    Operator 0  [sid 3116]
+    Operation 1  [sid 3117]
+    Operator 1  [sid 3118]
+    Operation 2  [sid 3119]
+  Datalog Switch
+Wire Colors

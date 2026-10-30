@@ -1,0 +1,510 @@
+{
+ "stock": {
+  "sha256": "220faccedcc1aaa652a6484633976d4f419e0e9c517eaabcad7a3b130616d356",
+  "wrapper": [
+   "0x2",
+   "0x0",
+   "0x0",
+   "0x25000000",
+   "0x80",
+   "0x4000",
+   "0xfa0"
+  ],
+  "wrapper_md5": "a9dfc896b24b320ab6f82ec0eb2b9954",
+  "decoded_bytes": 17371648,
+  "members": 339,
+  "first_member_magic": "7573746172003030"
+ },
+ "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex": {
+  "sha256": "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c",
+  "zip_entries": {
+   "manifest.xml": {
+    "size": 356,
+    "compress": 0,
+    "crc": "0xa84342b1",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "res_ic-7.qzip": {
+    "size": 17408044,
+    "compress": 0,
+    "crc": "0x2ab9fa6d",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "ic-7.hdef": {
+    "size": 7971401,
+    "compress": 0,
+    "crc": "0xe1e02648",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   }
+  },
+  "zip_crc_ok": true,
+  "manifest": "<?xml version='1.0' encoding='utf-8'?>\n<NEX_FILE>\n  <FW_PACKAGE_VERSION>2.36.0.0.0</FW_PACKAGE_VERSION>\n  <FILE_FORMAT_VERSION>1</FILE_FORMAT_VERSION>\n  <PRODUCT name=\"iC-7 Dash\" pid=\"21\" vid=\"11\" hwid=\"1,2,40960\" hdefFile=\"ic-7.hdef\">\n    <FILE name=\"res_ic-7.qzip\" desc=\"Write Resources File\" type=\"qzip\" abortOnFailure=\"true\" />\n  </PRODUCT>\n</NEX_FILE>",
+  "hdef_identical_to_stock": true,
+  "hdef_sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+  "wrapper_words": [
+   "0x2",
+   "0x0",
+   "0x0",
+   "0x25000000",
+   "0x80",
+   "0x4000",
+   "0xfa0"
+  ],
+  "wrapper_first_28_identical": true,
+  "wrapper_md5_field": "a9dfc896b24b320ab6f82ec0eb2b9954",
+  "wrapper_md5_matches_body": false,
+  "wrapper_md5_matches_decoded": false,
+  "decoded_bytes": 17408000,
+  "decoded_mod_10240": 0,
+  "first_member_magic": "7573746172202000",
+  "stock_member_order_preserved": true,
+  "members": 340,
+  "diff": {
+   "changed": {
+    "qml_components_data/qml/factory_screens/main.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 2898,
+      "sha256": "6a8afa8496f589799a6593eb27f9aa641bb1cb65249fd520c4d471427bac5968"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1767313730,
+      "size": 4015,
+      "sha256": "65a5b7c77e4261b1e45d89f3d469d95eaf111d3451b4ddd1b3f745785afe0be1"
+     }
+    },
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648084,
+      "size": 3008,
+      "sha256": "63494b94c898537a8e9e443693987d6ddb6a188a9d8a05bdc12edb344d1678cc"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1710892354,
+      "size": 16967,
+      "sha256": "48b63801d6c277795694b77dc8b0da19cb4d6e6c13372dd1d9a7ad914f8bc770"
+     }
+    },
+    "qml_components_data/qml/user_components/HalImage.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 3410,
+      "sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1711391189,
+      "size": 6879,
+      "sha256": "d0bb83f5e1d5f6a62bda44e195d204074829aace500c91cb158054475fa097b8"
+     }
+    }
+   },
+   "added": {
+    "qml_components_data/qml/user_components/HalSplash.qml": {
+     "type": "0",
+     "mode": "0o644",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1759212789,
+     "size": 6932,
+     "sha256": "82b8b3079875a7fd25bef8e9f2ae3c64f64452422e61990b0b7b1beb3e3e8a56"
+    }
+   },
+   "removed": [],
+   "header_only_changes": {}
+  }
+ },
+ "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex": {
+  "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167",
+  "zip_entries": {
+   "manifest.xml": {
+    "size": 356,
+    "compress": 0,
+    "crc": "0xa84342b1",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "res_ic-7.qzip": {
+    "size": 17428524,
+    "compress": 0,
+    "crc": "0x26ee8505",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "ic-7.hdef": {
+    "size": 7971401,
+    "compress": 0,
+    "crc": "0xe1e02648",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   }
+  },
+  "zip_crc_ok": true,
+  "manifest": "<?xml version='1.0' encoding='utf-8'?>\n<NEX_FILE>\n  <FW_PACKAGE_VERSION>2.36.0.0.0</FW_PACKAGE_VERSION>\n  <FILE_FORMAT_VERSION>1</FILE_FORMAT_VERSION>\n  <PRODUCT name=\"iC-7 Dash\" pid=\"21\" vid=\"11\" hwid=\"1,2,40960\" hdefFile=\"ic-7.hdef\">\n    <FILE name=\"res_ic-7.qzip\" desc=\"Write Resources File\" type=\"qzip\" abortOnFailure=\"true\" />\n  </PRODUCT>\n</NEX_FILE>",
+  "hdef_identical_to_stock": true,
+  "hdef_sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+  "wrapper_words": [
+   "0x2",
+   "0x0",
+   "0x0",
+   "0x25000000",
+   "0x80",
+   "0x4000",
+   "0xfa0"
+  ],
+  "wrapper_first_28_identical": true,
+  "wrapper_md5_field": "a9dfc896b24b320ab6f82ec0eb2b9954",
+  "wrapper_md5_matches_body": false,
+  "wrapper_md5_matches_decoded": false,
+  "decoded_bytes": 17428480,
+  "decoded_mod_10240": 0,
+  "first_member_magic": "7573746172202000",
+  "stock_member_order_preserved": true,
+  "members": 345,
+  "diff": {
+   "changed": {
+    "qml_components_data/qml/factory_screens/main.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 2898,
+      "sha256": "6a8afa8496f589799a6593eb27f9aa641bb1cb65249fd520c4d471427bac5968"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1767313730,
+      "size": 4015,
+      "sha256": "65a5b7c77e4261b1e45d89f3d469d95eaf111d3451b4ddd1b3f745785afe0be1"
+     }
+    },
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648084,
+      "size": 3008,
+      "sha256": "63494b94c898537a8e9e443693987d6ddb6a188a9d8a05bdc12edb344d1678cc"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1710892354,
+      "size": 16967,
+      "sha256": "48b63801d6c277795694b77dc8b0da19cb4d6e6c13372dd1d9a7ad914f8bc770"
+     }
+    },
+    "qml_components_data/qml/user_components/HalBarHorizontal1.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 8611,
+      "sha256": "7266c39f4b357fc8d02c4565e920fa32c90f9e7d01f8cbc3029c6800dc64bf53"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1719130990,
+      "size": 8993,
+      "sha256": "d6e269fcd7eeafdc452d7330053da04bd27b3ebbfb97b2066b4d58f634b8c6c5"
+     }
+    },
+    "qml_components_data/qml/user_components/HalCircularClassic.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648084,
+      "size": 15506,
+      "sha256": "29313dd50b63480a5e2cdcc9afd06a5fb53ce24a82b5eef56375028487607b76"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1703356687,
+      "size": 15888,
+      "sha256": "643af486d08f75a2c3c27ceca174a179361f0a39c1515d1489185aacaaca756a"
+     }
+    },
+    "qml_components_data/qml/user_components/HalImage.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 3410,
+      "sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1711391189,
+      "size": 6879,
+      "sha256": "d0bb83f5e1d5f6a62bda44e195d204074829aace500c91cb158054475fa097b8"
+     }
+    },
+    "qml_components_data/qml/user_components/HalIndicator.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648084,
+      "size": 4676,
+      "sha256": "e6407e3a06d4786148e106999299eeb787b824146ed8fd74867fcc8cc5da3e8f"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1736311265,
+      "size": 5288,
+      "sha256": "fa8c324d97612f8cb7cff2e0f9666994d3ce769bf3aacfec73b83737ad93605d"
+     }
+    },
+    "qml_components_data/qml/user_components/HalNumeric.qml": {
+     "stock": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1790648083,
+      "size": 6101,
+      "sha256": "819ab0f3710b21b4b4a34a3c3a8f62fc2b0fee5c228fdab66b4ac0e98402841a"
+     },
+     "candidate": {
+      "type": "0",
+      "mode": "0o666",
+      "uid": 0,
+      "gid": 0,
+      "uname": "",
+      "gname": "",
+      "mtime": 1748161796,
+      "size": 6483,
+      "sha256": "2956f5d2d70497cd2dc53df10a77eea1b37ceadac8a19a4b95cfe82b7a5c0dbe"
+     }
+    }
+   },
+   "added": {
+    "qml_components_data/qml/user_components/HalSplash.qml": {
+     "type": "0",
+     "mode": "0o644",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1759212789,
+     "size": 6932,
+     "sha256": "82b8b3079875a7fd25bef8e9f2ae3c64f64452422e61990b0b7b1beb3e3e8a56"
+    },
+    "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml": {
+     "type": "0",
+     "mode": "0o666",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1759590321,
+     "size": 4893,
+     "sha256": "3b83e21214b105064045a6cc9b45efdb0f0240e77aaea01f71be997c4617a3bd"
+    },
+    "qml_components_data/qml/user_components/Ic7GaugeFx.qml": {
+     "type": "0",
+     "mode": "0o666",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1765703969,
+     "size": 3989,
+     "sha256": "5a1930943ea179f58722160d7cf71a0900a2e8d0ea2ec292e46b0cd62dab9b75"
+    },
+    "qml_components_data/qml/user_components/Ic7AddonMedia.qml": {
+     "type": "0",
+     "mode": "0o666",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1774143322,
+     "size": 2464,
+     "sha256": "b04cbb2abcdafd7eac71a7c059f8a5b06993b2b654d9b9d82d71e5925c7344be"
+    },
+    "qml_components_data/qml/user_components/Ic7AddonVideo.qml": {
+     "type": "0",
+     "mode": "0o666",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1754192395,
+     "size": 1429,
+     "sha256": "ce184223ff8b5730fea4e92dae1d53d783e5d0b9266616926d656cab29796817"
+    },
+    "qml_components_data/qml/user_components/ic7addons.js": {
+     "type": "0",
+     "mode": "0o666",
+     "uid": 0,
+     "gid": 0,
+     "uname": "",
+     "gname": "",
+     "mtime": 1760930098,
+     "size": 9155,
+     "sha256": "32b8c1734c32a3779b382d1906bcd8890738b4984d36f01613ceb3f137828433"
+    }
+   },
+   "removed": [],
+   "header_only_changes": {}
+  }
+ },
+ "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-stock-resources-experimental.nex": {
+  "sha256": "4ff27b8c63dbd44d09af482551f5ea9e9287751e53027c49612f58e6ef13a847",
+  "zip_entries": {
+   "manifest.xml": {
+    "size": 356,
+    "compress": 0,
+    "crc": "0xa84342b1",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "res_ic-7.qzip": {
+    "size": 17371692,
+    "compress": 0,
+    "crc": "0xb41c4f92",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   },
+   "ic-7.hdef": {
+    "size": 7971401,
+    "compress": 0,
+    "crc": "0xe1e02648",
+    "flag_bits": 0,
+    "create_system": 3,
+    "extract_version": 20
+   }
+  },
+  "zip_crc_ok": true,
+  "manifest": "<?xml version='1.0' encoding='utf-8'?>\n<NEX_FILE>\n  <FW_PACKAGE_VERSION>2.36.0.0.0</FW_PACKAGE_VERSION>\n  <FILE_FORMAT_VERSION>1</FILE_FORMAT_VERSION>\n  <PRODUCT name=\"iC-7 Dash\" pid=\"21\" vid=\"11\" hwid=\"1,2,40960\" hdefFile=\"ic-7.hdef\">\n    <FILE name=\"res_ic-7.qzip\" desc=\"Write Resources File\" type=\"qzip\" abortOnFailure=\"true\" />\n  </PRODUCT>\n</NEX_FILE>",
+  "hdef_identical_to_stock": true,
+  "hdef_sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+  "wrapper_words": [
+   "0x2",
+   "0x0",
+   "0x0",
+   "0x25000000",
+   "0x80",
+   "0x4000",
+   "0xfa0"
+  ],
+  "wrapper_first_28_identical": true,
+  "wrapper_md5_field": "a9dfc896b24b320ab6f82ec0eb2b9954",
+  "wrapper_md5_matches_body": false,
+  "wrapper_md5_matches_decoded": false,
+  "decoded_bytes": 17371648,
+  "decoded_mod_10240": 4608,
+  "first_member_magic": "7573746172003030",
+  "stock_member_order_preserved": true,
+  "members": 339,
+  "diff": {
+   "changed": {},
+   "added": {},
+   "removed": [],
+   "header_only_changes": {}
+  }
+ }
+}

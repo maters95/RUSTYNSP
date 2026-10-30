@@ -1,0 +1,72 @@
+; xref '/dev/i2c-0' at ['0x11a8b8']
+   0x00030a24 aes_decrypt_start(QString, QString, AesFileType)
+   0x000319e0 io::ambient_light_io::ProcessAmbientLight::reset_als(unsigned char)
+   0x00031ae0 io::ambient_light_io::ProcessAmbientLight::enable_als(unsigned char)
+   0x00031bd4 io::ambient_light_io::ProcessAmbientLight::config_als(unsigned char, io::ambient_light_io::config_ambient_light_t const*)
+   0x00031ed0 io::ambient_light_io::ProcessAmbientLight::read_raw_ambient_light(unsigned char)
+   0x00032ccc io::dash_camera::get_chip_status()
+   0x000b50b0 WindscreenWipers::turn_off()
+; xref '/dev/i2c-2' at ['0x11a8c4']
+   0x00030a24 aes_decrypt_start(QString, QString, AesFileType)
+   0x000319e0 io::ambient_light_io::ProcessAmbientLight::reset_als(unsigned char)
+   0x00031ae0 io::ambient_light_io::ProcessAmbientLight::enable_als(unsigned char)
+   0x00031bd4 io::ambient_light_io::ProcessAmbientLight::config_als(unsigned char, io::ambient_light_io::config_ambient_light_t const*)
+   0x00031ed0 io::ambient_light_io::ProcessAmbientLight::read_raw_ambient_light(unsigned char)
+   0x00032ccc io::dash_camera::get_chip_status()
+   0x000b50b0 WindscreenWipers::turn_off()
+; xref '/dev/spidev0.0' at ['0x11b77c']
+   0x000401f8 io::led_io::ProcessDashLed::set_spi_mode(char)
+   0x00040270 io::led_io::ProcessDashLed::configure_spi()
+; xref '/dev/ttymxc3' at ['0x11b934']
+   0x000414a8 io::dash_uart::flush_uart_port()
+   0x000415e8 io::dash_uart::init_uart()
+; xref '/dev/ttymxc2' at ['0x11b944']
+   0x000415e8 io::dash_uart::init_uart()
+; xref '/sys/class/pwm/pwmchip' at ['0x11af24']
+   0x00026668 _GLOBAL__sub_I_gpio_pwm.cpp
+   0x00039374 unix_pwm::init(int, unsigned int, unsigned int, bool)
+   0x000b4a54 WindscreenWipers::~WindscreenWipers()
+; xref 'echo 0 > /sys/class/pwm/pwmchip1/export' at ['0x12e690']
+   0x00119100 backlight_off()
+; xref '/dev/video1' at ['0x11f77a']
+; xref '/sys/fsl_otp/HW_OCOTP_CFG' at ['0x11c804']
+   0x000518b4 read_processor_uid()
+; xref '/dev/ttyGS0' at ['0x11c26c']
+   0x0004b90c UsbComms::UsbComms()
+   0x0008ba78 SystemFunctions::verify_kernel_modules()
+; xref 'can0' at ['0x11ada4']
+   0x000265ac _GLOBAL__sub_I_can.cpp
+   0x000b4bcc WindscreenWipers::update_outputs()
+; xref 'ifconfig wlan0 192.168.5.2' at ['0x11b6fc']
+   0x0002691c _GLOBAL__sub_I_internal_io.cpp
+   0x00026cc8 _GLOBAL__sub_I_wifi_comms.cpp
+   0x00026e44 _GLOBAL__sub_I_ident.cpp
+   0x00027478 _GLOBAL__sub_I_dash_wifi_module.cpp
+   0x00027b24 _GLOBAL__sub_I_mainloopclass.cpp
+; xref 'cat /dev/fb0 > /tmp/camera_image.raw' at ['0x11a9cc']
+   0x0003308c io::dash_camera::capture_camera_test_image()
+; xref '/mnt/usb/datalog/log%u' at ['0x11c490']
+   0x0004dca8 datalogger::DatalogMemoryManager::save_log_num(unsigned int)
+   0x0004e3d0 datalogger::DatalogMemoryManager::update_index_file(unsigned short&, unsigned short&)
+   0x0004e5e8 datalogger::DatalogMemoryManager::open_log_file(unsigned short, bool)
+; xref 'modprobe -r g_mass_storage' at ['0x1207b0']
+   0x000af1c0 position_pots::PositionPot::has_input_state_changed(unsigned char, bool&)
+; xref '/sys/class/gpio/export' at ['0x11af84']
+   0x00026758 _GLOBAL__sub_I_gpio.cpp
+   0x0003aa04 unix_gpio::set_state(int, bool)
+; xref '/sys/class/thermal/thermal_zone0/temp' at ['0x11ae8c']
+   0x0003656c can::detect_bus_baud()
+   0x00038488 CPUTemp::read_temperature()
+; xref 'Redirecting video chip to screen' at ['0x11a9a8']
+   0x00032ccc io::dash_camera::get_chip_status()
+   0x0003308c io::dash_camera::capture_camera_test_image()
+; xref 'hostapd -B /etc/hostapd.conf -P /var/run/hostapd.pid' at ['0x11b718']
+   0x0002691c _GLOBAL__sub_I_internal_io.cpp
+   0x00026cc8 _GLOBAL__sub_I_wifi_comms.cpp
+   0x00026e44 _GLOBAL__sub_I_ident.cpp
+   0x00027478 _GLOBAL__sub_I_dash_wifi_module.cpp
+   0x00027b24 _GLOBAL__sub_I_mainloopclass.cpp
+; xref '/dev/fb0' at ['0x12e41c']
+   0x000d70e4 enum_for_GaugeType(int, unsigned char)
+   0x0010fa58 ui_module::UIComponent::update_value()
+   0x001138cc ui_module::UIMain::clear_screen()
