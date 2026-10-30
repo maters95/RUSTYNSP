@@ -63,7 +63,7 @@
 >    later recorded owner evidence that the cache was not reused across an update on the
 >    dash, so this is a precaution, applied anyway. The earlier `*-native-236` base kept
 >    stock mtimes on its own replaced files; the builder reports that for any base, and
->    the current `*-freshmtime-236` base has none.
+>    the `*-freshmtime-236` and current `*-r3-236` bases have none.
 > 12. Minor: the stock resource archive has 329 files (339 tar entries with directories).
 
 Status: research and plan only. Nothing here has been flashed. This builds on

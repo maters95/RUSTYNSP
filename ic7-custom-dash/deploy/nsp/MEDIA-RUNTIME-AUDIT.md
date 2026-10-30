@@ -187,7 +187,7 @@ the components looked for those resources in the wrong folder.
 ### Stale QML disk cache on the dash
 
 A possible second reason the flashed splash and alarm banners could fall back
-to stock, guarded against in `build-cfw-screen-alarms-freshmtime-236`. Owner
+to stock, guarded against since `build-cfw-screen-alarms-freshmtime-236` (current: `build-cfw-screen-alarms-r3-236`). Owner
 evidence (below) indicates it is not active on the real dash; the wrong
 resource path remains the proven cause.
 

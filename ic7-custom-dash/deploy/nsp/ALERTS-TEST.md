@@ -12,14 +12,20 @@ components inside the encrypted NEX resource archive, not as separate copies.
 The earlier screen-alarm candidate must not be used to validate this correction.
 See the [real-device audit](MEDIA-RUNTIME-AUDIT.md#real-device-resource-path-correction).
 
-The current candidate (`build-cfw-screen-alarms-freshmtime-236`) replaces
-`build-cfw-screen-alarms-native-236`, which must not be flashed, and adds:
+The current candidate (`build-cfw-screen-alarms-r3-236`) supersedes
+`build-cfw-screen-alarms-freshmtime-236` (`3f6d26f1…`) and
+`build-cfw-screen-alarms-native-236`; flash neither. It adds:
 
-- **Fresh QML modification times.** The dash's Qt 5.9.6 reuses a compiled QML
-  cache entry whenever path and mtime match, without comparing content, and the
-  cache is outside the folder a NEX update wipes. Earlier candidates kept the
-  stock mtimes, so a dash that had booted stock v2.36 could keep running the
-  stock `main.qml` and `HalAlarmPopup.qml`. See the
+- **Stock banners draw over custom media.** A full-screen GIF-only banner
+  (such as KFC LIMITER) could cover an earlier stock alarm such as OIL
+  PRESSURE. Stock bottom-stacked banners now always draw above it.
+
+It keeps from `build-cfw-screen-alarms-freshmtime-236`:
+
+- **Fresh QML modification times**, as a precaution. Qt 5.9.6 can reuse a
+  compiled QML cache entry whenever path and mtime match, but the owner's
+  hardware evidence shows the cache is not reused across updates on their
+  dash; the wrong folder path is the proven cause of the failed flash. See the
   [cache audit](MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash).
 - **Bounded manifest reads.** `Alarm_Module::draw_alarms` calls
   `reInitAlarmScreen` on every `UIMain::update` tick and then sets the popup's
@@ -194,11 +200,12 @@ screen components.
 
 ## Test on the Windows emulator
 
-Use `ic7-emulator-windows-nexmap-alerts.zip` in a separate directory.
+Use the `ic7-emulator` folder of the final Windows test kit.
 Open an iC-7 map once in the new NSP copy to stage its Qt add-ons; close its
 renderer. Run `.\start-workbench.cmd`; **Dash Display** opens automatically on
 Windows. Do not start a second `start-stock-renderer.cmd` alongside it.
-The isolated renderer installs the exact four QML components from this NEX.
+When NSP transfers the NEX, the emulator installs every member of it as the
+dash watchdog does; see `ic7-emulator\README.md` (**Dash fidelity**).
 It requires the matching Qt 5.11 x86 multimedia/GIF add-ons and DirectShow
 `dsengine`; missing dependencies are explicit errors. Upload map settings from
 NSP: the display must remain blank until those settings arrive.
@@ -250,7 +257,7 @@ screen-alarms` and a new output directory; package with
 candidate independently with `scripts/audit-nex.py --candidate <nex> --sysroot
 <extracted dash rootfs>`. The audit compares the package with stock and checks
 every QML import against the dash's installed Qt modules. The current candidate's
-report is `build-cfw-screen-alarms-freshmtime-236/audit-report.json`. The audit
+report is `build-cfw-screen-alarms-r3-236/audit-report.json`. The audit
 also rejects any changed or added QML member that reuses a stock (or zero) mtime. The included
 map is the supplied one, byte-for-byte.
 
@@ -266,12 +273,13 @@ driving.
 Verified locally for the current candidate: x86 DLL build with zero compiler
 errors (404 existing decompilation warnings), referencing the same 52 assemblies
 as the shipped DLL with nothing removed; **46** Python/.NET regressions (8 need
-PowerShell and were skipped), including a reproduction of the stale QML cache on
-the dash's Qt; **72** desktop Qt 5.15 QML checks, including painted splash
-pixels; **66** QML checks on the dash's own Qt 5.9.6 under QEMU, including
-markerless native screen switching, a missing QtMultimedia, a splash that
-survives a 4.5 s blocked startup, and components loaded from scheme-less
-absolute paths as the application loads them; **116** emulator Python tests with real PyQt5; and an independent
+PowerShell and were skipped); **76** desktop Qt 5.15 QML checks, including
+painted splash pixels and a stock banner painted over a full-screen alarm GIF;
+**68** QML checks on the dash's own Qt 5.9.6 under QEMU, including
+markerless native screen switching, alarm z-order in both model orders, a
+missing QtMultimedia, a splash that survives a 4.5 s blocked startup, and
+components loaded from scheme-less absolute paths as the application loads
+them; **132** emulator Python tests with real PyQt5; and an independent
 NEX audit with no findings. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.
