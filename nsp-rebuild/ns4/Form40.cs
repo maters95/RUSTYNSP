@@ -557,6 +557,8 @@ internal class Form40 : Form
 				string searchPattern = Class333.smethod_2325() + item;
 				list.AddRange(Directory.GetFiles(string_7, searchPattern, SearchOption.AllDirectories));
 			}
+			// Alarm screen-tracking markers are managed by Alarm appearance, not user images.
+			list.RemoveAll(path => NSP.MediaResource.IsManagedResource(Path.GetFileName(path)));
 		}
 		List<string> list2 = new List<string>();
 		if (flag2)
@@ -1277,6 +1279,35 @@ internal class Form40 : Form
 		{
 			Form54.smethod_6(this, Class333.smethod_2361() + fileName + Class333.smethod_2360() + ex2.Message, Class333.smethod_390(), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			return false;
+		}
+		if (enum5_0 == Class1.Enum5.BFH && framework_0 != null && framework_0.awZ == 21 && framework_0.awz == 11)
+		{
+			string warning = null;
+			try
+			{
+				int frames = 0;
+				int width = 0;
+				int height = 0;
+				if (!NSP.MediaResource.HasMp4Header(array2))
+				{
+					using MemoryStream probe = new MemoryStream(array2);
+					using Image probeImage = Image.FromStream(probe);
+					width = probeImage.Width;
+					height = probeImage.Height;
+					frames = Array.IndexOf(probeImage.FrameDimensionsList, FrameDimension.Time.Guid) >= 0
+						? probeImage.GetFrameCount(FrameDimension.Time) : 1;
+				}
+				warning = NSP.MediaResource.LargeMediaWarning(fileName, array2.LongLength, width, height, frames);
+			}
+			catch (Exception ex3)
+			{
+				Class23.smethod_3("Media size check skipped for " + fileName + ": " + ex3.Message, bool_1: false);
+			}
+			if (warning != null && Form54.smethod_8(this, warning, Class333.smethod_390(), MessageBoxButtons.OKCancel,
+				MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
+			{
+				return false;
+			}
 		}
 		if (enum5_0 == Class1.Enum5.BFH && array2 != array && Form54.smethod_9(this, Class333.smethod_2362() + fileName + Class333.smethod_2363(), Class333.smethod_2364(), MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, new string[2]
 		{

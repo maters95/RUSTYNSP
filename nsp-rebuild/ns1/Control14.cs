@@ -466,7 +466,8 @@ internal class Control14 : Control11
 				catch (Exception error)
 				{
 					Class23.smethod_3("Cannot disable startup media: " + error.Message);
-					MessageBox.Show(this, error.Message, "Startup media", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					ns5.Form54.smethod_6(this, "Cannot disable the startup animation.\n\n" + error.Message, Class333.smethod_390(),
+						MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					@class?.method_4();
 					return;
 				}

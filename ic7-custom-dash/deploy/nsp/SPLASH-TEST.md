@@ -107,6 +107,9 @@ setting; it does not have a separate whole-map-upload-complete signal.
    and select it. The startup manifest is stored in both the working map and
    NSP's renderer resource cache. Save/Save As normally; upload the resources
    to the emulator. No desktop map reopen is required to persist the selection.
+   On an iC-7 v2.36 map, importing media over 4 MB, or an animated GIF whose
+   frames exceed the 860 x 480 canvas, asks for confirmation first. This is an
+   advisory limit; playback cost on the dash has not been measured.
 2. Trigger the existing **Reboot** action in NSP. Confirm a fresh GIF splash,
    followed by the dashboard within 3.3 seconds.
 3. Repeat with `samples/video.mp4`; confirm moving, muted video and handoff.

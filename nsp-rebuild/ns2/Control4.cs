@@ -3338,7 +3338,8 @@ internal class Control4 : UserControl
 				toolStripMenuItem8.Click += method_87;
 				contextMenuStrip.Items.Add(toolStripMenuItem8);
 				int alarmIndex = menuNode.method_46();
-				ToolStripMenuItem alertBannerItem = new ToolStripMenuItem("Appearance...");
+				ToolStripMenuItem alertBannerItem = new ToolStripMenuItem("Alarm Appearance...");
+				alertBannerItem.Available = Form23.SupportsDashMedia(Form23.framework_1);
 				alertBannerItem.Click += (_, _) => {
 					var alarms = Form23.framework_1?.awp?.method_73();
 					string message = alarms != null && alarmIndex >= 0 && alarmIndex < alarms.Count

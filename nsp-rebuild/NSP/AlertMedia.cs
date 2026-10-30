@@ -57,6 +57,35 @@ internal static class AlertMedia
 		[JsonRequired] public List<AlertBanner> Banners { get; set; } = new List<AlertBanner>();
 	}
 
+	// The dash application sends at most this many characters of an alarm's Message text.
+	internal const int DashNameLength = 20;
+
+	// The text the popup compares a rule with: the first 20 characters of the fixed-width
+	// Message the dash sends, trimmed as HalAlarmPopup trims it.
+	internal static string DashName(string message)
+	{
+		string text = (message ?? "").TrimEnd('\0');
+		if (text.Length > DashNameLength)
+			text = text.Substring(0, DashNameLength);
+		return text.Trim();
+	}
+
+	// Stricter than the manifest format (which older manifests rely on): a rule the dash can
+	// never match, or one whose quote would break the dash's alarm list, is reported in the editor.
+	internal static string NameProblem(string text)
+	{
+		if (string.IsNullOrWhiteSpace(text))
+			return "Enter the alarm's Message text.";
+		if (text != text.Trim())
+			return "Remove leading and trailing spaces; the dash ignores them.";
+		if (text.IndexOf('"') >= 0)
+			return "Alarm text cannot contain a double quote (\"); the dash's alarm list does not accept it. Change the alarm's Message instead.";
+		if (text.Length > DashNameLength)
+			return "The dash sends only the first " + DashNameLength + " characters of an alarm's Message, so this rule could never match. Use \""
+				+ DashName(text) + "\" or shorten the Message.";
+		return null;
+	}
+
 	internal static void Validate(IEnumerable<AlertBanner> banners)
 	{
 		HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);

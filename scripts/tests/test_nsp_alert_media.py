@@ -151,7 +151,7 @@ Item {
         if not dll.is_file():
             self.skipTest("Build NSP.dll first")
         data = dll.read_bytes()
-        for text in ("Appearance...", "Alarm appearance...",
+        for text in ("Alarm Appearance...", "Dash Alarm Appearance",
                      "ic7AlertBannerButton", "MP4 startup video", "Screens (All or 1, 3, 5)"):
             self.assertIn(text.encode("utf-16-le"), data, text)
 

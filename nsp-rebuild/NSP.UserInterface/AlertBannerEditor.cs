@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using NSP.SettingsFramework;
 using ns0;
 using ns4;
+using ns5;
 using ns7;
 
 namespace NSP.UserInterface;
@@ -39,7 +40,12 @@ internal sealed class AlertBannerEditor : Form
 		banners = new BindingList<NSP.AlertBanner>(focused
 			? savedBanners.Where(banner => banner.Text == focusText).ToList()
 			: savedBanners);
-		Text = focused ? "Alarm appearance - " + focusText : "Alarm appearance";
+		// Same window conventions as NSP's other code-built dialogs (see the image library).
+		Text = focused ? "Alarm Appearance - " + focusText : "Alarm Appearance";
+		Font = Form23.form23_0?.Font ?? Font;
+		ShowIcon = false;
+		ShowInTaskbar = false;
+		MinimizeBox = false;
 		Width = 1000;
 		Height = 760;
 		MinimumSize = new Size(920, 680);
@@ -51,13 +57,13 @@ internal sealed class AlertBannerEditor : Form
 		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 75));
 		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 190));
 		layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
-		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
 		Controls.Add(layout);
 		layout.Controls.Add(new Label {
 			Dock = DockStyle.Fill,
 			Text = (focused ? "Appearance for " + focusText + ". Colour, priority and clearing remain controlled by the dash.\r\n"
-				: "Choose an alarm's Message text. Colour, priority and clearing remain controlled by the dash.\r\n") +
+				: "Choose an alarm's Message text (the dash receives at most " + NSP.AlertMedia.DashNameLength + " characters). Colour, priority and clearing remain controlled by the dash.\r\n") +
 				"The preview shows the rule's screen as the dash composes it (or NSP's active screen for All). Drag to move; drag the bottom-right corner to resize.\r\n" +
 				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning.\r\n" +
 				"Screens: All, a single number (5), or a list (1, 3, 5). Restrictions hide the popup only; native alarm and LED logic is unchanged."
@@ -66,13 +72,26 @@ internal sealed class AlertBannerEditor : Form
 		grid.AutoGenerateColumns = false;
 		grid.AllowUserToAddRows = false;
 		grid.AllowUserToDeleteRows = false;
+		grid.AllowUserToResizeRows = false;
+		grid.RowHeadersVisible = false;
 		grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 		grid.MultiSelect = false;
+		// Themed as NSP's CAN signal editor grid, so it follows the light/dark theme.
+		grid.EnableHeadersVisualStyles = false;
+		grid.BackgroundColor = Form23.color_16;
+		grid.ForeColor = Form23.color_12;
+		grid.ColumnHeadersDefaultCellStyle.BackColor = Form23.color_16;
+		grid.ColumnHeadersDefaultCellStyle.ForeColor = Form23.color_12;
+		grid.DefaultCellStyle.BackColor = Form23.color_32;
+		grid.DefaultCellStyle.ForeColor = Form23.color_12;
 		foreach (string name in new[] { "Text", "Source", "X", "Y", "Width", "Height" })
 			grid.Columns.Add(new DataGridViewTextBoxColumn {
 				DataPropertyName = name, HeaderText = name == "Text" ? "Exact alarm text" : name,
 				Width = name == "Text" || name == "Source" ? 260 : 65,
-				ReadOnly = name == "Source" || (focused && name == "Text")
+				ReadOnly = name == "Source" || (focused && name == "Text"),
+				MaxInputLength = name == "Text" ? NSP.AlertMedia.DashNameLength : 32767,
+				ToolTipText = name == "Text" ? "The alarm's Message text exactly as the dash shows it (case-sensitive, at most "
+					+ NSP.AlertMedia.DashNameLength + " characters)." : name == "Source" ? "Use Choose GIF/image to change the media." : ""
 			});
 		grid.Columns.Add(new DataGridViewCheckBoxColumn {
 			DataPropertyName = "GifOnly", HeaderText = "GIF only (hide text/banner)", Width = 110
@@ -86,16 +105,31 @@ internal sealed class AlertBannerEditor : Form
 				grid.CommitEdit(DataGridViewDataErrorContexts.Commit);
 		};
 		grid.SelectionChanged += (_, _) => canvas.Invalidate();
-		grid.CellValueChanged += (_, _) => canvas.Invalidate();
+		grid.CellValueChanged += (_, _) => { MarkDirty(); canvas.Invalidate(); };
 		grid.CellValidating += (_, e) => {
 			string property = grid.Columns[e.ColumnIndex].DataPropertyName;
+			if (property == "Text")
+			{
+				if (grid.Columns[e.ColumnIndex].ReadOnly)
+					return;
+				string text = Convert.ToString(e.FormattedValue);
+				string problem = NSP.AlertMedia.NameProblem(text)
+					?? (banners.Where((banner, index) => index != e.RowIndex).Any(banner => banner.Text == text)
+						? "Another rule already uses '" + text + "'." : null);
+				if (problem != null)
+				{
+					e.Cancel = true;
+					ShowMessage(problem, MessageBoxIcon.Exclamation);
+				}
+				return;
+			}
 			if (property == "ScreensText")
 			{
 				try { new NSP.AlertBanner { ScreensText = Convert.ToString(e.FormattedValue) }; }
 				catch (InvalidDataException error)
 				{
 					e.Cancel = true;
-					MessageBox.Show(this, error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					ShowMessage(error.Message, MessageBoxIcon.Exclamation);
 				}
 				return;
 			}
@@ -106,14 +140,12 @@ internal sealed class AlertBannerEditor : Form
 			if (!int.TryParse(Convert.ToString(e.FormattedValue), out int value) || value < minimum || value > maximum)
 			{
 				e.Cancel = true;
-				MessageBox.Show(this, property + " must be a whole number between " + minimum + " and " + maximum + ".",
-					Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				ShowMessage(property + " must be a whole number between " + minimum + " and " + maximum + ".", MessageBoxIcon.Exclamation);
 			}
 		};
 		grid.DataError += (_, e) => {
 			e.ThrowException = false;
-			MessageBox.Show(this, "Use whole-number coordinates and dimensions. Screens must be All or distinct numbers from 1 to 5.", Text,
-				MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			ShowMessage("Use whole-number coordinates and dimensions. Screens must be All or distinct numbers from 1 to 5.", MessageBoxIcon.Exclamation);
 		};
 		layout.Controls.Add(grid);
 
@@ -125,69 +157,171 @@ internal sealed class AlertBannerEditor : Form
 		canvas.MouseUp += (_, _) => { dragging = false; canvas.Capture = false; };
 		layout.Controls.Add(canvas);
 
-		var buttons = new FlowLayoutPanel { Dock = DockStyle.Fill };
-		var names = new ComboBox { Width = 210, DropDownStyle = ComboBoxStyle.DropDown };
+		// Editing actions on the left; the dialog's OK / Cancel / Apply bottom-right, as in Windows.
+		var buttons = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
+		var names = new ComboBox {
+			Width = 210, DropDownStyle = ComboBoxStyle.DropDown, MaxLength = NSP.AlertMedia.DashNameLength,
+			BackColor = Form23.color_32, ForeColor = Form23.color_12, FlatStyle = FlatStyle.Flat,
+			Margin = new Padding(3, 6, 3, 3)
+		};
 		names.Text = focusText ?? "";
-		names.Enabled = !focused;
-		if (framework.awp != null)
-			foreach (var alarm in framework.awp.method_73())
-			{
-				string name = AlarmText(alarm);
-				if (!string.IsNullOrWhiteSpace(name) && !names.Items.Contains(name))
-					names.Items.Add(name);
-			}
+		names.Visible = !focused;
+		foreach (string name in ConfiguredNames().OrderBy(name => name, StringComparer.CurrentCultureIgnoreCase))
+			names.Items.Add(name);
 		buttons.Controls.Add(names);
 		AddButton(buttons, "Add alarm", () => {
-			string text = names.Text;
-			if (string.IsNullOrWhiteSpace(text) || banners.Any(banner => banner.Text == text))
-				throw new InvalidDataException("Choose a nonempty, unique alarm name.");
+			string text = names.Text.Trim();
+			string problem = NSP.AlertMedia.NameProblem(text);
+			if (problem != null)
+				throw new InvalidDataException(problem);
+			if (banners.Any(banner => banner.Text == text))
+				throw new InvalidDataException("'" + text + "' already has an appearance rule.");
+			var configured = ConfiguredNames();
+			if (configured.Count > 0 && !configured.Contains(text) && Form54.smethod_8(this,
+					"No alarm in this map has the Message '" + text + "', so this rule will not show until an alarm uses that exact text. Add it anyway?",
+					Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) != DialogResult.OK)
+				return;
 			banners.Add(new NSP.AlertBanner { Text = text });
 			grid.CurrentCell = grid.Rows[banners.Count - 1].Cells[0];
-		});
+			MarkDirty();
+		}).Visible = !focused;
 		AddButton(buttons, "Choose GIF/image", ChooseImage);
 		AddButton(buttons, "Stock background", () => {
 			if (Selected == null)
 				throw new InvalidOperationException("Select an alert first.");
 			Selected.Source = "";
 			Selected.GifOnly = false;
+			MarkDirty();
 			grid.Refresh();
 			canvas.Invalidate();
 		});
 		AddButton(buttons, "Remove override", () => {
 			if (Selected != null)
+			{
 				banners.Remove(Selected);
+				MarkDirty();
+			}
 			canvas.Invalidate();
 		});
-		AddButton(buttons, "Apply", SaveBanners);
-		AcceptButton = AddButton(buttons, "OK", () => { SaveBanners(); DialogResult = DialogResult.OK; Close(); });
-		CancelButton = AddButton(buttons, "Cancel", () => { DialogResult = DialogResult.Cancel; Close(); }, false);
 		applyToDash.Enabled = Form23.smethod_28(framework.aXc, true);
+		applyToDash.Margin = new Padding(12, 8, 3, 3);
+		applyToDash.CheckedChanged += (_, _) => UpdateApplyButton();
 		buttons.Controls.Add(applyToDash);
 		layout.Controls.Add(buttons);
+
+		var footer = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2, RowCount = 1, Margin = new Padding(0) };
+		footer.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+		footer.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+		footer.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+		status.AutoSize = false;
+		status.AutoEllipsis = true;
+		status.TextAlign = ContentAlignment.MiddleLeft;
+		footer.Controls.Add(status, 0, 0);
+		var dialogButtons = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0) };
+		ThemedButton ok = AddButton(dialogButtons, "OK", () => {
+			if (dirty || applyToDash.Checked)
+				SaveBanners();
+			DialogResult = DialogResult.OK;
+			Close();
+		});
+		ThemedButton cancel = AddButton(dialogButtons, "Cancel", () => { DialogResult = DialogResult.Cancel; Close(); }, false);
+		applyButton = AddButton(dialogButtons, "Apply", SaveBanners);
+		foreach (ThemedButton button in new[] { ok, cancel, applyButton })
+		{
+			button.AutoSize = false;
+			button.Size = new Size(92, 30);
+		}
+		footer.Controls.Add(dialogButtons, 1, 0);
+		layout.Controls.Add(footer);
+		AcceptButton = ok;
+		CancelButton = cancel;
 		status.Text = "Apply updates this map and its desktop preview. Save the map normally to keep changes.";
-		layout.Controls.Add(status);
+		FormClosing += ConfirmDiscard;
 		FormClosed += (_, _) => ClearPreviewImages();
-		if (!string.IsNullOrWhiteSpace(focusText))
+		if (focused)
 		{
 			int index = banners.ToList().FindIndex(banner => banner.Text == focusText);
 			if (index < 0)
 			{
-				banners.Add(new NSP.AlertBanner { Text = focusText });
+				placeholder = new NSP.AlertBanner { Text = focusText };
+				banners.Add(placeholder);
 				index = banners.Count - 1;
 			}
 			Shown += (_, _) => grid.CurrentCell = grid.Rows[index].Cells[0];
 		}
+		UpdateApplyButton();
 	}
 
-	// The dash receives the alarm's Message text, not the tree name ("Alarm 1").
+	private readonly ThemedButton applyButton;
+	// The row shown for an alarm that has no rule yet. It is saved only once changed, so
+	// opening the dialog and pressing OK never turns a stock bottom-stacked alarm into a
+	// positioned one.
+	private readonly NSP.AlertBanner placeholder;
+	private bool dirty;
+
+	private void MarkDirty()
+	{
+		dirty = true;
+		UpdateApplyButton();
+	}
+
+	private void UpdateApplyButton()
+	{
+		if (applyButton != null)
+			applyButton.Enabled = dirty || applyToDash.Checked;
+	}
+
+	// NSP's themed message box, as used by its own dialogs.
+	private DialogResult ShowMessage(string message, MessageBoxIcon icon)
+	{
+		return Form54.smethod_6(this, message, Text, MessageBoxButtons.OK, icon);
+	}
+
+	private static bool IsDefaultRule(NSP.AlertBanner banner) => banner.Source.Length == 0
+		&& !banner.GifOnly && banner.Screens == null && banner.X == 0 && banner.Y == 420
+		&& banner.Width == 860 && banner.Height == 60;
+
+	private void ConfirmDiscard(object sender, FormClosingEventArgs e)
+	{
+		if (DialogResult == DialogResult.OK || e.CloseReason != CloseReason.UserClosing)
+			return;
+		if (dirty && Form54.smethod_8(this, "Discard the alarm appearance changes that have not been applied?",
+				Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+		{
+			e.Cancel = true;
+			return;
+		}
+		// A cell that failed validation must not keep the dialog open once edits are discarded.
+		grid.CancelEdit();
+		e.Cancel = false;
+	}
+
+	// Dash-visible Message texts of the map's configured alarms.
+	private System.Collections.Generic.HashSet<string> ConfiguredNames()
+	{
+		var result = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
+		try
+		{
+			if (framework.awp != null)
+				foreach (var alarm in framework.awp.method_73())
+				{
+					string name = AlarmText(alarm);
+					if (!string.IsNullOrWhiteSpace(name))
+						result.Add(name);
+				}
+		}
+		catch (Exception error)
+		{
+			Class23.smethod_3("Alarm appearance: cannot list alarms: " + error.Message, bool_1: false);
+		}
+		return result;
+	}
+
+	// The dash receives the alarm's Message text, not the tree name ("Alarm 1"), and at most
+	// its first 20 characters; rules use that dash-visible text.
 	internal static string AlarmText(SettingOrSpecialObject alarm)
 	{
-		var strings = Descendants(alarm).OfType<Setting>().Where(setting => setting.method_70() != 0).ToList();
-		Setting message = strings.FirstOrDefault(setting =>
-				(setting.method_22(false) ?? "").IndexOf("message", StringComparison.OrdinalIgnoreCase) >= 0)
-			?? strings.FirstOrDefault(setting => setting != alarm.method_19())
-			?? strings.FirstOrDefault();
-		return message?.method_260()?.TrimEnd('\0').Trim() ?? "";
+		return NSP.AlertMedia.DashName(AlarmTextSetting(alarm)?.method_260());
 	}
 
 	internal static Setting AlarmTextSetting(SettingOrSpecialObject alarm)
@@ -271,13 +405,17 @@ internal sealed class AlertBannerEditor : Form
 			try
 			{
 				if (validate && !grid.EndEdit())
-					throw new InvalidDataException("Correct the current cell before continuing.");
+					return; // CellValidating has already explained the problem.
 				action();
+			}
+			catch (OperationCanceledException)
+			{
+				// The user declined a confirmation; nothing was changed.
 			}
 			catch (Exception error)
 			{
 				Class23.smethod_3("Alert banner editor: " + error.Message);
-				MessageBox.Show(this, error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				ShowMessage(error.Message, MessageBoxIcon.Exclamation);
 			}
 		};
 		parent.Controls.Add(button);
@@ -295,6 +433,7 @@ internal sealed class AlertBannerEditor : Form
 		string source = (picker.bool_2 ? "u/" : "h/") + picker.string_9;
 		NSP.AlertMedia.Validate(new[] { new NSP.AlertBanner { Text = Selected.Text, Source = source } });
 		Selected.Source = source;
+		MarkDirty();
 		grid.Refresh();
 		canvas.Invalidate();
 	}
@@ -305,7 +444,21 @@ internal sealed class AlertBannerEditor : Form
 			throw new InvalidDataException("Correct the highlighted value before applying.");
 		grid.EndEdit();
 		BindingContext[banners].EndCurrentEdit();
-		var allBanners = otherBanners.Concat(banners).ToList();
+		var edited = banners.Where(banner => banner != placeholder || !IsDefaultRule(banner)).ToList();
+		foreach (var banner in edited)
+		{
+			string problem = NSP.AlertMedia.NameProblem(banner.Text);
+			if (problem != null)
+				throw new InvalidDataException("'" + banner.Text + "': " + problem);
+		}
+		var configured = ConfiguredNames();
+		var unmatched = edited.Select(banner => banner.Text).Where(text => !configured.Contains(text)).ToList();
+		if (configured.Count > 0 && unmatched.Count > 0 && Form54.smethod_8(this,
+				"No alarm in this map has the Message " + string.Join(", ", unmatched.Select(text => "'" + text + "'"))
+				+ ". Those rules will not show until an alarm uses that exact text (case-sensitive). Apply anyway?",
+				Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) != DialogResult.OK)
+			throw new OperationCanceledException();
+		var allBanners = otherBanners.Concat(edited).ToList();
 		if (framework.awp != null)
 		{
 			var messages = framework.awp.method_73()
@@ -402,6 +555,8 @@ internal sealed class AlertBannerEditor : Form
 		}
 		status.Text = "Applied to map" + (previewRunning ? " and desktop preview" : " (desktop preview not running)")
 			+ (online ? "; uploaded to dash." : ".") + " Save the map normally to keep changes.";
+		dirty = false;
+		UpdateApplyButton();
 	}
 
 	// ---- Preview against the real screen ------------------------------------
@@ -571,6 +726,8 @@ internal sealed class AlertBannerEditor : Form
 			Selected.X = Math.Clamp(original.X + dx, 0, Math.Max(0, 860 - Selected.Width));
 			Selected.Y = Math.Clamp(original.Y + dy, 0, Math.Max(0, 480 - Selected.Height));
 		}
+		if (dx != 0 || dy != 0)
+			MarkDirty();
 		grid.Refresh();
 		canvas.Invalidate();
 	}

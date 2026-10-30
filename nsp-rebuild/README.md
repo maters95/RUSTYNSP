@@ -13,7 +13,8 @@ three seconds at the Qt/application stage; it does not animate the earlier
 kernel logo. See the [splash test guide](../ic7-custom-dash/deploy/nsp/SPLASH-TEST.md).
 
 The combined alert candidate additionally embeds `HalAlarmPopup.qml` and adds
-**Alert GIF banners and placement...** to the main menu. It stores exact
+**Setup > Dash Alarm Appearance** (iC-7 v2.36 maps only), plus **Alarm
+Appearance...** on each alarm's page and tree menu. It stores exact
 alert-text-to-image/rectangle overrides in `u/ic7_alerts.json`, offers drag/resize
 and numeric placement, and keeps warning text and the application's alarm
 logic intact. Ordinary screen media reuses the existing per-screen image

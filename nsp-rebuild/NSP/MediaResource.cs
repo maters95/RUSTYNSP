@@ -27,6 +27,33 @@ internal static class MediaResource
 		return true;
 	}
 
+	// Advisory only: the dash decodes GIFs in software on the i.MX6 and receives resources over
+	// the comms link, so very large media is slow to transfer and costly to animate.
+	internal const long LargeMediaBytes = 4L * 1024 * 1024;
+	internal const int CanvasWidth = 860;
+	internal const int CanvasHeight = 480;
+
+	internal static string LargeMediaWarning(string fileName, long length, int width, int height, int frames)
+	{
+		var reasons = new System.Collections.Generic.List<string>();
+		if (length > LargeMediaBytes)
+			reasons.Add("it is " + (length / (1024.0 * 1024.0)).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)
+				+ " MB (over " + LargeMediaBytes / (1024 * 1024) + " MB), so it takes longer to transfer");
+		if (frames > 1 && (width > CanvasWidth || height > CanvasHeight))
+			reasons.Add("its frames (" + width + " x " + height + ") are larger than the dash's "
+				+ CanvasWidth + " x " + CanvasHeight + " canvas, so every frame is decoded and scaled down");
+		if (reasons.Count == 0)
+			return null;
+		return fileName + " may play slowly on the dash: " + string.Join("; ", reasons)
+			+ ". Reduce its size or frame dimensions for smoother playback. Import it anyway?";
+	}
+
+	internal static bool IsManagedResource(string fileName)
+	{
+		return fileName != null && System.Text.RegularExpressions.Regex.IsMatch(fileName,
+			@"^ic7_screen_[1-5]\.png$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+	}
+
 	internal static bool HasMp4Header(ReadOnlySpan<byte> data)
 	{
 		return data.Length >= 12 && data[4] == (byte)'f' && data[5] == (byte)'t'

@@ -3816,12 +3816,18 @@ internal class Form23 : Form
 		}
 	}
 
+	// Alarm appearance, splash and screen-media manifests exist only for the iC-7 v2.36 resource NEX.
+	internal static bool SupportsDashMedia(Framework framework)
+	{
+		return framework != null && framework.awZ == 21 && framework.awz == 11;
+	}
+
 	internal static void OpenAlertBannerEditor(string focusText, IWin32Window owner = null)
 	{
 		owner ??= form23_0;
-		if (framework_1 == null || framework_1.awZ != 21 || framework_1.awz != 11)
+		if (!SupportsDashMedia(framework_1))
 		{
-			MessageBox.Show(owner, "Open an iC-7 v2.36 map first.", "Alert banners",
+			Form54.smethod_6(owner, "Alarm appearance needs an open iC-7 v2.36 map.", "Alarm Appearance",
 				MessageBoxButtons.OK, MessageBoxIcon.Information);
 			return;
 		}
@@ -3832,8 +3838,9 @@ internal class Form23 : Form
 		}
 		catch (Exception error)
 		{
-			Class23.smethod_3("Cannot open alert banner editor: " + error.Message);
-			MessageBox.Show(owner, error.Message, "Alert banners", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			Class23.smethod_3("Cannot open alarm appearance: " + error.Message);
+			Form54.smethod_6(owner, "Cannot open alarm appearance.\n\n" + error.Message, "Alarm Appearance",
+				MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 		}
 	}
 
@@ -3859,7 +3866,7 @@ internal class Form23 : Form
 				int id = banner.MessageDataId.Value;
 				Setting message = framework.method_31(id);
 				if (message != null && message.method_70() != 0)
-					messages[id] = message.method_260().TrimEnd('\0').Trim();
+					messages[id] = NSP.AlertMedia.DashName(message.method_260());
 			}
 			if (NSP.AlertMedia.RenameMessages(banners, messages))
 			{
@@ -4725,9 +4732,16 @@ internal class Form23 : Form
 		toolStripMenuItem_30.Text = Class333.smethod_1272();
 		toolStripMenuItem_30.Click += toolStripMenuItem_30_Click;
 		toolStripMenuItem_3.DropDownItems.AddRange(toolStripMenuItem_31, toolStripMenuItem_32, toolStripMenuItem_6, toolStripMenuItem_10, toolStripMenuItem_58, toolStripMenuItem_59, toolStripMenuItem_28);
-		var alertMediaMenu = new ToolStripMenuItem("Alarm appearance...");
+		// Beside NSP's other dash resource editors in Setup, shown only for maps that support it.
+		var alertMediaMenu = new ToolStripMenuItem("Dash Alarm Appearance");
 		alertMediaMenu.Click += (_, _) => OpenAlertBannerEditor(null);
-		toolStripMenuItem_3.DropDownItems.Add(alertMediaMenu);
+		alertMediaMenu.Visible = false;
+		toolStripMenuItem_3.DropDownItems.Insert(toolStripMenuItem_3.DropDownItems.IndexOf(toolStripMenuItem_59) + 1, alertMediaMenu);
+		toolStripMenuItem_3.DropDownOpening += (_, _) => {
+			// Same condition as Dash Images Library; Available, as Visible reads false while closed.
+			alertMediaMenu.Available = SupportsDashMedia(framework_1) && framework_1.aww.ContainsKey(Class1.Enum5.BFH);
+			alertMediaMenu.Enabled = toolStripMenuItem_58.Enabled;
+		};
 		toolStripMenuItem_3.Name = Class333.smethod_1563();
 		toolStripMenuItem_3.Size = new Size(49, 20);
 		toolStripMenuItem_3.Text = Class333.smethod_1564();

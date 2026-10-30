@@ -74,10 +74,11 @@ for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
 ## Configure alerts in NSP
 
 1. Disconnect the physical dash. Open a backup iC-7 v2.36 map in the new NSP.
-2. Open the editor: click **Appearance...** below the Message
+2. Open the editor: click **Alarm Appearance...** below the Message
    setting on an alarm's page, right-click the alarm in the tree and choose
-   **Appearance...**, or use **Alarm appearance...**
-   from NSP's main menu. The first two preselect that alarm.
+   **Alarm Appearance...**, or use **Setup > Dash Alarm Appearance** (next to
+   **Dash Images Library**). The first two preselect that alarm. These entries
+   appear only for an iC-7 v2.36 map.
 3. Opening from an alarm page/tree edits that alarm only, keeps other alarms'
    appearances intact and locks the Message column. No manual matching is needed
    in this contextual editor. The bulk menu editor still matches the exact,
@@ -88,7 +89,17 @@ for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
    setting undo/redo retain its appearance without manually renaming an override.
    Older manifests acquire this binding when applied in the new editor. Alarms
    with identical Message text still share an unbound text-based appearance.
+   The bulk editor's alarm list holds the map's own Message texts. A rule's
+   text must be at most 20 characters (the dash sends no more; a longer
+   Message is listed by its first 20), must not contain `"` (it breaks the
+   dash's alarm list), and must not start or end with spaces. Apply or
+   **Add alarm** asks for confirmation when no alarm in the map has that text,
+   because such a rule never shows.
 4. **Choose GIF/image** opens NSP's existing image library/import picker.
+   Importing media over 4 MB, or an animated GIF whose frames exceed the
+   860 x 480 canvas, asks for confirmation first (an advisory limit; i.MX6
+   playback cost is not measured). The `ic7_screen_N.png` screen-tracking
+   markers are hidden from the library.
    Start with the bundled `samples/animated.gif`. GIF bytes are preserved;
    static PNG/JPEG/BMP images also work. MP4 is supported on screens and at
    startup, **not in this alert-banner selector**.
@@ -98,10 +109,12 @@ for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
    physical 800 x 480 display. Rectangles must fit and be at least 60 pixels
    tall. The editor canvas animates the GIF with the text over it; it is
    not an alarm trigger.
-6. **Apply**, or **OK**, updates the map's working resources and renderer cache,
+6. **Apply** (enabled once something has changed), or **OK**, updates the map's working resources and renderer cache,
    then requests NSP's existing native preview refresh. Changed media marks the
-   map modified using NSP's normal save/close prompt. **Cancel** discards unapplied
-   appearance edits; images imported into the library remain there, as with the
+   map modified using NSP's normal save/close prompt. **Cancel** (or closing the
+   window) asks before discarding unapplied appearance edits. Opening an alarm
+   that has no rule and pressing **OK** without changes adds no rule, so the
+   alarm keeps the stock bottom-stacked placement; images imported into the library remain there, as with the
    normal image picker. Save/Save As normally to retain the map on disk;
    no separate resource save, mandatory new filename or desktop reopen is needed.
    Editing does not silently upload to a connected physical dash: explicitly tick
@@ -147,7 +160,7 @@ variants do not use the custom rectangle manifest.
 
 ## Show an alarm on selected screens
 
-In **Alarm appearance...**, set **Screens (All or 1, 3, 5)** to `5` for
+In **Dash Alarm Appearance**, set **Screens (All or 1, 3, 5)** to `5` for
 **KFC LIMITER**. Use `1, 3, 5` for multiple screens or `All` to restore global
 visibility. Screen numbers are the same one-based numbers shown in NSP.
 The map must contain every selected screen. Apply and save normally.
