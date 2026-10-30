@@ -82,7 +82,8 @@ class ManifestHelper(unittest.TestCase):
 
     def test_test_fixture_bad_manifests_rejected(self):
         for name, text in FIXTURES["VARIANTS"].items():
-            if name == "empty.json" or name.startswith("off"):
+            # Clock and track-map manifests are validated on the dash only (tst_Clock/tst_TrackMap).
+            if name == "empty.json" or name.startswith("off") or "clock" in name or "map" in name:
                 continue
             validate = HELPER["validate_gauge_fx"] if "-fx" in name else HELPER["validate_indicators"]
             with self.assertRaises((ValueError, HELPER["SpecError"]), msg=name):
@@ -99,6 +100,9 @@ class ManifestHelper(unittest.TestCase):
             gauges = json.loads((Path(out) / "ic7_gauge_fx.json").read_text())
             self.assertEqual(indicators, json.loads(FIXTURES["VARIANTS"]["off.json"]))
             self.assertEqual(gauges, json.loads(FIXTURES["VARIANTS"]["off-fx.json"]))
+            for name, fixture in (("ic7_clock.json", "off-clock.json"), ("ic7_track_map.json", "off-map.json")):
+                self.assertEqual(json.loads((Path(out) / name).read_text()),
+                                 json.loads(FIXTURES["VARIANTS"][fixture]), name)
         with tempfile.TemporaryDirectory() as out:
             self.assertEqual(HELPER["write_off"](Path(out), "gauge_fx"), ["ic7_gauge_fx.json"])
             self.assertFalse((Path(out) / "ic7_indicators.json").exists())

@@ -74,6 +74,23 @@ GAUGE_FX = {
         {"channel": "Oil Pressure", "trigger": "below", "threshold": 100, "effect": "pulse", "rateHz": 1},
     ],
 }
+CLOCK = {
+    "version": 1,
+    "clocks": [
+        {"channel": "Time Of Day"},
+        {"channel": "UTC Time", "offsetMinutes": 600, "hour12": True, "seconds": True},
+        {"channel": "ECU Time ms", "scale": 0.001},
+        {"channel": "Dash System Clock", "source": "system", "showDate": True},
+    ],
+}
+# Raw units as the dash delivers them (here degrees x 1e7, around a small loop).
+TRACK_MAP = {
+    "version": 1,
+    "maps": [{"latChannel": "GPS Latitude", "lonChannel": "GPS Longitude", "mapChannel": "GPS Longitude",
+              "trackLatitude": -33.9, "colour": "#00FF00", "lineWidth": 2,
+              "outline": [[-339000000, 1510000000], [-339010000, 1510010000], [-339000000, 1510020000],
+                          [-338990000, 1510010000], [-339000000, 1510000000]]}],
+}
 VARIANTS = {
     "bad-json.json": "{ this is not json",
     "bad-version.json": json.dumps({"version": 2, "indicators": INDICATORS["indicators"]}),
@@ -87,6 +104,19 @@ VARIANTS = {
         {"channel": "Engine Speed", "trigger": "above", "effect": "flash"}]}),
     "bad-fx-rate.json": json.dumps({"version": 1, "gauges": [
         {"channel": "Engine Speed", "trigger": "warn", "effect": "flash", "rateHz": 30}]}),
+    "bad-clock-key.json": json.dumps({"version": 1, "clocks": [{"channel": "Time Of Day", "zone": "AEST"}]}),
+    "bad-clock-scale.json": json.dumps({"version": 1, "clocks": [
+        {"channel": "Dash System Clock", "source": "system", "scale": 2}]}),
+    "bad-clock-offset.json": json.dumps({"version": 1, "clocks": [{"channel": "Time Of Day", "offsetMinutes": 900}]}),
+    "bad-map-host.json": json.dumps({"version": 1, "maps": [
+        {"latChannel": "GPS Latitude", "lonChannel": "GPS Longitude", "mapChannel": "RPM"}]}),
+    "bad-map-outline.json": json.dumps({"version": 1, "maps": [
+        {"latChannel": "GPS Latitude", "lonChannel": "GPS Longitude", "mapChannel": "GPS Latitude",
+         "outline": [[1, 2]]}]}),
+    "learn-map.json": json.dumps({"version": 1, "maps": [
+        {"latChannel": "Learn Lat", "lonChannel": "Learn Lon", "mapChannel": "Learn Lon"}]}),
+    "off-clock.json": json.dumps({"version": 1, "clocks": []}),
+    "off-map.json": json.dumps({"version": 1, "maps": []}),
     "empty.json": "",
     # The helper's --off manifests: valid, with no entries.
     "off.json": json.dumps({"version": 1, "indicators": []}),
@@ -110,6 +140,8 @@ def populate_images(images, with_manifests):
     if with_manifests:
         (images / "ic7_indicators.json").write_text(json.dumps(INDICATORS))
         (images / "ic7_gauge_fx.json").write_text(json.dumps(GAUGE_FX))
+        (images / "ic7_clock.json").write_text(json.dumps(CLOCK))
+        (images / "ic7_track_map.json").write_text(json.dumps(TRACK_MAP))
 
 
 def install(components, stock, use_addons):

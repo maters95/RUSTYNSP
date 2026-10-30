@@ -1,0 +1,56 @@
+{
+  "_comment": [
+    "Summary of the CAN, timing and display settings in the shared 'iC-7 dash config with",
+    "VRacer timing' map (firmware 2.35.1). Decoded with scripts/inspect-nexmap.py and",
+    "named with fw/ic7_2360.hdef (every setting id in the map exists in 2.36). The raw map,",
+    "its metadata (serial number, profile name) and its images are deliberately not kept."
+  ],
+  "firmware_of_map": "2.35.1",
+  "can": {
+    "haltech_can_bus": {"enabled": true, "port": "CAN port 1", "bitrate_bps": 1000000,
+                         "bitrate_note": "fixed by the app (CanBusFactory passes 1000000)"},
+    "third_party_can_bus": {"enabled": false},
+    "generic_can": "not used on any bus",
+    "can_port_1_termination": false,
+    "dash_external_io": true
+  },
+  "track_modules": {
+    "lap_timer_module": {"setting": "Devices/LAP_TIMING/_LAP_TIMER_CAN_ENABLE (5072)", "enabled": true},
+    "gps": {"setting": "Devices/GPS/_CAN_GPS_ENABLE (5068)", "enabled": true},
+    "mylaps_x2_flags": {"setting": "Devices/MYLAPS_FLAG_DASH/_MYLAPS_FLAG_ENABLE (5064)", "enabled": false},
+    "vehicle_speed_from_gps": false
+  },
+  "frames_decoded_by_dash_v2_36": {
+    "byte_order": "big-endian, 11-bit IDs, Haltech CAN bus only",
+    "0x4F0": {"0-3": "Current Lap Time ms (u32)", "4-7": "Last Lap Time ms (u32)"},
+    "0x4F1": {"0-3": "Best Lap Time ms (u32)", "4-7": "Predicted Lap Time ms (u32)"},
+    "0x4F2": {"0-1": "Number of Laps (u16)", "2-3": "Best Lap Time Delta ms (s16)", "4-7": "Session Time ms (u32)"},
+    "0x4F3": {"0-1": "GPS Speed", "2-3": "GPS Number Of Satellites", "4-5": "GPS Position Accuracy (x10000)", "6-7": "GPS Speed Accuracy"},
+    "0x4F4": {"0-3": "GPS Latitude (s32 raw)", "4-7": "GPS Longitude (s32 raw)"},
+    "0x4F5": {"0-3": "GPS Altitude (s32)"},
+    "not_present": ["heading", "UTC time", "sectors", "pit messages"]
+  },
+  "channel_display": {
+    "lap_times": "unit Time - formatted (ms), 3 decimal places",
+    "best_lap_time_delta": "unit Time - formatted (ms), 3 dp, range -10000..10000 ms",
+    "number_of_laps": "raw, 0 dp",
+    "session_time": "unit Time - formatted (ms), 0 dp"
+  },
+  "screens": {
+    "screen_3_timing": {
+      "background": "custom user image",
+      "gauges": [
+        "Bar Horizontal Continuous: Best Lap Time Delta (top left, needle reversed)",
+        "Bar Horizontal Continuous: Best Lap Time Delta (top right)",
+        "Numeric: Best Lap Time Delta", "Numeric: Last Lap Time", "Numeric: Best Lap Time",
+        "Numeric: Predicted Lap Time", "Numeric: Number of Laps", "Numeric: Session Time",
+        "Numeric: Gear (centre)",
+        "Numerics: RPM, Vehicle Speed, Coolant/Fuel/Oil Temperature, Manifold Pressure, Throttle, EGT 1, Coolant Pressure, Battery",
+        "Indicators: high beam, right indicator, traction, launch, nitrous, check engine, oil, battery"
+      ]
+    },
+    "gps_channels_displayed": false,
+    "other_screens": "engine screens using native Haltech ECU channels (the map was made for a Haltech ECU)"
+  },
+  "alarms": "3 enabled (RPM overrev, boost, coolant) on native ECU channels; none uses timing data"
+}

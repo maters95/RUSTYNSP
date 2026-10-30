@@ -5,8 +5,8 @@
   },
   "output": {
     "path": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
-    "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167",
-    "bytes": 25400599
+    "sha256": "e1ca76e746b3d1a7ad38e750b4b1f1520ab1de41b2b4751ca9cff94b38dfc59f",
+    "bytes": 25431319
   },
   "vs_base": {
     "changed": [
@@ -18,8 +18,10 @@
     "added": [
       "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
       "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7Clock.qml",
       "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
       "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/Ic7TrackMap.qml",
       "qml_components_data/qml/user_components/ic7addons.js"
     ],
     "removed": []
@@ -38,8 +40,10 @@
       "qml_components_data/qml/user_components/HalSplash.qml",
       "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
       "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7Clock.qml",
       "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
       "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/Ic7TrackMap.qml",
       "qml_components_data/qml/user_components/ic7addons.js"
     ],
     "removed": []
@@ -77,12 +81,14 @@
     },
     {
       "file": "qml_components_data/qml/user_components/HalNumeric.qml",
-      "sha256": "2956f5d2d70497cd2dc53df10a77eea1b37ceadac8a19a4b95cfe82b7a5c0dbe",
+      "sha256": "7070dc1936ad7417f1e6b9415397d477f77d3a1514b26f40cb6ff0f0c5cf8185",
       "imports": [
         "QtQuick 2.9"
       ],
       "loads": [
         "Ic7GaugeFx.qml",
+        "Ic7Clock.qml",
+        "Ic7TrackMap.qml",
         "common.js"
       ],
       "imports_missing_on_dash": []
@@ -159,8 +165,31 @@
       "imports_missing_on_dash": []
     },
     {
+      "file": "qml_components_data/qml/user_components/Ic7Clock.qml",
+      "sha256": "0a3d294056546ae2aede22b43503da7bd129c0d8d0136e8e4cede49e2c69ace0",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "ic7addons.js",
+        "common.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7TrackMap.qml",
+      "sha256": "085b9c2b998631bc2ce37d3aa04b7a03b4dfa41bb7d03ef97cfda472eebc6ff4",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "ic7addons.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
       "file": "qml_components_data/qml/user_components/ic7addons.js",
-      "sha256": "32b8c1734c32a3779b382d1906bcd8890738b4984d36f01613ceb3f137828433",
+      "sha256": "be67475989ff925daa22c4aa8b04da7d015aae3e278adcd103e47b4f346d990e",
       "imports": [],
       "loads": [],
       "imports_missing_on_dash": []

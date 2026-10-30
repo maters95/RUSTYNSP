@@ -3,7 +3,7 @@
 
     python make-addon-manifests.py spec.json --output upload-folder
     python make-addon-manifests.py --check upload-folder
-    python make-addon-manifests.py --off [indicators|gauge_fx] --output off-folder
+    python make-addon-manifests.py --off [indicators|gauge_fx|clock|track_map] --output off-folder
 
 The spec is JSON with optional "indicators" and "gauge_fx" lists (see
 samples/spec.json). Media may be given as a local file path (copied into the output
@@ -42,11 +42,16 @@ FX_KEYS = {"channel", "trigger", "threshold", "effect", "colour", "rateHz", "wid
 # limit the helper refuses.
 SIZE_WARN = {".gif": 2 * 1024 * 1024, ".mp4": 8 * 1024 * 1024}
 SIZE_LIMIT = 24 * 1024 * 1024
-RESERVED = {"ic7_indicators.json", "ic7_gauge_fx.json", "ic7_alerts.json", "ic7_splash.json"}
+RESERVED = {"ic7_indicators.json", "ic7_gauge_fx.json", "ic7_clock.json", "ic7_track_map.json",
+            "ic7_alerts.json", "ic7_splash.json"}
 # Valid manifests with no entries: every component they configure draws as stock.
 OFF_MANIFESTS = {
     "indicators": ("ic7_indicators.json", {"version": VERSION, "indicators": []}),
     "gauge_fx": ("ic7_gauge_fx.json", {"version": VERSION, "gauges": []}),
+    # Clock and track map are written by hand (see deploy/vracer/README.md); the dash
+    # validates them (ic7addons.js parseClock/parseTrackMap) and fails closed.
+    "clock": ("ic7_clock.json", {"version": VERSION, "clocks": []}),
+    "track_map": ("ic7_track_map.json", {"version": VERSION, "maps": []}),
 }
 
 

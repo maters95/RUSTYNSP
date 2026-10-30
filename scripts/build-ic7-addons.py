@@ -35,17 +35,20 @@ RESOURCE = "res_ic-7.qzip"
 # Stock components the add-ons extend (pure insertions; must be stock in the base).
 REPLACED = ["HalIndicator.qml", "HalNumeric.qml", "HalBarHorizontal1.qml", "HalCircularClassic.qml"]
 # New files, loaded only through Loaders/imports inside the add-on code.
-ADDED = ["Ic7IndicatorAddon.qml", "Ic7GaugeFx.qml", "Ic7AddonMedia.qml", "Ic7AddonVideo.qml", "ic7addons.js"]
+ADDED = ["Ic7IndicatorAddon.qml", "Ic7GaugeFx.qml", "Ic7AddonMedia.qml", "Ic7AddonVideo.qml", "Ic7Clock.qml",
+         "Ic7TrackMap.qml", "ic7addons.js"]
 # Relative files each add-on member loads (checked to exist in the output archive).
 LOADS = {
     "HalIndicator.qml": ["Ic7IndicatorAddon.qml", "common.js"],
-    "HalNumeric.qml": ["Ic7GaugeFx.qml", "common.js"],
+    "HalNumeric.qml": ["Ic7GaugeFx.qml", "Ic7Clock.qml", "Ic7TrackMap.qml", "common.js"],
     "HalBarHorizontal1.qml": ["Ic7GaugeFx.qml", "common.js"],
     "HalCircularClassic.qml": ["Ic7GaugeFx.qml", "common.js"],
     "Ic7IndicatorAddon.qml": ["ic7addons.js", "Ic7AddonMedia.qml"],
     "Ic7GaugeFx.qml": ["ic7addons.js"],
     "Ic7AddonMedia.qml": ["Ic7AddonVideo.qml"],
     "Ic7AddonVideo.qml": [],
+    "Ic7Clock.qml": ["ic7addons.js", "common.js"],
+    "Ic7TrackMap.qml": ["ic7addons.js"],
     "ic7addons.js": [],
 }
 MTIME_BASE = 1700000000

@@ -162,6 +162,10 @@ Item {
 
 		Text {
 			id: value_text
+			// IC7-ADDON-BEGIN the clock/track-map add-ons may draw in place of this text (deploy/addons/README.md)
+			visible: !(ic7AddonClock.item && ic7AddonClock.item.replacesValue === true) &&
+				!(ic7AddonMap.item && ic7AddonMap.item.replacesValue === true)
+			// IC7-ADDON-END
 			z: 3
 			horizontalAlignment: Text.AlignRight
 			verticalAlignment: Text.AlignVCenter
@@ -176,6 +180,10 @@ Item {
 
 		Text {
 			id: unit_text
+			// IC7-ADDON-BEGIN the clock/track-map add-ons may draw in place of this text (deploy/addons/README.md)
+			visible: !(ic7AddonClock.item && ic7AddonClock.item.replacesValue === true) &&
+				!(ic7AddonMap.item && ic7AddonMap.item.replacesValue === true)
+			// IC7-ADDON-END
 			z: 3
 			horizontalAlignment: Text.AlignRight
 			verticalAlignment: Text.AlignBottom
@@ -209,6 +217,25 @@ Item {
 		anchors.fill: parent
 		z: -1
 		source: "Ic7GaugeFx.qml"
+		onLoaded: item.host = thisComp
+	}
+	// IC7-ADDON-END
+	// IC7-ADDON-BEGIN experimental clock and track map (ic7_clock.json, ic7_track_map.json).
+	// Each is loaded in isolation: if missing or failing, item is null and the text above stays stock.
+	Loader {
+		id: ic7AddonClock
+		objectName: "ic7AddonClockLoader"
+		anchors.fill: parent
+		z: 4
+		source: "Ic7Clock.qml"
+		onLoaded: item.host = thisComp
+	}
+	Loader {
+		id: ic7AddonMap
+		objectName: "ic7AddonMapLoader"
+		anchors.fill: parent
+		z: 4
+		source: "Ic7TrackMap.qml"
 		onLoaded: item.host = thisComp
 	}
 	// IC7-ADDON-END

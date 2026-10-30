@@ -14,6 +14,8 @@ With no add-on manifest uploaded, every touched gauge draws exactly as stock.
 | A1 Animated indicators | Indicator | `ic7_indicators.json` | While the indicator is ON, show a GIF or muted MP4 (full colour) instead of the tinted icon. Optional still/GIF image while OFF. |
 | A3 Value-driven images | Indicator | `ic7_indicators.json` | While the indicator is OFF, pick an image by value range (gear, fuel or temperature icons), with optional hysteresis. |
 | A2 Threshold effects | Numeric, Bar "Horizontal 1", Circular "Classic" | `ic7_gauge_fx.json` | A coloured frame drawn just outside the gauge that flashes, pulses or stays solid when the value passes the warning limits or a threshold (for example a shift flash on RPM). |
+| Clock | Numeric | `ic7_clock.json` | Shows a CAN time-of-day channel (seconds since midnight) as `HH:MM`, with 12-hour mode, seconds and a fixed UTC offset, in place of the gauge's value text. `source: system` shows the dash clock, for diagnosis only: nothing sets it. See `../vracer/README.md`. |
+| Track map | Numeric (two gauges) | `ic7_track_map.json` | A latitude gauge and a longitude gauge share their values. The longitude (or latitude) gauge draws a track line (from an outline and/or learned from the driven path) and a car marker. See `../vracer/README.md`. |
 
 Not implemented: animated gauge backgrounds (A4: bars have no background image and
 the circular "image" is the needle) and trend sparklines (A5: per-value Canvas
@@ -91,6 +93,15 @@ repaints are a real CPU risk on the i.MX6, for little benefit). See `RESEARCH.md
 
 Unknown fields, duplicates, path separators and out-of-range values are rejected,
 both by the helper and on the dash.
+
+### `ic7_clock.json` and `ic7_track_map.json` (version 1)
+
+Written by hand; the formats, examples and limits are in `../vracer/README.md`. The dash
+validates them and fails closed. The helper writes only their "off" manifests
+(`--off clock`, `--off track_map`), not full manifests. Both read the manifest once per
+dash start, and the result is shared by every Numeric gauge. Each draws in place of the
+gauge's stock value and unit text only for the configured channel, never while that
+value is in warning, and never for a Haltech status value (No I/O, Device Time Out).
 
 ## Upload (owner steps; Windows steps not verified)
 
@@ -178,7 +189,7 @@ must equal `deploy/addons/qml` and every other member must equal the base.
 
 | Check | Result |
 |---|---|
-| Desktop Qt 5.15 (`scripts/addons_tests/run.sh`) | 71 passed: both folder layouts, no manifest, "off" manifests, 9 bad-manifest cases, missing media, GIF and MP4 (stock icon kept under MP4), threshold transitions with hysteresis, stock API equality, pixel comparisons |
-| Dash Qt 5.9.6 under QEMU (`IC7_SYSROOT=... run.sh`) | 56 passed (no pixel tests: offscreen grab is black on ARM); MP4 decoded |
+| Desktop Qt 5.15 (`scripts/addons_tests/run.sh`) | 96 passed (clock and track map added 25): both folder layouts, no manifest, "off" manifests, 9 bad-manifest cases, missing media, GIF and MP4 (stock icon kept under MP4), threshold transitions with hysteresis, stock API equality, pixel comparisons |
+| Dash Qt 5.9.6 under QEMU (`IC7_SYSROOT=... run.sh`) | 81 passed (no pixel tests: offscreen grab is black on ARM); MP4 decoded |
 | Builder/helper (`python3 -m unittest discover -s scripts/addons_tests`) | 16 passed |
 | Hardware | **None.** Not flashed, not run on a dash or in NSP. |

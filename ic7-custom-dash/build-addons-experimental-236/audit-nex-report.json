@@ -1,6 +1,6 @@
 {
   "candidate": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
-  "candidate_sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167",
+  "candidate_sha256": "e1ca76e746b3d1a7ad38e750b4b1f1520ab1de41b2b4751ca9cff94b38dfc59f",
   "package_files": [
     "ic-7.hdef",
     "manifest.xml",
@@ -28,7 +28,7 @@
   },
   "resources": {
     "stock_files": 329,
-    "candidate_files": 335,
+    "candidate_files": 337,
     "unchanged": 322,
     "changed": [
       "qml_components_data/qml/factory_screens/main.qml",
@@ -43,8 +43,10 @@
       "qml_components_data/qml/user_components/HalSplash.qml",
       "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
       "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7Clock.qml",
       "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
       "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/Ic7TrackMap.qml",
       "qml_components_data/qml/user_components/ic7addons.js"
     ],
     "removed": [],
@@ -55,13 +57,15 @@
       "qml_components_data/qml/user_components/HalCircularClassic.qml": 1703356687,
       "qml_components_data/qml/user_components/HalImage.qml": 1711391189,
       "qml_components_data/qml/user_components/HalIndicator.qml": 1736311265,
-      "qml_components_data/qml/user_components/HalNumeric.qml": 1748161796,
+      "qml_components_data/qml/user_components/HalNumeric.qml": 1701287981,
       "qml_components_data/qml/user_components/HalSplash.qml": 1759212789,
       "qml_components_data/qml/user_components/Ic7AddonMedia.qml": 1774143322,
       "qml_components_data/qml/user_components/Ic7AddonVideo.qml": 1754192395,
+      "qml_components_data/qml/user_components/Ic7Clock.qml": 1761365076,
       "qml_components_data/qml/user_components/Ic7GaugeFx.qml": 1765703969,
       "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml": 1759590321,
-      "qml_components_data/qml/user_components/ic7addons.js": 1760930098
+      "qml_components_data/qml/user_components/Ic7TrackMap.qml": 1715149190,
+      "qml_components_data/qml/user_components/ic7addons.js": 1777959295
     }
   },
   "component_checks": [
@@ -157,6 +161,13 @@
       "imports_missing_on_dash": []
     },
     {
+      "file": "qml_components_data/qml/user_components/Ic7Clock.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
       "file": "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
       "imports": [
         "QtQuick 2.9"
@@ -165,6 +176,13 @@
     },
     {
       "file": "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7TrackMap.qml",
       "imports": [
         "QtQuick 2.9"
       ],
@@ -183,8 +201,10 @@
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/HalNumeric.qml",
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7AddonMedia.qml",
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7Clock.qml",
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7GaugeFx.qml",
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+    "Packaged QML does not match maintained source: qml_components_data/qml/user_components/Ic7TrackMap.qml",
     "Packaged QML does not match maintained source: qml_components_data/qml/user_components/ic7addons.js"
   ],
   "suitable": false
