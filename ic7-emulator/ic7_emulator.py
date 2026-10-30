@@ -88,7 +88,10 @@ FIDELITY_LIMITS = (
     "measured per dash.",
     "The kernel logo patch is reported but not performed; the early boot logo is not shown.",
     "The Qt QML disk cache is not modelled (owner evidence: not reused across updates on the dash).",
-    "Live alarms come from NSP's live data; CAN, ECU, LEDs, buttons and hardware codecs are absent.",
+    "There is no CAN hardware: channel values are the captured live data, NSP's Simulate panel, or the "
+    "opt-in engine simulation (SIMULATION ONLY), which encodes Generic CAN frames from the map's settings "
+    "and decodes them as can::GenericCAN does. LEDs, buttons, alarm manual-reset inputs and hardware "
+    "codecs are absent.",
 )
 
 
@@ -677,6 +680,7 @@ class Device:
         self.protocol_events = []
         self.events = []
         self.connection = "Waiting for NSP"
+        self.engine = None
         self.log = logging.getLogger("ic7")
         self.staged = set()
         self.capture = None
@@ -796,7 +800,14 @@ class Device:
 
     def respond(self, packet):
         with self.lock:
-            response = self._respond(packet)
+            try:
+                response = self._respond(packet)
+            except OSError as error:
+                # A host write failed (for example a full disk). Answer like a failed dash write
+                # instead of ending the session; the log says what could not be stored.
+                self.log.error("host-storage-write-failed seq=%d: %s; answered with an error reply",
+                               packet[1], error)
+                response = self._error(packet)
             if self.capture is not None:
                 try:
                     self.capture.record(packet, response)
@@ -847,6 +858,25 @@ class Device:
             self.log.info("emulator-power-cycle revision=%d map_loaded=%s",
                           self.reboot_revision, self.map_loaded)
 
+    def start_engine_sim(self, scenario, layout_path=None, threaded=True):
+        """Opt-in SIMULATION: drive channel values from a simulated engine over Generic CAN."""
+        import engine_sim
+        self.stop_engine_sim()
+        if not isinstance(scenario, dict):
+            scenario = engine_sim.load_scenario(scenario)
+        self.engine = engine_sim.EngineSimulation(self, scenario, layout_path, clock=self.clock)
+        self.engine.start(threaded)
+        return self.engine
+
+    def stop_engine_sim(self):
+        engine, self.engine = self.engine, None
+        if engine is not None:
+            engine.stop()
+
+    def engine_status(self):
+        engine = self.engine
+        return engine.status() if engine is not None else {"simulation": True, "running": False}
+
     def display_state(self, now=None):
         if now is None:
             now = self.clock()
@@ -884,9 +914,15 @@ class Device:
             phase = "splash" if splash_active else "dash"
             if phase != "splash":
                 source = None
-        return {"phase": phase, "map_loaded": self.map_loaded, "reboot_revision": self.reboot_revision,
-                "splash_source": source, "duration_ms": duration_ms, "rebooting": rebooting,
-                "install_revision": self.install.get("revision", 0)}
+        state = {"phase": phase, "map_loaded": self.map_loaded, "reboot_revision": self.reboot_revision,
+                 "splash_source": source, "duration_ms": duration_ms, "rebooting": rebooting,
+                 "install_revision": self.install.get("revision", 0)}
+        engine = self.engine
+        if engine is not None and engine.running:
+            # Labelled: these alarms come from the dash's alarm logic over SIMULATED values.
+            state["engine_simulation"] = engine.scenario["name"]
+            state["engine_alarm_message"] = engine.alarm_message_cache or "[]"
+        return state
 
     def _error(self, packet):
         return seal(bytes((packet[0] | 0x80,)) + packet[1:12])
@@ -1097,14 +1133,22 @@ class Device:
             "sandbox_update": self.sandbox.summary() if self.sandbox else None,
             "sandbox_package": str(self.sandbox.package.resolve()) if self.sandbox else None,
             "installed_payload_sha256": self.install.get("payload_sha256"),
+            "engine_simulation": self.engine.scenario["name"] if self.engine is not None else None,
             "firmware_execution": False,
         }, indent=2) + "\n", encoding="utf-8")
         os.replace(temporary, self.state / "session.json")
+        if self.engine is not None:
+            # Which SIMULATED engine scenario drove the channels, for exported logs.
+            temporary = self.state / "engine-simulation.tmp"
+            temporary.write_text(json.dumps({"simulation": True, **self.engine.scenario_document()}, indent=1) + "\n",
+                                 encoding="utf-8")
+            os.replace(temporary, self.state / "engine-simulation.json")
         self.write_fidelity_report()
         if self.capture is not None:
             self.capture.stream.flush()
 
     def close(self):
+        self.stop_engine_sim()
         if self.capture is not None:
             self.capture.close()
 
@@ -1152,6 +1196,11 @@ def main():
     parser.add_argument("--no-browser", action="store_true")
     parser.add_argument("--watchdog", type=Path, help="Dash watchdog ELF used to decrypt NEX resources "
                         "(default: dash-reference/dash_watchdog)")
+    parser.add_argument("--engine-sim", metavar="SCENARIO",
+                        help="SIMULATION ONLY: feed a simulated running engine as Generic CAN frames "
+                             "(a scenario JSON file or a preset: idle, warm-up, track-lap, low-oil-pressure, "
+                             "overheat, over-rev, low-fuel-pressure, battery-low). Off by default.")
+    parser.add_argument("--engine-speed", type=float, help="Engine-simulation speed multiplier")
     parser.add_argument("--legacy-acks", action="store_true",
                         help="Diagnostic: acknowledge mode/reboot commands instantly instead of the "
                              "real dash's error replies and reboot silence")
@@ -1189,6 +1238,16 @@ def main():
     if args.check_profile:
         print(json.dumps(device.manifest.get("summary", {}), indent=2))
         return
+    if args.engine_sim:
+        import engine_sim
+        try:
+            scenario = engine_sim.load_scenario(args.engine_sim)
+            if args.engine_speed:
+                scenario["speed"] = args.engine_speed
+            device.start_engine_sim(scenario)
+        except ValueError as error:
+            parser.error(str(error))
+        print(f"ENGINE SIMULATION ON: scenario {scenario['name']} (simulated values, not a real engine)", flush=True)
     if device.capture is not None:
         print(f"Protocol capture: {device.capture.path} (raw packets: {'no' if args.metadata_only else 'yes'})", flush=True)
     from viewer import start_viewer
@@ -1204,7 +1263,13 @@ def main():
                 time.sleep(1)
         elif args.port:
             import serial
-            with serial.Serial(args.port, baudrate=9600, timeout=0.2, write_timeout=5) as port:
+            try:
+                port = serial.Serial(args.port, baudrate=9600, timeout=0.2, write_timeout=5)
+            except serial.SerialException as error:
+                raise SystemExit(f"Cannot open {args.port}: {error}. Another program (often NSP, a second "
+                                 "emulator or a terminal) may already hold it; NSP must use the OTHER end "
+                                 "of the virtual pair.") from error
+            with port:
                 print(f"Listening on {args.port}. Connect NSP to the OTHER end of the virtual pair.", flush=True)
                 serve_stream(device, lambda: port.read(max(1, port.in_waiting)) or None, port.write)
         else:

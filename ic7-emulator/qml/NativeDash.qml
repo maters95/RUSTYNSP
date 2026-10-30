@@ -20,6 +20,7 @@ ApplicationWindow {
     property int rebootRevision: -1
     property string alertManifest: ""
     property var previewAlerts: []
+    property bool liveAlarms: false
     // Built as the dash builds it: concatenated, unescaped, names cut to 20 characters.
     property string previewAlarmMessage: ""
     property int alarmTickMs: 50
@@ -142,7 +143,8 @@ ApplicationWindow {
         previewAlarmMessage = scene.display.preview_alarm_message || "";
         alarmTickMs = scene.display.alarm_tick_ms || 50;
         alertLoader.source = scene.display.alert_component || "";
-        alertLoader.active = displayPhase !== "blank" && previewAlerts.length > 0;
+        liveAlarms = scene.display.live_alarms === true;
+        alertLoader.active = displayPhase !== "blank" && (previewAlerts.length > 0 || liveAlarms);
         if (alertLoader.item)
             alertLoader.item.reInitAlarmScreen(previewAlarmMessage);
         var alive = {};

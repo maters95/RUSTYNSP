@@ -9,6 +9,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from stock_renderer import install_startup_qml
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nex_fixtures import maintained_qml
 
 
 class StartupQmlTests(unittest.TestCase):
@@ -81,7 +83,7 @@ class StartupQmlTests(unittest.TestCase):
                 targets = install_startup_qml(runtime)
                 for target in targets:
                     self.assertEqual(target.read_bytes(),
-                                     (root / "ic7-custom-dash/deploy/nsp" / target.name).read_bytes())
+                                     maintained_qml(target.name).read_bytes())
                 images = runtime / "user_resources/images"
                 images.mkdir(parents=True)
                 if name == "gif":

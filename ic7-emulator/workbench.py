@@ -6,6 +6,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
+import queue
 import re
 import sys
 import threading
@@ -25,6 +26,8 @@ from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QFileD
                             QTableWidget, QTableWidgetItem, QToolBar, QVBoxLayout, QWidget)
 
 import dash_layout
+from engine_panel import EnginePanel
+import engine_sim
 from ic7_emulator import ALERT_RESOURCE, Device, SPLASH_RESOURCE, serve_stream
 from viewer import is_video_resource, panel_view, render_layout, start_viewer
 from virtual_pair import load_pair_config
@@ -39,7 +42,7 @@ def export_session_archive(state, destination):
     if not (state / "session.json").is_file() or not (state / "memory.zip").is_file():
         raise ValueError("Stop the session first so its settings and logs are saved.")
     dash_layout.refresh_report(state)
-    names = ("session.json", "memory.zip", "emulator.log", "protocol.jsonl", "renderer.log",
+    names = ("session.json", "memory.zip", "emulator.log", "protocol.jsonl", "renderer.log", "engine-simulation.json",
              "received-screen.bmp", "fidelity-report.txt", "fidelity-report.json", "dash/install.json")
     sources = [state / name for name in names if (state / name).is_file()]
     for folder in ("resources", "sandbox"):
@@ -115,6 +118,7 @@ class SessionOptions:
     package: Path | None = None
     port: str | None = None
     resume: Path | None = None
+    engine_scenario: dict | None = None
 
     def create_state(self):
         if not self.profile.is_file():
@@ -159,8 +163,18 @@ class SessionWorker(QThread):
         self.asset_revision = None
         self.assets = []
         self.power_cycle_requested = threading.Event()
+        self.engine_requests = queue.Queue()
 
     def service_controls(self, device):
+        while True:
+            try:
+                request = self.engine_requests.get_nowait()
+            except queue.Empty:
+                break
+            try:
+                request(device)
+            except Exception as error:
+                self.failed.emit("Engine simulation: " + str(error))
         if self.power_cycle_requested.is_set():
             self.power_cycle_requested.clear()
             try:
@@ -190,6 +204,8 @@ class SessionWorker(QThread):
             selection = self.selected_asset
             self.selected_asset = None
             payload = device.resources.items.get(selection) if selection else None
+        # Outside the device lock: the simulation takes its own lock before the device's.
+        state["engine"] = device.engine_status()
         self.snapshot.emit(state)
         if selection and payload is not None:
             self.asset.emit({"name": selection[1], "payload": payload, "url": self.url})
@@ -232,12 +248,18 @@ class SessionWorker(QThread):
             logger.setLevel(logging.INFO)
             device = Device(self.options.profile, self.state, capture_path=self.state / "protocol.jsonl",
                             sandbox_package=self.options.package)
+            if self.options.engine_scenario is not None:
+                device.start_engine_sim(self.options.engine_scenario)
             server = start_viewer(device, 0)
             self.url = f"http://127.0.0.1:{server.server_port}"
             logger.info("workbench-session state=%s transport=%s", self.state, self.options.port or "preview-only")
             if self.options.port:
                 import serial
-                serial_port = serial.Serial(self.options.port, baudrate=9600, timeout=0.1, write_timeout=5)
+                try:
+                    serial_port = serial.Serial(self.options.port, baudrate=9600, timeout=0.1, write_timeout=5)
+                except serial.SerialException as error:
+                    raise ValueError(f"Cannot open {self.options.port}: {error}. Another program may hold it; "
+                                     "NSP must use the other end of the virtual pair.") from error
 
                 def read():
                     if self.isInterruptionRequested():
@@ -294,8 +316,9 @@ class DashPreview(QLabel):
 
 
 class Workbench(QMainWindow):
-    def __init__(self, package=None, state_root=None):
+    def __init__(self, package=None, state_root=None, engine_scenario=None):
         super().__init__()
+        self.engine_scenario = engine_scenario
         self.worker = None
         self.renderer = None
         self.state_root = state_root or ROOT / "workbench-state"
@@ -437,10 +460,19 @@ class Workbench(QMainWindow):
         self.log.setMaximumBlockCount(3000)
         self.log.setFont(QFont("Consolas", 9))
         self.tabs.addTab(self.log, "Log")
+        self.engine_panel = EnginePanel()
+        self.engine_panel.request.connect(self.engine_request)
+        if engine_scenario is not None:
+            self.engine_panel.apply_scenario(engine_scenario)
+        self.tabs.addTab(self.engine_panel, "Engine simulation (SIMULATION)")
         layout.addWidget(self.tabs, 1)
         self.setCentralWidget(central)
         self.mode_label = QLabel("Stopped")
         self.statusBar().addWidget(self.mode_label, 1)
+        self.engine_label = QLabel("")
+        self.engine_label.setStyleSheet("color:#fff; background:#7a4b00; padding:2px 8px; font-weight:bold;")
+        self.engine_label.hide()
+        self.statusBar().addPermanentWidget(self.engine_label)
         self.statusBar().addPermanentWidget(QLabel("Unofficial | Virtual device | Hardware execution off"))
         self.scan_ports()
 
@@ -551,7 +583,9 @@ class Workbench(QMainWindow):
                 QMessageBox.Ok | QMessageBox.Cancel, QMessageBox.Cancel) != QMessageBox.Ok:
             return
         package = Path(self.package.text()) if self.package.text() else None
-        options = SessionOptions(ROOT / "device-profile.zip", self.state_root, package, port, self.resume_state)
+        options = SessionOptions(ROOT / "device-profile.zip", self.state_root, package, port, self.resume_state,
+                                 self.engine_scenario)
+        self.engine_scenario = None  # a --engine-sim scenario starts with the first session only
         self.resume_state = None
         self.worker = SessionWorker(options, self)
         self.worker.panel_squeeze = self.panel_toggle.isChecked()
@@ -604,6 +638,9 @@ class Workbench(QMainWindow):
         self.update_export_action()
         for widget in (self.port, self.refresh_ports, self.package, self.browse, self.clear_package):
             widget.setEnabled(not running)
+        self.engine_panel.set_session(running)
+        if not running:
+            self.engine_label.hide()
 
     def stop_session(self):
         if self.worker:
@@ -662,6 +699,14 @@ class Workbench(QMainWindow):
         for row, event in enumerate(state["events"]):
             for column, field in enumerate(("time", "operation", "address", "bytes")):
                 self.traffic.setItem(row, column, QTableWidgetItem(str(event[field])))
+        engine = state.get("engine") or {}
+        self.engine_panel.show_status(engine)
+        if engine.get("running"):
+            self.engine_label.setText("ENGINE SIMULATION RUNNING: " + engine.get("scenario", "") +
+                                      " - simulated values, not a real engine")
+            self.engine_label.show()
+        else:
+            self.engine_label.hide()
         if self.auto_renderer.isChecked() and not self.auto_renderer_started:
             self.auto_renderer_started = True
             self.start_renderer()
@@ -827,6 +872,10 @@ class Workbench(QMainWindow):
         self.log.appendPlainText("Synthetic alert preview: " + text)
         process.start(sys.executable, [str(ROOT / "native_view.py"), "--url", url, "--preview-alert", text])
 
+    def engine_request(self, request):
+        if self.worker is not None:
+            self.worker.engine_requests.put(request)
+
     def launch_nsp(self):
         path, _ = QFileDialog.getOpenFileName(self, "Select installed NSP executable", "", "Windows executable (*.exe)")
         if path and not QProcess.startDetached(path, [], str(Path(path).parent))[0]:
@@ -853,11 +902,20 @@ def main():
     parser.add_argument("--package", type=Path, default=bundled_package())
     parser.add_argument("--state-root", type=Path)
     parser.add_argument("--screenshot", type=Path)
+    parser.add_argument("--engine-sim", metavar="SCENARIO",
+                        help="SIMULATION ONLY: start the first session with a simulated engine "
+                             "(scenario JSON or preset name)")
     args = parser.parse_args()
+    scenario = None
+    if args.engine_sim:
+        try:
+            scenario = engine_sim.load_scenario(args.engine_sim)
+        except ValueError as error:
+            parser.error(str(error))
     app = QApplication(sys.argv[:1])
     app.setApplicationName("iC-7 NSP Sandbox")
     app.setFont(QFont("Segoe UI", 10))
-    window = Workbench(args.package, args.state_root)
+    window = Workbench(args.package, args.state_root, scenario)
     window.show()
     if args.screenshot:
         window.start_session()

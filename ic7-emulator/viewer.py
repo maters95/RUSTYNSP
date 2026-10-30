@@ -345,6 +345,9 @@ def start_viewer(device, port=8765):
                               "sandbox_update": device.sandbox.summary() if device.sandbox else None,
                               "firmware_execution": False}
                 self.send(json.dumps(result).encode("utf-8"))
+            elif parsed.path == "/api/engine":
+                # SIMULATION ONLY: the simulated engine's signals, faults and dash alarms.
+                self.send(json.dumps(device.engine_status()).encode("utf-8"))
             elif parsed.path == "/api/scene":
                 try:
                     screen = min(15, max(0, int(query.get("screen", ["0"])[0])))

@@ -18,12 +18,14 @@ def main():
               for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")}
     # The dash's own watchdog: the emulator decrypts NEX resources with its key, as the dash does.
     shared["dash-reference/dash_watchdog"] = root.parent / "fw/opt/dtn/app/dash_watchdog"
+    # The owner's NSP Generic CAN layout: the engine simulation's default when no map is loaded.
+    shared["emtron_can.json"] = root.parent / "ic7-custom-dash/resources/emtron_can.json"
     with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for source in sorted(root.rglob("*")):
             relative = source.relative_to(root)
             if relative.as_posix() in shared:
                 continue
-            if not source.is_file() or any(part in ("__pycache__", "state", "sandbox-state", "workbench-state", ".venv") for part in relative.parts):
+            if not source.is_file() or any(part in ("__pycache__", "state", "sandbox-state", "workbench-state", ".venv", "wheels") for part in relative.parts):
                 continue
             if source.name.startswith("port-") or source.suffix in (".pyc", ".jsc", ".qmlc"):
                 continue
@@ -39,7 +41,7 @@ def main():
             raise ValueError("Distribution integrity check failed")
     report = {"file": destination.name, "bytes": destination.stat().st_size,
               "sha256": hashlib.sha256(destination.read_bytes()).hexdigest(), "files": len(included),
-              "status": "Dash-faithful NEX install and capture-conformant protocol tested on Linux with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"}
+              "status": "Dash-faithful NEX install, capture-conformant protocol and opt-in Generic CAN engine simulation tested on Linux with real Qt; Windows NSP/Qt 5.11 operation, hardware flash and recovery unverified"}
     destination.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

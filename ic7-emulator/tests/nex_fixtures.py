@@ -11,6 +11,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import dash_layout
 
 REPOSITORY = Path(__file__).resolve().parents[2]
+
+
+def maintained_qml(name):
+    """The maintained NSP QML: deploy/nsp in the repository, or the kit's byte-identical copy."""
+    source = REPOSITORY / "ic7-custom-dash/deploy/nsp" / name
+    if source.is_file():
+        return source
+    return Path(__file__).resolve().parents[1] / "qml/stock_renderer" / name
 MANIFEST = ('<NEX_FILE><PRODUCT pid="21" vid="11" hdefFile="ic-7.hdef">'
             '<FILE name="res_ic-7.qzip" /></PRODUCT></NEX_FILE>')
 

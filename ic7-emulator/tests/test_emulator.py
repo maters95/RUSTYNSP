@@ -29,6 +29,7 @@ from stock_renderer import install_dash_resources, resources_root, renderer_comm
 import package as emulator_package
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import nex_fixtures
+from nex_fixtures import maintained_qml
 
 
 class ProtocolTests(unittest.TestCase):
@@ -215,12 +216,16 @@ class ProtocolTests(unittest.TestCase):
             watchdog = Path(temporary) / "fw/opt/dtn/app/dash_watchdog"
             watchdog.parent.mkdir(parents=True)
             watchdog.write_bytes(b"\x7fELF reference")
+            layout = Path(temporary) / "ic7-custom-dash/resources/emtron_can.json"
+            layout.parent.mkdir(parents=True)
+            layout.write_text('{"frames": []}')
             with patch.object(emulator_package, "__file__", str(root / "package.py")), patch.object(
                     sys, "argv", ["package.py", "--output", str(output)]):
                 emulator_package.main()
             with zipfile.ZipFile(output) as archive:
                 self.assertEqual(set(archive.namelist()), {"ic7-emulator/module.py",
-                                                           "ic7-emulator/dash-reference/dash_watchdog"} | {
+                                                           "ic7-emulator/dash-reference/dash_watchdog",
+                                                           "ic7-emulator/emtron_can.json"} | {
                     "ic7-emulator/qml/stock_renderer/" + name
                     for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")})
 
@@ -270,9 +275,9 @@ class ProtocolTests(unittest.TestCase):
                 self.assertEqual(helper.read_bytes(),
                                  (Path(__file__).resolve().parents[1] / "qml/stock_renderer/HalSplash.qml").read_bytes())
                 self.assertEqual(image.read_bytes(),
-                                 (Path(__file__).resolve().parents[2] / "ic7-custom-dash/deploy/nsp/HalImage.qml").read_bytes())
+                                 maintained_qml("HalImage.qml").read_bytes())
                 self.assertEqual(root.read_bytes(),
-                                 (Path(__file__).resolve().parents[2] / "ic7-custom-dash/deploy/nsp/main.qml").read_bytes())
+                                 maintained_qml("main.qml").read_bytes())
                 image_text = image.read_text(encoding="utf-8")
                 self.assertIn("import QtMultimedia 5.9", image_text)
                 self.assertIn("AnimatedImage", image_text)
@@ -315,6 +320,8 @@ class ProtocolTests(unittest.TestCase):
                          "plugins/imageformats/qgif.dll"):
                 self.assertEqual((destination / name).read_bytes(), ("ic7-media-" + name).encode())
 
+    @unittest.skipUnless((Path(__file__).resolve().parents[2] / "reference/stock-dash-extract/dash_virtual.exe").is_file(),
+                         "NSP's dash_virtual.exe reference is only in the repository")
     def test_isolated_runtime_refreshes_same_size_dll(self):
         from stock_renderer import prepare_runtime
 

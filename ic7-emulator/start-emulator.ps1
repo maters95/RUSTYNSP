@@ -10,7 +10,8 @@ param(
     [string]$State,
     [switch]$FreshSandbox,
     [switch]$ChooseSandbox,
-    [switch]$Workbench
+    [switch]$Workbench,
+    [string]$EngineSim
 )
 $ErrorActionPreference = 'Stop'
 
@@ -92,11 +93,37 @@ if (-not (Test-Path -LiteralPath $python)) {
     & $executable @prefix -m venv (Join-Path $PSScriptRoot '.venv')
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $python)) { throw 'Python environment creation failed.' }
 }
-& $python -m pip --disable-pip-version-check install -r (Join-Path $PSScriptRoot 'requirements.txt')
-if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
+# Install requirements only when they changed or an import fails, so later runs work offline.
+$requirements = Join-Path $PSScriptRoot 'requirements.txt'
+$stamp = Join-Path $PSScriptRoot '.venv\requirements.sha256'
+$wanted = (Get-FileHash -LiteralPath $requirements -Algorithm SHA256).Hash
+$installed = ''
+if (Test-Path -LiteralPath $stamp) { $installed = (Get-Content -LiteralPath $stamp -Raw).Trim() }
+$importsWork = $false
+if ($installed -eq $wanted) {
+    & $python -c 'import serial, PIL, PyQt5.QtWidgets, cryptography' 2>$null
+    $importsWork = $LASTEXITCODE -eq 0
+}
+if (-not $importsWork) {
+    $wheels = Join-Path $PSScriptRoot 'wheels'
+    if (Test-Path -LiteralPath $wheels -PathType Container) {
+        Write-Host 'Installing dependencies offline from the wheels folder.'
+        & $python -m pip --disable-pip-version-check install --no-index --find-links $wheels -r $requirements
+    } else {
+        Write-Host 'Installing dependencies (first run needs internet access).'
+        & $python -m pip --disable-pip-version-check install -r $requirements
+    }
+    if ($LASTEXITCODE -ne 0) {
+        throw ('Dependency installation failed. The first run needs internet access, or a "wheels" folder next to ' +
+               'this script made on a connected PC with: py -3 -m pip download -r requirements.txt -d wheels. ' +
+               'Later runs reuse .venv and work offline.')
+    }
+    Set-Content -LiteralPath $stamp -Value $wanted -Encoding ascii
+}
 if ($Workbench) {
     $arguments = @((Join-Path $PSScriptRoot 'workbench.py'))
     if ($SandboxPackage) { $arguments += @('--package', $SandboxPackage) }
+    if ($EngineSim) { $arguments += @('--engine-sim', $EngineSim) }
     & $python @arguments
     exit $LASTEXITCODE
 }
@@ -108,5 +135,6 @@ if ($MetadataOnly) { $arguments += '--metadata-only' }
 if ($SandboxPackage) { $arguments += @('--sandbox-package', $SandboxPackage) }
 if ($State) { $arguments += @('--state', $State) }
 if ($FreshSandbox) { $arguments += '--fresh-sandbox' }
+if ($EngineSim) { $arguments += @('--engine-sim', $EngineSim) }
 & $python @arguments
 exit $LASTEXITCODE

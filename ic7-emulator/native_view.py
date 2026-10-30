@@ -148,19 +148,27 @@ class Bridge(QObject):
             with urllib.request.urlopen(self.url + f"/api/scene?screen={self.screen}", timeout=0.3) as response:
                 state = json.load(response)
             display = state["display"]
-            signature = (self.screen, tuple(state["revision"]), display["phase"], display["reboot_revision"])
+            signature = (self.screen, tuple(state["revision"]), display["phase"], display["reboot_revision"],
+                         display.get("engine_simulation"), display.get("engine_alarm_message"))
             if signature == self.last:
                 return
             display["splash_manifest"] = resource_api_url("u/ic7_splash.json", self.url)
             display["user_image_base"] = self.url + "/asset?name=u%2F"
             display["stock_image_base"] = self.url + "/asset?name=h%2F"
-            if self.preview_alerts:
+            engine_alarms = display.get("engine_simulation") is not None and not self.preview_alerts
+            if self.preview_alerts or engine_alarms:
                 from stock_renderer import alert_component_source
                 source = alert_component_source()
                 if not source.is_file():
                     raise FileNotFoundError("The shared alert-preview QML is missing: " + str(source))
                 display["alert_component"] = QUrl.fromLocalFile(str(source.resolve())).toString()
                 display["alert_manifest"] = resource_api_url("u/ic7_alerts.json", self.url)
+                display["alarm_tick_ms"] = self.alarm_tick_ms
+            if engine_alarms:
+                # The dash's alarm module evaluated the map's alarms over SIMULATED engine values.
+                display["live_alarms"] = True
+                display["preview_alarm_message"] = display["engine_alarm_message"]
+            elif self.preview_alerts:
                 display["preview_alerts"] = [
                     {"text": name, "height": "60", "bc": "#a00000", "fc": "#ffffff", "img": ""}
                     for name in self.preview_alerts
@@ -186,6 +194,9 @@ class Bridge(QObject):
                 status += " - unsupported types " + ",".join(map(str, sorted(set(unsupported))))
             if self.preview_alerts:
                 status += " - SYNTHETIC ALERT PREVIEW (not live alarm evaluation)"
+            elif engine_alarms:
+                status += (" - ENGINE SIMULATION: " + display["engine_simulation"] +
+                           " (dash alarm logic over simulated values)")
             self.value = json.dumps({"screen": self.screen, "components": components, "display": display, "status": status})
             self.last = signature
             self.changed.emit()

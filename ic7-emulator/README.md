@@ -7,6 +7,102 @@ renderer follows marker visibility, not a separately polled screen selector.
 Synthetic alarm preview filters against its own selected preview screen; it
 does not establish real alarm evaluation or frame-exact Windows NSP parity.
 
+## Self-contained Windows setup
+
+Extract the kit to a normal writable folder (beside `NSP-test-kit` for the
+combined kit). Everything the emulator needs is inside it: the device profile,
+`renderer-resources.zip`, the dash watchdog reference
+(`dash-reference/dash_watchdog`, used to decrypt NEX resources as the dash
+does), `dash-channels.json` (the v2.36 live-channel table) and `emtron_can.json`
+(the default Generic CAN layout). Only Python 3.11+ and, for **Dash Display**,
+an installed NSP (`%APPDATA%\Haltech\Nexus`) come from the PC.
+
+- `start-workbench.cmd` / `start-emulator.cmd` create `.venv` and install
+  `requirements.txt` (bounded versions; `cryptography` decrypts NEX payloads).
+  They reinstall only when the file changes or an import fails, so later runs
+  work offline. For an offline first run, make a `wheels` folder on a
+  connected PC (`py -3 -m pip download -r requirements.txt -d wheels`) and
+  copy it beside the scripts.
+- A missing watchdog, NEX, profile, Qt plugin or NSP runtime stops with a
+  message naming the file. A COM port already held by another program is
+  reported as such (NSP must use the other end of the pair).
+- A failed host write (for example a full disk) is logged and answered with a
+  dash error reply instead of ending the session.
+- Tests run from the extracted kit too; repository-only fixtures (captures,
+  NEX builds, `dash_virtual.exe`) are skipped there.
+
+## Engine simulation (SIMULATION ONLY, off by default)
+
+The emulator can feed a simulated running engine to the virtual dash. It is
+off unless you start it, and it is labelled SIMULATION in the workbench (tab,
+banner, status bar), the logs (`ENGINE SIMULATION ...`), `/api/engine`, the
+native viewer status and `engine-simulation.json` in exported logs.
+
+**How the dash does it (established from the v2.36 ELF and the definition).**
+`can::GenericCAN::update_signals_for_frame` extracts each receive signal
+(Intel or Motorola bits, sign-extended), computes `raw * multiplier + offset`
+in float32, converts it with the unit's `convert_from_float_*` (for example
+psi gauge to 0.1 kPa abs, C to 0.1 K, km/h x10, lambda x1000) and stores a
+32-bit channel at `0x6250 + 800 * bus + 4 * signal` (Haltech, Vehicle, Third
+Party buses; the owner's Emtron is Third Party, `0x6890`). NSP polls
+`0x1400-0x7fe4` (captures: `0x1400`/`0x4800` x13312 and `0x7c00` x996), so its
+gauges and live views read those channels, and the renderer gets the same
+block. A frame unheard for 2 s sets its signals to Device Time Out
+(`0x80000004`). NSP's raw CAN view writes a CAN id to the bus's realtime id
+(`0x6bb8 + 12 * bus`) and reads the frame's 8 bytes from `0x6bb0 + 12 * bus`.
+The map's Generic CAN settings (frame ids/enables at `0x20000 + 478552 + 180 *
+bus`, signals at `479092 + 4200 * bus`, floats stored big-endian) define the
+frames; `emtron_can.json` is the fallback when the map has none.
+
+**Alarms.** `Alarm_Module::process_alarms_and_shift_lights` is reproduced:
+25 alarms (`ALARMS_COMP_n_*`), upper (`value > on`) and lower (`value < on`)
+thresholds, enable flags, *Disable Alarm When Engine Off* (the ECU RPM channel
+`0xe68` must exceed 449 rpm), *Clear After Seconds* (counted from activation),
+manual clear mode, the alarm-active channels at `0x5818 + 4n` that NSP polls,
+and the popup message `draw_alarms` sends with `reInitAlarmScreen` (names cut
+to 20, `compute_color_string` colours, height 60). On Windows, NSP's
+`dash_virtual.exe` contains the same alarm module and evaluates the forwarded
+channels itself; the native viewer shows the emulator's evaluation.
+
+Finding for the owner's map: the engine-off gate reads the ECU RPM channel,
+which Generic CAN does not fill, so *Low Oil Pressure*, *Low Battery Voltage*
+and *Low Oil Temp* (all gated) would never fire on the real dash with only
+Generic CAN. The `low-oil-pressure` and `battery-low` presets therefore feed
+that channel (**Feed ECU RPM channel**); clear it to see the real-dash result.
+Lower thresholds also fire on channel error codes, as on the dash, so a CAN
+timeout raises *Low Oil Pressure* when the gate passes.
+
+**Use.** Workbench tab **Engine simulation (SIMULATION)**: start/stop,
+presets (`idle`, `warm-up`, `track-lap`, `low-oil-pressure`, `overheat`,
+`over-rev`, `low-fuel-pressure`, `battery-low`), speed multiplier, per-signal
+override sliders with **hold**, faults (`signal_dropout` sends zero,
+`stuck` freezes the raw value, `frame_dropout` stops the signal's frame,
+`can_timeout` silences the bus, `no_frames` sends nothing from the start so
+channels stay No Signal), and JSON load/save. Headless:
+
+```powershell
+.\start-emulator.cmd -Port COM11 -EngineSim low-oil-pressure
+.\start-workbench.cmd -EngineSim .\my-scenario.json
+.\.venv\Scripts\python.exe .\ic7_emulator.py --port COM11 --engine-sim overheat --engine-speed 4
+```
+
+A scenario file is `{"format": "ic7-engine-sim", "version": 1, "phases":
+[{"mode": "idle|rev|drive|track|hold|off", "duration": s, "modifiers":
+{...}}], "speed", "loop", "ecu_rpm_channel", "start_coolant_c", "overrides":
+{"SIGNAL": {"value": v} | {"stuck": true}}, "faults": [{"type", "signal",
+"start", "duration"}]}`; save a preset from the workbench to start one.
+Modifiers: `oil_pressure_scale`, `fuel_pressure_scale`, `coolant_target_c`,
+`battery_v`, `rev_limit`, `boost_kpa`, `iat_offset_c`.
+
+Limits: the engine physics are plausible, not a model of the owner's engine;
+only the Generic CAN path is simulated (no Haltech ECU protocol, OBD or
+third-party device decoders, no transmit frames, multiplexing or CAN error
+frames); the dash battery channel is written directly; channels before a
+first frame are set to No Signal (inferred from the definition's list items);
+alarm order in the popup is ascending alarm index, and the alarm manual-reset
+input, LEDs and shift lights are not modelled. Simulated alarms are not
+evidence that a real engine is safe.
+
 ## Dash fidelity
 
 The emulator now behaves like the real iC-7 v2.36 where the evidence allows,
@@ -62,8 +158,16 @@ uploads (36,428 exchanges, all devices) through the emulator and diffs the
 answers. There are no differences (the previous emulator had 476). Reboot
 and logo durations are calibrated per capture there; live use uses medians.
 
+NSP's serial timeouts (`c/cF.cs`): each read waits 200 ms; after more than
+30 consecutive timeouts on a port that stays open NSP raises its
+"connection lost" event, and the next answered read raises "connected"
+again. On USB the port disappears instead. Either way NSP waits for the dash
+to return, so the virtual port's silence during reboots does not make NSP
+give up earlier; the emulator answers again after the captured durations.
+
 Remaining differences: NSP's Windows renderer (Qt 5.11) draws instead of the
-dash's Qt 5.9.6 application; it builds the alarm message in a different field
+dash's Qt 5.9.6 application; NSP sees "connection lost" after about 6 s of
+reboot silence instead of a vanished USB port; it builds the alarm message in a different field
 order and shows the unsqueezed 860-wide canvas; USB re-enumeration is
 silence on a port that stays open; durations are fixed medians; the kernel
 logo is not drawn; the QML disk cache is not modelled; `00 0f` with no
@@ -118,8 +222,10 @@ identify which of these conditions occurred.
 This is not a full hardware emulator: it does not execute the ARM application,
 kernel, bootloader or STM32 code. CAN/ECU acquisition, LEDs, physical controls,
 hardware video codecs, hardware flashing and recovery are not modeled; USB
-re-enumeration is modelled only as silence on the virtual port. Live alarms require NSP's own live-data/Simulate panel and
-the same map settings; the synthetic alert preview is not an alarm engine.
+re-enumeration is modelled only as silence on the virtual port. Live alarms
+come from NSP's live-data/Simulate panel or the opt-in engine simulation
+(which reproduces the dash's alarm module); the synthetic alert preview is not
+an alarm engine.
 Windows integration still requires an on-PC acceptance test. Passing the
 Linux/ARM-QEMU component tests is not a physical-firmware safety guarantee.
 
@@ -225,7 +331,7 @@ and requires the DirectShow **dsengine** player; `wmfengine` alone is not a
 video-player backend. Missing multimedia/GIF dependencies produce an explicit
 startup error, not an Image-only fallback.
 
-Validated on Linux with real PyQt5: 132 Python tests (including capture conformance and the 3-level manifest acceptance test), including a real Qt 5.15
+Validated on Linux with real PyQt5: 157 Python tests (25 for the engine simulation) (including capture conformance and the 3-level manifest acceptance test), including a real Qt 5.15
 test of staged GIF and MP4 playback, muting, timeout/unloading, and two startups
 per format, plus a shared GIF alert preview over HTTP with rendered-pixel
 verification. Browser tests cover MP4/alias playback and splash-to-layout handoff.
