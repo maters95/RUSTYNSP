@@ -20,6 +20,27 @@ class NativeViewRuntimeTests(unittest.TestCase):
             bridge.poll()
         self.assertEqual(json.loads(bridge.scene)["screen"], 4)
 
+    def test_alarm_message_is_built_like_the_dash_unescaped_and_cut_to_20(self):
+        alarm = {"height": "60", "bc": "#a00000", "fc": "#ffffff", "img": ""}
+        message = native_view.native_alarm_message([{**alarm, "text": "OIL PRESSURE LOW WARNING"}])
+        self.assertEqual(json.loads(message)[0]["text"], "OIL PRESSURE LOW WAR")
+        self.assertEqual(list(json.loads(message)[0]), ["text", "bc", "height", "img", "fc"])
+        with self.assertRaises(ValueError):
+            json.loads(native_view.native_alarm_message([{**alarm, "text": 'SAY "HI"'}]))
+        # The preview passes this string to the popup instead of re-encoding it.
+        view = Path(__file__).resolve().parents[1] / "qml/NativeDash.qml"
+        self.assertNotIn("JSON.stringify", view.read_text())
+
+    def test_panel_view_squeezes_the_canvas_like_the_dash_panel(self):
+        from PIL import Image
+        from viewer import panel_view
+        canvas = Image.new("RGBA", (860, 480), (0, 0, 0, 255))
+        canvas.paste((255, 0, 0, 255), (800, 0, 860, 480))
+        squeezed = panel_view(canvas)
+        self.assertEqual(squeezed.size, (800, 480))
+        self.assertEqual(squeezed.getpixel((790, 240))[:3], (255, 0, 0))
+        self.assertEqual(squeezed.getpixel((700, 240))[:3], (0, 0, 0))
+
     def test_windows_uses_pyqt_runtime_for_both_dll_loaders(self):
         environment = {"PATH": "existing"}
         handle = MagicMock()

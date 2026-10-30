@@ -226,6 +226,18 @@ def _seek_frame(image, now):
         pass
 
 
+PANEL_SIZE = (800, 480)
+
+
+def panel_view(image):
+    """The 860x480 logical canvas squeezed onto the dash's 800x480 panel.
+
+    On the dash main.qml scales x by 800/860 (off Windows); NSP's Windows
+    renderer shows the unsqueezed 860-wide canvas.
+    """
+    return image.resize(PANEL_SIZE, Image.LANCZOS)
+
+
 def render_layout(device, screen):
     scene = scene_state(device, screen)
     with device.lock:
@@ -423,6 +435,8 @@ def start_viewer(device, port=8765):
                     if parsed.path == "/layout.png":
                         screen = min(15, max(0, int(query.get("screen", ["0"])[0])))
                         image = render_layout(device, screen)
+                        if query.get("panel", ["0"])[0] == "1":
+                            image = panel_view(image)
                     else:
                         with device.lock:
                             payload = device.last_screen

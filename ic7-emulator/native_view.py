@@ -90,6 +90,23 @@ def component_record(record, base_url, revision, patched=False):
     return {"index": record["index"], "source": QUrl.fromLocalFile(str(source.resolve())).toString(), "props": props}
 
 
+NATIVE_ALARM_TEXT_LIMIT = 20
+
+
+def native_alarm_message(alarms):
+    """The popup message as Alarm_Module::draw_alarms builds it on the dash.
+
+    Plain string concatenation (no JSON escaping) in the dash's field order,
+    with at most 20 characters of each alarm name, so a quote in a name breaks
+    the popup's JSON.parse exactly as it does on the dash. NSP's own renderer
+    builds the same fields in a different order (text, bc, fc, height, img).
+    """
+    entries = [' { "text":"' + str(alarm["text"])[:NATIVE_ALARM_TEXT_LIMIT] + '", "bc": "' + alarm["bc"] +
+               '", "height": "' + alarm["height"] + '", "img": "' + alarm["img"] + '", "fc": "' + alarm["fc"] + '" }'
+               for alarm in alarms]
+    return "[" + ",".join(entries) + "]"
+
+
 def resource_url(name, base_url, revision):
     from urllib.parse import quote
     return base_url.rstrip("/") + "/asset?name=" + quote(name) + "&revision=" + str(revision)
@@ -103,8 +120,9 @@ def resource_api_url(name, base_url):
 class Bridge(QObject):
     changed = pyqtSignal()
 
-    def __init__(self, url, patched=False, preview_alerts=()):
+    def __init__(self, url, patched=False, preview_alerts=(), alarm_tick_ms=50):
         super().__init__()
+        self.alarm_tick_ms = alarm_tick_ms
         self.url = url.rstrip("/")
         self.patched = patched
         self.preview_alerts = tuple(preview_alerts)
@@ -147,6 +165,8 @@ class Bridge(QObject):
                     {"text": name, "height": "60", "bc": "#a00000", "fc": "#ffffff", "img": ""}
                     for name in self.preview_alerts
                 ]
+                display["preview_alarm_message"] = native_alarm_message(display["preview_alerts"])
+                display["alarm_tick_ms"] = self.alarm_tick_ms
             components = []
             unsupported = []
             for item in state["components"]:
@@ -185,12 +205,15 @@ def main():
     parser.add_argument("--screenshot", type=Path)
     parser.add_argument("--preview-alert", action="append", default=[],
                         help="Preview this exact active-alert text using the shared popup; synthetic, no device writes")
+    parser.add_argument("--alarm-tick-ms", type=int, default=50,
+                        help="Interval between reInitAlarmScreen calls (the dash calls it on every UIMain "
+                             "update; its interval is a runtime value, so this is an approximation)")
     args = parser.parse_args()
     dll_directory = configure_qt_dll_search()
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     validate_media_qml(engine)
-    bridge = Bridge(args.url, args.patched_images, args.preview_alert)
+    bridge = Bridge(args.url, args.patched_images, args.preview_alert, args.alarm_tick_ms)
     engine.rootContext().setContextProperty("simulator", bridge)
     engine.load(QUrl.fromLocalFile(str(Path(__file__).with_name("qml") / "NativeDash.qml")))
     if not engine.rootObjects():

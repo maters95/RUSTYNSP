@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QFileD
 
 import dash_layout
 from ic7_emulator import ALERT_RESOURCE, Device, SPLASH_RESOURCE, serve_stream
-from viewer import is_video_resource, render_layout, start_viewer
+from viewer import is_video_resource, panel_view, render_layout, start_viewer
 from virtual_pair import load_pair_config
 
 
@@ -151,6 +151,7 @@ class SessionWorker(QThread):
         super().__init__(parent)
         self.options = options
         self.screen = 0
+        self.panel_squeeze = False
         self.selected_asset = None
         self.state = None
         self.url = None
@@ -193,7 +194,10 @@ class SessionWorker(QThread):
         if selection and payload is not None:
             self.asset.emit({"name": selection[1], "payload": payload, "url": self.url})
         output = io.BytesIO()
-        render_layout(device, self.screen).save(output, format="PNG")
+        image = render_layout(device, self.screen)
+        if self.panel_squeeze:
+            image = panel_view(image)
+        image.save(output, format="PNG")
         self.frame.emit(output.getvalue())
 
     def lookup_summary(self, device):
@@ -385,6 +389,9 @@ class Workbench(QMainWindow):
         self.screen.addItems([str(index + 1) for index in range(16)])
         self.screen.currentIndexChanged.connect(self.change_screen)
         screen_row.addWidget(self.screen)
+        self.panel_toggle = QCheckBox("800x480 panel (squeezed as on the dash)")
+        self.panel_toggle.toggled.connect(self.change_panel)
+        screen_row.addWidget(self.panel_toggle)
         screen_row.addStretch()
         screen_row.addWidget(QLabel("Layout approximation | sensor values unavailable"))
         dash_layout.addLayout(screen_row)
@@ -547,6 +554,7 @@ class Workbench(QMainWindow):
         options = SessionOptions(ROOT / "device-profile.zip", self.state_root, package, port, self.resume_state)
         self.resume_state = None
         self.worker = SessionWorker(options, self)
+        self.worker.panel_squeeze = self.panel_toggle.isChecked()
         self.worker.snapshot.connect(self.receive_snapshot)
         self.worker.frame.connect(self.preview.show_bytes)
         self.worker.asset.connect(self.show_resource)
@@ -674,6 +682,10 @@ class Workbench(QMainWindow):
         if not problems:
             return "All manifest lookups resolve as on the dash"
         return "; ".join(f"{Path(entry['component']).name}: {entry['reason']}" for entry in problems[:4])
+
+    def change_panel(self, enabled):
+        if self.worker:
+            self.worker.panel_squeeze = enabled
 
     def change_screen(self, screen):
         if self.worker:

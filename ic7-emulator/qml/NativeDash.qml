@@ -20,6 +20,9 @@ ApplicationWindow {
     property int rebootRevision: -1
     property string alertManifest: ""
     property var previewAlerts: []
+    // Built as the dash builds it: concatenated, unescaped, names cut to 20 characters.
+    property string previewAlarmMessage: ""
+    property int alarmTickMs: 50
     property int activeScreenNumber: 0
     property bool alarmScreenTrackingEnabled: true
     Component.onDestruction: alarmScreenTrackingEnabled = false
@@ -77,7 +80,9 @@ ApplicationWindow {
                 id: alertLoader
                 objectName: "alertPreviewLoader"
                 anchors.fill: parent
-                z: 9000
+                // draw_alarms sets the popup's z to 99 after every reInitAlarmScreen, so a
+                // component with a higher z draws over alarms on the dash.
+                z: 99
                 active: false
                 onLoaded: {
                     item.manifestUrl = window.alertManifest;
@@ -86,12 +91,20 @@ ApplicationWindow {
                     item.halFontPath = "";
                     item.activeScreenNumber = Qt.binding(function() { return window.activeScreenNumber; });
                     item.reloadAlertMedia();
-                    item.reInitAlarmScreen(JSON.stringify(window.previewAlerts));
+                    item.reInitAlarmScreen(window.previewAlarmMessage);
                 }
                 onStatusChanged: {
                     if (status === Loader.Error)
                         window.statusText = "Alert preview QML failed to load";
                 }
+            }
+            Timer {
+                // Alarm_Module::draw_alarms calls reInitAlarmScreen on every UIMain::update tick.
+                objectName: "alarmTick"
+                interval: window.alarmTickMs
+                repeat: true
+                running: alertLoader.item !== null && window.previewAlarmMessage !== ""
+                onTriggered: alertLoader.item.reInitAlarmScreen(window.previewAlarmMessage)
             }
             Loader {
                 id: splashLoader
@@ -126,10 +139,12 @@ ApplicationWindow {
         splashLoader.active = displayPhase === "splash";
         alertManifest = scene.display.alert_manifest || "";
         previewAlerts = scene.display.preview_alerts || [];
+        previewAlarmMessage = scene.display.preview_alarm_message || "";
+        alarmTickMs = scene.display.alarm_tick_ms || 50;
         alertLoader.source = scene.display.alert_component || "";
         alertLoader.active = displayPhase !== "blank" && previewAlerts.length > 0;
         if (alertLoader.item)
-            alertLoader.item.reInitAlarmScreen(JSON.stringify(previewAlerts));
+            alertLoader.item.reInitAlarmScreen(previewAlarmMessage);
         var alive = {};
         for (var index = 0; index < scene.components.length; index++) {
             var record = scene.components[index];
