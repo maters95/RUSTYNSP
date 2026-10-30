@@ -13,11 +13,13 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 R3 = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-r3-236"
 ADDONS = ROOT / "ic7-custom-dash/build-addons-experimental-236"
 SAMPLES = ROOT / "ic7-custom-dash/deploy/addons/samples/upload"
+HELPER = ROOT / "ic7-custom-dash/deploy/addons/make-addon-manifests.py"
 REBUILT_DLL = ROOT / "nsp-rebuild/bin/Release/net9.0-windows10.0.19041.0/NSP.dll"
 
 VARIANTS = {
@@ -49,10 +51,8 @@ VARIANTS = {
             "nsp/NSP.dll": REBUILT_DLL,
             **{f"upload-on/{path.name}": path for path in sorted(SAMPLES.iterdir()) if path.is_file()},
         },
-        "generated": {
-            "upload-off/ic7_indicators.json": {"version": 1, "indicators": []},
-            "upload-off/ic7_gauge_fx.json": {"version": 1, "gauges": []},
-        },
+        # Written by the add-on helper so they always match what the add-ons accept.
+        "off_manifests": "upload-off",
     },
 }
 
@@ -79,20 +79,26 @@ def main():
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
             entries[relative] = {"source": source.relative_to(ROOT).as_posix(), "sha256": sha256(data)}
-        for relative, content in variant.get("generated", {}).items():
-            data = (json.dumps(content, indent=2) + "\n").encode()
-            target = args.output / name / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(data)
-            entries[relative] = {"source": "generated", "sha256": sha256(data)}
+        if "off_manifests" in variant:
+            folder = args.output / name / variant["off_manifests"]
+            shutil.rmtree(folder, ignore_errors=True)
+            subprocess.run([sys.executable, str(HELPER), "--off", "all", "--output", str(folder)],
+                           cwd=ROOT, check=True, capture_output=True)
+            for path in sorted(folder.iterdir()):
+                entries[f"{variant['off_manifests']}/{path.name}"] = {
+                    "source": "make-addon-manifests.py --off all", "sha256": sha256(path.read_bytes())}
         index["variants"][name] = {"purpose": variant["purpose"], "files": entries}
         sums += [f"{entry['sha256']}  {name}/{relative}" for relative, entry in entries.items()]
+    # preserved/ is never cleared: earlier preserved builds stay listed on every regeneration.
+    preserved = args.output / "preserved"
     for source in args.preserve:
-        data = source.read_bytes()
-        target = args.output / "preserved" / source.name
+        target = preserved / source.name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source, target)
-        sums.append(f"{sha256(data)}  preserved/{source.name}")
+        if source.resolve() != target.resolve():
+            shutil.copyfile(source, target)
+    if preserved.is_dir():
+        sums += [f"{sha256(path.read_bytes())}  preserved/{path.name}"
+                 for path in sorted(preserved.iterdir()) if path.is_file()]
     (args.output / "variants.json").write_text(json.dumps(index, indent=2) + "\n")
     (args.output / "SHA256SUMS").write_text("\n".join(sorted(sums, key=lambda line: line[66:])) + "\n")
     print(json.dumps(index, indent=2))

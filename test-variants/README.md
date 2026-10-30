@@ -11,7 +11,7 @@ with `python scripts/make-test-variants.py` and check it with
 |---|---|---|---|
 | `0-base-stock` | `firmware/ic7-2.36-stock-resources.nex` (resource-only; restores the stock QML), or `firmware/Dash-V2-36-0-Release.nex` (full Haltech package) | `nsp/NSP.dll` (OEM) | your normal map |
 | `1-splash-alarms-r4` | `firmware/ic7-2.36-screen-alarms-experimental.nex` (`dec4e3bf…`) | `nsp/NSP.dll` (r4 rebuild) | the map's resources (splash, alarm GIFs, markers) |
-| `2-addons-experimental` | `firmware/ic7-2.36-addons-experimental.nex` (variant 1 plus the gauge add-ons) | `nsp/NSP.dll` (r4 rebuild) | `upload-on/` to enable; `upload-off/` and a power cycle to disable |
+| `2-addons-experimental` | `firmware/ic7-2.36-addons-experimental.nex` (`e1ca76e7…`: variant 1 plus the indicator, threshold-effect, clock and GPS track-map add-ons) | `nsp/NSP.dll` (r4 rebuild) | `upload-on/` (indicator and effect samples) to enable; `upload-off/` (all four add-ons off) and a power cycle to disable. Clock and track-map manifests are written by hand; see `ic7-custom-dash/deploy/vracer/README.md` |
 
 **How to swap:**
 - Replace only `NSP.dll` in your *test* NSP copy (made by

@@ -1,5 +1,5 @@
 {
-  "source_commit": "5e70456",
+  "source_commit": "c86c2c0",
   "variants": {
     "0-base-stock": {
       "purpose": "Stock baseline and rollback. Flash the stock-resources NEX (resource-only, restores the stock QML) or the full Haltech NEX; run the OEM NSP.dll.",
@@ -44,11 +44,11 @@
       "files": {
         "firmware/ic7-2.36-addons-experimental.nex": {
           "source": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
-          "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167"
+          "sha256": "e1ca76e746b3d1a7ad38e750b4b1f1520ab1de41b2b4751ca9cff94b38dfc59f"
         },
         "firmware/build-report.json": {
           "source": "ic7-custom-dash/build-addons-experimental-236/build-report.json",
-          "sha256": "afbec8363e060c5bd89cf5bbe71f545ec9bdd077a152660306ecd71a4200ab2d"
+          "sha256": "af1808cbaee6c4a40cdba56160510ecc80c06cfe4193c7f13b782e545d2046df"
         },
         "nsp/NSP.dll": {
           "source": "nsp-rebuild/bin/Release/net9.0-windows10.0.19041.0/NSP.dll",
@@ -118,13 +118,21 @@
           "source": "ic7-custom-dash/deploy/addons/samples/upload/shift_on.gif",
           "sha256": "897065d12d6d3697945fb49e5689b864f091320b641e19adef9f1285dfec893c"
         },
-        "upload-off/ic7_indicators.json": {
-          "source": "generated",
-          "sha256": "875371b05cac52b9f83085e460bbf078fdf44b695ed144211bf6c853546091c8"
+        "upload-off/ic7_clock.json": {
+          "source": "make-addon-manifests.py --off all",
+          "sha256": "17a0c33c86f96b57bfa8ed084f837937be916e2b08da3e92be3d71bd38e8b056"
         },
         "upload-off/ic7_gauge_fx.json": {
-          "source": "generated",
+          "source": "make-addon-manifests.py --off all",
           "sha256": "3bfaabd2f8c2caef90aa081d5c6e8944407ca8b9c8973bb18c93205f4006f3e5"
+        },
+        "upload-off/ic7_indicators.json": {
+          "source": "make-addon-manifests.py --off all",
+          "sha256": "875371b05cac52b9f83085e460bbf078fdf44b695ed144211bf6c853546091c8"
+        },
+        "upload-off/ic7_track_map.json": {
+          "source": "make-addon-manifests.py --off all",
+          "sha256": "b3e66d324122d91d266184e29876aa27179eee545b4cec004feb084cd4149bd7"
         }
       }
     }
