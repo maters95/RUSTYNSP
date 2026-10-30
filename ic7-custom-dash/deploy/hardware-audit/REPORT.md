@@ -12,8 +12,9 @@ in [`evidence/`](evidence/).
   - Only the intended four members differ from stock.
   - The wrapper, HDEF and manifest identity are right.
   - Every contract the four QML files rely on matches the app.
-  - Two non-blocking issues were found (§2.4): F1, resource cost in every
-    HalImage; and F2, alarms hidden at boot.
+  - Two observations (§2.4): F1, resource cost in every HalImage, and F2,
+    the splash covering the alarm popup at boot. F2 is kept by owner
+    decision.
 - **Add-on NEX (`1f6e36c7…8167`): correct.** It inherits F1 and F2 from its
   r3 base.
 
@@ -101,11 +102,16 @@ Listings are in `evidence/app-qml-contracts.s`.
     screens with images work, so it is a cost and robustness improvement, not
     a defect. It is deferred until r3 has been confirmed on the dash, because
     it changes the one component proven on hardware.
-- **F2: the splash hides alarms at boot.**
-  - The splash (z 10000) is above the popup (z 99), so an alarm active at
-    key-on is hidden for up to 3.3 s. Stock has no QML splash.
-  - Fix (r4): `main.qml` gains `alarmsPresent()`, which ends the splash, and
-    `HalAlarmPopup.rebuildAlarms()` calls it when an alarm is active.
+- **F2: the splash covers the alarm popup at boot. Kept as designed (owner
+  decision).**
+  - The splash (z 10000) is above the popup (z 99), so the on-screen popup
+    for an alarm active at key-on appears up to 3.3 s after the app starts.
+  - This matches the OEM experience, where no alarms show during the stock
+    splash (the kernel logo shows before the app runs).
+  - The app drives the alarm and shift LEDs natively, so the QML splash does
+    not hide them.
+  - The alternative, if wanted later: end the splash from
+    `HalAlarmPopup.rebuildAlarms()` when an alarm is active.
 
 Low-risk observations, needing no change:
 - The native fallback returns no screens if an extra unnamed item comes before
@@ -217,13 +223,13 @@ kernel logo.
 3. Whether a WL1835 is fitted.
 4. What the two extra PWMs drive.
 5. That NSP's Output Test dialog appears for the iC-7.
-6. On the r3/r4 flash: F2 at key-on, and screen-load time with many images
-   (F1).
+6. On the r3 flash: that the alarm LEDs light during the splash (F2), and
+   screen-load time with many images (F1).
 
 ## 7. Recommended next builds
 
-1. **r4** = r3 + F2 (alarms end the splash). F1 waits until r3/r4 is
-   confirmed on hardware.
+1. **Flash and confirm r3** (or r4, if the NSP DLL review's changes are
+   packaged). F1 waits until it is confirmed on hardware.
 2. **Add-on A3**, value-driven indicator images.
 3. **Generic CAN configuration with the Emtron**: no build, bench only.
 4. **Physical survey** (§6).
