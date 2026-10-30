@@ -4,7 +4,10 @@ Independent of the builder's own report: compares package structure, manifest,
 wrapper and HDEF with stock, lists every changed/added/removed resource member,
 checks the replaced QML against maintained sources, and, given the dash's
 extracted root filesystem, checks that every QML import exists there and that
-every file the components load is inside the archive.
+every file the components load is inside the archive. Every changed or added QML
+member must carry a non-zero modification time that no stock member uses: Qt 5.9.6
+on the dash validates its QML disk cache by path and mtime only, so a reused stock
+mtime would run the previously cached (stock) compiled code instead.
 
 Example:
     python scripts/audit-nex.py --candidate path/to/candidate.nex \\
@@ -40,8 +43,9 @@ def sha256(data):
 def members(codec, reference, payload):
     archive = codec["decode_resource"](reference, payload)[0]
     with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as tar:
-        return {member.name: tar.extractfile(member).read()
-                for member in tar.getmembers() if member.isfile()}
+        files = {member.name: tar.extractfile(member).read()
+                 for member in tar.getmembers() if member.isfile()}
+        return files, {member.name: member.mtime for member in tar.getmembers()}
 
 
 def manifest(package):
@@ -100,8 +104,8 @@ def main():
         candidate_payload = candidate_zip.read("res_ic-7.qzip")
         if stock_payload[:44] != candidate_payload[:44]:
             problems.append("44-byte resource wrapper differs from stock")
-        before = members(codec, args.reference, stock_payload)
-        after = members(codec, args.reference, candidate_payload)
+        before, before_mtimes = members(codec, args.reference, stock_payload)
+        after, after_mtimes = members(codec, args.reference, candidate_payload)
 
     changed = sorted(name for name in before.keys() & after.keys() if before[name] != after[name])
     added = sorted(after.keys() - before.keys())
@@ -111,6 +115,15 @@ def main():
                            "changed": changed, "added": added, "removed": removed}
     if removed:
         problems.append("Stock resources removed: " + ", ".join(removed))
+    stock_mtimes = set(before_mtimes.values()) | {0}
+    report["resources"]["member_mtimes"] = {name: after_mtimes[name] for name in changed + added}
+    for name in changed + added:
+        if after_mtimes[name] in stock_mtimes:
+            problems.append(f"{name} reuses a stock or zero mtime ({after_mtimes[name]}); the dash's QML cache could serve stale code")
+    retimed = sorted(name for name in before_mtimes.keys() & after_mtimes.keys()
+                     if before_mtimes[name] != after_mtimes[name] and name not in changed)
+    if retimed:
+        problems.append("Unchanged members with altered mtimes: " + ", ".join(retimed))
     for name in changed + added:
         if not name.startswith(QML_ROOT):
             problems.append("Non-QML resource modified: " + name)

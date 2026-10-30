@@ -24,6 +24,27 @@ def digest(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+# Qt 5.9.6 on the dash keeps compiled QML in a disk cache outside resources/ and
+# accepts a cached unit whenever the source path and modification time match; the
+# content is never compared. A replaced member that kept the stock mtime would run the
+# stock (or an earlier build's) compiled code, so each one gets an mtime derived from
+# its content: reproducible, different for different content, and never a stock value.
+MTIME_BASE = 1700000000
+MTIME_SPAN = 90000000
+
+
+def member_mtime(data, avoid):
+    mtime = MTIME_BASE + int(digest(data)[:12], 16) % MTIME_SPAN
+    while mtime in avoid:
+        mtime += 1
+    return mtime
+
+
+def read_mtimes(payload):
+    with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as archive:
+        return {member.name: member.mtime for member in archive.getmembers()}
+
+
 def read_members(payload):
     with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as archive:
         result = {}
@@ -38,6 +59,7 @@ def replace_component(payload, replacement, splash_components=None):
     replacements = {TARGET: replacement, **(splash_components or {})}
     output = io.BytesIO()
     with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as source:
+        stock_mtimes = {0} | {member.mtime for member in source.getmembers()}
         with tarfile.open(fileobj=output, mode="w", format=tarfile.GNU_FORMAT) as destination:
             for member in source.getmembers():
                 metadata = copy.copy(member)
@@ -45,11 +67,13 @@ def replace_component(payload, replacement, splash_components=None):
                 if member.name in replacements:
                     data = replacements.pop(member.name)
                     metadata.size = len(data)
+                    metadata.mtime = member_mtime(data, stock_mtimes)
                     contents = io.BytesIO(data)
                 destination.addfile(metadata, contents)
             for name, data in replacements.items():
                 metadata = tarfile.TarInfo(name)
                 metadata.size = len(data)
+                metadata.mtime = member_mtime(data, stock_mtimes)
                 metadata.mode = 0o644
                 destination.addfile(metadata, io.BytesIO(data))
     return output.getvalue()
@@ -137,6 +161,11 @@ def main():
     if added != ({SPLASH_TARGET} if args.splash else set()) or set(original_members) - set(rebuilt_members):
         raise ValueError("Resource archive member set changed")
     changed = [name for name in original_members if original_members[name] != rebuilt_members[name]]
+    original_mtimes, rebuilt_mtimes = read_mtimes(decoded), read_mtimes(rebuilt)
+    retimed = sorted(name for name in original_mtimes if original_mtimes[name] != rebuilt_mtimes[name])
+    if retimed != sorted(changed) or any(
+            rebuilt_mtimes[name] in set(original_mtimes.values()) | {0} for name in list(changed) + sorted(added)):
+        raise ValueError("Replaced QML must carry fresh, non-stock modification times")
     expected_changes = {TARGET}
     if args.splash:
         expected_changes.add(ROOT_TARGET)
@@ -179,6 +208,7 @@ def main():
         "package_version": args.package_version,
         "changed_members": changed, "preserved_members": len(original_members) - len(changed),
         "added_members": sorted(added),
+        "member_mtimes": {name: rebuilt_mtimes[name] for name in sorted(list(changed) + sorted(added))},
         "startup_splash": args.splash,
         "alert_media": args.alerts,
         "runtime_components": {

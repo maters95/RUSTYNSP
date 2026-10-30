@@ -1,6 +1,10 @@
+import io
+import os
 from pathlib import Path
 import runpy
+import shutil
 import subprocess
+import tarfile
 import tempfile
 import unittest
 import zipfile
@@ -75,7 +79,7 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             self.assertIn("resourcefix resources retained byte-for-byte", result.stdout)
 
     def test_splash_nex_preserves_every_other_resource(self):
-        nex = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-native-236/ic7-2.36-screen-alarms-experimental.nex"
+        nex = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236/ic7-2.36-screen-alarms-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the splash NEX first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))
@@ -99,6 +103,55 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             before.pop(member, None)
         self.assertEqual(after, before)
         self.assertEqual(len(after), 336)
+
+    def test_replaced_qml_gets_fresh_reproducible_mtimes(self):
+        builder = runpy.run_path(str(ROOT / "scripts/build-nsp-gif-preview.py"))
+        source = io.BytesIO()
+        with tarfile.open(fileobj=source, mode="w", format=tarfile.GNU_FORMAT) as archive:
+            for name in (builder["TARGET"], builder["ROOT_TARGET"], "other.png"):
+                member = tarfile.TarInfo(name)
+                member.size, member.mtime = 4, 1790648083
+                archive.addfile(member, io.BytesIO(b"old!"))
+        replaced = builder["replace_component"](
+            source.getvalue(), b"new image", {builder["ROOT_TARGET"]: b"new root",
+                                              builder["SPLASH_TARGET"]: b"splash"})
+        again = builder["replace_component"](
+            source.getvalue(), b"new image", {builder["ROOT_TARGET"]: b"new root",
+                                              builder["SPLASH_TARGET"]: b"splash"})
+        self.assertEqual(replaced, again)
+        with tarfile.open(fileobj=io.BytesIO(replaced), mode="r:") as archive:
+            mtimes = {member.name: member.mtime for member in archive.getmembers()}
+        self.assertEqual(mtimes["other.png"], 1790648083)
+        fresh = [mtimes[name] for name in (builder["TARGET"], builder["ROOT_TARGET"], builder["SPLASH_TARGET"])]
+        self.assertEqual(len(set(fresh)), 3)
+        for mtime in fresh:
+            self.assertNotIn(mtime, (0, 1790648083))
+
+    def test_dash_qt_cache_ignores_content_when_mtime_matches(self):
+        # Evidence for the builder's fresh mtimes, on the dash's own Qt 5.9.6 userspace.
+        sysroot = os.environ.get("IC7_SYSROOT")
+        if not sysroot or not shutil.which("qemu-arm"):
+            self.skipTest("Set IC7_SYSROOT to the extracted dash root filesystem; needs qemu-arm")
+        with tempfile.TemporaryDirectory(prefix="qmlcache-") as directory:
+            path = Path(directory)
+            qml = path / "t.qml"
+
+            def run(text, mtime):
+                qml.write_text("import QtQuick 2.9\nItem { Component.onCompleted: { console.log(\"" +
+                               text + "\"); Qt.quit() } }\n")
+                os.utime(qml, (mtime, mtime))
+                result = subprocess.run(
+                    ["qemu-arm", "-L", sysroot, "-E", "QT_QPA_PLATFORM=offscreen",
+                     "-E", "XDG_CACHE_HOME=" + str(path / "cache"),
+                     "-E", "QML2_IMPORT_PATH=" + sysroot + "/usr/lib/qml",
+                     "-E", "QT_PLUGIN_PATH=" + sysroot + "/usr/lib/plugins",
+                     sysroot + "/usr/bin/qml", str(qml)],
+                    capture_output=True, text=True, timeout=300)
+                return result.stdout + result.stderr
+
+            self.assertIn("STOCK", run("STOCK", 1790648083))
+            self.assertIn("STOCK", run("CUSTOM", 1790648083))
+            self.assertIn("CUSTOM", run("CUSTOM", 1790648084))
 
     def test_manifest_validation_and_persistence(self):
         with tempfile.TemporaryDirectory(prefix="nsp-splash-") as directory:
