@@ -88,7 +88,9 @@ screen-restricted alarms with:
 - **Fresh QML modification times.** The dash's Qt 5.9.6 serves compiled QML
   from a disk cache that a NEX update does not wipe, matching on path and mtime
   only; earlier NEXs kept the stock mtimes and could keep running the stock
-  root and alarm popup
+  root and alarm popup. A precaution: the owner's videofix flash shows the
+  cache is not reused across updates on their dash, so the wrong resource path
+  remains the proven cause
   ([cache audit](ic7-custom-dash/deploy/nsp/MEDIA-RUNTIME-AUDIT.md#stale-qml-disk-cache-on-the-dash)).
   The alarm popup also re-reads its manifest at most every 2 s instead of on
   every native UI tick.

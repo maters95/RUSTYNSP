@@ -14,7 +14,10 @@ keep the capture or screenshots.
 **Do not flash** any earlier custom NEX:
 - `7d3f8c96…`: has the wrong folder path. This is the one that failed.
 - `9f4f449f…` and `a6c47d35…`: have the path fix, but keep stock file
-  timestamps, so the dash's QML cache can keep running the stock code.
+  timestamps. r2 adds the fresh-timestamp precaution and the alarm-name and
+  manifest-read fixes, and is the only one audited with them. (Your earlier
+  GIF/MP4 screen flash suggests the QML cache is not reused across updates on
+  your dash, so the folder path is the proven cause of the failure.)
 
 Delete the older kits so they cannot be mixed up with r2.
 

@@ -186,8 +186,10 @@ the components looked for those resources in the wrong folder.
 
 ### Stale QML disk cache on the dash
 
-A second, independent reason the flashed splash and alarm banners could fall
-back to stock, fixed in `build-cfw-screen-alarms-freshmtime-236`:
+A possible second reason the flashed splash and alarm banners could fall back
+to stock, guarded against in `build-cfw-screen-alarms-freshmtime-236`. Owner
+evidence (below) indicates it is not active on the real dash; the wrong
+resource path remains the proven cause.
 
 - The dash's `libQt5Qml.so.5.9.6` writes compiled QML to
   `QStandardPaths::CacheLocation` + `/qmlcache/` (outside
@@ -211,8 +213,15 @@ back to stock, fixed in `build-cfw-screen-alarms-freshmtime-236`:
   root, which has no splash loader, and the stock popup. `HalImage.qml` is
   compiled only when a screen has an image component, which is consistent with
   the videofix screen media working although it also kept the stock mtime.
-- Whether the cache is actually being written on the hardware (root file
-  system writable) has not been observed on the dash itself.
+- **Owner evidence against it on the hardware:** on stock v2.36 the dash
+  showed a screen image component with a GIF (static, first frame), so the
+  stock `HalImage.qml` was compiled there. The videofix NEX then replaced it
+  while keeping the stock mtime, and GIF/MP4 playback worked immediately. A
+  persistent, mtime-validated cache would have kept serving the stock
+  `HalImage`. So on this dash the cache is evidently not persisted or not
+  reused across a resource update, and the same then holds for `main.qml` and
+  the popup (same engine and cache directory). The fresh-mtime rule is kept as
+  a zero-cost precaution for dashes where the cache does persist.
 
 The builder now gives every replaced or added QML member an mtime derived from
 its content (reproducible, never a stock value), and `scripts/audit-nex.py`
