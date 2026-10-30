@@ -12,6 +12,22 @@ components inside the encrypted NEX resource archive, not as separate copies.
 The earlier screen-alarm candidate must not be used to validate this correction.
 See the [real-device audit](MEDIA-RUNTIME-AUDIT.md#real-device-resource-path-correction).
 
+The current candidate (`build-cfw-screen-alarms-native-236`) keeps that
+correction and adds:
+
+- **Alarm banners decode with QtQuick only.** Banner GIFs and images use
+  QtQuick's own `AnimatedImage` instead of `HalImage`, which imports
+  QtMultimedia. In the owner's emulator log a QtMultimedia load failure made
+  `HalAlarmPopup` itself fail ("Type HalImage unavailable"), removing every alarm
+  banner. A GIF-only banner now also keeps its stock colour and text until its
+  media has actually decoded.
+- **Native screen fallback.** If no screen marker reports, the popup uses the
+  dash application's own screen containers to identify the active screen (see
+  [Show an alarm on selected screens](#show-an-alarm-on-selected-screens)).
+- **The `fail.pcapng` flash, decoded.** Every resource reached the dash intact
+  and its two mode-switch error replies also occur in a stock Haltech update; see
+  the [capture analysis](MEDIA-RUNTIME-AUDIT.md#what-the-2026-10-29-flash-capture-shows).
+
 ## Install the matching pair
 
 Extract the new native-integration test ZIP into a new directory and use
@@ -133,7 +149,14 @@ changes as well as image resources. On a dash, transfer both map settings and
 resources using the matching screen-aware DLL and resource-only NEX. A JSON-only
 edit cannot add this feature to an older renderer. The native emulator uses the
 same QML; its synthetic preview also receives the selected preview screen.
-If screen identity is unavailable, restricted alarms remain visible and QML
+If no marker reports, the popup falls back to the dash application's own
+screen containers. The v2.36 `UIMain` constructor always creates five unnamed
+`UIScreen` containers under the QML root before `Alarm_Module` adds the popup,
+and switches screens by `QQuickItem::setVisible` on them
+([disassembly](analysis/screen-switching.s)). So a marker removed by editing a
+screen layout does not silently break the restriction. The markers stay the
+primary source; both observe the same native visibility change.
+If neither identifies the screen, restricted alarms remain visible and QML
 logs a warning rather than silently hiding a potentially important warning.
 Windows native operation and physical-dash acceptance still require testing.
 
@@ -199,10 +222,14 @@ decoded stock members. Its original 44-byte wrapper and migration HDEF are
 byte-identical. Application, kernel, bootloader and kernel-logo tooling are
 unchanged. The earliest kernel logo remains static.
 
-Build with `scripts/build-nsp-gif-preview.py --splash --alerts` and a new output
-directory; package with `scripts/package-nsp-media-test.py --native-media
---splash --alerts`. The included map is the supplied original, byte-for-byte,
-not preconfigured with new alert rules.
+Build with `scripts/build-nsp-gif-preview.py --splash --alerts --label
+screen-alarms` and a new output directory; package with
+`scripts/package-nsp-media-test.py --native-media --splash --alerts`. Audit a
+candidate independently with `scripts/audit-nex.py --candidate <nex> --sysroot
+<extracted dash rootfs>`. The audit compares the package with stock and checks
+every QML import against the dash's installed Qt modules. The current candidate's
+report is `build-cfw-screen-alarms-native-236/audit-report.json`. The included
+map is the supplied one, byte-for-byte.
 
 Checks include .NET compilation and manifest validation, stock-root/alert hash
 guards and cache removal, resourcefix byte equality, decoded NEX member
@@ -213,9 +240,13 @@ physical alarm behavior, or a recovery method. Retain the working NEX, back
 up the map and establish recovery before any bench flash; do not test while
 driving.
 
-Verified locally: x86 DLL build with zero compiler errors (402 existing
-decompilation warnings); **24** Python/.NET regressions; **37** desktop QML
-checks; **33** firmware ARM/QEMU QML checks; **110** emulator Python tests with
-real PyQt5; and browser checks. ZIP hashes and all packaged QML bytes are
+Verified locally for the current candidate: x86 DLL build with zero compiler
+errors (404 existing decompilation warnings), referencing the same 52 assemblies
+as the shipped DLL with nothing removed; **43** Python/.NET regressions (9 need
+PowerShell or tshark and were skipped); **63** desktop Qt 5.15 QML checks,
+including painted splash pixels; **57** QML checks on the dash's own Qt 5.9.6
+under QEMU, including markerless native screen switching and a missing
+QtMultimedia; **116** emulator Python tests with real PyQt5; and an independent
+NEX audit with no findings. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.

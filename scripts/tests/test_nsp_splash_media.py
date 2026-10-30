@@ -75,7 +75,7 @@ Console.WriteLine("All " + baseline.Count + " resourcefix resources retained byt
             self.assertIn("resourcefix resources retained byte-for-byte", result.stdout)
 
     def test_splash_nex_preserves_every_other_resource(self):
-        nex = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-device-paths-236/ic7-2.36-screen-alarms-experimental.nex"
+        nex = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-native-236/ic7-2.36-screen-alarms-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the splash NEX first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))

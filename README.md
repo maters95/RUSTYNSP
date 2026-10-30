@@ -77,29 +77,28 @@ on the owner's PC; physical firmware execution is not emulated.
 For the virtual GIF test, use the [updated map test kit](dist/ic7-nsp-media-map-test-autosetup.zip)
 with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
-## Per-Screen Alert GIFs and Splash Placement (2026-10-30)
-
-**Physical-flash fix:** on the 2026-10-29 flash, GIF/MP4 splash and alert GIFs did
-not appear on the dash. The components searched NSP's Windows folder layout for
-the uploaded manifests and media; the dash stores them four folders up, at
-`/opt/applications/dtn/user_resources/images`, which is what the application's
-`image_src_to_path` uses. They now search the dash location first. A device-layout
-test runtime reproduces the failure with the old components. See the
-[alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md#fix-from-the-2026-10-29-physical-flash).
+## Screen Alarms, Splash and Real-Dash Fixes (2026-10-30)
 
 Use the [combined Windows test kit](dist/ic7-final-windows-test-2026-10-30.zip)
-and its `START-HERE.md`. Its NEX and DLL add alert GIF rules for specific
-dash screens, using the stock application's own screen switching, and a
-startup splash placed the way stock NSP places a static splash: an
-800 x 480 GIF now fills the panel. Alarm banners and GIF splashes no longer
-depend on QtMultimedia; in the previous kit, a failure to load it removed every
-alarm banner. `HalImage.qml`, the owner-confirmed screen media component, is
-unchanged. The NSP alert editor now places banners against a live preview of
-the real screen (its actual background and gauges, read from the loaded map)
-and opens on the screen NSP has active, so configuring an alert feels native.
+and its `START-HERE.md`; it supersedes the 2026-10-29 screen-alarm, path-fix
+and replacement kits. It combines main's native **Alarm appearance** editor and
+screen-restricted alarms with:
+
+- **Real-dash path fix.** The dash keeps uploaded media in
+  `/opt/applications/dtn/user_resources/images`; the splash and alarm components
+  had looked in NSP's Windows layout. Decoding the 2026-10-29 `fail.pcapng` showed
+  every resource and the NEX body arrived intact, and its two device error replies
+  also occur in a stock Haltech update
+  ([capture analysis](ic7-custom-dash/deploy/nsp/MEDIA-RUNTIME-AUDIT.md#what-the-2026-10-29-flash-capture-shows)).
+- **Alarm banners without QtMultimedia**, a **stock-matching splash placement**
+  (an 800 x 480 GIF now fills the panel), a **native screen fallback** for
+  restricted alarms, and an alarm-appearance preview over the real screen.
+- An independent NEX audit (`scripts/audit-nex.py`) and the restored full NEX
+  builder.
+
 See the [alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md) and
-[startup guide](ic7-custom-dash/deploy/nsp/SPLASH-TEST.md). Not flashed or
-tested on hardware; Windows NSP/emulator acceptance is still required.
+[startup guide](ic7-custom-dash/deploy/nsp/SPLASH-TEST.md). Not flashed or tested
+on hardware; Windows NSP/emulator acceptance is still required.
 
 For what else the firmware could be made to do — camera, Wi-Fi, night mode,
 datalogging, lap timer, custom fonts and more, ranked by risk — see the

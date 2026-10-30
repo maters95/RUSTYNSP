@@ -59,6 +59,12 @@ visible and logs a warning. See the [screen-scoping instructions](ALERTS-TEST.md
 
 ### Real-device resource-path correction
 
+Note on reproducibility: the 2026-10-30 merge restored
+`scripts/build-nsp-gif-preview.py` with its `--splash`/`--alerts` support and
+stock-hash guards for `main.qml` and `HalAlarmPopup.qml`. A main-branch commit had
+replaced it with an older HalImage-only version that could not rebuild the
+splash/alarm NEX and that the repository's own tests could not run against.
+
 The 2026-10-29 `fail.pcapng` capture contains an exact 17,397,760-byte
 transfer of the screen-alarm candidate's encrypted resource body. It also
 contains successful resource-RPC acknowledgements for the splash GIF and
@@ -149,6 +155,34 @@ The older extracted SWU app hashes to
 `ccdc0711399696e23e70835110c7aa45cdd6110a7aa78c46d835632761de7219`
 and lacks these splash functions. Do not infer the v2.36 splash behavior
 from that older ELF or the reference `SplashScreen.qml`.
+
+### What the 2026-10-29 flash capture shows
+
+`fail.pcapng` was decoded command by command, pairing each request with the
+dash's reply. It was compared with the owner's successful 2026-10-28 custom
+flash (`ic7 real flash cfw.pcapng`) and a stock Haltech update
+(`research/usb-captures/firmware updTE.pcapng`).
+
+- **Everything reached the dash intact.** The 17,397,760-byte resource body at
+  `0x25000000` was acknowledged block by block. Every user resource completed with
+  status 0 and all its bytes: the 205,895-byte splash GIF, `ic7_splash.json`, the
+  five screen markers, the 1,233,876-byte KFC GIF and `ic7_alerts.json`. (The
+  dash's resource-write handler stores any extension; see
+  `dash_user_spaces::DashUserResource::build_write_resource_response_payload`.)
+- **The two device error replies are normal.** They answer the mode switches
+  to update mode (`0x0001`) and back (`0x0000`). The stock Haltech update and
+  the successful custom flash show the same two errors on the same two writes:
+  the application answering is the one being restarted.
+- **The missing `0x000f` burst is expected for an animated splash.** In both
+  good captures, after the settings write NSP uploads a 1,152,054-byte BMP
+  to `0x70400000` and then writes `0x000f` about 65 times while the dash patches
+  its kernel boot logo. With a GIF/MP4 splash selected, the rebuilt NSP skips
+  that static kernel-logo update and sends the media as user resources instead,
+  so neither step appears. The early kernel logo therefore keeps its previous
+  image.
+
+So the transfer was correct and complete; the failure was on the dash, where
+the components looked for those resources in the wrong folder.
 
 ### Implications For Animated Startup
 
