@@ -1,0 +1,207 @@
+{
+  "status": "EXPERIMENTAL, offline-validated only; not installed or tested on a physical dash",
+  "built_utc": "2026-10-30T10:59:50+00:00",
+  "base": {
+    "path": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex",
+    "sha256": "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c"
+  },
+  "stock": {
+    "path": "fw/Dash-V2-36-0-Release.nex",
+    "sha256": "220faccedcc1aaa652a6484633976d4f419e0e9c517eaabcad7a3b130616d356"
+  },
+  "output": {
+    "path": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
+    "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167",
+    "bytes": 25400599
+  },
+  "addon_member_mtimes": {
+    "qml_components_data/qml/user_components/HalIndicator.qml": 1736311265,
+    "qml_components_data/qml/user_components/HalNumeric.qml": 1748161796,
+    "qml_components_data/qml/user_components/HalBarHorizontal1.qml": 1719130990,
+    "qml_components_data/qml/user_components/HalCircularClassic.qml": 1703356687,
+    "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml": 1759590321,
+    "qml_components_data/qml/user_components/Ic7GaugeFx.qml": 1765703969,
+    "qml_components_data/qml/user_components/Ic7AddonMedia.qml": 1774143322,
+    "qml_components_data/qml/user_components/Ic7AddonVideo.qml": 1754192395,
+    "qml_components_data/qml/user_components/ic7addons.js": 1760930098
+  },
+  "replaced_members": [
+    "qml_components_data/qml/user_components/HalIndicator.qml",
+    "qml_components_data/qml/user_components/HalNumeric.qml",
+    "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+    "qml_components_data/qml/user_components/HalCircularClassic.qml"
+  ],
+  "added_members": [
+    "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+    "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+    "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+    "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+    "qml_components_data/qml/user_components/ic7addons.js"
+  ],
+  "archive_members": {
+    "base": 340,
+    "output": 345,
+    "stock": 339
+  },
+  "vs_base": {
+    "changed": [
+      "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+      "qml_components_data/qml/user_components/HalCircularClassic.qml",
+      "qml_components_data/qml/user_components/HalIndicator.qml",
+      "qml_components_data/qml/user_components/HalNumeric.qml"
+    ],
+    "added": [
+      "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+      "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+      "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/ic7addons.js"
+    ],
+    "removed": []
+  },
+  "vs_stock": {
+    "changed": [
+      "qml_components_data/qml/factory_screens/main.qml",
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+      "qml_components_data/qml/user_components/HalCircularClassic.qml",
+      "qml_components_data/qml/user_components/HalImage.qml",
+      "qml_components_data/qml/user_components/HalIndicator.qml",
+      "qml_components_data/qml/user_components/HalNumeric.qml"
+    ],
+    "added": [
+      "qml_components_data/qml/user_components/HalSplash.qml",
+      "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+      "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+      "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "qml_components_data/qml/user_components/ic7addons.js"
+    ],
+    "removed": []
+  },
+  "base_members_with_stock_mtime": [],
+  "checks": {
+    "package_files_same_as_base": true,
+    "manifest_identical_to_base": true,
+    "hdef_identical_to_base": true,
+    "hdef_identical_to_stock": true,
+    "wrapper_identical_to_base": true,
+    "wrapper_identical_to_stock": true,
+    "manifest_targets_stock_ic7_product": true,
+    "archive_roundtrip_exact": true,
+    "only_addon_members_differ_from_base": true,
+    "unchanged_members_keep_tar_metadata": true,
+    "member_order_preserved": true,
+    "addon_members_fresh_mtime": true,
+    "addon_members_match_sources": true,
+    "differs_from_stock_only_by_base_and_addons": true,
+    "no_non_qml_member_changed_vs_stock": true
+  },
+  "component_checks": [
+    {
+      "file": "qml_components_data/qml/user_components/HalIndicator.qml",
+      "sha256": "fa8c324d97612f8cb7cff2e0f9666994d3ce769bf3aacfec73b83737ad93605d",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "Ic7IndicatorAddon.qml",
+        "common.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalNumeric.qml",
+      "sha256": "2956f5d2d70497cd2dc53df10a77eea1b37ceadac8a19a4b95cfe82b7a5c0dbe",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "Ic7GaugeFx.qml",
+        "common.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalBarHorizontal1.qml",
+      "sha256": "d6e269fcd7eeafdc452d7330053da04bd27b3ebbfb97b2066b4d58f634b8c6c5",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "Ic7GaugeFx.qml",
+        "common.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalCircularClassic.qml",
+      "sha256": "643af486d08f75a2c3c27ceca174a179361f0a39c1515d1489185aacaaca756a",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9",
+        "QtQuick.Controls.Styles 1.4",
+        "QtQuick.Extras 1.4"
+      ],
+      "loads": [
+        "Ic7GaugeFx.qml",
+        "common.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
+      "sha256": "3b83e21214b105064045a6cc9b45efdb0f0240e77aaea01f71be997c4617a3bd",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "ic7addons.js",
+        "Ic7AddonMedia.qml"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7GaugeFx.qml",
+      "sha256": "5a1930943ea179f58722160d7cf71a0900a2e8d0ea2ec292e46b0cd62dab9b75",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "ic7addons.js"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
+      "sha256": "b04cbb2abcdafd7eac71a7c059f8a5b06993b2b654d9b9d82d71e5925c7344be",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "Ic7AddonVideo.qml"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/Ic7AddonVideo.qml",
+      "sha256": "ce184223ff8b5730fea4e92dae1d53d783e5d0b9266616926d656cab29796817",
+      "imports": [
+        "QtMultimedia 5.9",
+        "QtQuick 2.9"
+      ],
+      "loads": [],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/ic7addons.js",
+      "sha256": "32b8c1734c32a3779b382d1906bcd8890738b4984d36f01613ceb3f137828433",
+      "imports": [],
+      "loads": [],
+      "imports_missing_on_dash": []
+    }
+  ],
+  "problems": [],
+  "suitable": true
+}

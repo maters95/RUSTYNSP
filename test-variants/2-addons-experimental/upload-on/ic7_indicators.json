@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "indicators": [
+    {
+      "image": "ic7_shift_light.png",
+      "on": "u/shift_on.gif",
+      "off": "u/shift_off.png"
+    },
+    {
+      "image": "ic7_check_engine.png",
+      "on": "u/check_engine.mp4"
+    },
+    {
+      "image": "ic7_gear.png",
+      "hysteresis": 0.1,
+      "frames": [
+        {
+          "min": -1.5,
+          "max": -0.5,
+          "source": "u/gear_r.png"
+        },
+        {
+          "min": -0.5,
+          "max": 0.5,
+          "source": "u/gear_n.png"
+        },
+        {
+          "min": 0.5,
+          "max": 1.5,
+          "source": "u/gear_1.png"
+        },
+        {
+          "min": 1.5,
+          "max": 2.5,
+          "source": "u/gear_2.png"
+        },
+        {
+          "min": 2.5,
+          "max": 3.5,
+          "source": "u/gear_3.png"
+        },
+        {
+          "min": 3.5,
+          "max": 4.5,
+          "source": "u/gear_4.png"
+        },
+        {
+          "min": 4.5,
+          "max": 5.5,
+          "source": "u/gear_5.png"
+        },
+        {
+          "min": 5.5,
+          "max": 6.5,
+          "source": "u/gear_6.png"
+        }
+      ]
+    }
+  ]
+}

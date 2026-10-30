@@ -1,0 +1,132 @@
+{
+  "source_commit": "5e70456",
+  "variants": {
+    "0-base-stock": {
+      "purpose": "Stock baseline and rollback. Flash the stock-resources NEX (resource-only, restores the stock QML) or the full Haltech NEX; run the OEM NSP.dll.",
+      "files": {
+        "firmware/Dash-V2-36-0-Release.nex": {
+          "source": "fw/Dash-V2-36-0-Release.nex",
+          "sha256": "220faccedcc1aaa652a6484633976d4f419e0e9c517eaabcad7a3b130616d356"
+        },
+        "firmware/ic7-2.36-stock-resources.nex": {
+          "source": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-stock-resources-experimental.nex",
+          "sha256": "4ff27b8c63dbd44d09af482551f5ea9e9287751e53027c49612f58e6ef13a847"
+        },
+        "nsp/NSP.dll": {
+          "source": "reference/stock-dash-extract/NSP.dll",
+          "sha256": "8d99e028044491fc5c6970ab2b48d7a192f646a2a423f1cf6deb2c6887e4fbca"
+        }
+      }
+    },
+    "1-splash-alarms-r4": {
+      "purpose": "GIF/MP4 splash and per-screen alarm media (the r4 kit's NEX and DLL). Upload the map's resources from NSP as usual.",
+      "files": {
+        "firmware/ic7-2.36-screen-alarms-experimental.nex": {
+          "source": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex",
+          "sha256": "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c"
+        },
+        "firmware/build-report.json": {
+          "source": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/build-report.json",
+          "sha256": "403e7df3d99414c299a981685b2ad118bb6ce87ea06a61b92e97fe4e800d046e"
+        },
+        "firmware/audit-report.json": {
+          "source": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/audit-report.json",
+          "sha256": "697b438c58281916382cec88a59de725d8cd708db2d2859f792b5e8948e57df1"
+        },
+        "nsp/NSP.dll": {
+          "source": "nsp-rebuild/bin/Release/net9.0-windows10.0.19041.0/NSP.dll",
+          "sha256": "a8209d4ddf7b5a84bf9167d42fcaeea6041a380a25e605c8824e40ea1cc8f32c"
+        }
+      }
+    },
+    "2-addons-experimental": {
+      "purpose": "Variant 1 plus the experimental gauge add-ons. Upload the 'on' manifests and media to enable them; upload the 'off' manifests and power-cycle to disable.",
+      "files": {
+        "firmware/ic7-2.36-addons-experimental.nex": {
+          "source": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
+          "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167"
+        },
+        "firmware/build-report.json": {
+          "source": "ic7-custom-dash/build-addons-experimental-236/build-report.json",
+          "sha256": "afbec8363e060c5bd89cf5bbe71f545ec9bdd077a152660306ecd71a4200ab2d"
+        },
+        "nsp/NSP.dll": {
+          "source": "nsp-rebuild/bin/Release/net9.0-windows10.0.19041.0/NSP.dll",
+          "sha256": "a8209d4ddf7b5a84bf9167d42fcaeea6041a380a25e605c8824e40ea1cc8f32c"
+        },
+        "upload-on/check_engine.mp4": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/check_engine.mp4",
+          "sha256": "1e7d98dd5bf6154ed7018d11dcc169b839183380513265c95bcbb9e2018817d9"
+        },
+        "upload-on/gear_1.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_1.png",
+          "sha256": "30265eb49438b069ef022631f9632607397abf9ad84858d615d3b35d69f4a1fd"
+        },
+        "upload-on/gear_2.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_2.png",
+          "sha256": "787fdd101d88c8844499607c80c083dd470c246e1f742a87a1963c4f07d35148"
+        },
+        "upload-on/gear_3.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_3.png",
+          "sha256": "c30e627640c351bf264028d70110821f9d2503bca8875e591802ad4385f842b8"
+        },
+        "upload-on/gear_4.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_4.png",
+          "sha256": "5c8414adfe1d7c9037d553b8a51ebd651812b54c6f2f007b521d5b0a221a3173"
+        },
+        "upload-on/gear_5.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_5.png",
+          "sha256": "72c7955e403182daf44c77fe25911c31f064d6fe3cfeec253ceedd60ac0bdecb"
+        },
+        "upload-on/gear_6.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_6.png",
+          "sha256": "8fa8452c295bc78334ae4ccfc24003604590e47d6eace705d0763401e95a9a6d"
+        },
+        "upload-on/gear_n.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_n.png",
+          "sha256": "fe92ec29940c0da2bcefabdd0efa39157928722736c5ca8817f041917ea14a03"
+        },
+        "upload-on/gear_r.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/gear_r.png",
+          "sha256": "e987093a6f49d3a709f7d33b2be74415e186ad9bcf57be121a198a421b543ff1"
+        },
+        "upload-on/ic7_check_engine.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/ic7_check_engine.png",
+          "sha256": "9c4439ab2ea63cc1910d16cb37cb1e500f571ea28e14081eee3e1a25fc3043d2"
+        },
+        "upload-on/ic7_gauge_fx.json": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/ic7_gauge_fx.json",
+          "sha256": "0ae8dd8f251844dc44969f287bc3ff78fc4e75b2b78d24f89f9f01fba8f076c7"
+        },
+        "upload-on/ic7_gear.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/ic7_gear.png",
+          "sha256": "1793190f9f6ea3984c7d0ead5bacbd1d7058c5a0e255751156faa5f360f8e722"
+        },
+        "upload-on/ic7_indicators.json": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/ic7_indicators.json",
+          "sha256": "a0c6fbe3a3d22910ab3615c9e01b2cfde1b3fad91421ef474c68af27621a03fc"
+        },
+        "upload-on/ic7_shift_light.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/ic7_shift_light.png",
+          "sha256": "9c4439ab2ea63cc1910d16cb37cb1e500f571ea28e14081eee3e1a25fc3043d2"
+        },
+        "upload-on/shift_off.png": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/shift_off.png",
+          "sha256": "2b7160e4ebcd991a2483cb2904ed1d5908ae002c805479f432a61a90e7d532c3"
+        },
+        "upload-on/shift_on.gif": {
+          "source": "ic7-custom-dash/deploy/addons/samples/upload/shift_on.gif",
+          "sha256": "897065d12d6d3697945fb49e5689b864f091320b641e19adef9f1285dfec893c"
+        },
+        "upload-off/ic7_indicators.json": {
+          "source": "generated",
+          "sha256": "875371b05cac52b9f83085e460bbf078fdf44b695ed144211bf6c853546091c8"
+        },
+        "upload-off/ic7_gauge_fx.json": {
+          "source": "generated",
+          "sha256": "3bfaabd2f8c2caef90aa081d5c6e8944407ca8b9c8973bb18c93205f4006f3e5"
+        }
+      }
+    }
+  }
+}
