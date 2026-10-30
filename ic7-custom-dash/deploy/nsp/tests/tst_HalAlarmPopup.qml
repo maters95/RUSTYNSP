@@ -9,13 +9,16 @@ Item {
         name: "AlertMedia"
         when: windowShown
         property var popup: null
+        property url userImages: Qt.resolvedUrl(
+            "../../../build-nsp-tests/splash-runtime/user_resources/images/")
 
         function createPopup(manifest) {
             var component = Qt.createComponent(
                 "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
             compare(component.status, Component.Ready, component.errorString());
             popup = component.createObject(testWindow, {
-                manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: ""
+                manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: "",
+                userImageBaseUrl: userImages
             });
             verify(popup !== null);
             return popup;
@@ -169,7 +172,8 @@ Item {
                 "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
             compare(component.status, Component.Ready, component.errorString());
             popup = component.createObject(null, {
-                manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: ""
+                manifestUrl: Qt.resolvedUrl("fixtures/" + manifest), halFontPath: "",
+                userImageBaseUrl: userImages
             });
             popup.parent = root;
             return {root: root, screens: screens};
@@ -229,7 +233,8 @@ Item {
             var component = Qt.createComponent(
                 "../../../build-nsp-tests/splash-runtime/qml_components_data/qml/user_components/HalAlarmPopup.qml");
             popup = component.createObject(null, {
-                manifestUrl: Qt.resolvedUrl("fixtures/alerts-screens.json"), halFontPath: ""
+                manifestUrl: Qt.resolvedUrl("fixtures/alerts-screens.json"), halFontPath: "",
+                userImageBaseUrl: userImages
             });
             popup.parent = root;
             compare(popup.screenItems.length, 0);

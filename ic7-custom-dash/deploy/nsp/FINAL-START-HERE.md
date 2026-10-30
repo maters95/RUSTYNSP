@@ -8,6 +8,11 @@ specific dash screens.
 
 New since the 2026-10-29 package:
 
+- **Fixes the 2026-10-29 flash result.** GIF/MP4 splash and alert GIFs were
+  missing on the dash because the components looked for your uploaded files in
+  the Windows renderer's folder layout, not the dash's. They now look in the
+  dash's `/opt/applications/dtn/user_resources/images` first. Static/OEM splash
+  worked because those use NSP's stock path, not these components.
 - Alert GIF rules per dash screen (section 5).
 - Alarm banners and GIF splash no longer depend on QtMultimedia. Your last
   emulator log showed `HalAlarmPopup.qml:223 Type HalImage unavailable`: the
@@ -153,8 +158,8 @@ Local checks passed:
 | NSP.dll external references | Same as the previous DLL (52 assemblies); none removed, 4 .NET members and 2 JSON types added |
 | Emulator Python tests | 111 passed (includes rendered per-screen previews) |
 | NSP/.NET regression tests | 42 passed; 9 skipped (need PowerShell or tshark) |
-| Desktop QML (Qt 5.15) | 51 passed |
-| Firmware Qt 5.9.6 ARM/QEMU QML | 47 passed |
+| Desktop QML (Qt 5.15) | 56 passed (includes the dash's real folder layout) |
+| Firmware Qt 5.9.6 ARM/QEMU QML | 52 passed (includes the dash's real folder layout) |
 | Resource-only NEX audit | 336 stock members unchanged; 3 QML changed, 1 added |
 
 The NEX preserves the stock wrapper/HDEF and does not replace the application,

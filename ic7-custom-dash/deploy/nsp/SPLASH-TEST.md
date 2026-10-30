@@ -13,6 +13,28 @@ Use this combined splash build rather than copying the older resourcefix DLL
 over it, which would remove startup-media support. No reflash is needed for
 the Windows resourcefix alone.
 
+## Fix from the 2026-10-29 physical flash
+
+On the dash, the GIF and MP4 splash and the alert GIFs did not appear, while the
+OEM and static splash worked. Static and OEM splash use NSP's stock kernel-logo
+path, not these components. Cause: the components looked for
+`user_resources/images` **three** folders above `user_components`. That is the
+layout of NSP's Windows renderer, where `user_resources` sits beside
+`qml_components_data`. On the dash, QML lives in
+`/opt/applications/dtn/resources/qml_components_data` and user images in
+`/opt/applications/dtn/user_resources/images`, **four** folders up. The
+application's own `UIComponent::image_src_to_path` uses
+`../../../../user_resources/images/`. Both manifests were therefore never
+found, and the dash silently kept stock behaviour. Uploads were not the
+problem: the dash's resource write path stores `.json`, `.gif` and `.mp4`
+without an extension check.
+
+The components now look in the dash location first and fall back to the
+Windows layout. A new test runtime reproduces the dash's real
+`/opt/applications/dtn` tree. The previous components fail it on both splash
+and alerts, matching the flash result; the fixed ones pass on desktop Qt and on
+the dash's Qt 5.9.6 under QEMU. Reflash with this kit's NEX.
+
 ## What it changes
 
 - The rebuilt NSP DLL preserves selected GIF/MP4 splash bytes, uploads them

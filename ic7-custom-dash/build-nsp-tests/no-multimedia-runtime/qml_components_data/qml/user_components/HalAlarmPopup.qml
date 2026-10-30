@@ -24,8 +24,16 @@ Item {
     property real alertOpacity: 1.0
     property real imageMargin: 10
     property string halFontPath: "../../fonts/D-DINCondensed-Bold-Dash.ttf"
-    property url manifestUrl: Qt.resolvedUrl("../../../user_resources/images/ic7_alerts.json")
-    property url userImageBaseUrl: Qt.resolvedUrl("../../../user_resources/images/")
+    // The dash keeps user images at /opt/applications/dtn/user_resources, four levels
+    // above user_components (UIComponent::image_src_to_path). NSP's Windows renderer
+    // keeps user_resources beside qml_components_data, three levels up. Try the dash
+    // first. An explicit manifestUrl/userImageBaseUrl (tests, previews) skips the search.
+    property var userImageBaseCandidates: [Qt.resolvedUrl("../../../../user_resources/images/"),
+                                           Qt.resolvedUrl("../../../user_resources/images/")]
+    property url manifestUrl: ""
+    property url userImageBaseUrl: ""
+    // The user-image folder the manifest was found in; banner media resolves against it.
+    property url resolvedUserImageBaseUrl: ""
     property url stockImageBaseUrl: Qt.resolvedUrl("../../images/")
     property var bannerConfig: []
     property var activeAlarms: []
@@ -167,13 +175,44 @@ Item {
             entry.x <= 860 - entry.width && entry.y <= 480 - entry.height;
     }
 
+    // Reads ic7_alerts.json from the first user-image folder that has it, then calls
+    // done(request, folder). A missing file reads as status 0 with no text.
+    function fetchManifest(done) {
+        var urls = [];
+        var bases = [];
+        if (String(manifestUrl) !== "") {
+            urls.push(manifestUrl);
+            bases.push(String(userImageBaseUrl) !== "" ? userImageBaseUrl : userImageBaseCandidates[0]);
+        } else {
+            for (var i = 0; i < userImageBaseCandidates.length; i++) {
+                urls.push(userImageBaseCandidates[i] + "ic7_alerts.json");
+                bases.push(String(userImageBaseUrl) !== "" ? userImageBaseUrl : userImageBaseCandidates[i]);
+            }
+        }
+        var attempt = function(index) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.readyState !== XMLHttpRequest.DONE)
+                    return;
+                if (request.status === 0 && request.responseText === "" && index + 1 < urls.length) {
+                    attempt(index + 1);
+                    return;
+                }
+                done(request, bases[index]);
+            };
+            request.open("GET", urls[index]);
+            request.send();
+        };
+        attempt(0);
+    }
+
     function reloadAlertMedia() {
         requestGeneration++;
         var generation = requestGeneration;
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-            if (request.readyState !== XMLHttpRequest.DONE || generation !== requestGeneration)
+        fetchManifest(function(request, base) {
+            if (generation !== requestGeneration)
                 return;
+            resolvedUserImageBaseUrl = base;
             if (request.status === 0 && request.responseText === "") {
                 configurationError = "";
                 bannerConfig = [];
@@ -218,15 +257,13 @@ Item {
             configurationError = "";
             bannerConfig = config.banners;
             rebuildAlarms();
-        };
-        request.open("GET", manifestUrl);
-        request.send();
+        });
     }
 
     function resolveImage(source) {
         if (source === "")
             return "";
-        var base = source.charAt(0) === "u" ? userImageBaseUrl : stockImageBaseUrl;
+        var base = source.charAt(0) === "u" ? resolvedUserImageBaseUrl : stockImageBaseUrl;
         return base + encodeURIComponent(source.substring(2));
     }
 

@@ -18,7 +18,8 @@ Item {
             var component = Qt.createComponent(components + "HalAlarmPopup.qml");
             compare(component.status, Component.Ready, component.errorString());
             var popup = component.createObject(testWindow, {
-                manifestUrl: Qt.resolvedUrl("fixtures/alerts-gif-only.json"), halFontPath: ""
+                manifestUrl: Qt.resolvedUrl("fixtures/alerts-gif-only.json"), halFontPath: "",
+                userImageBaseUrl: Qt.resolvedUrl("../../../build-nsp-tests/no-multimedia-runtime/user_resources/images/")
             });
             tryVerify(function() { return popup.bannerConfig.length === 2; });
             popup.reInitAlarmScreen(JSON.stringify([

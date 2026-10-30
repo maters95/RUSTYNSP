@@ -4,8 +4,16 @@ Item {
     id: splash
     objectName: "startupSplash"
     visible: false
-    property url manifestUrl: Qt.resolvedUrl("../../../user_resources/images/ic7_splash.json")
-    property url userImageBaseUrl: Qt.resolvedUrl("../../../user_resources/images/")
+    // The dash keeps user images at /opt/applications/dtn/user_resources, four levels
+    // above user_components (UIComponent::image_src_to_path). NSP's Windows renderer
+    // keeps user_resources beside qml_components_data, three levels up. Try the dash
+    // first. An explicit manifestUrl/userImageBaseUrl (tests, previews) skips the search.
+    property var userImageBaseCandidates: [Qt.resolvedUrl("../../../../user_resources/images/"),
+                                           Qt.resolvedUrl("../../../user_resources/images/")]
+    property url manifestUrl: ""
+    property url userImageBaseUrl: ""
+    // The user-image folder the manifest was found in; media resolves against it.
+    property url resolvedUserImageBaseUrl: ""
     property url stockImageBaseUrl: Qt.resolvedUrl("../../images/")
     property int maximumDurationMs: 3300
     property string mediaPath: ""
@@ -44,10 +52,8 @@ Item {
         mediaError = "";
         timeout.interval = maximumDurationMs;
         timeout.restart();
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-            if (request.readyState !== XMLHttpRequest.DONE || completed ||
-                    requestGeneration !== generation)
+        fetchManifest(function(request, base) {
+            if (completed || requestGeneration !== generation)
                 return;
             // An absent manifest is the normal, unconfigured stock startup.
             if (request.status === 0 && request.responseText === "") {
@@ -80,16 +86,46 @@ Item {
                 fail("Invalid startup resource path");
                 return;
             }
+            resolvedUserImageBaseUrl = base;
             var filename = encodeURIComponent(config.source.substring(2));
             mediaPath = (config.source.charAt(0) === "u"
-                ? userImageBaseUrl : stockImageBaseUrl) + filename;
+                ? base : stockImageBaseUrl) + filename;
             timeout.interval = config.durationMs;
             timeout.restart();
             visible = true;
             video.active = videoMedia;
+        });
+    }
+
+    // Reads ic7_splash.json from the first user-image folder that has it, then calls
+    // done(request, folder). A missing file reads as status 0 with no text.
+    function fetchManifest(done) {
+        var urls = [];
+        var bases = [];
+        if (String(manifestUrl) !== "") {
+            urls.push(manifestUrl);
+            bases.push(String(userImageBaseUrl) !== "" ? userImageBaseUrl : userImageBaseCandidates[0]);
+        } else {
+            for (var i = 0; i < userImageBaseCandidates.length; i++) {
+                urls.push(userImageBaseCandidates[i] + "ic7_splash.json");
+                bases.push(String(userImageBaseUrl) !== "" ? userImageBaseUrl : userImageBaseCandidates[i]);
+            }
+        }
+        var attempt = function(index) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.readyState !== XMLHttpRequest.DONE)
+                    return;
+                if (request.status === 0 && request.responseText === "" && index + 1 < urls.length) {
+                    attempt(index + 1);
+                    return;
+                }
+                done(request, bases[index]);
+            };
+            request.open("GET", urls[index]);
+            request.send();
         };
-        request.open("GET", manifestUrl);
-        request.send();
+        attempt(0);
     }
 
     Rectangle {

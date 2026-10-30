@@ -7,6 +7,28 @@ dependency on QtMultimedia. Keep the working videofix/resourcefix/splash
 copies and your original map unchanged.
 Windows GUI operation and a physical flash/boot have **not** been performed.
 
+## Fix from the 2026-10-29 physical flash
+
+On the dash, the GIF and MP4 splash and the alert GIFs did not appear, while the
+OEM and static splash worked. Static and OEM splash use NSP's stock kernel-logo
+path, not these components. Cause: the components looked for
+`user_resources/images` **three** folders above `user_components`. That is the
+layout of NSP's Windows renderer, where `user_resources` sits beside
+`qml_components_data`. On the dash, QML lives in
+`/opt/applications/dtn/resources/qml_components_data` and user images in
+`/opt/applications/dtn/user_resources/images`, **four** folders up. The
+application's own `UIComponent::image_src_to_path` uses
+`../../../../user_resources/images/`. Both manifests were therefore never
+found, and the dash silently kept stock behaviour. Uploads were not the
+problem: the dash's resource write path stores `.json`, `.gif` and `.mp4`
+without an extension check.
+
+The components now look in the dash location first and fall back to the
+Windows layout. A new test runtime reproduces the dash's real
+`/opt/applications/dtn` tree. The previous components fail it on both splash
+and alerts, matching the flash result; the fixed ones pass on desktop Qt and on
+the dash's Qt 5.9.6 under QEMU. Reflash with this kit's NEX.
+
 ## What changed from the alerts candidate
 
 - **Alert GIFs per dash screen.** An alarm can have one "All" rule plus rules
@@ -206,12 +228,12 @@ driving.
 
 Verified locally: x86 DLL build with zero compiler errors (404 existing
 decompilation warnings); its external references are the shipped DLL's
-52 assemblies, 728 types and 2,549 members with none removed, plus four .NET
-base-library members and two `System.Text.Json` types; **42** Python/.NET
-regressions passed (9 need PowerShell or tshark and were skipped); **51**
-desktop Qt 5.15 QML checks; **47** QML checks on the firmware's own
+52 assemblies, 728 types and 2,549 members with none removed; the only
+additions are .NET base-library and `System.Text.Json` members; **42** Python/.NET
+regressions passed (9 need PowerShell or tshark and were skipped); **56**
+desktop Qt 5.15 QML checks; **52** QML checks on the firmware's own
 Qt 5.9.6 ARM userspace under QEMU, including per-screen switching and the
-missing-multimedia case; and **111** emulator Python tests with real PyQt5,
+missing-multimedia case and the dash's real folder layout; and **111** emulator Python tests with real PyQt5,
 including rendered per-screen alert previews. ZIP hashes and all packaged QML
 bytes are checked against the tested sources. Windows Forms editor
 interaction remains an on-PC validation step, not a result of the Linux

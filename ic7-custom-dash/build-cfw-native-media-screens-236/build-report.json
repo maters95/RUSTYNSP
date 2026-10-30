@@ -16,8 +16,8 @@
   "runtime_components": {
     "HalImage.qml": "8c9f2fc49765471e115053a7a50a7efb4453a5545bcdd4e36782ca42ee64d6c7",
     "main.qml": "16e00c751c438243a49aea1b821e25ebc62b982714ba91f7f107710076cf9e84",
-    "HalSplash.qml": "4493888af8ac40329aeb460b35c4695f5c44ce5a0013ce509b6abf7c57a052f2",
-    "HalAlarmPopup.qml": "9fc30f21d974d556ee5b4949fa272ba43cbebd6479be76c28db5ceddef8e6219"
+    "HalSplash.qml": "09e10e1dc2c16a4a4d16d100319dbbf4129d4d29d326054659dd1eeffd95a2af",
+    "HalAlarmPopup.qml": "9c4151a82dba1c86987af272ef150b9a04dcc196564c36dd9176772bdeee4bd1"
   },
   "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
   "replacement_component_sha256": "8c9f2fc49765471e115053a7a50a7efb4453a5545bcdd4e36782ca42ee64d6c7",
@@ -33,11 +33,11 @@
   "packages": {
     "ic7-2.36-native-media-screens-experimental.nex": {
       "bytes": 25369879,
-      "sha256": "6d3e4b94eb5c35259ab889e2332ab16dd23b871a0a140a149933b960354fc055"
+      "sha256": "e570a098a395a3c90947e89378482787724e406d46d22dbff8c4f0f9122ec220"
     },
     "ic7-2.36-stock-resources-experimental.nex": {
       "bytes": 25343767,
-      "sha256": "949b3df72d8e277f5d51a2c4e7559491fb8324fe4f8702b2f4cccbc766d07442"
+      "sha256": "029c871821355f646aa39b439f06dc52d76c0be4cc5df544b58483dff6f63934"
     }
   }
 }

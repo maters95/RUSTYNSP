@@ -47,6 +47,30 @@ shutil.copyfile(destination / "static.png", images / "static.png")
     "version": 1, "source": "u/animated.gif", "durationMs": 1500
 }))
 
+# NSP's Windows renderer layout (user_resources beside qml_components_data) also gets
+# an alert manifest so the popup's automatic search is tested without overrides.
+(images / "ic7_alerts.json").write_text(json.dumps({"version": 1, "banners": [
+    {"text": "OIL PRESSURE", "source": "u/animated.gif", "x": 100, "y": 80, "width": 300, "height": 80}]}))
+
+# The physical dash layout: QML under /opt/applications/dtn/resources, user images under
+# /opt/applications/dtn/user_resources (UIComponent::image_src_to_path, four levels up).
+dtn = destination / "device-runtime/opt/applications/dtn"
+device_qml = dtn / "resources/qml_components_data/qml"
+for filename, folder in (("main.qml", "factory_screens"),
+                         ("HalImage.qml", "user_components"),
+                         ("HalSplash.qml", "user_components"),
+                         ("HalAlarmPopup.qml", "user_components")):
+    (device_qml / folder).mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(maintained / filename, device_qml / folder / filename)
+(dtn / "resources/qml_components_data/fonts").mkdir(exist_ok=True)
+device_images = dtn / "user_resources/images"
+device_images.mkdir(parents=True, exist_ok=True)
+shutil.copyfile(destination / "animated.gif", device_images / "animated.gif")
+(device_images / "ic7_splash.json").write_text(json.dumps({
+    "version": 1, "source": "u/animated.gif", "durationMs": 1500}))
+(device_images / "ic7_alerts.json").write_text(json.dumps({"version": 1, "banners": [
+    {"text": "OIL PRESSURE", "source": "u/animated.gif", "x": 100, "y": 80, "width": 300, "height": 80}]}))
+
 # Same components, but HalImage cannot load (as when QtMultimedia is unavailable).
 broken = destination / "no-multimedia-runtime"
 broken_components = broken / "qml_components_data/qml/user_components"
@@ -69,7 +93,7 @@ ffmpeg -nostdin -hide_banner -loglevel error -y \
 cp "$FIXTURES/video.mp4" "$FIXTURES/ic7_video_probe.png"
 
 if [[ -n "${IC7_SYSROOT:-}" ]]; then
-    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_NoMultimedia.qml; do
+    for test in tst_HalImage.qml tst_HalSplash.qml tst_StartupRoot.qml tst_HalAlarmPopup.qml tst_NoMultimedia.qml tst_DeviceLayout.qml; do
         qemu-arm -L "$IC7_SYSROOT" \
             -E QML_DISABLE_DISK_CACHE=1 \
             -E QT_QPA_PLATFORM=offscreen -E QT_QUICK_BACKEND=software \

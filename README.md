@@ -79,6 +79,14 @@ with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
 ## Per-Screen Alert GIFs and Splash Placement (2026-10-30)
 
+**Physical-flash fix:** on the 2026-10-29 flash, GIF/MP4 splash and alert GIFs did
+not appear on the dash. The components searched NSP's Windows folder layout for
+the uploaded manifests and media; the dash stores them four folders up, at
+`/opt/applications/dtn/user_resources/images`, which is what the application's
+`image_src_to_path` uses. They now search the dash location first. A device-layout
+test runtime reproduces the failure with the old components. See the
+[alert guide](ic7-custom-dash/deploy/nsp/ALERTS-TEST.md#fix-from-the-2026-10-29-physical-flash).
+
 Use the [combined Windows test kit](dist/ic7-final-windows-test-2026-10-30.zip)
 and its `START-HERE.md`. Its NEX and DLL add alert GIF rules for specific
 dash screens, using the stock application's own screen switching, and a
