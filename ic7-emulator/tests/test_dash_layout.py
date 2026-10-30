@@ -20,9 +20,9 @@ REPOSITORY = Path(__file__).resolve().parents[2]
 PROFILE = Path(__file__).resolve().parents[1] / "device-profile.zip"
 # 7d3f8c96: the NEX that failed on the dash (splash/alarm QML looked three folders up).
 FAILED_NEX = REPOSITORY / "ic7-custom-dash/build-cfw-screen-alarms-236/ic7-2.36-screen-alarms-experimental.nex"
-# 3f6d26f1: the current r2/r3 kit NEX, which detects the dash tree and looks four folders up.
-CURRENT_NEX = REPOSITORY / "ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236/ic7-2.36-screen-alarms-experimental.nex"
-CURRENT_SHA256 = "3f6d26f1505180a1f2f238020ae71b65bc5ca8a276fcb5fa165b8702ca919838"
+# dec4e3bf: the current r3 kit NEX, which detects the dash tree and looks four folders up.
+CURRENT_NEX = REPOSITORY / "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex"
+CURRENT_SHA256 = "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c"
 ADDON_NEX = REPOSITORY / "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex"
 
 

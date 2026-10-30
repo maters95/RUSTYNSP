@@ -14,7 +14,7 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236"
+CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-r3-236"
 
 
 class AlertMediaTests(unittest.TestCase):

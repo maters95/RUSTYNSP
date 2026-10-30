@@ -1,0 +1,97 @@
+{
+  "candidate": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex",
+  "candidate_sha256": "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c",
+  "package_files": [
+    "ic-7.hdef",
+    "manifest.xml",
+    "res_ic-7.qzip"
+  ],
+  "manifest": {
+    "version": "2.36.0.0.0",
+    "products": [
+      {
+        "name": "iC-7 Dash",
+        "pid": "21",
+        "vid": "11",
+        "hwid": "1,2,40960",
+        "hdefFile": "ic-7.hdef",
+        "files": [
+          {
+            "name": "res_ic-7.qzip",
+            "desc": "Write Resources File",
+            "type": "qzip",
+            "abortOnFailure": "true"
+          }
+        ]
+      }
+    ]
+  },
+  "resources": {
+    "stock_files": 329,
+    "candidate_files": 330,
+    "unchanged": 326,
+    "changed": [
+      "qml_components_data/qml/factory_screens/main.qml",
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "qml_components_data/qml/user_components/HalImage.qml"
+    ],
+    "added": [
+      "qml_components_data/qml/user_components/HalSplash.qml"
+    ],
+    "removed": [],
+    "member_mtimes": {
+      "qml_components_data/qml/factory_screens/main.qml": 1767313730,
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml": 1710892354,
+      "qml_components_data/qml/user_components/HalImage.qml": 1711391189,
+      "qml_components_data/qml/user_components/HalSplash.qml": 1759212789
+    }
+  },
+  "component_checks": [
+    {
+      "file": "qml_components_data/qml/factory_screens/main.qml",
+      "imports": [
+        "QtQuick 2.9",
+        "QtQuick.Controls 2.2",
+        "QtQuick.Window 2.3"
+      ],
+      "loads": [
+        "qml_components_data/qml/user_components/HalSplash.qml"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "imports": [
+        "QtGraphicalEffects 1.0",
+        "QtQuick 2.9",
+        "QtQuick.Controls 2.2",
+        "QtQuick.Controls.Styles 1.4",
+        "QtQuick.Layouts 1.3"
+      ],
+      "loads": [
+        "qml_components_data/fonts/D-DINCondensed-Bold-Dash.ttf"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalImage.qml",
+      "imports": [
+        "QtMultimedia 5.9",
+        "QtQuick 2.9"
+      ],
+      "imports_missing_on_dash": []
+    },
+    {
+      "file": "qml_components_data/qml/user_components/HalSplash.qml",
+      "imports": [
+        "QtQuick 2.9"
+      ],
+      "loads": [
+        "qml_components_data/qml/user_components/HalImage.qml"
+      ],
+      "imports_missing_on_dash": []
+    }
+  ],
+  "problems": [],
+  "suitable": true
+}

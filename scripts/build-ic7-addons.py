@@ -5,11 +5,11 @@ output is a new NEX in which only the add-on QML members differ from the base; t
 44-byte resource wrapper, manifest.xml and ic-7.hdef are copied byte-for-byte, and
 every other archive member keeps its exact bytes and tar metadata. Replaced and added
 members get a fresh mtime (content-derived, reproducible, never a stock or base value)
-because Qt 5.9.6 reuses compiled QML whenever path and mtime match.
+as a precaution: Qt 5.9.6 can reuse compiled QML whenever path and mtime match.
 
 Example:
     python scripts/build-ic7-addons.py \\
-        --base ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236/ic7-2.36-screen-alarms-experimental.nex \\
+        --base ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex \\
         --sysroot /path/to/dash/sysroot
 """
 import argparse

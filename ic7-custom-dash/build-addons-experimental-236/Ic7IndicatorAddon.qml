@@ -5,7 +5,8 @@ import "ic7addons.js" as Addons
 // Configured by ic7_indicators.json in the user images, keyed by the filename of the
 // image selected for the indicator in NSP. Without a manifest, or for an indicator not
 // listed, or while add-on media is not decoded, covering stays false and the stock
-// tinted indicator is drawn unchanged.
+// tinted indicator is drawn unchanged. MP4 media never covers: it plays over the
+// stock indicator, which stays drawn underneath.
 //
 // Warning rule: while the stock indicator is ON (warning), only an explicit "on" media
 // may replace the tinted image, and the stock glow keeps drawing around it. Value frames
@@ -37,7 +38,7 @@ Item {
     readonly property bool animate: host !== null && host.screenshotMode !== true
 
     readonly property bool covering: entry !== null &&
-        ((warning && onMedia.visible) || (!warning && (frameMedia.visible || (frame < 0 && offMedia.visible))))
+        ((warning && onMedia.covers) || (!warning && (frameMedia.covers || (frame < 0 && offMedia.covers))))
 
     function fail(message) {
         configurationError = message;

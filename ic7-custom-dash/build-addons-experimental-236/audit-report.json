@@ -1,11 +1,11 @@
 {
   "base": {
-    "path": "ic7-custom-dash/build-cfw-screen-alarms-freshmtime-236/ic7-2.36-screen-alarms-experimental.nex",
-    "sha256": "3f6d26f1505180a1f2f238020ae71b65bc5ca8a276fcb5fa165b8702ca919838"
+    "path": "ic7-custom-dash/build-cfw-screen-alarms-r3-236/ic7-2.36-screen-alarms-experimental.nex",
+    "sha256": "dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c"
   },
   "output": {
     "path": "ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex",
-    "sha256": "394de0b8994d9921c910f4cff917f31fc8461924857f128b9d44d1e1a0c4cd17",
+    "sha256": "1f6e36c7e8400a923c2ac790a56f39b68b37b043f17482c31bff140570258167",
     "bytes": 25400599
   },
   "vs_base": {
@@ -116,7 +116,7 @@
     },
     {
       "file": "qml_components_data/qml/user_components/Ic7IndicatorAddon.qml",
-      "sha256": "4c6543674ac228aebad64e72f76348be530f80911957cc104920ad36fb23ddb5",
+      "sha256": "3b83e21214b105064045a6cc9b45efdb0f0240e77aaea01f71be997c4617a3bd",
       "imports": [
         "QtQuick 2.9"
       ],
@@ -139,7 +139,7 @@
     },
     {
       "file": "qml_components_data/qml/user_components/Ic7AddonMedia.qml",
-      "sha256": "dc72fc3ea85ccc05b965a825aed0b2374ffea77988e9ba02defb4d8116c55a13",
+      "sha256": "b04cbb2abcdafd7eac71a7c059f8a5b06993b2b654d9b9d82d71e5925c7344be",
       "imports": [
         "QtQuick 2.9"
       ],
@@ -160,7 +160,7 @@
     },
     {
       "file": "qml_components_data/qml/user_components/ic7addons.js",
-      "sha256": "2fcb6c12802f24c159f08402f8ed07bcd1485d2239f9e4780295b9579d2f7331",
+      "sha256": "32b8c1734c32a3779b382d1906bcd8890738b4984d36f01613ceb3f137828433",
       "imports": [],
       "loads": [],
       "imports_missing_on_dash": []
