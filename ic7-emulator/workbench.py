@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QCheckBox, QComboBox, QFileD
                             QPushButton, QSizePolicy, QSplitter, QStyle, QTabWidget,
                             QTableWidget, QTableWidgetItem, QToolBar, QVBoxLayout, QWidget)
 
+import dash_layout
 from ic7_emulator import ALERT_RESOURCE, Device, SPLASH_RESOURCE, serve_stream
 from viewer import is_video_resource, render_layout, start_viewer
 from virtual_pair import load_pair_config
@@ -37,8 +38,9 @@ def export_session_archive(state, destination):
     state, destination = Path(state), Path(destination)
     if not (state / "session.json").is_file() or not (state / "memory.zip").is_file():
         raise ValueError("Stop the session first so its settings and logs are saved.")
+    dash_layout.refresh_report(state)
     names = ("session.json", "memory.zip", "emulator.log", "protocol.jsonl", "renderer.log",
-             "received-screen.bmp")
+             "received-screen.bmp", "fidelity-report.txt", "fidelity-report.json", "dash/install.json")
     sources = [state / name for name in names if (state / name).is_file()]
     for folder in ("resources", "sandbox"):
         sources.extend(path for path in (state / folder).rglob("*") if path.is_file())
@@ -181,7 +183,9 @@ class SessionWorker(QThread):
                      "update": update, "assets": self.assets, "events": list(reversed(device.events[-40:])),
                      "state": str(self.state), "url": self.url,
                      "display": device.display_state(),
-                     "component": device.sandbox.component_sha256() if device.sandbox else None}
+                     "install": {key: device.install.get(key) for key in
+                                 ("source", "revision", "payload_sha256", "member_count")},
+                     "lookups": self.lookup_summary(device)}
             selection = self.selected_asset
             self.selected_asset = None
             payload = device.resources.items.get(selection) if selection else None
@@ -191,6 +195,18 @@ class SessionWorker(QThread):
         output = io.BytesIO()
         render_layout(device, self.screen).save(output, format="PNG")
         self.frame.emit(output.getvalue())
+
+    def lookup_summary(self, device):
+        """Manifest lookups that fail on the dash, refreshed when resources change."""
+        key = (device.resources.revision, device.install.get("revision"))
+        if getattr(self, "lookup_key", None) != key:
+            self.lookup_key = key
+            try:
+                report = device.fidelity_report()
+                self.lookups = [entry for entry in report["lookups"] if entry["status"] != "ok"]
+            except (OSError, ValueError) as error:
+                self.lookups = [{"status": "error", "reason": str(error), "component": "", "manifest": ""}]
+        return self.lookups
 
     def run(self):
         device = None
@@ -392,7 +408,7 @@ class Workbench(QMainWindow):
         update_layout = QVBoxLayout(update_page)
         form = QFormLayout()
         self.update_fields = {}
-        for title in ("Mode", "Package", "Transfer", "Sandbox status", "Preview", "Error"):
+        for title in ("Mode", "Package", "Transfer", "Sandbox status", "Installed", "Lookups", "Error"):
             label = QLabel("--")
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -622,7 +638,8 @@ class Workbench(QMainWindow):
         values = {"Mode": state["mode"].upper(), "Package": update.get("package", "None"),
                   "Transfer": f"{update.get('received_bytes', 0):,} / {update.get('expected_bytes', 0):,} bytes",
               "Sandbox status": update.get("status", "No update package selected"),
-              "Preview": "Local sidecar preview" if update.get("component_active") else "Not loaded",
+              "Installed": self.install_text(state),
+              "Lookups": self.lookup_text(state),
                   "Error": update.get("error") or "None"}
         for title, text in values.items():
             self.update_fields[title].setText(text)
@@ -640,6 +657,23 @@ class Workbench(QMainWindow):
         if self.auto_renderer.isChecked() and not self.auto_renderer_started:
             self.auto_renderer_started = True
             self.start_renderer()
+
+    @staticmethod
+    def install_text(state):
+        install = state.get("install") or {}
+        if install.get("source") == "nex":
+            return (f"{install.get('member_count')} NEX members in dtn/resources "
+                    f"(payload {str(install.get('payload_sha256'))[:16]}...)")
+        if install.get("source") == "failed":
+            return "Install FAILED: resources folder left empty, as the watchdog would"
+        return "Factory v2.36 QML (no NEX installed yet)"
+
+    @staticmethod
+    def lookup_text(state):
+        problems = state.get("lookups") or []
+        if not problems:
+            return "All manifest lookups resolve as on the dash"
+        return "; ".join(f"{Path(entry['component']).name}: {entry['reason']}" for entry in problems[:4])
 
     def change_screen(self, screen):
         if self.worker:

@@ -16,6 +16,8 @@ def main():
     maintained = root.parent / "ic7-custom-dash/deploy/nsp"
     shared = {f"qml/stock_renderer/{name}": maintained / name
               for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")}
+    # The dash's own watchdog: the emulator decrypts NEX resources with its key, as the dash does.
+    shared["dash-reference/dash_watchdog"] = root.parent / "fw/opt/dtn/app/dash_watchdog"
     with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for source in sorted(root.rglob("*")):
             relative = source.relative_to(root)
@@ -37,7 +39,7 @@ def main():
             raise ValueError("Distribution integrity check failed")
     report = {"file": destination.name, "bytes": destination.stat().st_size,
               "sha256": hashlib.sha256(destination.read_bytes()).hexdigest(), "files": len(included),
-              "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"}
+              "status": "Dash-faithful NEX install and capture-conformant protocol tested on Linux with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"}
     destination.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

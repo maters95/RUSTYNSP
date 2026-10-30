@@ -3,7 +3,7 @@ import hashlib
 import json
 import math
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import threading
 from urllib.parse import parse_qs, urlparse
 
@@ -357,19 +357,34 @@ def start_viewer(device, port=8765):
                         events = device.dirty_settings
                         full = after < 0 or after > device.settings_revision or (events and after < events[0]["revision"] - 1)
                         result = {"revision": device.settings_revision, "resource_revision": device.resources.revision,
-                                  "component_sha256": device.sandbox.component_sha256() if device.sandbox else None,
-                                  "runtime_components": device.sandbox.runtime_hashes() if device.sandbox else {},
+                                  "install": {"revision": device.install.get("revision", 0),
+                                              "source": device.install.get("source"),
+                                              "payload_sha256": device.install.get("payload_sha256")},
                                   "full_refresh": bool(full), "ranges": [event for event in events if event["revision"] > after]}
                     self.send(json.dumps(result).encode("utf-8"))
                 except ValueError:
                     self.send(b"Invalid revision", "text/plain", 400)
-            elif parsed.path == "/api/component":
+            elif parsed.path == "/api/install":
                 with device.lock:
-                    name = query.get("name", ["HalImage.qml"])[0]
-                    payload = (device.sandbox.components.get(name)
-                               if device.sandbox and device.sandbox.component_active else None)
-                self.send(payload if payload is not None else b"No active sandbox component",
+                    manifest = dict(device.install)
+                self.send(json.dumps(manifest).encode("utf-8"))
+            elif parsed.path == "/api/install/file":
+                name = query.get("name", [""])[0]
+                with device.lock:
+                    listed = any(entry["name"] == name and entry["type"] == "file"
+                                 for entry in device.install.get("members", []))
+                    path = device.resources_root.joinpath(*PurePosixPath(name).parts) if listed else None
+                    payload = path.read_bytes() if path is not None and path.is_file() else None
+                self.send(payload if payload is not None else b"not installed",
                           "application/octet-stream", 200 if payload is not None else 404)
+            elif parsed.path == "/api/fidelity":
+                with device.lock:
+                    report = device.fidelity_report()
+                if query.get("format", ["json"])[0] == "text":
+                    from dash_layout import render_report_text
+                    self.send(render_report_text(report).encode("utf-8"), "text/plain; charset=utf-8")
+                else:
+                    self.send(json.dumps(report).encode("utf-8"))
             elif parsed.path == "/api/resource":
                 try:
                     kind = int(query.get("kind", ["0"])[0])

@@ -17,7 +17,7 @@ import zipfile
 import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, SPLASH_RESOURCE
+from ic7_emulator import Device, INSTANT_TIMING, Memory, ProtocolCapture, RequestStream, Resources, SPLASH_RESOURCE
 from ic7_emulator import request, resource_descriptor
 from ic7_emulator import serve_stream, UpdateSandbox
 from workbench import SessionOptions, Workbench, bundled_package, configured_nsp_port, preferred_first, virtual_ports
@@ -25,8 +25,10 @@ from viewer import start_viewer, render_layout, scene_state
 from stock_renderer import get, install_component_override, pe_machine, pipe_message, renderer_environment
 from stock_renderer import stage_windows_platform_plugin, sync_resources, install_startup_qml, validate_ack
 from stock_renderer import renderer_ready, renderer_restart_required
-from stock_renderer import install_sandbox_component
+from stock_renderer import install_dash_resources, resources_root, renderer_command
 import package as emulator_package
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nex_fixtures
 
 
 class ProtocolTests(unittest.TestCase):
@@ -210,31 +212,45 @@ class ProtocolTests(unittest.TestCase):
             maintained.mkdir(parents=True)
             for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml"):
                 (maintained / name).write_text("Item {}")
+            watchdog = Path(temporary) / "fw/opt/dtn/app/dash_watchdog"
+            watchdog.parent.mkdir(parents=True)
+            watchdog.write_bytes(b"\x7fELF reference")
             with patch.object(emulator_package, "__file__", str(root / "package.py")), patch.object(
                     sys, "argv", ["package.py", "--output", str(output)]):
                 emulator_package.main()
             with zipfile.ZipFile(output) as archive:
-                self.assertEqual(set(archive.namelist()), {"ic7-emulator/module.py"} | {
+                self.assertEqual(set(archive.namelist()), {"ic7-emulator/module.py",
+                                                           "ic7-emulator/dash-reference/dash_watchdog"} | {
                     "ic7-emulator/qml/stock_renderer/" + name
                     for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")})
 
-    def test_renderer_installs_hash_verified_sandbox_component(self):
+    def test_renderer_mirrors_installed_nex_members_after_verifying_all(self):
         import hashlib
+        members = {"qml_components_data/qml/user_components/HalImage.qml": (b"Item { objectName: 'nex' }", 1711391189),
+                   "qml_components_data/qml/user_components/ic7addons.js": (b".pragma library", 1708018351)}
+        manifest = {"source": "nex", "revision": 3, "payload_sha256": "abc", "members": [
+            {"name": "qml_components_data", "type": "dir", "mtime": 1790648083, "bytes": 0, "sha256": None}] + [
+            {"name": name, "type": "file", "mtime": mtime, "bytes": len(data),
+             "sha256": hashlib.sha256(data).hexdigest()} for name, (data, mtime) in members.items()]}
         with tempfile.TemporaryDirectory() as temporary:
-            destination = Path(temporary)
-            target = destination / "qml_components_data/qml/user_components/HalImage.qml"
-            target.parent.mkdir(parents=True)
-            target.write_bytes(b"Item {}")
-            component = b"import QtQuick 2.9\nItem { objectName: 'sandbox' }"
-            checksum = hashlib.sha256(component).hexdigest()
-            status = json.dumps({"component_sha256": checksum}).encode()
-            with patch("stock_renderer.get", side_effect=[status, component]):
-                self.assertEqual(install_sandbox_component("http://127.0.0.1", destination), checksum)
-            self.assertEqual(target.read_bytes(), component)
-            with patch("stock_renderer.get", side_effect=[status, b"corrupt"]):
+            work = Path(temporary)
+            old = resources_root(work) / "qml_components_data/qml/user_components/HalSplash.qml"
+            old.parent.mkdir(parents=True)
+            old.write_text("stale")
+            replies = [json.dumps(manifest).encode()] + [data for data, _ in members.values()]
+            with patch("stock_renderer.get", side_effect=replies[:-1] + [b"corrupt"]):
                 with self.assertRaisesRegex(ValueError, "hash mismatch"):
-                    install_sandbox_component("http://127.0.0.1", destination)
-            self.assertEqual(target.read_bytes(), component)
+                    install_dash_resources("http://emulator", work)
+            self.assertEqual(old.read_text(), "stale")
+            with patch("stock_renderer.get", side_effect=replies):
+                install_dash_resources("http://emulator", work)
+            self.assertFalse(old.exists())
+            for name, (data, mtime) in members.items():
+                target = resources_root(work) / name
+                self.assertEqual(target.read_bytes(), data)
+                self.assertEqual(int(target.stat().st_mtime), mtime)
+            self.assertEqual(json.loads((work / "dtn/installed.json").read_text())["revision"], 3)
+            self.assertEqual(renderer_command(work / "x.exe")[1], "./qml_components_data/qml")
 
     def test_renderer_installs_startup_root_and_splash_helper(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -340,16 +356,20 @@ class ProtocolTests(unittest.TestCase):
                 with patch("stock_renderer.get", side_effect=[
                         json.dumps(status).encode(), b"stock image", b"splash manifest", b"user image"]):
                     current = sync_resources("http://emulator", destination, {})
-                self.assertEqual((destination / "qml_components_data/images/stock-bg.gif").read_bytes(),
+                self.assertEqual((destination / "dtn/resources/qml_components_data/images/stock-bg.gif").read_bytes(),
                                  b"stock image")
-                self.assertEqual((destination / "user_resources/images/ic7_splash.json").read_bytes(),
+                # The dash keeps uploads in dtn/user_resources; dash_virtual's own three-level
+                # folder gets the same files except the ic7_*.json manifests.
+                self.assertEqual((destination / "dtn/user_resources/images/ic7_splash.json").read_bytes(),
                                  b"splash manifest")
-                self.assertEqual((destination / "user_resources/images/user-bg.png").read_bytes(), b"user image")
+                self.assertFalse((destination / "dtn/resources/user_resources/images/ic7_splash.json").exists())
+                for folder in ("dtn/user_resources", "dtn/resources/user_resources"):
+                    self.assertEqual((destination / folder / "images/user-bg.png").read_bytes(), b"user image")
 
     def test_stock_renderer_restores_bundled_h_asset_after_resource_removal(self):
         destination = Path(".test-stock-resources")
         try:
-                target = destination / "qml_components_data/images/BasicRaceBar.png"
+                target = destination / "dtn/resources/qml_components_data/images/BasicRaceBar.png"
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(b"map override")
                 with zipfile.ZipFile(Path(__file__).resolve().parents[1] / "renderer-resources.zip") as archive:
@@ -706,7 +726,10 @@ class IntegrationTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)
-        self.device = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
+        # Real-dash reboot silences are covered by DashProtocolFidelityTests with a fake
+        # clock; these display tests run with instant reboots.
+        self.device = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root,
+                             timing=INSTANT_TIMING)
 
     def tearDown(self):
         self.temporary.cleanup()
@@ -775,7 +798,8 @@ class IntegrationTests(unittest.TestCase):
             server.shutdown()
             server.server_close()
         self.device.save()
-        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root)
+        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip", self.root,
+                          timing=INSTANT_TIMING)
         self.assertTrue(restored.map_loaded)
         self.assertEqual(restored.display_state()["phase"], "splash")
 
@@ -842,7 +866,9 @@ class IntegrationTests(unittest.TestCase):
         original = self.device.respond(request(2, 1, 0, 1024))[12:-4]
         command = request(1, 2, 0, 2, b"\0\x01")
         acknowledgement = self.device.respond(command)
-        self.assertEqual(acknowledgement[:12], command[:12])
+        # The real dash refuses the mode switch with an error reply but still enters update mode.
+        self.assertEqual(acknowledgement[0], 0x81)
+        self.assertEqual(acknowledgement[1:12], command[1:12])
         self.assertEqual(len(acknowledgement), 16)
         boot = self.device.respond(request(2, 3, 0, 1024))[12:-4]
         self.assertEqual(boot, original[:9] + b"\x01" + original[10:])
@@ -865,21 +891,21 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(restored.respond(request(2, 2, 9, 1))[12:-4],
                          self.device.memory.read(9, 1))
 
-    def sandbox_device(self):
-        payload = bytes(range(32))
-        metadata = bytes(range(16))
-        wrapped = struct.pack("<II4sIIII", 2, 0, bytes(4), 0x25000000, 128, 16384, 4000) + metadata + payload
-        package = self.root / "test.nex"
-        manifest = ('<NEX_FILE><PRODUCT pid="21" vid="11" hdefFile="ic-7.hdef">'
-                    '<FILE name="res_ic-7.qzip" /></PRODUCT></NEX_FILE>')
-        with zipfile.ZipFile(package, "w") as archive:
-            archive.writestr("manifest.xml", manifest)
-            archive.writestr("res_ic-7.qzip", wrapped)
-            archive.writestr("ic-7.hdef", b"test migration definition")
+    def sandbox_device(self, members=None, name="test.nex"):
+        package = self.root / name
+        members = members or {"qml_components_data/qml/user_components/HalImage.qml":
+                              b"import QtQuick 2.9\nItem { objectName: 'nex' }\n"}
+        payload, metadata = nex_fixtures.write_nex(package, members)
         device = Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
-                        self.root / "sandbox-state", sandbox_package=package)
+                        self.root / ("state-" + name), sandbox_package=package, timing=INSTANT_TIMING)
         finish = b"\0\x04\0\0" + metadata + struct.pack(">II", 0x25000000, len(payload))
         return device, payload, finish
+
+    def send_payload(self, device, payload, first_sequence=10):
+        for sequence, offset in enumerate(range(0, len(payload), 4096), first_sequence):
+            fragment = payload[offset:offset + 4096]
+            response = device.respond(request(1, sequence % 256, 0x25000000 + offset, len(fragment), fragment))
+            self.assertFalse(response[0] & 0x80)
 
     def test_sandbox_update_requires_boot_and_exact_payload(self):
         device, payload, finish = self.sandbox_device()
@@ -889,6 +915,10 @@ class IntegrationTests(unittest.TestCase):
         device.respond(request(1, 2, 0, 2, b"\0\x01"))
         for sequence, offset in enumerate((0, 0, 16), 3):
             response = device.respond(request(1, sequence, 0x25000000 + offset, 16, payload[offset:offset + 16]))
+            self.assertFalse(response[0] & 0x80)
+        for sequence, offset in enumerate(range(32, len(payload), 4096), 7):
+            fragment = payload[offset:offset + 4096]
+            response = device.respond(request(1, sequence % 256, 0x25000000 + offset, len(fragment), fragment))
             self.assertFalse(response[0] & 0x80)
         response = device.respond(request(1, 6, 0, len(finish), finish))
         self.assertFalse(response[0] & 0x80)
@@ -932,85 +962,98 @@ class IntegrationTests(unittest.TestCase):
             server.shutdown()
             server.server_close()
 
-    def test_nsp_main_return_marks_exact_resource_transfer_complete(self):
+    def test_nsp_main_return_installs_the_nex_members_like_the_watchdog(self):
+        # Premise changed: the emulator now decrypts the received payload with the
+        # dash watchdog key and installs every member, instead of publishing sidecars.
         import hashlib
-        device, payload, _ = self.sandbox_device()
-        package = device.sandbox.package
-        candidate = package.with_name("ic7-2.36-test-experimental.nex")
-        package.rename(candidate)
-        component = b"import QtQuick 2.9\nItem { objectName: 'sandbox' }"
-        candidate.with_name("HalImage.qml").write_bytes(component)
-        report = {"label": "test", "packages": {candidate.name: {
-            "sha256": hashlib.sha256(candidate.read_bytes()).hexdigest()}},
-            "replacement_component_sha256": hashlib.sha256(component).hexdigest()}
-        candidate.with_name("build-report.json").write_text(json.dumps(report))
-        device = Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
-                        self.root / "main-return-state", sandbox_package=candidate)
+        members = {
+            "qml_components_data/qml/user_components/HalImage.qml": (b"Item { objectName: 'nex' }\n", 1711391189),
+            "qml_components_data/qml/user_components/Ic7Added.qml": (b"Item {}\n", 1765703969),
+            "can_protocols/test.json": (b"{}", 1790648083),
+        }
+        device, payload, _ = self.sandbox_device(members, "ic7-2.36-test-experimental.nex")
         device.respond(request(1, 1, 0, 2, b"\0\x01"))
-        for sequence, offset in enumerate(range(0, len(payload), 16), 2):
-            fragment = payload[offset:offset + 16]
-            response = device.respond(request(1, sequence % 256, 0x25000000 + offset,
-                                              len(fragment), fragment))
-            self.assertFalse(response[0] & 0x80)
+        self.send_payload(device, payload)
         self.assertEqual(device.sandbox.status, "received")
-        device.respond(request(1, 253, 0, 2, b"\0\0"))
+        stale = device.resources_root / "stale-member.qml"
+        stale.parent.mkdir(parents=True, exist_ok=True)
+        stale.write_text("old")
+        refused = device.respond(request(1, 253, 0, 2, b"\0\0"))
+        self.assertEqual(refused[0], 0x81)
         self.assertEqual(device.sandbox.status, "transfer-complete")
-        self.assertTrue(device.sandbox.main_returned)
-        self.assertTrue(device.sandbox.component_active)
-        self.assertEqual((device.state / "sandbox/received-resource.enc").read_bytes(), payload)
-        summary = device.sandbox.summary()
-        self.assertIn("target install unverified", summary["verification"])
-        self.assertEqual(device.memory.read(0, 1024)[8], 21)
+        self.assertTrue(device.sandbox.installed)
+        self.assertFalse(stale.exists())
+        for name, (data, mtime) in members.items():
+            installed = device.resources_root / name
+            self.assertEqual(installed.read_bytes(), data)
+            self.assertEqual(int(installed.stat().st_mtime), mtime)
+        self.assertEqual(device.install["payload_sha256"], hashlib.sha256(payload).hexdigest())
+        self.assertEqual(device.install["added"],
+                         ["qml_components_data/qml/user_components/Ic7Added.qml"])
+        self.assertEqual(device.install["changed"],
+                         ["qml_components_data/qml/user_components/HalImage.qml"])
+        self.assertIn("installed", device.sandbox.summary()["verification"])
         self.assertFalse(device.boot_mode)
         device.save()
         session = json.loads((device.state / "session.json").read_text())
         self.assertEqual(session["sandbox_update"]["status"], "transfer-complete")
         self.assertFalse(session["firmware_execution"])
+        report = (device.state / "fidelity-report.txt").read_text()
+        self.assertIn(hashlib.sha256(payload).hexdigest(), report)
+        self.assertIn("Ic7Added.qml  mtime 1765703969", report)
 
-    def test_sandbox_update_activates_only_a_hash_matched_sidecar_after_reboot(self):
+    def test_kit_sidecars_are_only_a_cross_check_of_the_nex_members(self):
         import hashlib
-        device, payload, finish = self.sandbox_device()
-        package = device.sandbox.package
-        candidate = package.with_name("ic7-2.36-test-experimental.nex")
-        package.rename(candidate)
         component = b"import QtQuick 2.9\nItem { objectName: 'sandbox' }"
+        name = "qml_components_data/qml/user_components/HalImage.qml"
+        device, payload, finish = self.sandbox_device({name: component}, "ic7-2.36-test-experimental.nex")
+        candidate = device.sandbox.package
         candidate.with_name("HalImage.qml").write_bytes(component)
         report = {"label": "test", "packages": {candidate.name: {
             "sha256": hashlib.sha256(candidate.read_bytes()).hexdigest()}},
             "replacement_component_sha256": hashlib.sha256(component).hexdigest()}
         candidate.with_name("build-report.json").write_text(json.dumps(report))
         device = Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
-                        self.root / "activation-state", sandbox_package=candidate)
-        self.assertEqual(device.sandbox.component, component)
+                        self.root / "activation-state", sandbox_package=candidate, timing=INSTANT_TIMING)
+        self.assertEqual(device.sandbox.crosscheck,
+                         [{"name": "HalImage.qml", "member": name, "matches": True}])
         device.respond(request(1, 1, 0, 2, b"\0\0"))
-        self.assertFalse(device.sandbox.component_active)
+        self.assertFalse(device.sandbox.installed)
         device.respond(request(1, 2, 0, 2, b"\0\x01"))
-        device.respond(request(1, 3, 0x25000000, len(payload), payload))
+        self.send_payload(device, payload)
         device.respond(request(1, 4, 0, len(finish), finish))
-        self.assertFalse(device.sandbox.component_active)
+        self.assertFalse(device.sandbox.installed)
         device.respond(request(1, 5, 0, 2, b"\0\0"))
-        self.assertTrue(device.sandbox.component_active)
+        self.assertTrue(device.sandbox.installed)
         server = start_viewer(device, 0)
         try:
             base = f"http://127.0.0.1:{server.server_port}"
-            self.assertEqual(urllib.request.urlopen(base + "/api/component").read(), component)
+            manifest = json.loads(urllib.request.urlopen(base + "/api/install").read())
+            self.assertEqual(manifest["payload_sha256"], hashlib.sha256(payload).hexdigest())
+            fetched = urllib.request.urlopen(base + "/api/install/file?" +
+                                             urllib.parse.urlencode({"name": name})).read()
+            self.assertEqual(fetched, component)
             changes = json.loads(urllib.request.urlopen(base + "/api/changes").read())
-            self.assertEqual(changes["component_sha256"], hashlib.sha256(component).hexdigest())
+            self.assertEqual(changes["install"]["revision"], device.install["revision"])
         finally:
             server.shutdown()
             server.server_close()
         candidate.with_name("HalImage.qml").write_bytes(b"changed")
-        restored = Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
-                          self.root / "mismatched-state", sandbox_package=candidate)
-        self.assertIsNone(restored.sandbox.component)
-        candidate.with_name("HalImage.qml").write_bytes(component)
-        stock = candidate.with_name("ic7-2.36-stock-resources-experimental.nex")
-        candidate.rename(stock)
-        report["packages"][stock.name] = report["packages"].pop(candidate.name)
-        stock.with_name("build-report.json").write_text(json.dumps(report))
-        rollback = Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
-                          self.root / "rollback-state", sandbox_package=stock)
-        self.assertIsNone(rollback.sandbox.component)
+        report["replacement_component_sha256"] = hashlib.sha256(b"changed").hexdigest()
+        candidate.with_name("build-report.json").write_text(json.dumps(report))
+        with self.assertRaisesRegex(ValueError, "differs from .* inside the NEX"):
+            Device(Path(__file__).resolve().parents[1] / "device-profile.zip",
+                   self.root / "mismatched-state", sandbox_package=candidate)
+
+    def test_undecodable_nex_is_refused_at_selection(self):
+        wrapped = struct.pack("<II4sIIII", 2, 0, bytes(4), 0x25000000, 128, 16384, 4000) + bytes(16) + bytes(64)
+        package = self.root / "garbage.nex"
+        with zipfile.ZipFile(package, "w") as archive:
+            archive.writestr("manifest.xml", nex_fixtures.MANIFEST)
+            archive.writestr("res_ic-7.qzip", wrapped)
+            archive.writestr("ic-7.hdef", b"definition")
+        with self.assertRaisesRegex(ValueError, "could not decode"):
+            UpdateSandbox(package, self.root / "garbage-state")
 
     def test_sandbox_update_rejects_wrong_completion_metadata(self):
         device, payload, finish = self.sandbox_device()
@@ -1052,7 +1095,9 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(response[:12], query[:12])
         self.assertEqual(response[12], 0)
         count = int.from_bytes(response[13:15], "big")
-        self.assertEqual(count, sum(kind == 0 for kind, _ in self.device.resources.items))
+        # Only u/ uploads are in the dash's user index; h/ names are stock resources.
+        self.assertEqual(count, sum(kind == 0 and name.startswith("u/")
+                                    for kind, name in self.device.resources.items))
         self.assertEqual(zlib.crc32(response[:-4]), int.from_bytes(response[-4:], "big"))
         listing = request(1, 153, 0x70000000, 6, b"\x02\0\0\0\0\1")
         listed = self.device.respond(listing)
@@ -1061,7 +1106,7 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(listed[12], 0)
 
     def test_nsp_resource_listing_and_image_read(self):
-        images = sorted((name, data) for (kind, name), data in self.device.resources.items.items() if kind == 0)
+        images = self.device.resources.index(0)
         name, image = min(images, key=lambda item: len(item[1]))
         index = next(position for position, entry in enumerate(images) if entry[0] == name)
         listing = request(1, 21, 0x70000000, 6, b"\x02\0" + struct.pack(">HH", index, index))

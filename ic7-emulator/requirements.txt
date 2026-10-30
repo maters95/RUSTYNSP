@@ -1,3 +1,4 @@
 pyserial==3.5
 Pillow>=10.4,<13
 PyQt5>=5.15.10,<5.16
+cryptography>=42,<47

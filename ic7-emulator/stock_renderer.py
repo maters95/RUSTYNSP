@@ -4,7 +4,7 @@ from ctypes import wintypes
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import struct
 import subprocess
@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 import zlib
-from ic7_emulator import RUNTIME_COMPONENT_PATHS
+import dash_layout
 
 
 PIPE_NAME = "SIM_Dash_Pipe"
@@ -252,7 +252,7 @@ def get(base, path):
     raise ConnectionError(f"Emulator viewer {base} unavailable at {path}")
 
 
-def prepare_runtime(runtime, destination, patched):
+def prepare_runtime(runtime, destination, patched, maintained_qml=False):
     destination.mkdir(parents=True, exist_ok=True)
     original = runtime / "dash_virtual.exe"
     binary = original.read_bytes()
@@ -276,18 +276,12 @@ def prepare_runtime(runtime, destination, patched):
             shutil.copytree(runtime / name, destination / name, dirs_exist_ok=True)
     stage_multimedia_addons(runtime, destination)
     stage_windows_platform_plugin(runtime, destination)
-    resource_archive = Path(__file__).with_name("renderer-resources.zip")
-    with zipfile.ZipFile(resource_archive) as archive:
-        for entry in archive.infolist():
-            relative = Path(entry.filename)
-            if relative.is_absolute() or ".." in relative.parts:
-                raise ValueError("Invalid renderer resource path")
-            target = destination / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(archive.read(entry))
-    install_startup_qml(destination)
+    install_factory_resources(destination)
+    if maintained_qml:
+        install_startup_qml(resources_root(destination))
     if patched:
-        install_component_override(destination, Path(__file__).with_name("qml") / "patched-gif" / "HalImage.qml")
+        install_component_override(resources_root(destination),
+                                   Path(__file__).with_name("qml") / "patched-gif" / "HalImage.qml", destination)
     validate_multimedia_runtime(destination)
     return executable
 
@@ -298,6 +292,76 @@ def stage_multimedia_addons(runtime, destination):
         source = Path(runtime) / source_name
         if source.is_dir():
             shutil.copytree(source, Path(destination) / target_name, dirs_exist_ok=True)
+
+
+def resources_root(work):
+    """The renderer's mirror of /opt/applications/dtn/resources (its working directory)."""
+    return Path(work) / dash_layout.RESOURCES
+
+
+def install_factory_resources(work):
+    """Install the factory v2.36 QML tree, as a dash that never had a NEX update."""
+    target = resources_root(work)
+    if target.exists():
+        shutil.rmtree(target)
+    target.mkdir(parents=True)
+    with zipfile.ZipFile(Path(__file__).with_name("renderer-resources.zip")) as archive:
+        for entry in archive.infolist():
+            relative = Path(entry.filename)
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError("Invalid renderer resource path")
+            if entry.is_dir():
+                continue
+            path = target / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(archive.read(entry))
+            stamp = time.mktime(entry.date_time + (0, 0, -1))
+            os.utime(path, (stamp, stamp))
+    write_install_marker(work, {"source": "factory", "revision": 0})
+    return target
+
+
+def write_install_marker(work, install):
+    marker = Path(work) / "dtn" / "installed.json"
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    marker.write_text(json.dumps({"revision": install.get("revision", 0), "source": install.get("source"),
+                                  "payload_sha256": install.get("payload_sha256")}), encoding="utf-8")
+
+
+def installed_marker(work):
+    try:
+        return json.loads((Path(work) / "dtn" / "installed.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeError):
+        return None
+
+
+def install_dash_resources(base, work):
+    """Mirror the emulator's installed NEX tree like do_resource_upgrade does.
+
+    Every member is fetched and hash-checked before the old tree is removed, then
+    the tree is replaced and archived mtimes are restored.
+    """
+    install = json.loads(get(base, "/api/install"))
+    if install.get("source") in (None, "factory"):
+        install_factory_resources(work)
+        return install
+    members = install.get("members", [])
+    pending = []
+    for entry in members:
+        relative = PurePosixPath(entry["name"])
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("Invalid installed member path: " + entry["name"])
+        data = b""
+        if entry["type"] == "file":
+            data = get(base, "/api/install/file?" + urllib.parse.urlencode({"name": entry["name"]}))
+            if hashlib.sha256(data).hexdigest() != entry["sha256"]:
+                raise ValueError("Installed member hash mismatch: " + entry["name"])
+        pending.append({**entry, "data": data})
+    dash_layout.install_members(pending, resources_root(work))
+    write_install_marker(work, install)
+    print(f"Installed {sum(item['type'] == 'file' for item in pending)} NEX members "
+          f"(payload {str(install.get('payload_sha256'))[:16]}) into dtn/resources.", flush=True)
+    return install
 
 
 def shared_component_source(name):
@@ -357,6 +421,7 @@ def validate_multimedia_runtime(destination):
 
 
 def sync_resources(base, destination, previous):
+    """Place uploads where the dash keeps them, plus dash_virtual's manifest-free copy."""
     state = json.loads(get(base, "/api/status"))
     current = {}
     for resource in state["assets"]:
@@ -368,79 +433,60 @@ def sync_resources(base, destination, previous):
         current[key] = resource["sha256"]
         if previous.get(key) == resource["sha256"]:
             continue
-        target = _resource_target(destination, resource["kind"], namespace, relative_name)
-        target.parent.mkdir(parents=True, exist_ok=True)
         encoded = urllib.parse.urlencode({"kind": resource["kind"], "name": name})
-        target.write_bytes(get(base, "/api/resource?" + encoded))
+        payload = get(base, "/api/resource?" + encoded)
+        for target in _resource_targets(destination, resource["kind"], namespace, relative_name):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(payload)
     for kind, name in previous.keys() - current.keys():
         namespace, separator, relative_name = name.partition("/")
         if not separator or namespace not in ("h", "u") or not relative_name:
             continue
-        target = _resource_target(destination, kind, namespace, relative_name)
-        if namespace == "h":
-            archive_name = target.relative_to(destination).as_posix()
-            with zipfile.ZipFile(Path(__file__).with_name("renderer-resources.zip")) as archive:
-                if archive_name in archive.namelist():
-                    target.write_bytes(archive.read(archive_name))
-                    continue
-        target.unlink(missing_ok=True)
+        for target in _resource_targets(destination, kind, namespace, relative_name):
+            if namespace == "h":
+                archive_name = target.relative_to(resources_root(destination)).as_posix()
+                with zipfile.ZipFile(Path(__file__).with_name("renderer-resources.zip")) as archive:
+                    if archive_name in archive.namelist():
+                        target.write_bytes(archive.read(archive_name))
+                        continue
+            target.unlink(missing_ok=True)
     return current
 
 
-def _resource_target(destination, kind, namespace, relative_name):
+def _resource_targets(destination, kind, namespace, relative_name):
+    """Where a resource lives: the dash's own folder, and dash_virtual's lookup folder.
+
+    dash_virtual.exe resolves native images three levels up from user_components
+    and fonts from ./user_resources, i.e. inside the mirrored resources folder.
+    That copy never holds ic7_*.json manifests, so components using NSP's
+    three-level shortcut fail to find them exactly as on the dash.
+    """
     folder = "images" if kind == 0 else "fonts"
-    base_folder = "user_resources" if namespace == "u" else "qml_components_data"
-    return Path(destination) / base_folder / folder / relative_name
+    if namespace == "h":
+        return [resources_root(destination) / "qml_components_data" / folder / relative_name]
+    targets = [Path(destination) / dash_layout.USER_RESOURCES / folder / relative_name]
+    if not (kind == 0 and dash_layout.is_manifest(relative_name)):
+        targets.append(Path(destination) / dash_layout.RENDERER_USER_RESOURCES / folder / relative_name)
+    return targets
 
 
-def install_component_override(destination, component):
+def _resource_target(destination, kind, namespace, relative_name):
+    return _resource_targets(destination, kind, namespace, relative_name)[0]
+
+
+def install_component_override(destination, component, runtime=None):
+    """Replace HalImage.qml in a resources tree (``destination``) for a local experiment."""
     source = Path(component)
+    runtime = Path(destination if runtime is None else runtime)
     if source.name != "HalImage.qml" or not source.is_file():
         raise ValueError("Component override must be an existing HalImage.qml")
-    if b"import QtMultimedia" in source.read_bytes() and not (destination / "qml/QtMultimedia/qmldir").is_file():
+    if b"import QtMultimedia" in source.read_bytes() and not (runtime / "qml/QtMultimedia/qmldir").is_file():
         raise RuntimeError("The isolated NSP preview runtime lacks the QtMultimedia QML module")
-    target = destination / "qml_components_data/qml/user_components/HalImage.qml"
+    target = Path(destination) / "qml_components_data/qml/user_components/HalImage.qml"
     if not target.is_file():
         raise FileNotFoundError("Isolated renderer's HalImage.qml is missing")
     shutil.copyfile(source, target)
     return target
-
-
-def install_sandbox_component(base, destination):
-    changes = json.loads(get(base, "/api/changes?after=-1"))
-    checksum = changes.get("component_sha256")
-    if checksum is None:
-        return None
-    payload = get(base, "/api/component")
-    if hashlib.sha256(payload).hexdigest() != checksum:
-        raise ValueError("Sandbox component response hash mismatch")
-    candidate = destination / "sandbox-component" / "HalImage.qml"
-    candidate.parent.mkdir(parents=True, exist_ok=True)
-    candidate.write_bytes(payload)
-    install_component_override(destination, candidate)
-    return checksum
-
-
-def install_sandbox_runtime(base, destination, changes):
-    """Validate every sidecar before replacing any runtime component."""
-    hashes = changes.get("runtime_components", {})
-    if not hashes:
-        return install_sandbox_component(base, destination)
-    if set(hashes) - RUNTIME_COMPONENT_PATHS.keys():
-        raise ValueError("Unsupported sandbox runtime components")
-    pending = {}
-    for name, checksum in hashes.items():
-        payload = get(base, "/api/component?" + urllib.parse.urlencode({"name": name}))
-        if hashlib.sha256(payload).hexdigest() != checksum:
-            raise ValueError("Sandbox runtime component hash mismatch: " + name)
-        target = Path(destination) / RUNTIME_COMPONENT_PATHS[name]
-        if not target.parent.is_dir():
-            raise FileNotFoundError("Sandbox runtime directory is missing: " + str(target.parent))
-        pending[target] = payload
-    for target, payload in pending.items():
-        target.write_bytes(payload)
-        target.with_suffix(target.suffix + "c").unlink(missing_ok=True)
-    return changes.get("component_sha256")
 
 
 def renderer_environment(work):
@@ -456,6 +502,11 @@ def renderer_environment(work):
     return environment
 
 
+def renderer_command(executable):
+    """dash_virtual's command line; it runs from the mirrored dtn/resources folder."""
+    return [str(Path(executable).resolve()), "./qml_components_data/qml", "54000", "21", "11"]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Drive an isolated original NSP dash renderer from emulator memory.")
     parser.add_argument("--url", default="http://127.0.0.1:8765")
@@ -463,6 +514,9 @@ def main():
     parser.add_argument("--work", type=Path, default=Path(__file__).with_name("state") / "stock-renderer")
     parser.add_argument("--patched-images", action="store_true")
     parser.add_argument("--component", type=Path, help="HalImage.qml to load in the isolated renderer")
+    parser.add_argument("--maintained-qml", action="store_true",
+                        help="Development only: start from the maintained QML instead of the dash's "
+                             "installed resources (a real dash runs only what its NEX installed)")
     parser.add_argument("--stop-file", type=Path, help="Stop gracefully when this workbench signal file exists")
     args = parser.parse_args()
     if os.name != "nt":
@@ -470,14 +524,23 @@ def main():
     base = args.url.rstrip("/")
     if args.patched_images and args.component:
         parser.error("Use either --patched-images or --component, not both")
-    executable = prepare_runtime(args.runtime, args.work, args.patched_images)
-    if args.component:
-        install_component_override(args.work, args.component)
-    explicit_component = args.component is not None or args.patched_images
+    executable = prepare_runtime(args.runtime, args.work, args.patched_images, args.maintained_qml)
+    explicit_component = args.component is not None or args.patched_images or args.maintained_qml
+
+    def apply_overrides():
+        if args.maintained_qml:
+            install_startup_qml(resources_root(args.work))
+        if args.component:
+            install_component_override(resources_root(args.work), args.component, args.work)
+        elif args.patched_images:
+            install_component_override(resources_root(args.work),
+                                       Path(__file__).with_name("qml") / "patched-gif" / "HalImage.qml", args.work)
+
     initial_changes = json.loads(get(base, "/api/changes?after=-1"))
-    component_checksum = (None if explicit_component else
-                          install_sandbox_runtime(base, args.work, initial_changes))
-    runtime_hashes = initial_changes.get("runtime_components", {})
+    install_state = initial_changes.get("install") or {}
+    if not explicit_component:
+        install_dash_resources(base, args.work)
+    apply_overrides()
     resources = {}
     pipe = None
     process = None
@@ -498,10 +561,8 @@ def main():
             status = json.loads(get(base, "/api/status"))
             display = status.get("display", {"phase": "blank", "reboot_revision": 0})
             changes = json.loads(get(base, f"/api/changes?after={revision}"))
-            runtime_changed = not explicit_component and (
-                changes.get("component_sha256") != component_checksum or
-                changes.get("runtime_components", {}) != runtime_hashes)
-            if process is not None and (renderer_restart_required(display, launched_reboot_revision) or runtime_changed):
+            install_changed = not explicit_component and (changes.get("install") or {}) != install_state
+            if process is not None and (renderer_restart_required(display, launched_reboot_revision) or install_changed):
                 print("Stopping the isolated renderer for the emulator display lifecycle change.", flush=True)
                 pipe.close()
                 pipe = None
@@ -515,20 +576,21 @@ def main():
                 if display["phase"] == "blank":
                     time.sleep(0.05)
                     continue
-            if runtime_changed:
-                install_startup_qml(args.work)
-                component_checksum = install_sandbox_runtime(base, args.work, changes)
-                runtime_hashes = changes.get("runtime_components", {})
-                print("Verified firmware preview components reloaded.", flush=True)
+            if install_changed:
+                install_dash_resources(base, args.work)
+                apply_overrides()
+                install_state = changes.get("install") or {}
+                # The update wiped dtn/resources, including dash_virtual's copy of user files.
+                resources = {}
+                print("Dash resources reinstalled from the emulator's NEX install.", flush=True)
             if process is None:
                 if not renderer_ready(display):
                     time.sleep(0.05)
                     continue
                 resources = sync_resources(base, args.work, resources)
                 pipe = WindowsPipe()
-                process = subprocess.Popen(
-                    [str(executable.resolve()), "./qml_components_data/qml", "54000", "21", "11"],
-                    cwd=args.work, env=renderer_environment(args.work))
+                process = subprocess.Popen(renderer_command(executable), cwd=resources_root(args.work),
+                                           env=renderer_environment(args.work))
                 try:
                     pipe.connect()
                 except Exception:

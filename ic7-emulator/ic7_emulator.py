@@ -17,6 +17,8 @@ import xml.etree.ElementTree as ElementTree
 import zipfile
 import zlib
 
+import dash_layout
+
 
 HEADER = struct.Struct(">BB6sI")
 MAX_TRANSFER = 16384
@@ -55,8 +57,50 @@ def overlaps_dashboard_settings(address, length):
                               for span_start, span_end in dashboard_setting_spans())
 
 
+class DashTiming:
+    """Real-dash timing measured from the owner's USB captures (seconds).
+
+    update_reboot: the dash answers nothing after the update's ``00 00`` until its
+    resource install and reboot finish (22.9-27.6 s observed, NSP poll-limited).
+    app_restart: ``00 00`` in normal mode exits the application unanswered; the
+    next request NSP sends about 2.7 s later is answered.
+    logo_reboot: after a static splash patched the kernel logo, the same command
+    reboots the whole dash and its USB device re-enumerates 13.4-14.8 s later.
+    logo_patch: ``00 0f`` reports busy for 6.2-8.5 s after the splash BMP.
+    """
+
+    def __init__(self, update_reboot=25.0, app_restart=2.0, logo_reboot=13.0, logo_patch=7.0):
+        self.update_reboot = update_reboot
+        self.app_restart = app_restart
+        self.logo_reboot = logo_reboot
+        self.logo_patch = logo_patch
+
+
+INSTANT_TIMING = DashTiming(0, 0, 0, 0)
+FIDELITY_LIMITS = (
+    "The ARM application, kernel, bootloader and STM32 are not executed; NSP's Windows "
+    "renderer (dash_virtual.exe, Qt 5.11) draws the display, not the dash's Qt 5.9.6.",
+    "dash_virtual.exe runs from the mirrored dtn/resources folder with a manifest-free copy of "
+    "user files three levels up, because it resolves native images and fonts from there.",
+    "USB disconnect and re-enumeration are modelled as silence on the virtual COM port; the "
+    "port itself stays open.",
+    "Reboot, restart and kernel-logo durations are fixed medians of the captures, not "
+    "measured per dash.",
+    "The kernel logo patch is reported but not performed; the early boot logo is not shown.",
+    "The Qt QML disk cache is not modelled (owner evidence: not reused across updates on the dash).",
+    "Live alarms come from NSP's live data; CAN, ECU, LEDs, buttons and hardware codecs are absent.",
+)
+
+
 class UpdateSandbox:
-    def __init__(self, package, destination):
+    """Verifies a resource-only NEX transfer against the selected package.
+
+    The package must decode with the dash watchdog's key exactly as the dash
+    would decode it. Kit sidecars next to it are only a cross-check: they must
+    equal the members inside the NEX, and nothing is installed from them.
+    """
+
+    def __init__(self, package, destination, watchdog=None):
         self.package = Path(package)
         self.destination = Path(destination)
         if not self.package.is_file():
@@ -101,37 +145,21 @@ class UpdateSandbox:
         self.metadata = wrapped[28:44]
         self.expected = wrapped[44:]
         self.expected_sha256 = hashlib.sha256(self.expected).hexdigest()
+        self.package_sha256 = hashlib.sha256(self.package.read_bytes()).hexdigest()
+        self.watchdog = Path(watchdog) if watchdog else dash_layout.find_watchdog()
+        if self.watchdog is None or not self.watchdog.is_file():
+            raise ValueError("The dash watchdog reference (ic7-emulator/dash-reference/dash_watchdog) is "
+                             "missing, so this NEX cannot be decoded the way the dash decodes it")
+        try:
+            _, self.members = dash_layout.decode_stage(self.expected, self.watchdog)
+        except ValueError as error:
+            raise ValueError(f"The dash could not decode this NEX's resources: {error}") from error
+        self.crosscheck = self._crosscheck_sidecars()
         self.received = bytearray()
         self.status = "ready"
         self.error = None
         self.main_returned = False
-        self.component = None
-        self.component_active = False
-        self.components = {}
-        report_path = self.package.with_name("build-report.json")
-        component_path = self.package.with_name("HalImage.qml")
-        if report_path.is_file() and component_path.is_file():
-            report = json.loads(report_path.read_text(encoding="utf-8"))
-            details = report.get("packages", {}).get(self.package.name, {})
-            component = component_path.read_bytes()
-            matches_name = self.package.name == f"ic7-2.36-{report.get('label')}-experimental.nex"
-            matches_package = details.get("sha256") == hashlib.sha256(self.package.read_bytes()).hexdigest()
-            matches_component = report.get("replacement_component_sha256") == hashlib.sha256(component).hexdigest()
-            if matches_name and matches_package and matches_component:
-                self.component = component
-                hashes = report.get("runtime_components", {})
-                if hashes:
-                    if not isinstance(hashes, dict) or set(hashes) - RUNTIME_COMPONENT_PATHS.keys():
-                        raise ValueError("Unsupported sandbox runtime component set")
-                    for name, checksum in hashes.items():
-                        data = self.package.with_name(name).read_bytes()
-                        if hashlib.sha256(data).hexdigest() != checksum:
-                            raise ValueError(f"Sandbox runtime component hash mismatch: {name}")
-                        self.components[name] = data
-                    if self.components.get("HalImage.qml") != component:
-                        raise ValueError("Sandbox runtime is missing the verified image component")
-                else:
-                    self.components["HalImage.qml"] = component
+        self.installed = False
         saved = self.destination / "received-resource.enc"
         if saved.is_file():
             received = saved.read_bytes()
@@ -139,9 +167,42 @@ class UpdateSandbox:
                 self.received = bytearray(received)
                 self.status = "transfer-complete"
                 self.main_returned = True
-                self.activate_component()
+                self.installed = True
             else:
                 logging.getLogger("ic7").warning("Saved sandbox payload differs from the selected NEX; not activating")
+
+    def _crosscheck_sidecars(self):
+        """Compare a kit's QML sidecars with the NEX members they claim to be."""
+        report_path = self.package.with_name("build-report.json")
+        if not report_path.is_file():
+            return []
+        try:
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeError):
+            return []
+        details = report.get("packages", {}).get(self.package.name, {}) if isinstance(report, dict) else {}
+        if not isinstance(details, dict) or details.get("sha256") != self.package_sha256:
+            return []
+        hashes = report.get("runtime_components") or {}
+        if not hashes and report.get("replacement_component_sha256"):
+            hashes = {"HalImage.qml": report["replacement_component_sha256"]}
+        if not isinstance(hashes, dict) or set(hashes) - RUNTIME_COMPONENT_PATHS.keys():
+            raise ValueError("Unsupported sandbox runtime component set")
+        members = {member["name"]: member["data"] for member in self.members if member["type"] == "file"}
+        checks = []
+        for name, checksum in hashes.items():
+            sidecar = self.package.with_name(name)
+            if not sidecar.is_file():
+                continue
+            data = sidecar.read_bytes()
+            if hashlib.sha256(data).hexdigest() != checksum:
+                raise ValueError(f"Sandbox runtime component hash mismatch: {name}")
+            member = RUNTIME_COMPONENT_PATHS[name]
+            if members.get(member) != data:
+                raise ValueError(f"Kit sidecar {name} differs from {member} inside the NEX; "
+                                 "the kit is inconsistent")
+            checks.append({"name": name, "member": member, "matches": True})
+        return checks
 
     def reject(self, message):
         self.error = message
@@ -178,39 +239,29 @@ class UpdateSandbox:
         self.error = None
 
     def returned_to_main(self):
+        """NSP ended the update; True when the exact package bytes were received."""
         self.main_returned = True
         if self.status == "received":
             self.status = "transfer-complete"
             self.error = None
             self.destination.mkdir(parents=True, exist_ok=True)
             (self.destination / "received-resource.enc").write_bytes(self.received)
-        self.activate_component()
-
-    def activate_component(self):
-        if self.status in ("verified", "transfer-complete") and self.component is not None:
-            (self.destination / "HalImage.qml").write_bytes(self.component)
-            self.component_active = True
-
-    def component_sha256(self):
-        if self.component_active:
-            return hashlib.sha256(self.component).hexdigest()
-        return None
-
-    def runtime_hashes(self):
-        return {name: hashlib.sha256(data).hexdigest() for name, data in self.components.items()
-                if self.component_active}
+        return self.status in ("verified", "transfer-complete")
 
     def summary(self):
         return {"package": self.package.name, "status": self.status, "error": self.error,
+                "package_sha256": self.package_sha256,
                 "migration_definition": self.migration_definition,
                 "expected_bytes": len(self.expected), "received_bytes": len(self.received),
                 "expected_sha256": self.expected_sha256,
-            "main_returned": self.main_returned,
-                "component_available": self.component is not None,
-                "component_active": self.component_active,
-            "verification": ("NSP returned to main after an exact payload transfer; target install unverified"
-                      if self.status == "transfer-complete" else
-                      "sandbox metadata check only; no target-side decryption or execution")}
+                "main_returned": self.main_returned,
+                "member_count": sum(member["type"] == "file" for member in self.members),
+                "installed": self.installed,
+                "sidecar_crosscheck": self.crosscheck,
+                "verification": ("exact payload received; decrypted with the dash watchdog key and installed "
+                                 "the way do_resource_upgrade does (wipe, extract, keep mtimes)"
+                                 if self.installed else
+                                 "payload compared byte for byte; installed only after NSP ends the update")}
 
 
 def header(opcode, sequence, address, length):
@@ -335,7 +386,7 @@ class ProtocolCapture:
             return "resource_rpc"
         if address == 0:
             return "control"
-        if 0x25000000 <= address < 0x26000000:
+        if 0x25000000 <= address < 0x29000000:
             return "resource_update_stage"
         if 0x29000000 <= address < 0x2A000000:
             return "app_update_stage"
@@ -356,6 +407,17 @@ class ProtocolCapture:
         opcode, sequence, raw_address, length = HEADER.unpack_from(packet)
         address = int.from_bytes(raw_address, "big")
         payload = packet[12:-4] if opcode == 1 else b""
+        if response is None:
+            event = {"event": "packet", "session_id": self.session_id, "time_ns": time.time_ns(),
+                     "opcode": opcode, "operation": "write" if opcode == 1 else "read",
+                     "sequence": sequence, "address": f"0x{address:012x}", "length": length,
+                     "region": self.region(address, length), "no_response": True,
+                     "request_payload_sha256": hashlib.sha256(payload).hexdigest()}
+            if self.include_payloads:
+                event["request_b64"] = base64.b64encode(packet).decode("ascii")
+            self._write(event)
+            self.packet_count += 1
+            return
         response_payload = response[12:-4]
         event = {
             "event": "packet",
@@ -428,6 +490,14 @@ class ProtocolCapture:
 
 
 class Resources:
+    """User resource store answering NSP's resource RPC like DashUserResource.
+
+    The captures show the dash's index lists every stored ``u/`` file of a kind,
+    whatever its extension (``.gif``, ``.mp4``, ``.json`` and ``.TTF`` included),
+    in the order the files were written, not sorted. ``h/`` names are stock
+    resources from the profile and are never part of the user index.
+    """
+
     def __init__(self, root):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -435,17 +505,38 @@ class Resources:
         self.checksums = {}
         self.digests = {}
         self.pending = {}
+        self.order = {0: [], 1: []}
         self.revision = 0
         for kind in (0, 1):
             folder = self.root / str(kind)
             if folder.exists():
-                for path in folder.rglob("*"):
+                for path in sorted(folder.rglob("*")):
                     if path.is_file():
                         key = (kind, path.relative_to(folder).as_posix())
                         payload = path.read_bytes()
                         self.items[key] = payload
                         self.checksums[key] = zlib.crc32(payload)
                         self.digests[key] = hashlib.sha256(payload).hexdigest()
+        try:
+            saved = json.loads((self.root / "index.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeError):
+            saved = {}
+        for kind in (0, 1):
+            names = [name for name in saved.get(str(kind), []) if (kind, name) in self.items]
+            names += sorted(name for (category, name) in self.items
+                            if category == kind and name not in names)
+            self.order[kind] = names
+
+    def _save_index(self):
+        temporary = self.root / "index.tmp"
+        temporary.write_text(json.dumps({str(kind): names for kind, names in self.order.items()}),
+                             encoding="utf-8")
+        os.replace(temporary, self.root / "index.json")
+
+    def index(self, kind):
+        """The (name, payload) entries the dash reports for a resource kind."""
+        return [(name, self.items[(kind, name)]) for name in self.order.get(kind, [])
+                if name.startswith("u/")]
 
     def put(self, name, kind, payload):
         parse_descriptor(resource_descriptor(name, kind, payload))
@@ -457,9 +548,12 @@ class Resources:
             os.replace(temporary, destination)
         finally:
             temporary.unlink(missing_ok=True)
+        if (kind, name) not in self.items:
+            self.order[kind].append(name)
         self.items[(kind, name)] = payload
         self.checksums[(kind, name)] = zlib.crc32(payload)
         self.digests[(kind, name)] = hashlib.sha256(payload).hexdigest()
+        self._save_index()
         self.revision += 1
 
     def command(self, payload):
@@ -473,9 +567,9 @@ class Resources:
         operation = payload[0]
         if operation in (1, 2):
             kind = payload[1]
-            entries = sorted((name, data) for (category, name), data in self.items.items() if category == kind)
             if kind not in (0, 1):
                 return b"\x01"
+            entries = self.index(kind)
             if operation == 1 and len(payload) == 2:
                 return b"\0" + len(entries).to_bytes(2, "big")
             if operation == 2 and len(payload) == 6:
@@ -528,8 +622,10 @@ class Resources:
         if operation == 5 and len(payload) == 64:
             (self.root / str(kind) / name).unlink(missing_ok=True)
             del self.items[key]
+            self.order[kind].remove(name)
             self.checksums.pop(key, None)
             self.digests.pop(key, None)
+            self._save_index()
             self.revision += 1
             return b"\0"
         if operation == 4 and len(payload) == 124:
@@ -538,6 +634,8 @@ class Resources:
                 return b"\x01"
             self.put(new_name, new_kind, self.items[key])
             del self.items[key]
+            self.order[kind].remove(name)
+            self._save_index()
             self.checksums.pop(key, None)
             self.digests.pop(key, None)
             (self.root / str(kind) / name).unlink(missing_ok=True)
@@ -547,10 +645,17 @@ class Resources:
 
 class Device:
     def __init__(self, profile, state, serial_number="F1C700000001", capture_path=None,
-                 capture_payloads=True, sandbox_package=None):
+                 capture_payloads=True, sandbox_package=None, watchdog=None, timing=None,
+                 clock=time.monotonic, legacy_acks=False):
         self.state = Path(state)
         self.state.mkdir(parents=True, exist_ok=True)
+        self.clock = clock
+        self.timing = timing or DashTiming()
+        self.legacy_acks = legacy_acks
+        self.watchdog = Path(watchdog) if watchdog else dash_layout.find_watchdog()
         self.memory = Memory()
+        # Profile resources seed a new dash only; files NSP deleted later stay deleted.
+        fresh_resources = not (self.state / "resources" / "index.json").is_file()
         self.resources = Resources(self.state / "resources")
         self.rpc_response = b"\0"
         self.requests = 0
@@ -565,16 +670,23 @@ class Device:
         self.sandbox = None
         self.last_screen = None
         self.screen_buffer = bytearray()
+        self.resource_stage = bytearray()
+        self.quiet_until = None
+        self.quiet_reason = None
+        self.logo_patch_started = None
+        self.protocol_events = []
         self.events = []
         self.connection = "Waiting for NSP"
         self.log = logging.getLogger("ic7")
         self.staged = set()
         self.capture = None
+        self.dash_root = self.state / "dash"
+        self.install = self._load_install()
         with zipfile.ZipFile(profile) as archive:
             self.manifest = json.loads(archive.read("profile.json"))
             for segment in self.manifest["segments"]:
                 self.memory.write(segment["address"], archive.read(segment["file"]))
-            for resource in self.manifest.get("resources", []):
+            for resource in self.manifest.get("resources", []) if fresh_resources else ():
                 key = (resource["kind"], resource["name"])
                 if key not in self.resources.items:
                     self.resources.put(resource["name"], resource["kind"], archive.read(resource["file"]))
@@ -589,7 +701,11 @@ class Device:
                     sandbox_package = saved_session.get("sandbox_package")
             except (OSError, ValueError, UnicodeError, AttributeError) as error:
                 raise ValueError(f"Cannot restore saved dash session: {session_path}: {error}") from error
-        self.sandbox = UpdateSandbox(sandbox_package, self.state / "sandbox") if sandbox_package else None
+        self.sandbox = (UpdateSandbox(sandbox_package, self.state / "sandbox", self.watchdog)
+                        if sandbox_package else None)
+        if (self.sandbox is not None and self.sandbox.installed and
+                self.install.get("payload_sha256") != self.sandbox.expected_sha256):
+            self._install_members(self.sandbox.members, self.sandbox.expected)
         identity = bytes.fromhex(serial_number)
         if len(identity) != 6:
             raise ValueError("Serial number must be twelve hexadecimal digits")
@@ -598,6 +714,85 @@ class Device:
             self._prepare_splash()
         if capture_path is not None:
             self.capture = ProtocolCapture(capture_path, capture_payloads)
+
+    @property
+    def resources_root(self):
+        """The mirror of /opt/applications/dtn/resources for this session."""
+        return self.dash_root / dash_layout.RESOURCES
+
+    def _load_install(self):
+        try:
+            return json.loads((self.dash_root / "install.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeError):
+            return {"source": "factory", "revision": 0}
+
+    def installed_members(self):
+        """Installed (name, type, data) members, or None for the factory tree."""
+        if self.install.get("source") != "nex":
+            return None
+        members = []
+        for entry in self.install.get("members", []):
+            path = self.resources_root.joinpath(*PurePosixPath(entry["name"]).parts)
+            data = path.read_bytes() if entry["type"] == "file" and path.is_file() else b""
+            members.append({**entry, "data": data})
+        return members
+
+    def _install_members(self, members, payload, error=None):
+        """Install resource members into the dash tree as do_resource_upgrade does."""
+        dash_layout.install_members(members, self.resources_root)
+        factory = {}
+        archive_path = Path(__file__).with_name("renderer-resources.zip")
+        if archive_path.is_file():
+            with zipfile.ZipFile(archive_path) as archive:
+                factory = {entry.filename: archive.read(entry) for entry in archive.infolist()
+                           if not entry.is_dir()}
+        changed, added = dash_layout.factory_differences(members, factory)
+        sandbox = self.sandbox
+        self.install = {
+            "source": "nex" if members else "failed",
+            "revision": self.install.get("revision", 0) + 1,
+            "installed_at": time.time(),
+            "payload_sha256": hashlib.sha256(payload).hexdigest(),
+            "package": sandbox.package.name if sandbox else None,
+            "package_sha256": sandbox.package_sha256 if sandbox else None,
+            "payload_matches_selected_nex": (hashlib.sha256(payload).hexdigest() == sandbox.expected_sha256
+                                             if sandbox else None),
+            "member_count": sum(member["type"] == "file" for member in members),
+            "members": dash_layout.member_summary(members),
+            "mtimes": {member["name"]: member["mtime"] for member in members},
+            "changed": changed, "added": added,
+            "crosscheck": sandbox.crosscheck if sandbox else [],
+            "error": error,
+        }
+        self.dash_root.mkdir(parents=True, exist_ok=True)
+        temporary = self.dash_root / "install.tmp"
+        temporary.write_text(json.dumps(self.install, indent=1) + "\n", encoding="utf-8")
+        os.replace(temporary, self.dash_root / "install.json")
+        if sandbox is not None:
+            sandbox.installed = bool(members)
+        self.log.info("dash-resource-install members=%d payload_sha256=%s changed=%s added=%s",
+                      self.install["member_count"], self.install["payload_sha256"], changed, added)
+        self.write_fidelity_report()
+
+    def _install_stage(self):
+        """Decode the staged resource body with the watchdog key and install it."""
+        if self.sandbox is not None and self.sandbox.status in ("verified", "transfer-complete"):
+            self._install_members(self.sandbox.members, self.sandbox.expected)
+            return
+        body = bytes(self.resource_stage)
+        if not body:
+            return
+        if self.watchdog is None:
+            self.log.error("dash-resource-install-skipped: no watchdog reference to decrypt the stage")
+            return
+        try:
+            _, members = dash_layout.decode_stage(body[:len(body) // 16 * 16], self.watchdog)
+        except ValueError as error:
+            # The watchdog removes the resources folder before it extracts.
+            self.log.error("dash-resource-install-failed: %s; resources folder left empty like the dash", error)
+            self._install_members([], body, str(error))
+            return
+        self._install_members(members, body)
 
     def respond(self, packet):
         with self.lock:
@@ -611,8 +806,30 @@ class Device:
                     self.capture = None
             return response
 
-    def _prepare_splash(self):
-        self.splash_started_at = time.monotonic()
+    def _prepare_splash(self, at=None):
+        self.splash_started_at = self.clock() if at is None else at
+
+    def _go_quiet(self, seconds, reason):
+        now = self.clock()
+        self.quiet_until = now + seconds
+        self.quiet_reason = reason
+        self.protocol_events.append({"reason": reason, "seconds": seconds, "at": time.time()})
+        self.protocol_events = self.protocol_events[-50:]
+        self.reboot_revision += 1
+        if self.map_loaded:
+            self._prepare_splash(self.quiet_until)
+        self.log.info("dash-reboot reason=%s silent_seconds=%.1f", reason, seconds)
+
+    def rebooting(self, now=None):
+        now = self.clock() if now is None else now
+        return self.quiet_until is not None and now < self.quiet_until
+
+    def logo_patch_status(self, now=None):
+        """splash_screen::apply_status: 0 idle, 1 applying, 2 applied."""
+        if self.logo_patch_started is None:
+            return 0
+        now = self.clock() if now is None else now
+        return 1 if now < self.logo_patch_started + self.timing.logo_patch else 2
 
     def power_cycle(self):
         with self.lock:
@@ -620,6 +837,9 @@ class Device:
                 raise ValueError("Finish or cancel the update before power cycling the emulator")
             self.resources.pending.clear()
             self.rpc_response = b"\0"
+            self.quiet_until = None
+            self.logo_patch_started = None
+            self.screen_buffer = bytearray()
             self.reboot_revision += 1
             if self.map_loaded:
                 self._prepare_splash()
@@ -629,10 +849,11 @@ class Device:
 
     def display_state(self, now=None):
         if now is None:
-            now = time.monotonic()
+            now = self.clock()
         source = None
         duration_ms = SPLASH_DURATION_MS
-        if self.boot_mode or not self.map_loaded:
+        rebooting = self.rebooting(now)
+        if self.boot_mode or not self.map_loaded or rebooting:
             phase = "blank"
         else:
             manifest = self.resources.items.get((0, SPLASH_RESOURCE))
@@ -664,7 +885,74 @@ class Device:
             if phase != "splash":
                 source = None
         return {"phase": phase, "map_loaded": self.map_loaded, "reboot_revision": self.reboot_revision,
-                "splash_source": source, "duration_ms": duration_ms}
+                "splash_source": source, "duration_ms": duration_ms, "rebooting": rebooting,
+                "install_revision": self.install.get("revision", 0)}
+
+    def _error(self, packet):
+        return seal(bytes((packet[0] | 0x80,)) + packet[1:12])
+
+    def _control(self, packet, payload, now):
+        """Commands at address 0, answered as id_and_command_space_write does."""
+        if payload[:2] == b"\0\x0f" and len(payload) == 4 and not self.legacy_acks:
+            # get_apply_splash_status: applying -> 2, applied -> 0; idle -> error reply.
+            status = self.logo_patch_status(now)
+            self.log.info("kernel-logo-status status=%d", status)
+            if payload[3] == 0 and status:
+                return seal(packet[:12] + struct.pack("<I", 2 if status == 1 else 0))
+            return self._error(packet)
+        if payload[:2] in (b"\0\x04", b"\0\x03"):
+            try:
+                if payload[:2] == b"\0\x03":
+                    raise ValueError("Wi-Fi/Bluetooth initialization is outside the resource sandbox")
+                if not self.boot_mode or self.sandbox is None:
+                    raise ValueError("Update validation requires boot mode and --sandbox-package")
+                self.sandbox.finish(payload)
+                self.log.info("sandbox-resource-verified bytes=%d sha256=%s no-target-execution",
+                              len(self.sandbox.received), self.sandbox.expected_sha256)
+            except ValueError as error:
+                self.log.error("sandbox-update-rejected: %s", error)
+                return self._error(packet)
+            return seal(packet[:12])
+        if payload == b"\0\x01":
+            # Case 1 requests the bootcode and returns 0, so the dash answers with an error.
+            self.boot_mode = True
+            self.splash_started_at = None
+            self.resource_stage = bytearray()
+            self.log.info("control-command bytes=0001 mode=boot error-reply=%s", not self.legacy_acks)
+            return seal(packet[:12]) if self.legacy_acks else self._error(packet)
+        if payload == b"\0\0":
+            if self.boot_mode:
+                # Update mode: refused (error), then the watchdog installs and reboots.
+                self.boot_mode = False
+                if self.sandbox is not None:
+                    complete = self.sandbox.returned_to_main()
+                    if complete:
+                        self.log.info("sandbox-transfer-complete bytes=%d sha256=%s",
+                                      len(self.sandbox.received), self.sandbox.expected_sha256)
+                self._install_stage()
+                self.resource_stage = bytearray()
+                if self.legacy_acks:
+                    self.reboot_revision += 1
+                    if self.map_loaded:
+                        self._prepare_splash()
+                    return seal(packet[:12])
+                self._go_quiet(self.timing.update_reboot, "resource update install and reboot")
+                return self._error(packet)
+            if self.legacy_acks:
+                self.reboot_revision += 1
+                if self.map_loaded:
+                    self._prepare_splash()
+                return seal(packet[:12])
+            # Normal mode: the application exits before answering.
+            if self.logo_patch_status(now) == 2:
+                self.logo_patch_started = None
+                self._go_quiet(self.timing.logo_reboot, "kernel logo applied: full reboot, USB re-enumerates")
+            else:
+                self._go_quiet(self.timing.app_restart, "application restart")
+            self.resources.pending.clear()
+            return None
+        self.log.info("control-command bytes=%s simulated-no-hardware-action", payload.hex())
+        return seal(packet[:12])
 
     def _respond(self, packet):
         opcode, sequence, raw_address, length = HEADER.unpack_from(packet)
@@ -673,11 +961,17 @@ class Device:
             raise ValueError("Invalid command")
         if zlib.crc32(packet[:-4]) != int.from_bytes(packet[-4:], "big"):
             raise ValueError("Invalid command CRC")
+        now = self.clock()
         self.requests += 1
         self.last_activity = time.monotonic()
         self.events.append({"time": time.strftime("%H:%M:%S"), "operation": "read" if opcode == 2 else "write",
                     "address": hex(address), "bytes": length})
         self.events = self.events[-100:]
+        if self.rebooting(now):
+            self.connection = "Dash rebooting (" + (self.quiet_reason or "restart") + ")"
+            self.log.info("no-response dash-rebooting seq=%d address=%#x", sequence, address)
+            return None
+        self.quiet_until = None
         self.connection = "Receiving NSP traffic"
         if opcode == 2:
             if address == RESOURCE_ADDRESS:
@@ -709,38 +1003,10 @@ class Device:
                           self.rpc_response[0], len(payload))
             return seal(packet[:12] + self.rpc_response)
         elif address == 0:
-            if payload[:2] in (b"\0\x04", b"\0\x03"):
-                try:
-                    if payload[:2] == b"\0\x03":
-                        raise ValueError("Wi-Fi/Bluetooth initialization is outside the resource sandbox")
-                    if not self.boot_mode or self.sandbox is None:
-                        raise ValueError("Update validation requires boot mode and --sandbox-package")
-                    self.sandbox.finish(payload)
-                    self.log.info("sandbox-resource-verified bytes=%d sha256=%s no-target-execution",
-                                  len(self.sandbox.received), self.sandbox.expected_sha256)
-                except ValueError as error:
-                    self.log.error("sandbox-update-rejected: %s", error)
-                    return seal(bytes((opcode | 0x80,)) + packet[1:12])
-            if payload in (b"\0\x01", b"\0\0"):
-                self.boot_mode = payload == b"\0\x01"
-                if self.boot_mode:
-                    self.splash_started_at = None
-                else:
-                    self.reboot_revision += 1
-                    if self.map_loaded:
-                        self._prepare_splash()
-                if not self.boot_mode and self.sandbox is not None:
-                    self.sandbox.returned_to_main()
-                    if self.sandbox.component_active:
-                        self.log.info("sandbox-component-preview-loaded sha256=%s local-preview-only",
-                                      self.sandbox.component_sha256())
-                    if self.sandbox.status == "transfer-complete":
-                        self.log.info("sandbox-transfer-complete bytes=%d sha256=%s target-install-unverified",
-                                      len(self.sandbox.received), self.sandbox.expected_sha256)
-                self.log.info("control-command bytes=%s mode=%s simulated-no-hardware-action",
-                              payload.hex(), "boot" if self.boot_mode else "main")
-            else:
-                self.log.info("control-command bytes=%s simulated-no-hardware-action", payload.hex())
+            response = self._control(packet, payload, now)
+            self.log.info("write seq=%d address=0 length=%d reply=%s", sequence, length,
+                          "none" if response is None else "error" if response[0] & 0x80 else "ok")
+            return response
         else:
             if self.sandbox is not None and 0x1800000 <= address < 0x60000000:
                 try:
@@ -749,8 +1015,16 @@ class Device:
                     self.sandbox.write(address, payload)
                 except ValueError as error:
                     self.log.error("sandbox-update-rejected: %s", error)
-                    return seal(bytes((opcode | 0x80,)) + packet[1:12])
+                    return self._error(packet)
             self.memory.write(address, payload)
+            if self.boot_mode and RESOURCE_STAGE_ADDRESS <= address < 0x29000000:
+                offset = address - RESOURCE_STAGE_ADDRESS
+                if offset == len(self.resource_stage):
+                    self.resource_stage.extend(payload)
+                elif offset + len(payload) <= len(self.resource_stage):
+                    self.resource_stage[offset:offset + len(payload)] = payload
+                else:
+                    self.log.warning("resource-stage-gap offset=%d received=%d", offset, len(self.resource_stage))
             if address < 0xBF000 and address + len(payload) > 0x20000:
                 self.settings_revision += 1
                 self.dirty_settings.append({"revision": self.settings_revision, "address": address, "length": len(payload)})
@@ -767,12 +1041,51 @@ class Device:
                     if 54 <= image_size <= 32 * 1024 * 1024 and len(self.screen_buffer) == image_size:
                         self.last_screen = bytes(self.screen_buffer)
                         (self.state / "received-screen.bmp").write_bytes(self.last_screen)
+                        # dash_splash_image_write starts the kernel-logo patch.
+                        self.logo_patch_started = now
+                        self.log.info("splash-bmp-complete bytes=%d kernel-logo-patch-started", image_size)
             if 0x1800000 <= address < 0x60000000:
-                self.staged.add(address - address % 0x1000000)
-                self.log.warning("staging-only address=%#x bytes=%d no-firmware-execution", address, length)
+                region = address - address % 0x1000000
+                if region not in self.staged:
+                    self.log.warning("staging-only region=%#x no-firmware-execution", region)
+                self.staged.add(region)
         self.log.info("write seq=%d address=%#x length=%d sha256=%s", sequence, address, length,
                       hashlib.sha256(payload).hexdigest())
         return seal(packet[:12])
+
+    def renderer_errors(self):
+        return dash_layout.renderer_errors(self.state / "renderer.log")
+
+    def fidelity_report(self):
+        members = self.installed_members()
+        if members is None:
+            members = []
+            archive_path = Path(__file__).with_name("renderer-resources.zip")
+            if archive_path.is_file():
+                with zipfile.ZipFile(archive_path) as archive:
+                    members = [{"name": entry.filename, "type": "file", "data": archive.read(entry)}
+                               for entry in archive.infolist() if not entry.is_dir()]
+        user_images = {name: payload for (kind, name), payload in self.resources.items.items()
+                       if kind == 0 and name.startswith("u/")}
+        stock = {"h/" + member["name"][len("qml_components_data/images/"):] for member in members
+                 if member["name"].startswith("qml_components_data/images/")}
+        stock |= {name for (kind, name) in self.resources.items if kind == 0 and name.startswith("h/")}
+        install = {key: value for key, value in self.install.items() if key != "members"}
+        return {"generated": time.time(), "install": install,
+                "members": self.install.get("members", []),
+                "lookups": dash_layout.audit_user_lookups(members, user_images, stock),
+                "renderer_errors": self.renderer_errors(),
+                "protocol_events": self.protocol_events,
+                "sandbox": self.sandbox.summary() if self.sandbox else None,
+                "limits": list(FIDELITY_LIMITS)}
+
+    def write_fidelity_report(self):
+        try:
+            report = self.fidelity_report()
+            (self.state / "fidelity-report.json").write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
+            (self.state / "fidelity-report.txt").write_text(dash_layout.render_report_text(report), encoding="utf-8")
+        except OSError:
+            self.log.exception("fidelity-report-write-failed")
 
     def save(self):
         self.memory.save(self.state / "memory.zip")
@@ -783,9 +1096,11 @@ class Device:
             "map_loaded": self.map_loaded,
             "sandbox_update": self.sandbox.summary() if self.sandbox else None,
             "sandbox_package": str(self.sandbox.package.resolve()) if self.sandbox else None,
+            "installed_payload_sha256": self.install.get("payload_sha256"),
             "firmware_execution": False,
         }, indent=2) + "\n", encoding="utf-8")
         os.replace(temporary, self.state / "session.json")
+        self.write_fidelity_report()
         if self.capture is not None:
             self.capture.stream.flush()
 
@@ -811,6 +1126,9 @@ def serve_stream(device, read, write):
                 device.capture = None
         for packet in stream.feed(data):
             response = device.respond(packet)
+            if response is None:
+                # The real dash answers nothing while it restarts or reboots.
+                continue
             write(response)
             if device.capture is not None:
                 try:
@@ -832,6 +1150,11 @@ def main():
     parser.add_argument("--sandbox-package", type=Path, help="Resource-only NEX expected during a simulated update")
     parser.add_argument("--fresh-sandbox", action="store_true", help="Create a new sandbox directory without deleting old runs")
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument("--watchdog", type=Path, help="Dash watchdog ELF used to decrypt NEX resources "
+                        "(default: dash-reference/dash_watchdog)")
+    parser.add_argument("--legacy-acks", action="store_true",
+                        help="Diagnostic: acknowledge mode/reboot commands instantly instead of the "
+                             "real dash's error replies and reboot silence")
     transport = parser.add_mutually_exclusive_group(required=True)
     transport.add_argument("--port", help="Emulator end of a virtual null-modem pair, not the physical dash")
     transport.add_argument("--tcp", help="Loopback host:port for protocol testing; NSP does not connect to this directly")
@@ -853,7 +1176,8 @@ def main():
     capture_path = None if args.check_profile else args.capture_log
     try:
         device = Device(args.profile, args.state, args.serial_number, capture_path,
-                        not args.metadata_only, args.sandbox_package)
+                        not args.metadata_only, args.sandbox_package, watchdog=args.watchdog,
+                        legacy_acks=args.legacy_acks)
     except (OSError, ValueError, zipfile.BadZipFile, ElementTree.ParseError) as error:
         parser.error(str(error))
     identity = device.memory.read(0, 1024)

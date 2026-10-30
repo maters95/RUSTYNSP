@@ -1,5 +1,6 @@
 import hashlib
 import json
+import shutil
 from pathlib import Path
 import struct
 import sys
@@ -11,8 +12,13 @@ from urllib.parse import parse_qs, urlsplit
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ic7_emulator import Device, RUNTIME_COMPONENT_PATHS, request
+from ic7_emulator import Device, INSTANT_TIMING, request
 import stock_renderer
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nex_fixtures
+
+
+PROFILE = Path(__file__).resolve().parents[1] / "device-profile.zip"
 
 
 class RendererLifecycleTests(unittest.TestCase):
@@ -38,15 +44,17 @@ class RendererLifecycleTests(unittest.TestCase):
                     "phase": "dash", "reboot_revision": 0 if iteration == 1 else 1}}).encode()
             if path.startswith("/api/changes"):
                 return json.dumps({
-                    "component_sha256": "new" if iteration >= 3 else "old",
-                    "runtime_components": {"HalImage.qml": "new" if iteration >= 3 else "old"},
+                    "install": {"revision": 2 if iteration >= 3 else 1},
                     "revision": 1, "resource_revision": 1, "full_refresh": True, "ranges": [],
                 }).encode()
             if path.startswith("/api/memory"):
                 return bytes(int(parse_qs(urlsplit(path).query)["length"][0]))
             raise AssertionError(path)
 
+        launches = []
+
         def make_process(*args, **kwargs):
+            launches.append((args, kwargs))
             process = MagicMock()
             process.poll.return_value = None
             processes.append(process)
@@ -66,15 +74,21 @@ class RendererLifecycleTests(unittest.TestCase):
                     patch.object(stock_renderer, "get", side_effect=get), \
                     patch.object(stock_renderer, "WindowsPipe", side_effect=make_pipe), \
                     patch.object(stock_renderer.subprocess, "Popen", side_effect=make_process), \
-                    patch.object(stock_renderer, "install_startup_qml"), \
-                    patch.object(stock_renderer, "install_sandbox_runtime", side_effect=["old", "new"]) as install, \
+                    patch.object(stock_renderer, "install_startup_qml") as maintained, \
+                    patch.object(stock_renderer, "install_dash_resources") as install, \
                     patch.object(stock_renderer, "sync_resources", return_value={}), \
                     patch.object(stock_renderer, "renderer_environment", return_value={}), \
                     patch.object(stock_renderer, "NspLiveMirror", return_value=mirror), \
                     patch.object(stock_renderer.time, "sleep"):
                 stock_renderer.main()
         self.assertEqual(len(processes), 3)
+        # Once at start and once when the emulator reports a new NEX install.
         self.assertEqual(install.call_count, 2)
+        maintained.assert_not_called()
+        # dash_virtual runs from the mirrored dtn/resources folder, like the dash's QML root.
+        for args, kwargs in launches:
+            self.assertEqual(Path(kwargs["cwd"]).parts[-2:], ("dtn", "resources"))
+            self.assertEqual(args[0][1], "./qml_components_data/qml")
         for process, pipe in zip(processes, pipes):
             process.terminate.assert_called_once()
             pipe.connect.assert_called_once()
@@ -82,77 +96,40 @@ class RendererLifecycleTests(unittest.TestCase):
         pipes[-1].update.assert_any_call(0x1400, b"NSP channel block")
         mirror.close.assert_called_once()
 
-    def test_all_runtime_sidecars_are_checked_before_any_are_written(self):
-        components = {"HalImage.qml": b"new-image", "HalSplash.qml": b"new-splash"}
-        changes = {"component_sha256": hashlib.sha256(components["HalImage.qml"]).hexdigest(),
-                   "runtime_components": {name: hashlib.sha256(data).hexdigest()
-                                          for name, data in components.items()}}
+    def test_complete_sandbox_install_survives_saved_session_restart(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for name in components:
-                target = root / RUNTIME_COMPONENT_PATHS[name]
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(b"old")
-            with patch.object(stock_renderer, "get", side_effect=[b"new-image", b"corrupt"]):
-                with self.assertRaisesRegex(ValueError, "hash mismatch"):
-                    stock_renderer.install_sandbox_runtime("", root, changes)
-            for name in components:
-                self.assertEqual((root / RUNTIME_COMPONENT_PATHS[name]).read_bytes(), b"old")
-            with patch.object(stock_renderer, "get", side_effect=list(components.values())):
-                stock_renderer.install_sandbox_runtime("", root, changes)
-            for name, data in components.items():
-                self.assertEqual((root / RUNTIME_COMPONENT_PATHS[name]).read_bytes(), data)
-
-    def test_complete_sandbox_runtime_survives_saved_session_restart(self):
-        profile = Path(__file__).resolve().parents[1] / "device-profile.zip"
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            payload = bytes(range(32))
-            metadata = bytes(range(16))
-            wrapped = struct.pack("<II4sIIII", 2, 0, bytes(4), 0x25000000, 128, 16384, 4000) + metadata + payload
+            members = {"qml_components_data/qml/user_components/HalImage.qml": b"Item { objectName: 'nex' }",
+                       "qml_components_data/qml/user_components/Ic7New.qml": b"Item {}"}
             package = root / "ic7-2.36-test-experimental.nex"
-            with zipfile.ZipFile(package, "w") as archive:
-                archive.writestr("manifest.xml",
-                                '<NEX_FILE><PRODUCT pid="21" vid="11" hdefFile="ic-7.hdef">'
-                                '<FILE name="res_ic-7.qzip" /></PRODUCT></NEX_FILE>')
-                archive.writestr("res_ic-7.qzip", wrapped)
-                archive.writestr("ic-7.hdef", b"definition")
-            components = {name: ("Item { property string name: '" + name + "' }").encode()
-                          for name in RUNTIME_COMPONENT_PATHS}
-            for name, data in components.items():
-                (root / name).write_bytes(data)
-            (root / "build-report.json").write_text(json.dumps({
-                "label": "test",
-                "packages": {package.name: {"sha256": hashlib.sha256(package.read_bytes()).hexdigest()}},
-                "replacement_component_sha256": hashlib.sha256(components["HalImage.qml"]).hexdigest(),
-                "runtime_components": {name: hashlib.sha256(data).hexdigest()
-                                       for name, data in components.items()},
-            }))
-            device = Device(profile, root / "state", sandbox_package=package)
+            payload, _ = nex_fixtures.write_nex(package, members)
+            device = Device(PROFILE, root / "state", sandbox_package=package, timing=INSTANT_TIMING)
             device.respond(request(1, 0, 0, 2, b"\0\x01"))
             device.respond(request(1, 1, 0x25000000, len(payload), payload))
             device.respond(request(1, 2, 0, 2, b"\0\0"))
             device.save()
-            restored = Device(profile, root / "state")
-            self.assertTrue(restored.sandbox.component_active)
-            self.assertEqual(restored.sandbox.components, components)
-            self.assertEqual(restored.sandbox.runtime_hashes(), device.sandbox.runtime_hashes())
+            shutil.rmtree(device.resources_root)
+            (device.dash_root / "install.json").unlink()
+            restored = Device(PROFILE, root / "state")
+            self.assertTrue(restored.sandbox.installed)
+            self.assertEqual(restored.install["payload_sha256"], hashlib.sha256(payload).hexdigest())
+            for name, data in members.items():
+                self.assertEqual((restored.resources_root / name).read_bytes(), data)
             from viewer import start_viewer
             from urllib.request import urlopen
             server = start_viewer(restored, 0)
             try:
                 base = f"http://127.0.0.1:{server.server_port}"
                 with urlopen(base + "/api/changes") as response:
-                    self.assertEqual(json.load(response)["runtime_components"], restored.sandbox.runtime_hashes())
-                for name, data in components.items():
-                    with urlopen(base + "/api/component?name=" + name) as response:
-                        self.assertEqual(response.read(), data)
+                    self.assertEqual(json.load(response)["install"]["payload_sha256"],
+                                     hashlib.sha256(payload).hexdigest())
+                work = root / "renderer"
+                stock_renderer.install_dash_resources(base, work)
+                for name, data in members.items():
+                    self.assertEqual((stock_renderer.resources_root(work) / name).read_bytes(), data)
             finally:
                 server.shutdown()
                 server.server_close()
-            (root / "HalSplash.qml").write_bytes(b"bad")
-            with self.assertRaisesRegex(ValueError, "hash mismatch"):
-                Device(profile, root / "state")
 
 
 if __name__ == "__main__":
