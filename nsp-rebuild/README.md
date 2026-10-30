@@ -19,6 +19,13 @@ and numeric placement, and keeps warning text and the application's alarm
 logic intact. Ordinary screen media reuses the existing per-screen image
 editor. See the [alert test guide](../ic7-custom-dash/deploy/nsp/ALERTS-TEST.md).
 
+Alarm appearance also supports **Screens (All or 1, 3, 5)**. Restrictions are
+saved with the existing alarm manifest and preserve native alarm/LED logic.
+`AlarmScreenMarkers` preflights a free image slot per configured screen; managed,
+transparent image components forward native screen visibility through the
+shared root and alarm QML. Missing screen identity fails visible with a warning.
+Use the matching screen-aware DLL/NEX pair and upload both settings and resources.
+
 - `ns5/Class237.cs` adds `gif` and `mp4` to Image resource extensions.
 - `ns4/Form40.cs` validates GIF bytes through the image decoder and preserves
   the original animated bytes; MP4 is accepted only with an ISO-BMFF `ftyp`

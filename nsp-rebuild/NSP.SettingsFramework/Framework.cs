@@ -1290,6 +1290,7 @@ public class Framework
 
 	internal void method_52(Setting setting_0)
 	{
+		Form23.SyncAlertMessage(this, setting_0);
 		if (aXl != null)
 		{
 			aXl(setting_0, null);

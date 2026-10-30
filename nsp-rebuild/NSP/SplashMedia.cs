@@ -34,10 +34,10 @@ internal static class SplashMedia
 
 	internal static byte[] CreateManifest(string source, bool animated)
 	{
-		if (source.Length < 3 || (source[0] != 'u' && source[0] != 'h') || source[1] != '/'
+		if (!(source == "" && !animated) && (source.Length < 3 || (source[0] != 'u' && source[0] != 'h') || source[1] != '/'
 			|| source.Substring(2).IndexOfAny(new[] { '/', '\\', '\0' }) >= 0
 			|| source.Substring(2) == "." || source.Substring(2) == ".."
-			|| source.Substring(2).Equals(ManifestName, StringComparison.OrdinalIgnoreCase))
+			|| source.Substring(2).Equals(ManifestName, StringComparison.OrdinalIgnoreCase)))
 		{
 			throw new InvalidDataException("Invalid splash resource name: " + source);
 		}
@@ -51,17 +51,6 @@ internal static class SplashMedia
 
 	internal static void SaveManifest(string imageDirectory, byte[] manifest)
 	{
-		Directory.CreateDirectory(imageDirectory);
-		string target = Path.Combine(imageDirectory, ManifestName);
-		string temporary = target + ".tmp";
-		try
-		{
-			File.WriteAllBytes(temporary, manifest);
-			File.Move(temporary, target, overwrite: true);
-		}
-		finally
-		{
-			File.Delete(temporary);
-		}
+		MediaResource.Save(imageDirectory, ManifestName, manifest);
 	}
 }

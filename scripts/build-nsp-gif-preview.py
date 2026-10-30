@@ -13,11 +13,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 
 TARGET = "qml_components_data/qml/user_components/HalImage.qml"
-ROOT_TARGET = "qml_components_data/qml/factory_screens/main.qml"
-SPLASH_TARGET = "qml_components_data/qml/user_components/HalSplash.qml"
-ALERT_TARGET = "qml_components_data/qml/user_components/HalAlarmPopup.qml"
-ALERT_HASH = "63494b94c898537a8e9e443693987d6ddb6a188a9d8a05bdc12edb344d1678cc"
-ROOT_HASH = "6a8afa8496f589799a6593eb27f9aa641bb1cb65249fd520c4d471427bac5968"
 
 
 def digest(payload):
@@ -34,24 +29,17 @@ def read_members(payload):
         return result
 
 
-def replace_component(payload, replacement, splash_components=None):
-    replacements = {TARGET: replacement, **(splash_components or {})}
+def replace_component(payload, replacement):
     output = io.BytesIO()
     with tarfile.open(fileobj=io.BytesIO(payload), mode="r:") as source:
         with tarfile.open(fileobj=output, mode="w", format=tarfile.GNU_FORMAT) as destination:
             for member in source.getmembers():
                 metadata = copy.copy(member)
                 contents = source.extractfile(member) if member.isfile() else None
-                if member.name in replacements:
-                    data = replacements.pop(member.name)
-                    metadata.size = len(data)
-                    contents = io.BytesIO(data)
+                if member.name == TARGET:
+                    metadata.size = len(replacement)
+                    contents = io.BytesIO(replacement)
                 destination.addfile(metadata, contents)
-            for name, data in replacements.items():
-                metadata = tarfile.TarInfo(name)
-                metadata.size = len(data)
-                metadata.mode = 0o644
-                destination.addfile(metadata, io.BytesIO(data))
     return output.getvalue()
 
 
@@ -93,12 +81,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--label", default="gif-preview")
     parser.add_argument("--package-version", default="2.36.0.0.0")
-    parser.add_argument("--splash", action="store_true",
-                        help="Also install the bounded Qt-stage startup splash and root QML")
-    parser.add_argument("--alerts", action="store_true", help="Also install animated/positioned alert banners")
     args = parser.parse_args()
-    if args.alerts and not args.splash:
-        parser.error("--alerts requires --splash")
     if not args.label or any(not (character.islower() or character.isdigit() or character == "-")
                              for character in args.label):
         parser.error("--label may contain only lowercase letters, digits, and hyphens")
@@ -121,28 +104,12 @@ def main():
     if digest(original_members[TARGET]) != expected:
         raise ValueError("Target component does not match the verified v2.36 baseline")
     replacement = args.component.read_bytes()
-    splash_components = {}
-    if args.splash:
-        if digest(original_members[ROOT_TARGET]) != ROOT_HASH:
-            raise ValueError("Root QML does not match the verified v2.36 baseline")
-        for target, filename in ((ROOT_TARGET, "main.qml"), (SPLASH_TARGET, "HalSplash.qml")):
-            splash_components[target] = (args.component.parent / filename).read_bytes()
-    if args.alerts:
-        if digest(original_members[ALERT_TARGET]) != ALERT_HASH:
-            raise ValueError("Alarm QML does not match the verified v2.36 baseline")
-        splash_components[ALERT_TARGET] = (args.component.parent / "HalAlarmPopup.qml").read_bytes()
-    rebuilt = replace_component(decoded, replacement, splash_components)
+    rebuilt = replace_component(decoded, replacement)
     rebuilt_members = read_members(rebuilt)
-    added = set(rebuilt_members) - set(original_members)
-    if added != ({SPLASH_TARGET} if args.splash else set()) or set(original_members) - set(rebuilt_members):
+    if original_members.keys() != rebuilt_members.keys():
         raise ValueError("Resource archive member set changed")
     changed = [name for name in original_members if original_members[name] != rebuilt_members[name]]
-    expected_changes = {TARGET}
-    if args.splash:
-        expected_changes.add(ROOT_TARGET)
-    if args.alerts:
-        expected_changes.add(ALERT_TARGET)
-    if set(changed) != expected_changes:
+    if changed != [TARGET]:
         raise ValueError(f"Unexpected resource changes: {changed}")
     key = codec["read_parameter"](args.reference, "encryption_keys", 1)
     vector = codec["read_parameter"](args.reference, "initial_vectors", 1)
@@ -153,8 +120,6 @@ def main():
         raise ValueError("Encoded resource round-trip mismatch")
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "HalImage.qml").write_bytes(replacement)
-    for target, data in splash_components.items():
-        (args.output / Path(target).name).write_bytes(data)
     packages = {}
     for package_label, payload in ((args.label, candidate), ("stock-resources", original)):
         version_label = ".".join(version_parts[:2])
@@ -177,14 +142,7 @@ def main():
         "status": "offline-validated; NSP acceptance and hardware installation untested",
         "label": args.label,
         "package_version": args.package_version,
-        "changed_members": changed, "preserved_members": len(original_members) - len(changed),
-        "added_members": sorted(added),
-        "startup_splash": args.splash,
-        "alert_media": args.alerts,
-        "runtime_components": {
-            Path(name).name: digest(data)
-            for name, data in {TARGET: replacement, **splash_components}.items()
-        },
+        "changed_members": changed, "preserved_members": len(original_members) - 1,
         "original_component_sha256": expected, "replacement_component_sha256": digest(replacement),
         "wrapper_preserved": candidate[:44] == original[:44],
         "migration_definition": {"name": hdef_name, "bytes": len(migration_definition),

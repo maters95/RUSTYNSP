@@ -1,0 +1,167 @@
+{
+  "root_cause": "Splash and alert manifests used the desktop relative path on the physical dash; user_resources is beside resources, not within it.",
+  "capture": {
+    "file": "fail.pcapng",
+    "sha256": "88877555fcda8ae18141a0753f9062212e338294710fdf83e7861c27fb209a5c",
+    "decoded_read_requests": 9367,
+    "decoded_write_requests": 5264,
+    "crc_failure_candidates": 0,
+    "truncated_frames": 0,
+    "undecoded_bytes": 0,
+    "unanswered_requests": 0,
+    "resource_upload_ack_statuses": {
+      "00": 485
+    },
+    "firmware_body_bytes": 17397760,
+    "firmware_body_matches_previous_screen_alarm_candidate": true,
+    "mode_switch_error_replies": [
+      {
+        "request_frame": 23349,
+        "response_frame": 23351,
+        "address": "0x0",
+        "payload_hex": "0001"
+      },
+      {
+        "request_frame": 40553,
+        "response_frame": 40555,
+        "address": "0x0",
+        "payload_hex": "0000"
+      }
+    ],
+    "target_installation_verified": false
+  },
+  "map": {
+    "source_sha256": "9d999bed4eeee176a3f7c005ac8343b89c10d472568ff1e98fe28dbcd35ee689",
+    "restored_file": "KFC-screen-5-restored.ic7-2-36-0.nexmap",
+    "sha256": "72c33d2ffe47aa414435e685367828b15213f0b2946bea800133ab782c49002d",
+    "native_settings_and_integrity_byte_identical": true,
+    "all_original_members_byte_identical": true,
+    "added_members": [
+      "user_resources/images/ic7_alerts.json",
+      "user_resources/images/kfc_colonel_limiter_860.gif"
+    ],
+    "appearance": {
+      "version": 1,
+      "banners": [
+        {
+          "text": "KFC LIMITER",
+          "source": "u/kfc_colonel_limiter_860.gif",
+          "x": 0,
+          "y": 0,
+          "width": 860,
+          "height": 480,
+          "gifOnly": true,
+          "messageDataId": 1112969,
+          "screens": [
+            5
+          ]
+        }
+      ]
+    },
+    "gif": {
+      "size": [
+        860,
+        480
+      ],
+      "frames": 24
+    }
+  },
+  "tests": {
+    "desktop_qt": 51,
+    "arm_qt_qemu": 45,
+    "emulator": 116,
+    "nsp_build_errors": 0,
+    "nsp_build_existing_warnings": 402,
+    "before_fix_real_layout_startup_test": "failed",
+    "after_fix_real_layout_startup_test": "passed",
+    "manifest_native_renderer_package": 18,
+    "desktop_startup_pixels": {
+      "png_paints_over_black": true,
+      "gif_paints_over_black": true,
+      "gif_pixels_change": true
+    },
+    "arm_pixels_verified": false,
+    "arm_pixel_limit": "Qt 5.9.6 QEMU offscreen image-grab returns black even for independent red-rectangle control; ARM checks cover decoding, path, timing and screen logic only."
+  },
+  "firmware_resource_build": {
+    "status": "offline-validated; NSP acceptance and hardware installation untested",
+    "label": "screen-alarms",
+    "package_version": "2.36.0.0.0",
+    "changed_members": [
+      "qml_components_data/qml/factory_screens/main.qml",
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "qml_components_data/qml/user_components/HalImage.qml"
+    ],
+    "preserved_members": 336,
+    "added_members": [
+      "qml_components_data/qml/user_components/HalSplash.qml"
+    ],
+    "startup_splash": true,
+    "alert_media": true,
+    "runtime_components": {
+      "HalImage.qml": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+      "main.qml": "cf282c7077fcddb3c4a2052665c9506d0f8b36350700bd3b1d800e1137461b83",
+      "HalSplash.qml": "8622e242be00df6352b0b180e4fab902e7fb7db0215216625be7fd2f40752920",
+      "HalAlarmPopup.qml": "c22d2cb107670c19a83f109ed3ad56cfc72136b49431bd6c0e3da58fe36d4fee"
+    },
+    "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+    "replacement_component_sha256": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+    "wrapper_preserved": true,
+    "migration_definition": {
+      "name": "ic-7.hdef",
+      "bytes": 7971401,
+      "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+      "listed_for_device_update": false
+    },
+    "archive_format": "tar",
+    "roundtrip_integrity_valid": true,
+    "packages": {
+      "ic7-2.36-screen-alarms-experimental.nex": {
+        "bytes": 25369879,
+        "sha256": "9f4f449f57b2aba20088fdee3ca5c14503fce5956bdfec1fb500259e2d084683"
+      },
+      "ic7-2.36-stock-resources-experimental.nex": {
+        "bytes": 25343767,
+        "sha256": "da4c15288c9205830a91e196b88bdcd37902530a9341ba97bc75d1bbc9f2ec88"
+      }
+    }
+  },
+  "not_verified": [
+    "Physical installation and cold boot of corrected NEX",
+    "Live physical screen-scoping and GIF alarm display",
+    "Static PNG selection stock BMP/kernel-logo workflow",
+    "Windows NSP acceptance and frame-exact emulator parity"
+  ],
+  "native_review": {
+    "screen_container_parent": "QQuickView::rootObject at 0x1188f0/0x1188fc",
+    "component_visual_parent": "screen QQuickItem at 0x10ef68/0x10ef70",
+    "screen_visibility": "QQuickItem::setVisible at 0x117f20",
+    "videofix_comparison": {
+      "preserved_members": 336,
+      "changed": [
+        "main.qml",
+        "HalAlarmPopup.qml",
+        "HalImage.qml"
+      ],
+      "added": [
+        "HalSplash.qml"
+      ]
+    }
+  },
+  "replacement_archive": {
+    "baseline": "ic7-screen-alarms-2026-10-29.zip",
+    "standalone": false,
+    "runtime_and_map_files": [
+      "NSP-test-kit/NSP-test/NSP.dll",
+      "NSP-test-kit/firmware/HalAlarmPopup.qml",
+      "NSP-test-kit/firmware/HalSplash.qml",
+      "NSP-test-kit/firmware/build-report.json",
+      "NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex",
+      "NSP-test-kit/map/KFC-screen-5-restored.ic7-2-36-0.nexmap",
+      "ic7-emulator/qml/stock_renderer/HalAlarmPopup.qml",
+      "ic7-emulator/qml/stock_renderer/HalSplash.qml",
+      "ic7-emulator/workbench.py"
+    ],
+    "unchanged_samples_and_runtime_included": false
+  }
+}

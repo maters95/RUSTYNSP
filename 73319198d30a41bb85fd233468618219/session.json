@@ -1,0 +1,24 @@
+{
+  "requests": 15920,
+  "staged_regions": [
+    620756992,
+    637534208
+  ],
+  "mode": "main",
+  "map_loaded": true,
+  "sandbox_update": {
+    "package": "ic7-2.36-native-media-alerts-experimental.nex",
+    "status": "transfer-complete",
+    "error": null,
+    "migration_definition": "ic-7.hdef",
+    "expected_bytes": 17387520,
+    "received_bytes": 17387520,
+    "expected_sha256": "0cb839d70116261ea98bada486b86db648f2d9c2210540c3f1320e53c6b3e8a0",
+    "main_returned": true,
+    "component_available": true,
+    "component_active": true,
+    "verification": "NSP returned to main after an exact payload transfer; target install unverified"
+  },
+  "sandbox_package": "C:\\Users\\ZakMasters\\Downloads\\ic7-final-windows-test-2026-10-29\\NSP-test-kit\\firmware\\ic7-2.36-native-media-alerts-experimental.nex",
+  "firmware_execution": false
+}

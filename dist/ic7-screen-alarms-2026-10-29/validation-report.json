@@ -1,0 +1,84 @@
+{
+  "feature": "Screen-scoped alarm popup visibility",
+  "configured_alarm": "KFC LIMITER",
+  "configured_screens": [
+    5
+  ],
+  "native_alarm_engine_and_led_rules_changed": false,
+  "validation": {
+    "desktop_qt_checks": 48,
+    "arm_qt_qemu_checks": 44,
+    "emulator_tests": 115,
+    "manifest_native_runtime_and_package_tests": 9,
+    "nsp_build_errors": 0,
+    "nsp_build_warnings": 402,
+    "native_visibility_switch_without_alarm_retrigger": true,
+    "missing_screen_identity_fails_visible": true,
+    "synthetic_preview_hidden_pixels_match_no_alarm_baseline": true
+  },
+  "map_preparation": {
+    "source_sha256": "1d7b2d993b5452260c8d0a3c693ddafce007c108cdfdd413aa9ade8f7f85c7a1",
+    "prepared_map": "KFC-screen-5.ic7-2-36-0.nexmap",
+    "map_sha256": "b1b1605a10690bcff59255a5ef85b02de90fc1685a19f408ecff2771971bd795",
+    "authenticated_entries": 45,
+    "native_settings_and_checksum_byte_identical": true,
+    "existing_images_layouts_and_splash_unchanged": true,
+    "only_changed_member": "user_resources/images/ic7_alerts.json",
+    "kfc_limiter_screens": [
+      5
+    ],
+    "other_alarm_configuration_unchanged": true,
+    "bridge_installation": "Open Alarm appearance for KFC LIMITER, Apply, then Save in matching NSP. This installs the transparent tracking components using native setting APIs; settings were deliberately not rewritten offline.",
+    "physical_flash_validated": false
+  },
+  "firmware_resource_build": {
+    "status": "offline-validated; NSP acceptance and hardware installation untested",
+    "label": "screen-alarms",
+    "package_version": "2.36.0.0.0",
+    "changed_members": [
+      "qml_components_data/qml/factory_screens/main.qml",
+      "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+      "qml_components_data/qml/user_components/HalImage.qml"
+    ],
+    "preserved_members": 336,
+    "added_members": [
+      "qml_components_data/qml/user_components/HalSplash.qml"
+    ],
+    "startup_splash": true,
+    "alert_media": true,
+    "runtime_components": {
+      "HalImage.qml": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+      "main.qml": "cf282c7077fcddb3c4a2052665c9506d0f8b36350700bd3b1d800e1137461b83",
+      "HalSplash.qml": "1051eaed0e5106bf4a7e23c1d2f710e8332e8fc531a585cf5ead19cdd899a19c",
+      "HalAlarmPopup.qml": "9cccdba3016512c49f966d1e57b877a033abad1813f59b5b78e7c81edb73cb42"
+    },
+    "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+    "replacement_component_sha256": "44399583ae9815643b8b948cb11fde7b524e5200e894946a754ef896c3450c66",
+    "wrapper_preserved": true,
+    "migration_definition": {
+      "name": "ic-7.hdef",
+      "bytes": 7971401,
+      "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+      "listed_for_device_update": false
+    },
+    "archive_format": "tar",
+    "roundtrip_integrity_valid": true,
+    "packages": {
+      "ic7-2.36-screen-alarms-experimental.nex": {
+        "bytes": 25369879,
+        "sha256": "7d3f8c969f0a9b4f8fc1800a464b5b1cd7a2654d29cda7f6ccbb0b3e3e4aa9e5"
+      },
+      "ic7-2.36-stock-resources-experimental.nex": {
+        "bytes": 25343767,
+        "sha256": "7bfb41e7f419fc536a884adcd2a1659675bd6b51c96bc55a007c787585c5bfe8"
+      }
+    }
+  },
+  "not_verified": [
+    "Windows NSP GUI execution and native renderer plugin loading",
+    "Physical dash screen switching",
+    "Real modified-NEX installation, boot and recovery",
+    "Frame-exact Windows NSP/emulator synchronization"
+  ],
+  "required_first_use": "In matching NSP, open KFC LIMITER Appearance, Apply, OK and Save to create transparent screen markers using native setting APIs."
+}

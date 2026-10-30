@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -15,40 +16,30 @@ internal sealed class AlertBannerEditor : Form
 {
 	private readonly Framework framework;
 	private readonly BindingList<NSP.AlertBanner> banners;
+	private readonly System.Collections.Generic.List<NSP.AlertBanner> otherBanners;
 	private readonly DataGridView grid = new DataGridView();
 	private readonly Panel canvas = new Panel();
-	private readonly ComboBox previewScreen = new ComboBox { Width = 190, DropDownStyle = ComboBoxStyle.DropDownList };
+	private readonly Label status = new Label { AutoSize = true, Dock = DockStyle.Fill };
+	private readonly CheckBox applyToDash = new CheckBox { Text = "Also upload to connected dash", AutoSize = true };
 	private Point dragStart;
 	private Rectangle original;
 	private bool resizing;
 	private bool dragging;
 	private NSP.AlertBanner Selected => grid.CurrentRow?.DataBoundItem as NSP.AlertBanner;
-	// Number of screens the editor offers: the map's real screens, capped at the
-	// five the v2.36 dash actually renders.
-	private readonly int screenCount;
-	// Zero-based screen shown in the layout preview; -1 shows the all-screens rules.
-	private int PreviewScreen => previewScreen.SelectedIndex - 1;
-
-	// The rules the dash draws on the previewed screen, in manifest order.
-	private System.Collections.Generic.List<NSP.AlertBanner> DisplayedBanners() => banners
-		.Where(banner => PreviewScreen < 0 ? banner.Screens == null
-			: NSP.AlertMedia.Resolve(banners, banner.Text, PreviewScreen) == banner)
-		.ToList();
 
 	internal AlertBannerEditor(Framework currentFramework, string focusText = null)
 	{
 		framework = currentFramework;
-		banners = new BindingList<NSP.AlertBanner>(NSP.AlertMedia.Read(
-			Path.Combine(Form23.string_10, "images", NSP.AlertMedia.ManifestName)));
-		Text = "iC-7 alert GIF banners and placement";
-		screenCount = RealScreenCount();
-		// Populated before the grid can raise SelectionChanged, which switches it.
-		// The preview uses the map's real screens so it matches what NSP shows.
-		previewScreen.Items.Add("Preview: All-screens rules");
-		for (int screen = 1; screen <= screenCount; screen++)
-			previewScreen.Items.Add("Preview: Screen " + screen);
-		// Open on the screen NSP currently has active, so editing lines up with the dash.
-		previewScreen.SelectedIndex = Math.Clamp(ActiveScreenIndex() + 1, 0, screenCount);
+		var savedBanners = NSP.AlertMedia.Read(
+			Path.Combine(Form23.string_10, "images", NSP.AlertMedia.ManifestName));
+		bool focused = !string.IsNullOrWhiteSpace(focusText);
+		otherBanners = focused
+			? savedBanners.Where(banner => banner.Text != focusText).ToList()
+			: new System.Collections.Generic.List<NSP.AlertBanner>();
+		banners = new BindingList<NSP.AlertBanner>(focused
+			? savedBanners.Where(banner => banner.Text == focusText).ToList()
+			: savedBanners);
+		Text = focused ? "Alarm appearance - " + focusText : "Alarm appearance";
 		Width = 1000;
 		Height = 760;
 		MinimumSize = new Size(920, 680);
@@ -56,18 +47,20 @@ internal sealed class AlertBannerEditor : Form
 		BackColor = Form23.color_10;
 		ForeColor = Form23.color_12;
 
-		var layout = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 4, ColumnCount = 1 };
-		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 72));
+		var layout = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 5, ColumnCount = 1 };
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 75));
 		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 190));
 		layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 45));
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
+		layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30));
 		Controls.Add(layout);
 		layout.Controls.Add(new Label {
 			Dock = DockStyle.Fill,
-			Text = "Match the alarm's exact Message text (as shown on the dash, case-sensitive). Colour, priority and clearing remain controlled by the dash.\r\n" +
-				"The preview shows the selected screen exactly as the dash draws it, with your alert over it. Drag a rectangle to move; drag its bottom-right corner to resize.\r\n" +
+			Text = (focused ? "Appearance for " + focusText + ". Colour, priority and clearing remain controlled by the dash.\r\n"
+				: "Choose an alarm's Message text. Colour, priority and clearing remain controlled by the dash.\r\n") +
+				"Drag a rectangle to move; drag its bottom-right corner to resize. Numeric values use the 860 x 480 dash canvas. GIFs animate in this preview.\r\n" +
 				"Tick \"GIF only\" to hide the coloured banner and text; if the GIF cannot load, the dash restores the stock warning.\r\n" +
-				"Screens: \"All\", or screen numbers such as \"1, 3\". On those screens that rule replaces the alarm's \"All\" rule; alarms are never hidden."
+				"Screens: All, a single number (5), or a list (1, 3, 5). Restrictions hide the popup only; native alarm and LED logic is unchanged."
 		});
 		grid.Dock = DockStyle.Fill;
 		grid.AutoGenerateColumns = false;
@@ -75,36 +68,31 @@ internal sealed class AlertBannerEditor : Form
 		grid.AllowUserToDeleteRows = false;
 		grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 		grid.MultiSelect = false;
-		foreach (string name in new[] { "Text", "Screens", "Source", "X", "Y", "Width", "Height" })
+		foreach (string name in new[] { "Text", "Source", "X", "Y", "Width", "Height" })
 			grid.Columns.Add(new DataGridViewTextBoxColumn {
-				DataPropertyName = name == "Screens" ? "ScreensText" : name,
-				HeaderText = name == "Text" ? "Exact alarm text" : name == "Screens" ? "Screens (All or 1-" + screenCount + ")" : name,
-				Width = name == "Text" || name == "Source" ? 230 : name == "Screens" ? 110 : 65, ReadOnly = name == "Source"
+				DataPropertyName = name, HeaderText = name == "Text" ? "Exact alarm text" : name,
+				Width = name == "Text" || name == "Source" ? 260 : 65,
+				ReadOnly = name == "Source" || (focused && name == "Text")
 			});
 		grid.Columns.Add(new DataGridViewCheckBoxColumn {
 			DataPropertyName = "GifOnly", HeaderText = "GIF only (hide text/banner)", Width = 110
+		});
+		grid.Columns.Add(new DataGridViewTextBoxColumn {
+			DataPropertyName = "ScreensText", HeaderText = "Screens (All or 1, 3, 5)", Width = 155
 		});
 		grid.DataSource = banners;
 		grid.CurrentCellDirtyStateChanged += (_, _) => {
 			if (grid.IsCurrentCellDirty && grid.CurrentCell is DataGridViewCheckBoxCell)
 				grid.CommitEdit(DataGridViewDataErrorContexts.Commit);
 		};
-		grid.SelectionChanged += (_, _) => {
-			// Show a screen on which the selected rule is actually drawn.
-			if (Selected != null && !DisplayedBanners().Contains(Selected))
-				previewScreen.SelectedIndex = Selected.Screens == null ? 0 : Selected.Screens[0] + 1;
-			canvas.Invalidate();
-		};
+		grid.SelectionChanged += (_, _) => canvas.Invalidate();
 		grid.CellValueChanged += (_, _) => canvas.Invalidate();
 		grid.CellValidating += (_, e) => {
 			string property = grid.Columns[e.ColumnIndex].DataPropertyName;
 			if (property == "ScreensText")
 			{
-				try
-				{
-					NSP.AlertMedia.ParseScreens(Convert.ToString(e.FormattedValue));
-				}
-				catch (FormatException error)
+				try { new NSP.AlertBanner { ScreensText = Convert.ToString(e.FormattedValue) }; }
+				catch (InvalidDataException error)
 				{
 					e.Cancel = true;
 					MessageBox.Show(this, error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -124,7 +112,7 @@ internal sealed class AlertBannerEditor : Form
 		};
 		grid.DataError += (_, e) => {
 			e.ThrowException = false;
-			MessageBox.Show(this, "Coordinates and dimensions must be whole numbers.", Text,
+			MessageBox.Show(this, "Use whole-number coordinates and dimensions. Screens must be All or distinct numbers from 1 to 5.", Text,
 				MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 		};
 		layout.Controls.Add(grid);
@@ -138,9 +126,9 @@ internal sealed class AlertBannerEditor : Form
 		layout.Controls.Add(canvas);
 
 		var buttons = new FlowLayoutPanel { Dock = DockStyle.Fill };
-		previewScreen.SelectedIndexChanged += (_, _) => canvas.Invalidate();
-		buttons.Controls.Add(previewScreen);
 		var names = new ComboBox { Width = 210, DropDownStyle = ComboBoxStyle.DropDown };
+		names.Text = focusText ?? "";
+		names.Enabled = !focused;
 		if (framework.awp != null)
 			foreach (var alarm in framework.awp.method_73())
 			{
@@ -151,17 +139,9 @@ internal sealed class AlertBannerEditor : Form
 		buttons.Controls.Add(names);
 		AddButton(buttons, "Add alarm", () => {
 			string text = names.Text;
-			if (string.IsNullOrWhiteSpace(text))
-				throw new InvalidDataException("Choose an alarm name.");
-			var banner = new NSP.AlertBanner { Text = text };
-			if (banners.Any(existing => existing.Text == text))
-			{
-				if (PreviewScreen < 0)
-					throw new InvalidDataException("\"" + text + "\" already has a rule. Choose a preview screen to add a rule for that screen only.");
-				banner.Screens = new System.Collections.Generic.List<int> { PreviewScreen };
-			}
-			NSP.AlertMedia.Validate(banners.Append(banner));
-			banners.Add(banner);
+			if (string.IsNullOrWhiteSpace(text) || banners.Any(banner => banner.Text == text))
+				throw new InvalidDataException("Choose a nonempty, unique alarm name.");
+			banners.Add(new NSP.AlertBanner { Text = text });
 			grid.CurrentCell = grid.Rows[banners.Count - 1].Cells[0];
 		});
 		AddButton(buttons, "Choose GIF/image", ChooseImage);
@@ -178,8 +158,14 @@ internal sealed class AlertBannerEditor : Form
 				banners.Remove(Selected);
 			canvas.Invalidate();
 		});
-		AddButton(buttons, "Save / apply", SaveBanners);
+		AddButton(buttons, "Apply", SaveBanners);
+		AcceptButton = AddButton(buttons, "OK", () => { SaveBanners(); DialogResult = DialogResult.OK; Close(); });
+		CancelButton = AddButton(buttons, "Cancel", () => { DialogResult = DialogResult.Cancel; Close(); }, false);
+		applyToDash.Enabled = Form23.smethod_28(framework.aXc, true);
+		buttons.Controls.Add(applyToDash);
 		layout.Controls.Add(buttons);
+		status.Text = "Apply updates this map and its desktop preview. Save the map normally to keep changes.";
+		layout.Controls.Add(status);
 		FormClosed += (_, _) => ClearPreviewImages();
 		if (!string.IsNullOrWhiteSpace(focusText))
 		{
@@ -278,13 +264,13 @@ internal sealed class AlertBannerEditor : Form
 		return image;
 	}
 
-	private void AddButton(Control parent, string text, Action action)
+	private ThemedButton AddButton(Control parent, string text, Action action, bool validate = true)
 	{
-		var button = new Button { Text = text, AutoSize = true };
+		var button = new ThemedButton { Text = text, AutoSize = true, CausesValidation = validate };
 		button.Click += (_, _) => {
 			try
 			{
-				if (!grid.EndEdit())
+				if (validate && !grid.EndEdit())
 					throw new InvalidDataException("Correct the current cell before continuing.");
 				action();
 			}
@@ -295,6 +281,7 @@ internal sealed class AlertBannerEditor : Form
 			}
 		};
 		parent.Controls.Add(button);
+		return button;
 	}
 
 	private void ChooseImage()
@@ -314,9 +301,51 @@ internal sealed class AlertBannerEditor : Form
 
 	private void SaveBanners()
 	{
-		byte[] manifest = NSP.AlertMedia.Serialize(banners.ToList());
-		bool online = Form23.smethod_28(framework.aXc, true);
-		foreach (var source in banners.Where(banner => banner.Source.Length != 0)
+		if (!ValidateChildren())
+			throw new InvalidDataException("Correct the highlighted value before applying.");
+		grid.EndEdit();
+		BindingContext[banners].EndCurrentEdit();
+		var allBanners = otherBanners.Concat(banners).ToList();
+		if (framework.awp != null)
+		{
+			var messages = framework.awp.method_73()
+				.Select(alarm => new { Text = AlarmText(alarm), Setting = AlarmTextSetting(alarm) })
+				.Where(message => message.Setting != null).ToList();
+			foreach (var banner in allBanners)
+			{
+				var matches = messages.Where(message => message.Text == banner.Text).ToList();
+				banner.MessageDataId = matches.Count == 1 ? matches[0].Setting.method_64() : null;
+			}
+		}
+		byte[] manifest = NSP.AlertMedia.Serialize(allBanners);
+		bool online = applyToDash.Checked;
+		if (online && !Form23.smethod_28(framework.aXc, true))
+			throw new IOException("The dash is disconnected. Untick upload to apply changes to the map only.");
+		var markerSettings = new System.Collections.Generic.Dictionary<string, Setting>();
+		var markerEdits = new System.Collections.Generic.Dictionary<string, string>();
+		int screenCount = 0;
+		if (allBanners.Any(banner => banner.Screens != null))
+		{
+			var settings = framework.aWs.Values
+				.Where(setting => framework.method_31(setting.method_64()) == setting)
+				.Where(setting => setting.method_2() == "NUM_SCREENS"
+					|| setting.method_2()?.StartsWith("SCREEN_", StringComparison.Ordinal) == true)
+				.ToDictionary(setting => setting.method_2(), setting => setting);
+			if (!settings.TryGetValue("NUM_SCREENS", out Setting numberOfScreens))
+				throw new InvalidDataException("The map has no native screen-count setting.");
+			screenCount = numberOfScreens.method_256();
+			if (allBanners.Any(banner => banner.Screens != null && banner.Screens.Any(screen => screen > screenCount)))
+				throw new InvalidDataException("Choose only screens that exist in this map.");
+			markerSettings = settings.Where(entry => entry.Key.StartsWith("SCREEN_", StringComparison.Ordinal))
+				.ToDictionary(entry => entry.Key, entry => entry.Value);
+			markerEdits = NSP.AlarmScreenMarkers.Plan(markerSettings.ToDictionary(entry => entry.Key,
+				entry => entry.Value.method_70() != 0 ? entry.Value.method_260()
+					: entry.Value.method_256().ToString(CultureInfo.InvariantCulture)), screenCount);
+			if (markerEdits.Count > 0 && !online && Form23.smethod_28(framework.aXc, false))
+				throw new InvalidOperationException("Screen tracking needs new map components. Disconnect the dash first, or tick Also upload to connected dash to apply the native setting changes.");
+		}
+		var images = new System.Collections.Generic.List<(string source, byte[] bytes)>();
+		foreach (var source in allBanners.Where(banner => banner.Source.Length != 0)
 			.Select(banner => banner.Source).Distinct(StringComparer.Ordinal))
 		{
 			string path = source.StartsWith("u/", StringComparison.Ordinal)
@@ -328,93 +357,51 @@ internal sealed class AlertBannerEditor : Form
 			if (NSP.MediaResource.HasMp4Header(image))
 				throw new InvalidDataException("Alert banners require a GIF or static image, not an MP4 alias.");
 			NSP.SplashMedia.IsAnimated(path, image);
-			if (online && source.StartsWith("u/", StringComparison.Ordinal))
-				Form23.UploadImageResource(source, image);
+			images.Add((source, image));
 		}
-		if (!Form23.smethod_20(Form23.string_10, NSP.AlertMedia.ManifestName, manifest, "images", out string error)
-			|| !Form23.smethod_18(framework, NSP.AlertMedia.ManifestName, manifest, "images", out error))
-			throw new IOException("Cannot save alert configuration: " + error);
+		foreach (var image in images.Where(image => image.source.StartsWith("u/", StringComparison.Ordinal)))
+			Form23.SaveMediaResource(framework, image.source.Substring(2), image.bytes);
+		for (int screen = 1; screen <= screenCount; screen++)
+		{
+			string source = NSP.AlarmScreenMarkers.Source(screen);
+			Form23.SaveMediaResource(framework, source.Substring(2), NSP.AlarmScreenMarkers.Image);
+			images.Add((source, NSP.AlarmScreenMarkers.Image));
+		}
+		if (markerEdits.Count > 0)
+		{
+			var undo = Form23.smethod_95();
+			undo?.method_1();
+			bool notify = framework.method_53();
+			framework.method_55();
+			try
+			{
+				foreach (var edit in markerEdits)
+				{
+					Setting setting = markerSettings[edit.Key];
+					if (setting.method_70() != 0)
+						setting.method_262(edit.Value, true);
+					else
+						setting.method_272(int.Parse(edit.Value, CultureInfo.InvariantCulture), true);
+				}
+				framework.aXd = true;
+			}
+			finally
+			{
+				undo?.method_4();
+				if (notify)
+					framework.method_54(true);
+			}
+		}
+		Form23.SaveMediaResource(framework, NSP.AlertMedia.ManifestName, manifest);
+		bool previewRunning = Form23.RefreshMediaPreview(framework);
 		if (online)
+		{
+			foreach (var image in images.Where(image => image.source.StartsWith("u/", StringComparison.Ordinal)))
+				Form23.UploadImageResource(image.source, image.bytes);
 			Form23.UploadImageResource("u/" + NSP.AlertMedia.ManifestName, manifest);
-		MessageBox.Show(this, "Alert overrides saved to user resources. Save the map under a new name.\r\n" +
-			"Upload/apply the map resources and reboot the dash/emulator, or reopen the map's desktop renderer, to reload them.",
-			Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-	}
-
-	// ---- Native map preview: show the selected screen's real backdrop ----------
-
-	private int RealScreenCount()
-	{
-		try { return Math.Clamp(framework?.awP?.method_79()?.Count ?? NSP.AlertMedia.ScreenCount, 1, NSP.AlertMedia.ScreenCount); }
-		catch { return NSP.AlertMedia.ScreenCount; }
-	}
-
-	private int ActiveScreenIndex()
-	{
-		try { return framework?.awP?.method_78()?.method_256() ?? -1; }
-		catch { return -1; }
-	}
-
-	private static bool IsImageSource(string source) => source != null
-		&& (source.StartsWith("h/", StringComparison.Ordinal) || source.StartsWith("u/", StringComparison.Ordinal))
-		&& new[] { ".png", ".jpg", ".jpeg", ".bmp", ".gif" }
-			.Any(extension => source.EndsWith(extension, StringComparison.OrdinalIgnoreCase));
-
-	// The selected screen's enabled components (rectangle, image source, label), drawn
-	// in z-order so a full-screen background sits behind the gauges, matching the dash.
-	private System.Collections.Generic.List<(Rectangle rect, string source, string label)> ScreenComponents(int screenIndex)
-	{
-		var ordered = new System.Collections.Generic.List<(int z, Rectangle rect, string source, string label)>();
-		try
-		{
-			var screens = framework?.awP?.method_79();
-			if (screens == null || screenIndex < 0 || screenIndex >= screens.Count)
-				return new System.Collections.Generic.List<(Rectangle, string, string)>();
-			foreach (var component in screens[screenIndex].method_72())
-			{
-				if (component.method_297().method_256() == 0)
-					continue;
-				int w = component.method_302().method_256();
-				int h = component.method_303().method_256();
-				if (w <= 0 || h <= 0)
-					continue;
-				var rect = new Rectangle(component.method_299().method_256(), component.method_300().method_256(), w, h);
-				string source = null, label = null;
-				try { source = component.method_298()?.method_260()?.TrimEnd('\0'); } catch { }
-				try { label = component.method_304()?.method_260()?.TrimEnd('\0'); } catch { }
-				ordered.Add((component.method_301().method_256(), rect, source, label));
-			}
-			ordered.Sort((a, b) => a.z.CompareTo(b.z));
 		}
-		catch (Exception error)
-		{
-			Class23.smethod_3("Alert banner preview backdrop: " + error.Message, bool_1: false);
-		}
-		return ordered.Select(entry => (entry.rect, entry.source, entry.label)).ToList();
-	}
-
-	private void DrawScreenBackdrop(Graphics graphics, int screenIndex)
-	{
-		foreach (var (rect, source, label) in ScreenComponents(screenIndex))
-		{
-			Image image = IsImageSource(source) ? PreviewImage(source) : null;
-			if (image != null && image.Width > 0 && image.Height > 0)
-			{
-				// Dash image components stretch to their rectangle.
-				graphics.DrawImage(image, rect);
-				continue;
-			}
-			using var fill = new SolidBrush(Color.FromArgb(55, 70, 80, 95));
-			graphics.FillRectangle(fill, rect);
-			using var outline = new Pen(Color.FromArgb(120, 110, 120, 130));
-			graphics.DrawRectangle(outline, rect);
-			if (!string.IsNullOrWhiteSpace(label))
-			{
-				using var labelFont = new Font(FontFamily.GenericSansSerif, 12f, FontStyle.Regular, GraphicsUnit.Pixel);
-				using var labelBrush = new SolidBrush(Color.FromArgb(150, Color.White));
-				graphics.DrawString(label, labelFont, labelBrush, rect.X + 3, rect.Y + 3);
-			}
-		}
+		status.Text = "Applied to map" + (previewRunning ? " and desktop preview" : " (desktop preview not running)")
+			+ (online ? "; uploaded to dash." : ".") + " Save the map normally to keep changes.";
 	}
 
 	private float ScaleFactor => Math.Min(canvas.ClientSize.Width / 860f, canvas.ClientSize.Height / 480f);
@@ -427,12 +414,9 @@ internal sealed class AlertBannerEditor : Form
 		e.Graphics.ScaleTransform(scale, scale);
 		e.Graphics.DrawRectangle(Pens.DimGray, 0, 0, 859, 479);
 		ImageAnimator.UpdateFrames();
-		// Behind the alert rectangles, show the real screen as the dash composes it.
-		if (PreviewScreen >= 0)
-			DrawScreenBackdrop(e.Graphics, PreviewScreen);
 		using var textFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using var bannerFont = new Font(FontFamily.GenericSansSerif, 22f, FontStyle.Bold, GraphicsUnit.Pixel);
-		foreach (var banner in DisplayedBanners())
+		foreach (var banner in banners)
 		{
 			var bounds = new Rectangle(banner.X, banner.Y, Math.Max(1, banner.Width), Math.Max(1, banner.Height));
 			Image image = PreviewImage(banner.Source);
@@ -462,14 +446,13 @@ internal sealed class AlertBannerEditor : Form
 			return;
 		grid.EndEdit();
 		var point = new Point((int)(e.X / ScaleFactor), (int)(e.Y / ScaleFactor));
-		var displayed = DisplayedBanners();
-		for (int index = displayed.Count - 1; index >= 0; index--)
+		for (int index = banners.Count - 1; index >= 0; index--)
 		{
-			var banner = displayed[index];
+			var banner = banners[index];
 			var bounds = new Rectangle(banner.X, banner.Y, banner.Width, banner.Height);
 			if (!bounds.Contains(point))
 				continue;
-			grid.CurrentCell = grid.Rows[banners.IndexOf(banner)].Cells[0];
+			grid.CurrentCell = grid.Rows[index].Cells[0];
 			dragStart = point;
 			original = bounds;
 			resizing = point.X >= bounds.Right - 16 && point.Y >= bounds.Bottom - 16;

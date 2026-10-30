@@ -1,60 +1,20 @@
-# Experimental iC-7 GIF alert banners, placement and per-screen rules
+# Experimental iC-7 GIF alert banners and placement
 
 This combined candidate retains the verified screen GIF/MP4 component, startup
-splash, and all 28 embedded resources from the resourcefix bundle. It adds
-alert rules for specific dash screens and removes the alarm popup's
-dependency on QtMultimedia. Keep the working videofix/resourcefix/splash
-copies and your original map unchanged.
+splash, and all 28 embedded resources from the resourcefix bundle. Keep the
+working videofix/resourcefix/splash copies and your original map unchanged.
 Windows GUI operation and a physical flash/boot have **not** been performed.
 
-## Fix from the 2026-10-29 physical flash
-
-On the dash, the GIF and MP4 splash and the alert GIFs did not appear, while the
-OEM and static splash worked. Static and OEM splash use NSP's stock kernel-logo
-path, not these components. Cause: the components looked for
-`user_resources/images` **three** folders above `user_components`. That is the
-layout of NSP's Windows renderer, where `user_resources` sits beside
-`qml_components_data`. On the dash, QML lives in
-`/opt/applications/dtn/resources/qml_components_data` and user images in
-`/opt/applications/dtn/user_resources/images`, **four** folders up. The
-application's own `UIComponent::image_src_to_path` uses
-`../../../../user_resources/images/`. Both manifests were therefore never
-found, and the dash silently kept stock behaviour. Uploads were not the
-problem: the dash's resource write path stores `.json`, `.gif` and `.mp4`
-without an extension check.
-
-This also explains why the decoders were never the problem: the owner's
-2026-10-28 flash of the videofix NEX played GIF and MP4 on this same dash through
-`HalImage.qml` ([baseline](../DESIGN-POSSIBILITIES.md#working-baseline-owner-report-2026-10-28)).
-`HalImage` works because the application hands it a correct path; the splash and
-alert components built their own. NSP's map sync (`Form23.method_226`) uploads
-every file in the map's resource folders, unfiltered, and the dash's index never
-lists `.json`/`.gif`/`.mp4`, so these are re-sent on each sync. That is
-harmless; the files arrive by either route.
-
-The components now look in the dash location first and fall back to the
-Windows layout. A new test runtime reproduces the dash's real
-`/opt/applications/dtn` tree. The previous components fail it on both splash
-and alerts, matching the flash result; the fixed ones pass on desktop Qt and on
-the dash's Qt 5.9.6 under QEMU. Reflash with this kit's NEX.
-
-## What changed from the alerts candidate
-
-- **Alert GIFs per dash screen.** An alarm can have one "All" rule plus rules
-  for particular screens (for example a full-screen GIF on screen 3 only).
-- **Alarm banners no longer depend on QtMultimedia.** The owner's emulator log
-  showed `HalAlarmPopup.qml:223 Type HalImage unavailable`: when the
-  multimedia plugin failed to load, the earlier popup failed as a whole, so
-  *no* alarm banners could appear. Alert media now decodes with QtQuick's own
-  GIF/image support. A regression test reproduces that failure.
-- **Startup splash is placed like stock NSP's splash** and a GIF splash no
-  longer needs QtMultimedia either. See the [startup guide](SPLASH-TEST.md).
-- `HalImage.qml`, the owner-confirmed screen GIF/MP4 component, is
-  byte-for-byte unchanged.
+The pathfix candidate corrects splash/alarm user-resource lookup for the real
+dash's directory layout while preserving the desktop preview layout. Loose QML
+files beside the NEX are emulator/reference sidecars: the dash receives those
+components inside the encrypted NEX resource archive, not as separate copies.
+The earlier screen-alarm candidate must not be used to validate this correction.
+See the [real-device audit](MEDIA-RUNTIME-AUDIT.md#real-device-resource-path-correction).
 
 ## Install the matching pair
 
-Extract `ic7-nsp-native-media-alerts-test-2.36.zip` into a new directory and use
+Extract the new native-integration test ZIP into a new directory and use
 its setup script with the official NSP install as the source:
 
 ```powershell
@@ -63,47 +23,63 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\setup-native-media.ps1
   -Destination "$env:USERPROFILE\Downloads\NSP-native-media-alerts"
 ```
 
-Use the **new DLL and new screens NEX together**
-(`firmware/ic7-2.36-native-media-screens-experimental.nex`). Earlier NEX
-files do not understand per-screen rules: they reject such a manifest and show
-stock alarm banners instead. No firmware is flashed automatically.
+Use the **new DLL and new alerts NEX together**. The earlier splash NEX does
+not contain the new popup component. No firmware is flashed automatically.
 See the included [startup guide](SPLASH-TEST.md) for the emulator COM pair,
 Qt runtime setup, GIF/MP4 splash tests and physical-validation boundary.
 Qt libraries are downloaded from the pinned official archives, not redistributed.
+The included map is an optional diagnostic example; use a backup of your own map
+for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
 
 ## Configure alerts in NSP
 
 1. Disconnect the physical dash. Open a backup iC-7 v2.36 map in the new NSP.
-2. Open the editor: click **Banner GIF & position...** below the Message
+2. Open the editor: click **Appearance...** below the Message
    setting on an alarm's page, right-click the alarm in the tree and choose
-   **Banner GIF & position...**, or use **Alert GIF banners and placement...**
+   **Appearance...**, or use **Alarm appearance...**
    from NSP's main menu. The first two preselect that alarm.
-3. Matching is the exact, case-sensitive text received by the stock popup:
+3. Opening from an alarm page/tree edits that alarm only, keeps other alarms'
+   appearances intact and locks the Message column. No manual matching is needed
+   in this contextual editor. The bulk menu editor still matches the exact,
+   case-sensitive text received by the stock popup:
    the alarm's **Message** setting, not its tree name. If its runtime text
-   differs, enter that exact text instead. Changing the Message requires
-   updating its override. Alarms with identical Message text share it.
+   differs, enter that exact text instead. Applying appearance binds a uniquely
+   named alarm to its native Message setting ID, so later Message edits and
+   setting undo/redo retain its appearance without manually renaming an override.
+   Older manifests acquire this binding when applied in the new editor. Alarms
+   with identical Message text still share an unbound text-based appearance.
 4. **Choose GIF/image** opens NSP's existing image library/import picker.
    Start with the bundled `samples/animated.gif`. GIF bytes are preserved;
    static PNG/JPEG/BMP images also work. MP4 is supported on screens and at
    startup, **not in this alert-banner selector**.
-5. The preview shows **the selected screen as the dash composes it** — the
-   real background and gauges from your map, read live from the loaded map —
-   with your alert drawn over it, so you can place it against actual content.
-   It opens on the screen NSP currently has active. Move the rectangle; drag
-   its bottom-right corner to resize. Or edit **X / Y / Width / Height**
-   numerically in the grid. Coordinates use the dash's **860 x 480 logical
-   canvas**, scaled to the physical 800 x 480 display. Rectangles must fit and
-   be at least 60 pixels tall. The preview animates the GIF; it is not an alarm
-   trigger. (If a map's screen data cannot be read, the preview falls back to a
-   plain canvas and placement still works.)
-6. **Save / apply** writes `u/ic7_alerts.json` into user image resources.
-   Online, selected user images and the manifest are uploaded via the normal
-   resource RPC. Offline, upload/apply the normal map resources afterward.
-   **Save the map under a new name**; it is not saved automatically.
-7. Reopen the desktop map renderer or reboot the emulator/dash to reload the
-   manifest. **Stock background** keeps placement but removes the custom
-   media; **Remove override**, followed by saving/applying, restores the
+5. Move the rectangle in the layout preview; drag its bottom-right corner
+   to resize. Or edit **X / Y / Width / Height** numerically in the grid.
+   Coordinates use the dash's **860 x 480 logical canvas**, scaled to the
+   physical 800 x 480 display. Rectangles must fit and be at least 60 pixels
+   tall. The editor canvas animates the GIF with the text over it; it is
+   not an alarm trigger.
+6. **Apply**, or **OK**, updates the map's working resources and renderer cache,
+   then requests NSP's existing native preview refresh. Changed media marks the
+   map modified using NSP's normal save/close prompt. **Cancel** discards unapplied
+   appearance edits; images imported into the library remain there, as with the
+   normal image picker. Save/Save As normally to retain the map on disk;
+   no separate resource save, mandatory new filename or desktop reopen is needed.
+   Editing does not silently upload to a connected physical dash: explicitly tick
+   **Also upload to connected dash** when wanted. Otherwise use the normal map
+   resource upload. Transfer errors are shown, not reported as success.
+7. The updated popup reloads its manifest on native property/repaint/alarm updates.
+   Unchanged updates retain the existing GIF instance instead of restarting its
+   animation. **Stock background** keeps placement but removes the custom
+   media; **Remove override**, followed by Apply, restores the
    stock bottom-stacked placement for that alert.
+
+The screen-aware integration build is in `build-cfw-screen-alarms-236`.
+The original owner-confirmed videofix bundle is unchanged; the new `HalImage.qml`
+adds transparent screen tracking while retaining its media playback logic.
+This build still needs Windows acceptance testing of the actual
+native refresh/renderer-pipe path. A physical dash needs the matching updated
+popup and transferred resources; desktop hot reload alone does not establish
+hardware hot reload or authorize flashing.
 
 By default the GIF is the banner background and the warning text is drawn
 over it. Tick **GIF only (hide text/banner)** for an alert to show only the GIF
@@ -120,39 +96,46 @@ The popup remains above ordinary dashboard components and below startup media.
 Invalid configuration logs an error and keeps stock warning banners; a failed
 GIF decoder logs an error while the warning text/background remain.
 
-## Different alert GIFs on different screens
+Without a screen restriction, placement applies wherever that alarm normally
+appears, across screen changes. This does not create a new alarm engine.
+Unconfigured alerts keep their original bottom-stacked layout; other dash
+variants do not use the custom rectangle manifest.
 
-The **Screens** column holds `All` or one-based screen numbers such as
-`1, 3`. On a listed screen that rule replaces the alarm's `All` rule; on
-other screens the `All` rule applies, or the stock bottom banner if there is
-none. A rule never hides an alarm: per-screen rules change only its media and
-placement. An alarm may have one `All` rule, and each screen may be claimed by
-only one rule for that alarm; the editor and the dash both reject overlaps.
+## Show an alarm on selected screens
 
-To add a screen-only rule, choose **Preview: Screen N**, enter the alarm
-text and click **Add alarm**. If the alarm already has a rule, the new rule
-applies to screen N only. The layout preview always shows what the dash draws
-on the chosen screen; selecting a row switches to a screen where that rule is
-drawn. Manifests without screen rules are still saved as version 1.
+In **Alarm appearance...**, set **Screens (All or 1, 3, 5)** to `5` for
+**KFC LIMITER**. Use `1, 3, 5` for multiple screens or `All` to restore global
+visibility. Screen numbers are the same one-based numbers shown in NSP.
+The map must contain every selected screen. Apply and save normally.
+Old manifests without `screens` retain global visibility.
 
-### How the dash knows the active screen
+The restriction hides the entire popup row, not just its GIF. An already-active
+alarm appears when entering an allowed screen and disappears when leaving it,
+without waiting for a new alarm trigger or reloading the manifest. Native
+triggering, clearing, acknowledgement, priority and LED behaviour are unchanged.
+For example, KFC LIMITER can show its full-screen GIF only on screen 5 while
+Low Oil Pressure continues to show on every screen.
 
-This uses the stock v2.36 application's own screen switching, with no
-application patch. Disassembly of the decoded `nic-7` ELF (SHA-256
-`d86bde81...7248`) shows `ui_module::UIMain::UIMain` always creating exactly
-five `UIScreen` objects in screen order (`cmp r4, #5`). Each constructor
-creates an unnamed `QQuickItem` and parents it to `QQuickView::rootObject()`.
-The constructor then creates `Alarm_Module`, which parents `HalAlarmPopup`
-to the same root. `UIMain::handle_screen_change` switches screens through
-`UIScreen::set_visibility`, a tail call to `QQuickItem::setVisible`. The
-per-screen settings stride is `0xab08` bytes, matching the emulator's settings
-schema of five screens 43,784 bytes apart.
+The stock executable does not export its selected screen to QML. Applying the
+first restriction therefore installs a transparent 1 x 1 image component in one
+unused component slot on each configured screen, with zero day/night opacity.
+These managed `ic7_screen_1.png` through `ic7_screen_5.png` resources report
+the native screen container's visibility directly, without a polling timer or
+an executable patch. Existing components are not overwritten. If a screen is
+full, Apply reports an error before changing any marker settings. Do not edit
+or move these bridge components. After copying/replacing a screen layout or
+adding screens, reapply alarm appearance to repair/recreate the bridge.
+Removing all restrictions leaves the harmless bridge components in place.
 
-The popup therefore takes its five preceding siblings as the screens and
-follows their `visibleChanged` signals. The named items declared in `main.qml`
-are never mistaken for screens. If the layout does not match, for example in
-another renderer, or no single screen is visible (an error screen), only
-`All` rules apply. Other dash variants do not use the custom rectangle manifest.
+On the first Apply, disconnect the physical dash or explicitly select **Also
+upload to connected dash**, because the bridge requires ordinary map-setting
+changes as well as image resources. On a dash, transfer both map settings and
+resources using the matching screen-aware DLL and resource-only NEX. A JSON-only
+edit cannot add this feature to an older renderer. The native emulator uses the
+same QML; its synthetic preview also receives the selected preview screen.
+If screen identity is unavailable, restricted alarms remain visible and QML
+logs a warning rather than silently hiding a potentially important warning.
+Windows native operation and physical-dash acceptance still require testing.
 
 ## Place ordinary GIF/MP4 screen elements
 
@@ -166,7 +149,7 @@ screen components.
 
 ## Test on the Windows emulator
 
-Use the emulator from the same combined kit, in a separate directory.
+Use `ic7-emulator-windows-nexmap-alerts.zip` in a separate directory.
 Open an iC-7 map once in the new NSP copy to stage its Qt add-ons; close its
 renderer. Run `.\start-workbench.cmd`; **Dash Display** opens automatically on
 Windows. Do not start a second `start-stock-renderer.cmd` alongside it.
@@ -175,13 +158,14 @@ It requires the matching Qt 5.11 x86 multimedia/GIF add-ons and DirectShow
 `dsengine`; missing dependencies are explicit errors. Upload map settings from
 NSP: the display must remain blank until those settings arrive.
 
-**The emulator renderer mirrors exactly what NSP shows.** While this NSP is
+**The emulator mirrors NSP's live-data input, not its rendered frames.** While this NSP is
 open, it publishes the same live-data block it sends to its own dash renderer
 (read-only, local shared memory `HaltechNSP_iC7_LiveData`). The workbench's
 **Dash Display** window applies that block to the original renderer,
-so when NSP's **Simulate** panel (or live data) raises an alarm, the emulator
-shows the same stock popup with the same colours, stacking, GIF override and
-GIF-only setting, and clears it at the same time. Its console prints
+so NSP's **Simulate** panel (or live data) can drive the matching popup
+with the same map/resources. The bridge polls independently at roughly 50 ms;
+it does not synchronize frames, GIF clocks or clearing instants. Exact
+simultaneous NSP/emulator display remains unresolved. Its console prints
 `Live channels and alarms now follow NSP Simulate` (or `NSP live data`); when
 NSP stops updating for a second it falls back to emulator memory. Nothing is
 written to a dash.
@@ -195,19 +179,14 @@ text, or run:
 ```
 
 Use the exact text configured in NSP; repeat `--preview-alert` to show multiple
-alerts. The preview window's screen selector switches screens like the dash,
-so per-screen rules change as you select screens; `--screen 3` starts on
-screen 3. This exercises the shared popup and GIF/rectangle manifest over the
+alerts. This exercises the shared popup and GIF/rectangle manifest over the
 emulator HTTP resource API. It does **not** trigger a real threshold, modify
 device settings, or validate alarm evaluation/acknowledgement. The normal stock
 renderer path remains separate. Test a real alarm condition and its clearing
 on the Windows renderer before any separately authorized bench test.
 
 Repeat startup with GIF and MP4, reboot twice, then test an alert GIF, a static
-alert image, an empty source, and removal of the override. Add a rule for one
-screen, raise the alarm with NSP's **Simulate** panel, and change screens
-while it is active: the GIF and placement should change on that screen only,
-and the alarm must stay visible on every screen. Reopen the saved map
+alert image, an empty source, and removal of the override. Reopen the saved map
 and re-upload to check persistence. Open the channel selector to verify the
 resourcefix GUI fix remains present. Check ordinary screen positioning and
 switch screens while alerts are active.
@@ -221,8 +200,7 @@ byte-identical. Application, kernel, bootloader and kernel-logo tooling are
 unchanged. The earliest kernel logo remains static.
 
 Build with `scripts/build-nsp-gif-preview.py --splash --alerts` and a new output
-directory (this candidate: `ic7-custom-dash/build-cfw-native-media-screens-236/`);
-package with `scripts/package-nsp-media-test.py --native-media
+directory; package with `scripts/package-nsp-media-test.py --native-media
 --splash --alerts`. The included map is the supplied original, byte-for-byte,
 not preconfigured with new alert rules.
 
@@ -235,15 +213,9 @@ physical alarm behavior, or a recovery method. Retain the working NEX, back
 up the map and establish recovery before any bench flash; do not test while
 driving.
 
-Verified locally: x86 DLL build with zero compiler errors (404 existing
-decompilation warnings); its external references are the shipped DLL's
-52 assemblies, 728 types and 2,549 members with none removed; the only
-additions are .NET base-library and `System.Text.Json` members; **42** Python/.NET
-regressions passed (9 need PowerShell or tshark and were skipped); **56**
-desktop Qt 5.15 QML checks; **52** QML checks on the firmware's own
-Qt 5.9.6 ARM userspace under QEMU, including per-screen switching and the
-missing-multimedia case and the dash's real folder layout; and **111** emulator Python tests with real PyQt5,
-including rendered per-screen alert previews. ZIP hashes and all packaged QML
-bytes are checked against the tested sources. Windows Forms editor
-interaction remains an on-PC validation step, not a result of the Linux
-cross-build.
+Verified locally: x86 DLL build with zero compiler errors (402 existing
+decompilation warnings); **24** Python/.NET regressions; **37** desktop QML
+checks; **33** firmware ARM/QEMU QML checks; **110** emulator Python tests with
+real PyQt5; and browser checks. ZIP hashes and all packaged QML bytes are
+checked against the tested sources. Windows Forms editor interaction remains
+an on-PC validation step, not a result of the Linux cross-build.

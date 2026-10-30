@@ -1,5 +1,12 @@
 # iC-7 NSP Simulator
 
+Screen-scoped alarm appearances use the same maintained root, image and popup
+QML as NSP and the resource-only firmware candidate. Upload the map's settings
+and resources, including its managed transparent screen markers. The native
+renderer follows marker visibility, not a separately polled screen selector.
+Synthetic alarm preview filters against its own selected preview screen; it
+does not establish real alarm evaluation or frame-exact Windows NSP parity.
+
 ## Final test-kit workflow
 
 The Windows workbench now opens **Dash Display** automatically using the
@@ -11,6 +18,11 @@ one test NSP instance open; upload the same map/resources to both.
 - **Start Session** creates a new, empty virtual dash. It stays blank until
   NSP writes dashboard settings. The combined kit selects its matching
   resource-only NEX automatically.
+  Extract the NSP test kit and emulator ZIPs side by side so `ic7-emulator`
+  and `NSP-test-kit` share a parent folder. The screen-alarm kit selects
+  `ic7-2.36-screen-alarms-experimental.nex`; older integration kits retain
+  their own default. Confirm the displayed **NEX package** matches the file
+  selected in NSP before starting the session.
 - **Resume Dash** opens an existing saved session folder, retaining settings,
   resources and a completed, hash-matched firmware preview. Its configured
   splash runs at startup. The original selected NEX and sidecars must still
@@ -33,6 +45,13 @@ one test NSP instance open; upload the same map/resources to both.
 The workbench records renderer errors and exit status; use **Dash Display**
 to retry after correcting a missing dependency. Stopping the workbench
 requests a graceful bridge shutdown so its child dash process is closed too.
+
+If NSP reports **Write Resources File**, a resource transfer block failed.
+Do not treat this as successful installation or retry against a physical dash.
+For a sandbox run, stop and export logs; `sandbox-update-rejected` identifies
+package-byte mismatches, out-of-range writes or invalid update mode. A matching
+NEX must be selected before starting a fresh session. The dialog alone does not
+identify which of these conditions occurred.
 
 ### Fidelity limits
 
@@ -80,6 +99,13 @@ launch and playback failures are reported explicitly; playback requires a
 browser-supported video codec. This asset preview is independent of the selected
 NEX and does not verify firmware playback. On Windows, **Dash Display**
 uses NSP's private original renderer and opens automatically by default.
+
+The synthetic **Preview Alert** window uses the separate PyQt5 Qt 5.15
+runtime. Its launcher adds that runtime's own DLL directory to the Windows
+search path before loading QML and checks QtMultimedia before opening the
+preview. A missing plugin now exits with a dependency error in **renderer.log**
+instead of opening a window with no alarm. Do not copy NSP's Qt 5.11 DLLs into
+the Python environment; the two renderers must keep their runtimes separate.
 
 ## Emulator Display Lifecycle
 

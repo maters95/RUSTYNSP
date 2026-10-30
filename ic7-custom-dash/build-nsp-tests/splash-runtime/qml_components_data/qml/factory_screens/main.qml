@@ -7,6 +7,9 @@ Item {
     objectName: "mainWindow"
     property int userScalePercentage: 100
     property int dashVariantId: 11
+    property int activeScreenNumber: 0
+    property bool alarmScreenTrackingEnabled: true
+    Component.onDestruction: alarmScreenTrackingEnabled = false
     visible: true
     z: 100
     x: 0
@@ -22,11 +25,8 @@ Item {
         Translate { x: 0; y: 0 }
     ]
 
-    // Root items declared here are named so HalAlarmPopup can tell them apart
-    // from the application's unnamed UIScreen containers.
     Rectangle {
         id: selectionRect
-        objectName: "selectionRect"
         height: 70
         width: 140
         x: 100
@@ -40,7 +40,6 @@ Item {
 
     Rectangle {
         id: hoverRect
-        objectName: "hoverRect"
         height: 70
         width: 140
         x: 100
@@ -54,7 +53,6 @@ Item {
 
     Rectangle {
         id: bg_rect
-        objectName: "bg_rect"
         x: 0
         y: 0
         z: 0
@@ -65,7 +63,6 @@ Item {
 
     Rectangle {
         id: fg_tint
-        objectName: "fg_tint"
         x: 0
         y: 0
         z: 999
@@ -96,6 +93,13 @@ Item {
     function setScreenSize(width, height) {
         mainWindowId.width = width;
         mainWindowId.height = height;
+    }
+
+    function reportAlarmScreen(number, shown) {
+        if (shown)
+            activeScreenNumber = number;
+        else if (activeScreenNumber === number)
+            activeScreenNumber = 0;
     }
 
     function setBgColour(colour) {

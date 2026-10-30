@@ -1,0 +1,43 @@
+{
+  "status": "offline-validated; NSP acceptance and hardware installation untested",
+  "label": "native-media-alerts",
+  "package_version": "2.36.0.0.0",
+  "changed_members": [
+    "qml_components_data/qml/factory_screens/main.qml",
+    "qml_components_data/qml/user_components/HalAlarmPopup.qml",
+    "qml_components_data/qml/user_components/HalImage.qml"
+  ],
+  "preserved_members": 336,
+  "added_members": [
+    "qml_components_data/qml/user_components/HalSplash.qml"
+  ],
+  "startup_splash": true,
+  "alert_media": true,
+  "runtime_components": {
+    "HalImage.qml": "8c9f2fc49765471e115053a7a50a7efb4453a5545bcdd4e36782ca42ee64d6c7",
+    "main.qml": "f1c7680bb492a598334872f24bd70400aebbf57b8917eab8c4b627adccb57b4f",
+    "HalSplash.qml": "1051eaed0e5106bf4a7e23c1d2f710e8332e8fc531a585cf5ead19cdd899a19c",
+    "HalAlarmPopup.qml": "25a299fed1990bb83b4b01cad0408d291873a25ee2464104d49c92d6e05759e0"
+  },
+  "original_component_sha256": "32baf88ac62d670e905bc30fd6c4dcb7abdbfc4a9c3b248254b98fdd07f5c6fb",
+  "replacement_component_sha256": "8c9f2fc49765471e115053a7a50a7efb4453a5545bcdd4e36782ca42ee64d6c7",
+  "wrapper_preserved": true,
+  "migration_definition": {
+    "name": "ic-7.hdef",
+    "bytes": 7971401,
+    "sha256": "b89bdab94490183f02afafac52e9ac802c584e6b0603f161e492a955e3c9a715",
+    "listed_for_device_update": false
+  },
+  "archive_format": "tar",
+  "roundtrip_integrity_valid": true,
+  "packages": {
+    "ic7-2.36-native-media-alerts-experimental.nex": {
+      "bytes": 25359639,
+      "sha256": "c785bd7821569d3424d9e4000c1e2ca463b2074e4fba64785f4e7c50d4afdf9d"
+    },
+    "ic7-2.36-stock-resources-experimental.nex": {
+      "bytes": 25343767,
+      "sha256": "28649b41b1b505508a13e5830a77ce4d894e6c395c91a8ac6260e18c2992f295"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+Verified firmware preview components reloaded.
+Traceback (most recent call last):
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 212, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 192, in main
+    validate_media_qml(engine)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 30, in validate_media_qml
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: The Python preview cannot load its own QtMultimedia runtime. Repair the emulator's PyQt5 environment; do not copy NSP's Qt 5.11 DLLs into the Python Qt 5.15 runtime.
+<Unknown File>:2:1: plugin cannot be loaded for module "QtMultimedia": Cannot load library C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\.venv\Lib\site-packages\PyQt5\Qt5\qml\QtMultimedia\declarative_multimedia.dll: The specified module could not be found.
+Traceback (most recent call last):
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 212, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 192, in main
+    validate_media_qml(engine)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\native_view.py", line 30, in validate_media_qml
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: The Python preview cannot load its own QtMultimedia runtime. Repair the emulator's PyQt5 environment; do not copy NSP's Qt 5.11 DLLs into the Python Qt 5.15 runtime.
+<Unknown File>:2:1: plugin cannot be loaded for module "QtMultimedia": Cannot load library C:\Users\ZakMasters\Downloads\ic7-final-windows-test-2026-10-29\ic7-emulator\.venv\Lib\site-packages\PyQt5\Qt5\qml\QtMultimedia\declarative_multimedia.dll: The specified module could not be found.

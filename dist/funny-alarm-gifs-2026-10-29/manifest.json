@@ -1,0 +1,47 @@
+{
+  "artwork": "Original typography, turbo and cartoon mechanic; no film or cartoon footage.",
+  "animation": "10 fps; gradual 2.4-second red/yellow colour cycle, no rapid full-screen flashes.",
+  "usage": "NSP Alarm appearance: Choose GIF/image, choose matching file, GIF only, Apply, Save. No map settings, alarm triggers or screen restrictions are changed by this pack.",
+  "device_playback_verified": false,
+  "assets": [
+    {
+      "file": "overboost-danger-to-manifold.gif",
+      "alarm": "OVERBOOST",
+      "size": [
+        860,
+        480
+      ],
+      "frames": 24,
+      "loop_ms": 2400,
+      "distinct_frames": 24,
+      "bytes": 472874,
+      "sha256": "534d2a19db36106eccc9d0d2cd7e7f587bfca8e6b3128ce2db2b12385666d494"
+    },
+    {
+      "file": "low-oil-pressure-cunts-fucked.gif",
+      "alarm": "LOW OIL PRESSURE",
+      "size": [
+        860,
+        480
+      ],
+      "frames": 24,
+      "loop_ms": 2400,
+      "distinct_frames": 24,
+      "bytes": 432250,
+      "sha256": "34ce2cd52eadcb2a59dd77f340609909af4c90e9783b6e12be6ce1b45ba27a77"
+    },
+    {
+      "file": "coolant-temp-fuck-me-its-hot.gif",
+      "alarm": "COOLANT TEMP HIGH",
+      "size": [
+        860,
+        480
+      ],
+      "frames": 24,
+      "loop_ms": 2400,
+      "distinct_frames": 24,
+      "bytes": 442918,
+      "sha256": "62c5a29d78327614afd653517d9e8c95da640f720b2882f8c3ba2012f4d55bfa"
+    }
+  ]
+}

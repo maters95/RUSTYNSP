@@ -20,6 +20,16 @@ ApplicationWindow {
     property int rebootRevision: -1
     property string alertManifest: ""
     property var previewAlerts: []
+    property int activeScreenNumber: 0
+    property bool alarmScreenTrackingEnabled: true
+    Component.onDestruction: alarmScreenTrackingEnabled = false
+
+    function reportAlarmScreen(number, shown) {
+        if (shown)
+            activeScreenNumber = number;
+        else if (activeScreenNumber === number)
+            activeScreenNumber = 0;
+    }
 
     Rectangle {
         id: toolbar
@@ -33,11 +43,8 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.verticalCenter: parent.verticalCenter
-            // v2.36 UIMain always creates exactly five screens.
-            model: ["Screen 1", "Screen 2", "Screen 3", "Screen 4", "Screen 5"]
-            currentIndex: simulator.initialScreen
+            model: ["Screen 1", "Screen 2", "Screen 3", "Screen 4", "Screen 5", "Screen 6", "Screen 7", "Screen 8", "Screen 9", "Screen 10"]
             onActivated: simulator.setScreen(currentIndex)
-            onCurrentIndexChanged: nativeRoot.showScreen(currentIndex)
         }
         Text {
             anchors.left: screenPicker.right
@@ -66,29 +73,6 @@ ApplicationWindow {
                 color: "black"
                 z: -1
             }
-            // Same root layout as the dash: five unnamed UIScreen-like containers
-            // whose visibility follows the active screen, then the alarm popup.
-            Item {
-                id: nativeRoot
-                objectName: "nativeScreenRoot"
-                anchors.fill: parent
-                z: 9000
-                property var screens: []
-                Component {
-                    id: screenContainer
-                    Item { width: 860; height: 480 }
-                }
-                function showScreen(index) {
-                    for (var i = 0; i < screens.length; i++)
-                        screens[i].visible = i === index;
-                }
-                // Created in order like UIMain's loop (a Repeater would stack itself after them).
-                Component.onCompleted: {
-                    for (var i = 0; i < 5; i++)
-                        screens.push(screenContainer.createObject(nativeRoot));
-                    showScreen(screenPicker.currentIndex);
-                }
-            }
             Loader {
                 id: alertLoader
                 objectName: "alertPreviewLoader"
@@ -96,11 +80,11 @@ ApplicationWindow {
                 z: 9000
                 active: false
                 onLoaded: {
-                    item.parent = nativeRoot;
                     item.manifestUrl = window.alertManifest;
                     item.userImageBaseUrl = window.userImageBase;
                     item.stockImageBaseUrl = window.stockImageBase;
                     item.halFontPath = "";
+                    item.activeScreenNumber = Qt.binding(function() { return window.activeScreenNumber; });
                     item.reloadAlertMedia();
                     item.reInitAlarmScreen(JSON.stringify(window.previewAlerts));
                 }
@@ -178,6 +162,7 @@ ApplicationWindow {
                 delete items[name];
             }
         }
+        activeScreenNumber = scene.screen === undefined ? 0 : scene.screen + 1;
     }
     Connections { target: simulator; onChanged: window.update() }
 }

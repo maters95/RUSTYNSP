@@ -1,21 +1,121 @@
 import json
 import hashlib
+import http.server
+import os
 from pathlib import Path
 import runpy
+import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-native-media-screens-236"
+CANDIDATE = ROOT / "ic7-custom-dash/build-cfw-screen-alarms-device-paths-236"
 
 
 class AlertMediaTests(unittest.TestCase):
+    def test_native_refresh_reads_changed_file_at_same_path(self):
+        runner = shutil.which("qmltestrunner")
+        if runner is None:
+            self.skipTest("Qt QML test runner is required")
+        with tempfile.TemporaryDirectory(prefix="nsp-alert-live-") as directory:
+            path = Path(directory)
+            manifest = path / "alerts.json"
+            banner = {"text": "OIL PRESSURE", "source": "", "x": 0, "y": 420,
+                      "width": 860, "height": 60}
+            manifest.write_text(json.dumps({"version": 1, "banners": [banner]}))
+
+            class EditHandler(http.server.BaseHTTPRequestHandler):
+                def do_POST(self):
+                    if self.path not in ("/edit", "/reset"):
+                        self.send_error(404)
+                        return
+                    changed = dict(banner, x=100, y=80, width=300, height=80)
+                    staged = manifest.with_suffix(".tmp")
+                    staged.write_text(json.dumps({
+                        "version": 1, "banners": [changed] if self.path == "/edit" else []}))
+                    staged.replace(manifest)
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(b"ok")
+
+                def log_message(self, *_):
+                    pass
+
+            server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), EditHandler)
+            worker = threading.Thread(target=server.serve_forever)
+            worker.start()
+            try:
+                production = ROOT / "ic7-custom-dash/deploy/nsp/HalAlarmPopup.qml"
+                (path / "tst_LiveResources.qml").write_text("""
+import QtQuick 2.9
+import QtTest 1.0
+Item {
+    id: window
+    width: 860
+    height: 480
+    TestCase {
+        name: "LiveAlarmResources"
+        when: windowShown
+        property var popup: null
+        function edit(action) {
+            var completed = false;
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.readyState === XMLHttpRequest.DONE)
+                    completed = request.status === 200;
+            };
+            request.open("POST", "http://127.0.0.1:PORT/" + action);
+            request.send();
+            tryVerify(function() { return completed; });
+        }
+        function test_nativeRefreshWithoutReopeningOrRebooting() {
+            var component = Qt.createComponent(PRODUCTION);
+            compare(component.status, Component.Ready, component.errorString());
+            popup = component.createObject(window, {manifestUrl: MANIFEST, halFontPath: ""});
+            verify(popup !== null);
+            tryVerify(function() { return popup.bannerConfig.length === 1; });
+            var alarm = JSON.stringify([{text: "OIL PRESSURE", bc: "red", fc: "white", height: "60"}]);
+            popup.reInitAlarmScreen(alarm);
+            var original = findChild(popup, "alertBanner:OIL PRESSURE");
+            compare(original.x, 0);
+            edit("edit");
+            popup.setGaugeProperties({});
+            popup.repaintAll();
+            tryCompare(original, "x", 100);
+            compare(original.y, 80);
+            compare(original.width, 300);
+            compare(findChild(popup, "alertBanner:OIL PRESSURE"), original);
+            edit("reset");
+            popup.reInitAlarmScreen(alarm);
+            tryCompare(original, "x", 0);
+            compare(original.y, 420);
+            compare(popup.activeAlarms.length, 1);
+            popup.destroy();
+        }
+    }
+}
+""".replace("PRODUCTION", json.dumps(production.as_uri()))
+                    .replace("MANIFEST", json.dumps(manifest.as_uri()))
+                    .replace("PORT", str(server.server_port)))
+                result = subprocess.run(
+                    [runner, "-input", str(path), "-o", "-,txt"],
+                    env={**os.environ, "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
+                         "QML_DISABLE_DISK_CACHE": "1"},
+                    capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("0 failed", result.stdout)
+            finally:
+                server.shutdown()
+                worker.join(timeout=5)
+                server.server_close()
+
     def test_alert_bundle_contains_matching_components_and_guide(self):
-        nex = CANDIDATE / "ic7-2.36-native-media-screens-experimental.nex"
+        nex = CANDIDATE / "ic7-2.36-screen-alarms-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the alert candidate first")
         with tempfile.TemporaryDirectory(prefix="nsp-alert-package-") as directory:
@@ -47,8 +147,8 @@ class AlertMediaTests(unittest.TestCase):
         if not dll.is_file():
             self.skipTest("Build NSP.dll first")
         data = dll.read_bytes()
-        for text in ("Banner GIF && position...", "Alert GIF banners and placement...",
-                     "ic7AlertBannerButton", "MP4 startup video"):
+        for text in ("Appearance...", "Alarm appearance...",
+                     "ic7AlertBannerButton", "MP4 startup video", "Screens (All or 1, 3, 5)"):
             self.assertIn(text.encode("utf-16-le"), data, text)
 
     def test_manifest_validation_roundtrip(self):
@@ -61,16 +161,18 @@ class AlertMediaTests(unittest.TestCase):
 <Compile Include="{ROOT}/nsp-rebuild/NSP/AlertMedia.cs" />
 <Compile Include="{ROOT}/nsp-rebuild/NSP/SplashMedia.cs" />
 <Compile Include="{ROOT}/nsp-rebuild/NSP/MediaResource.cs" />
+<Compile Include="{ROOT}/nsp-rebuild/NSP/AlarmScreenMarkers.cs" />
 </ItemGroup></Project>
 """)
             (path / "Program.cs").write_text("""
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using NSP;
 var banners = new List<AlertBanner> {
-    new AlertBanner { Text="OIL PRESSURE", Source="u/animation.gif", X=100, Y=80, Width=300, Height=80, GifOnly=true },
+    new AlertBanner { Text="OIL PRESSURE", Source="u/animation.gif", X=100, Y=80, Width=300, Height=80, GifOnly=true, MessageDataId=123, Screens=new[]{5} },
     new AlertBanner { Text="TEMP", Source="", X=0, Y=420, Width=860, Height=60 }
 };
 string target = Path.Combine(args[0], AlertMedia.ManifestName);
@@ -78,15 +180,33 @@ File.WriteAllBytes(target, AlertMedia.Serialize(banners));
 var read = AlertMedia.Read(target);
 if (read.Count != 2 || read[0].Text != "OIL PRESSURE" || read[0].X != 100 ||
     read[0].Y != 80 || read[0].Width != 300 || read[0].Height != 80 ||
-    read[0].Source != "u/animation.gif" || read[1].Source != "" || !read[0].GifOnly || read[1].GifOnly)
+    read[0].Source != "u/animation.gif" || read[1].Source != "" || !read[0].GifOnly || read[1].GifOnly ||
+    read[0].MessageDataId != 123 || !read[0].Screens.SequenceEqual(new[]{5}) || read[1].Screens != null)
     throw new Exception("Manifest round trip");
+if (!AlertMedia.RenameMessages(read, new Dictionary<int, string>{{123, "NEW OIL MESSAGE"}}) ||
+    read[0].Text != "NEW OIL MESSAGE" || read[0].Source != banners[0].Source ||
+    read[0].X != 100 || !read[0].GifOnly ||
+    AlertMedia.RenameMessages(read, new Dictionary<int, string>{{123, "NEW OIL MESSAGE"}}) ||
+    AlertMedia.RenameMessages(read, new Dictionary<int, string>{{999, "UNRELATED"}}))
+    throw new Exception("Native alarm binding/undo must retain appearance");
+if (!AlertMedia.RenameMessages(read, new Dictionary<int, string>{{123, "OIL PRESSURE"}}))
+    throw new Exception("Message undo must restore the matching text");
+read[1].MessageDataId = 456;
+if (!AlertMedia.RenameMessages(read, new Dictionary<int, string>{{123, "TEMP"}, {456, "OIL PRESSURE"}}) ||
+    read[0].Text != "TEMP" || read[1].Text != "OIL PRESSURE")
+    throw new Exception("Multi-setting undo/redo must rebind the final state atomically");
 foreach (AlertBanner invalid in new[] {
     new AlertBanner {Text=""}, new AlertBanner {Text="TEST", Source="u/../file.gif"},
     new AlertBanner {Text="TEST", Source="u/movie.mp4"},
     new AlertBanner {Text="TEST", X=-1}, new AlertBanner {Text="TEST", Y=421},
     new AlertBanner {Text="TEST", Width=861}, new AlertBanner {Text="TEST", Height=59},
     new AlertBanner {Text="TEST", X=int.MaxValue},
-    new AlertBanner {Text="TEST", Source="", GifOnly=true}
+    new AlertBanner {Text="TEST", Source="", GifOnly=true},
+    new AlertBanner {Text="TEST", MessageDataId=0},
+    new AlertBanner {Text="TEST", Screens=Array.Empty<int>()},
+    new AlertBanner {Text="TEST", Screens=new[]{0}},
+    new AlertBanner {Text="TEST", Screens=new[]{6}},
+    new AlertBanner {Text="TEST", Screens=new[]{1,1}}
 }) {
     try { AlertMedia.Serialize(new List<AlertBanner>{invalid}); throw new Exception("Invalid entry accepted"); }
     catch (InvalidDataException) {}
@@ -95,8 +215,11 @@ try {
     AlertMedia.Serialize(new List<AlertBanner>{banners[0], banners[0]});
     throw new Exception("Duplicate accepted");
 } catch (InvalidDataException) {}
-foreach (string invalid in new[] {"null", "{}", "{\\"version\\":1}", "{\\"version\\":3,\\"banners\\":[]}",
-    "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"T\\",\\"source\\":\\"\\",\\"x\\":0,\\"y\\":0,\\"width\\":860,\\"height\\":60,\\"screens\\":[0]}]}",
+try {
+    AlertMedia.Serialize(new List<AlertBanner>{banners[0], new AlertBanner {Text="OTHER", MessageDataId=123}});
+    throw new Exception("Duplicate native Message binding accepted");
+} catch (InvalidDataException) {}
+foreach (string invalid in new[] {"null", "{}", "{\\"version\\":1}", "{\\"version\\":2,\\"banners\\":[]}",
     "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"TEST\\"}]}",
     "{\\"version\\":1,\\"banners\\":null}"}) {
     File.WriteAllText(target, invalid);
@@ -108,40 +231,38 @@ File.WriteAllText(target, "{\\"version\\":1,\\"banners\\":[{\\"text\\":\\"OLD\\"
 if (AlertMedia.Read(target)[0].GifOnly) throw new Exception("Older manifests must keep the stock banner");
 if (!System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).Contains("\\"gifOnly\\":true"))
     throw new Exception("gifOnly serialization");
-if (!System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).StartsWith("{\\"version\\":1,")
-    || System.Text.Encoding.UTF8.GetString(AlertMedia.Serialize(banners)).Contains("screens"))
-    throw new Exception("Manifests without screen rules must stay version 1");
-var screenRules = new List<AlertBanner> {
-    new AlertBanner { Text="OIL", Source="", X=0, Y=420, Width=860, Height=60 },
-    new AlertBanner { Text="OIL", Source="u/a.gif", X=0, Y=0, Width=860, Height=200, GifOnly=true, ScreensText="3, 5" },
-    new AlertBanner { Text="OIL", Source="", X=10, Y=10, Width=300, Height=60, ScreensText="1" }
-};
-File.WriteAllBytes(target, AlertMedia.Serialize(screenRules));
-var screenRead = AlertMedia.Read(target);
-if (!File.ReadAllText(target).StartsWith("{\\"version\\":2,") || screenRead[0].Screens != null
-    || string.Join(",", screenRead[1].Screens) != "2,4" || screenRead[1].ScreensText != "3, 5")
-    throw new Exception("Screen rule round trip");
-if (AlertMedia.Resolve(screenRead, "OIL", 2) != screenRead[1] || AlertMedia.Resolve(screenRead, "OIL", 0) != screenRead[2]
-    || AlertMedia.Resolve(screenRead, "OIL", 1) != screenRead[0] || AlertMedia.Resolve(screenRead, "OIL", -1) != screenRead[0]
-    || AlertMedia.Resolve(screenRead, "OTHER", 2) != null)
-    throw new Exception("Screen rule resolution");
-foreach (var invalid in new[] {
-    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, ScreensText="1, 2" },
-                            new AlertBanner { Text="OIL", Source="", Height=60, ScreensText="2" } },
-    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>{5} } },
-    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>() } },
-    new List<AlertBanner> { new AlertBanner { Text="OIL", Source="", Height=60, Screens=new List<int>{1, 1} } } }) {
-    try { AlertMedia.Serialize(invalid); throw new Exception("Invalid screen rule accepted"); }
-    catch (InvalidDataException) {}
-}
-foreach (string invalid in new[] {"0", "6", "1,1", "x", "1;2"}) {
-    try { AlertMedia.ParseScreens(invalid); throw new Exception("Invalid screen text accepted: " + invalid); }
-    catch (FormatException) {}
-}
-if (AlertMedia.ParseScreens(" all ") != null || AlertMedia.ParseScreens("") != null)
-    throw new Exception("All-screens text");
 File.WriteAllBytes(target, AlertMedia.Serialize(new List<AlertBanner>()));
 if (AlertMedia.Read(target).Count != 0) throw new Exception("Removing overrides");
+var selected = new AlertBanner {Text="SCREEN TEST", ScreensText="1, 3, 5"};
+if (!selected.Screens.SequenceEqual(new[]{1,3,5})) throw new Exception("Screen selection");
+selected.ScreensText="All";
+if (selected.Screens != null) throw new Exception("All screens");
+foreach (string invalid in new[]{"", "0", "6", "5,5", "1,", "1.5"}) {
+    try { selected.ScreensText=invalid; throw new Exception("Invalid screen text accepted"); }
+    catch (InvalidDataException) {}
+}
+var fields = new Dictionary<string,string>();
+for (int screen=0; screen<5; screen++)
+    for (int slot=0; slot<2; slot++)
+        foreach (string field in new[]{"GAUGE_TYPE","IMAGE_SRC","X_POS","Y_POS","Z_POS","X_SIZE","Y_SIZE","DAY_OPACITY","NIGHT_OPACITY"})
+            fields[$"SCREEN_{screen}_COMP_{slot}_{field}"] = field=="IMAGE_SRC" ? "" : "0";
+fields["SCREEN_0_COMP_0_GAUGE_TYPE"]="2";
+fields["SCREEN_0_COMP_0_IMAGE_SRC"]="u/existing.gif";
+var original = new Dictionary<string,string>(fields);
+var edits=AlarmScreenMarkers.Plan(fields,5);
+if (edits.ContainsKey("SCREEN_0_COMP_0_IMAGE_SRC") ||
+    edits["SCREEN_4_COMP_1_IMAGE_SRC"]!="u/ic7_screen_5.png")
+    throw new Exception("Occupied component overwritten or screen numbering wrong");
+foreach (var edit in edits) fields[edit.Key]=edit.Value;
+if (AlarmScreenMarkers.Plan(fields,5).Count!=0) throw new Exception("Marker plan is not idempotent");
+fields["SCREEN_1_COMP_0_IMAGE_SRC"]="u/ic7_screen_1.png";
+fields["SCREEN_1_COMP_0_GAUGE_TYPE"]="2";
+edits=AlarmScreenMarkers.Plan(fields,5);
+if (edits["SCREEN_1_COMP_0_GAUGE_TYPE"]!="0") throw new Exception("Duplicate marker not removed");
+original["SCREEN_0_COMP_1_GAUGE_TYPE"]="3";
+try { AlarmScreenMarkers.Plan(original,5); throw new Exception("Full screen accepted"); }
+catch (InvalidDataException) {}
+if (original["SCREEN_0_COMP_0_IMAGE_SRC"]!="u/existing.gif") throw new Exception("Planning mutated source");
 Console.WriteLine("Alert manifest geometry, matching, source, parsing and round-trip checks passed");
 """)
             result = subprocess.run(
@@ -151,7 +272,7 @@ Console.WriteLine("Alert manifest geometry, matching, source, parsing and round-
             self.assertIn("checks passed", result.stdout)
 
     def test_alert_nex_and_dll_preserve_matching_components(self):
-        nex = CANDIDATE / "ic7-2.36-native-media-screens-experimental.nex"
+        nex = CANDIDATE / "ic7-2.36-screen-alarms-experimental.nex"
         if not nex.exists():
             self.skipTest("Build the alert candidate first")
         codec = runpy.run_path(str(ROOT / "scripts/decode-nsp-resources.py"))

@@ -483,7 +483,7 @@ internal class Class117 : Class109, Interface3
 			button = new ThemedButton
 			{
 				Name = AlertBannerButtonName,
-				Text = "Banner GIF && position...",
+				Text = "Appearance...",
 				AutoSize = true,
 				Height = 24
 			};

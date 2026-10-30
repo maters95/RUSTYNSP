@@ -1,0 +1,7 @@
+{
+  "file": "ic7-emulator-screen-alarms.zip",
+  "bytes": 30994902,
+  "sha256": "2bece4bccf1b16b2256a6af2c5faf9a8c2f85334603775ab9eb7b5b467e1ca22",
+  "files": 62,
+  "status": "Map-gated reboot, shared GIF/MP4 startup and GIF alert preview locally tested with real Qt; Windows NSP/Qt 5.11 operation, real alarm evaluation, hardware flash and recovery unverified"
+}

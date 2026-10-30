@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from ic7_emulator import Device, Memory, ProtocolCapture, RequestStream, Resources, SPLASH_RESOURCE
 from ic7_emulator import request, resource_descriptor
 from ic7_emulator import serve_stream, UpdateSandbox
-from workbench import SessionOptions, Workbench, configured_nsp_port, preferred_first, virtual_ports
+from workbench import SessionOptions, Workbench, bundled_package, configured_nsp_port, preferred_first, virtual_ports
 from viewer import start_viewer, render_layout, scene_state
 from stock_renderer import get, install_component_override, pe_machine, pipe_message, renderer_environment
 from stock_renderer import stage_windows_platform_plugin, sync_resources, install_startup_qml, validate_ack
@@ -30,6 +30,22 @@ import package as emulator_package
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_bundled_package_prefers_matching_screen_alarm_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            firmware = root / "NSP-test-kit/firmware"
+            firmware.mkdir(parents=True)
+            older = firmware / "ic7-2.36-native-media-alerts-experimental.nex"
+            current = firmware / "ic7-2.36-screen-alarms-experimental.nex"
+            with patch("workbench.ROOT", root / "ic7-emulator"):
+                self.assertIsNone(bundled_package())
+                older.touch()
+                self.assertEqual(bundled_package(), older)
+                current.touch()
+                self.assertEqual(bundled_package(), current)
+                older.unlink()
+                self.assertEqual(bundled_package(), current)
+
     def test_mp4_preview_opens_viewer_with_selected_asset(self):
         window = MagicMock(movie=None, player=None)
         resource = {"name": "u/my clip & 1.mp4", "payload": b"video",
@@ -61,12 +77,7 @@ class ProtocolTests(unittest.TestCase):
             {"text": " ", "source": ""}, "invalid"]}).encode()
         self.assertEqual(alert_preview_texts(payload), ["Engine RPM Overrev", "Oil Pressure"])
         self.assertEqual(alert_preview_texts(b""), [])
-        screens = json.dumps({"version": 2, "banners": [
-            {"text": "Oil Pressure", "source": "", "x": 0, "y": 0, "width": 860, "height": 60},
-            {"text": "Oil Pressure", "source": "u/a.gif", "x": 0, "y": 0, "width": 860, "height": 60,
-             "screens": [2]}]}).encode()
-        self.assertEqual(alert_preview_texts(screens), ["Oil Pressure"])
-        for invalid in (b"[]", b'{"version":3,"banners":[]}', b"not json", b"\xff"):
+        for invalid in (b"[]", b'{"version":2,"banners":[]}', b"not json", b"\xff"):
             with self.assertRaises(ValueError):
                 alert_preview_texts(invalid)
 
@@ -195,11 +206,17 @@ class ProtocolTests(unittest.TestCase):
                 directory.mkdir()
                 (directory / "private.jsonl").write_text("private\n")
             output = Path(temporary) / "download.zip"
+            maintained = Path(temporary) / "ic7-custom-dash/deploy/nsp"
+            maintained.mkdir(parents=True)
+            for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml"):
+                (maintained / name).write_text("Item {}")
             with patch.object(emulator_package, "__file__", str(root / "package.py")), patch.object(
                     sys, "argv", ["package.py", "--output", str(output)]):
                 emulator_package.main()
             with zipfile.ZipFile(output) as archive:
-                self.assertEqual(archive.namelist(), ["ic7-emulator/module.py"])
+                self.assertEqual(set(archive.namelist()), {"ic7-emulator/module.py"} | {
+                    "ic7-emulator/qml/stock_renderer/" + name
+                    for name in ("main.qml", "HalImage.qml", "HalSplash.qml", "HalAlarmPopup.qml")})
 
     def test_renderer_installs_hash_verified_sandbox_component(self):
         import hashlib
@@ -237,7 +254,9 @@ class ProtocolTests(unittest.TestCase):
                 self.assertEqual(helper.read_bytes(),
                                  (Path(__file__).resolve().parents[1] / "qml/stock_renderer/HalSplash.qml").read_bytes())
                 self.assertEqual(image.read_bytes(),
-                                 (Path(__file__).resolve().parents[1] / "qml/stock_renderer/HalImage.qml").read_bytes())
+                                 (Path(__file__).resolve().parents[2] / "ic7-custom-dash/deploy/nsp/HalImage.qml").read_bytes())
+                self.assertEqual(root.read_bytes(),
+                                 (Path(__file__).resolve().parents[2] / "ic7-custom-dash/deploy/nsp/main.qml").read_bytes())
                 image_text = image.read_text(encoding="utf-8")
                 self.assertIn("import QtMultimedia 5.9", image_text)
                 self.assertIn("AnimatedImage", image_text)

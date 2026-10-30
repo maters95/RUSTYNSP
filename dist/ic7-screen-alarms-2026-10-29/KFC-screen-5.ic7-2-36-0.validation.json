@@ -1,0 +1,15 @@
+{
+  "source_sha256": "1d7b2d993b5452260c8d0a3c693ddafce007c108cdfdd413aa9ade8f7f85c7a1",
+  "prepared_map": "KFC-screen-5.ic7-2-36-0.nexmap",
+  "map_sha256": "b1b1605a10690bcff59255a5ef85b02de90fc1685a19f408ecff2771971bd795",
+  "authenticated_entries": 45,
+  "native_settings_and_checksum_byte_identical": true,
+  "existing_images_layouts_and_splash_unchanged": true,
+  "only_changed_member": "user_resources/images/ic7_alerts.json",
+  "kfc_limiter_screens": [
+    5
+  ],
+  "other_alarm_configuration_unchanged": true,
+  "bridge_installation": "Open Alarm appearance for KFC LIMITER, Apply, then Save in matching NSP. This installs the transparent tracking components using native setting APIs; settings were deliberately not rewritten offline.",
+  "physical_flash_validated": false
+}

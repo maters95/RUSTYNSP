@@ -455,6 +455,22 @@ internal class Control14 : Control11
 		{
 			Class280 @class = Form23.smethod_95();
 			@class?.method_2(setting_0.method_64());
+			if (setting_0.method_176() && framework_0.awZ == 21 && framework_0.awz == 11)
+			{
+				try
+				{
+					Form23.SaveMediaResource(framework_0, NSP.SplashMedia.ManifestName,
+						NSP.SplashMedia.CreateManifest("", false));
+					Form23.RefreshMediaPreview(framework_0);
+				}
+				catch (Exception error)
+				{
+					Class23.smethod_3("Cannot disable startup media: " + error.Message);
+					MessageBox.Show(this, error.Message, "Startup media", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					@class?.method_4();
+					return;
+				}
+			}
 			setting_0.method_262(string.Empty, bool_0: true);
 			@class?.method_4();
 			Form23.smethod_74(setting_0.method_64());
