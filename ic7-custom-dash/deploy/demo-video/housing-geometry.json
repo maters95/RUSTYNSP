@@ -1,0 +1,8 @@
+{
+  "note": "Measured on the owner's 1080x827 iC-7 photo (not committed). screen_quad: glass opening TL, TR, BR, BL in photo pixels. led_bar: segment boundaries in pixels along the bar axis from origin; top/bottom across it. 14 segments: 7 + 7 either side of the centre divider.",
+  "image_size": [1080, 827],
+  "screen_quad": [[236, 109], [892, 287], [792, 677], [161, 477]],
+  "led_bar": {"origin": [252, 72], "angle_deg": 14.948, "bounds": [-2, 50, 102, 148, 200, 246, 294, 342, 398, 452, 500, 548, 594, 644, 670],
+              "top": -5.5, "bottom": 4.5, "gap": 4},
+  "glow_blur": 4
+}
