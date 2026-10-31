@@ -169,6 +169,8 @@ There are **no** heading, sector, UTC-time, pit-message or "position in race" fi
 
 ### One FlexCAN, two "buses"
 
+**Correction (owner report, 2026-10-31):** the owner runs Haltech CAN and Third Party CAN together. The v2.36 definition only flags the pair (HALTECH_BUS `LegalOn`, group `aa`: `s10363s == 1`, `s16033s == 1`, no severity attribute, so NSP's default level 0 "Error"), and the dash app starts each decoder independently (`can::can_protocol::run` starts `CANProtocolEcu` when HALTECH_BUS = 1 and `CANThirdParty` when THIRD_PARTY_BUS = 1). So both run at once on the one wire. With Haltech CAN on, the native Track Modules (0x4F0-0x4F5) work alongside the Emtron's Generic CAN frames, but the Haltech broadcast decoder also reads the Emtron's 0x3E8-0x3EB and 0x3F2/0x3F3 as Haltech channels, so don't use those Haltech channels.
+
 The iC-7 has one physical CAN port, and every node shares the wire. The dash's logical
 buses are just decoders on it:
 

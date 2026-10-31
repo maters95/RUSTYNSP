@@ -39,6 +39,8 @@ CAN bus is not needed.
 
 ## Corrections to the premises
 
+**Correction (owner report, 2026-10-31):** the owner runs Haltech CAN and Third Party CAN together. The v2.36 definition only flags the pair (HALTECH_BUS `LegalOn`, group `aa`: `s10363s == 1`, `s16033s == 1`, no severity attribute, so NSP's default level 0 "Error"), and the dash app starts each decoder independently (`can::can_protocol::run` starts `CANProtocolEcu` when HALTECH_BUS = 1 and `CANThirdParty` when THIRD_PARTY_BUS = 1). So both run at once on the one wire. With Haltech CAN on, the native Track Modules (0x4F0-0x4F5) work alongside the Emtron's Generic CAN frames, but the Haltech broadcast decoder also reads the Emtron's 0x3E8-0x3EB and 0x3F2/0x3F3 as Haltech channels, so don't use those Haltech channels.
+
 - **"Haltech's GPS/track module".** HT-011310 is not a track module: see above, and
   *Sources*. The NSP "Track Modules" (GPS, Lap Timer) are decoders for Haltech-protocol
   frames 0x4F0-0x4F5 on the **Haltech CAN bus**. HT-011310 sends none of those, so the

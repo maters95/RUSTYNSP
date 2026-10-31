@@ -143,7 +143,7 @@ Docs: `ic7-custom-dash/deploy/vracer/README.md`, `GPS-OPTIONS.md`.
 **Add the VRacer IC02 + app** for lap, best, predicted and delta times.
 - It sends them on 0x4F0–0x4F5, so add them as Generic CAN frames.
 - It needs the phone.
-- The shared VRacer map's approach (Haltech CAN plus native Track Modules) **conflicts** with your Emtron Third Party setup, because NSP allows only one dash data protocol.
+- The shared VRacer map's approach (Haltech CAN plus native Track Modules) **can run alongside** your Emtron Third Party setup: you report running both, and the dash starts both decoders independently (NSP's definition only flags the pair). Don't use the Haltech channels that the Emtron's IDs 0x3E8-0x3EB and 0x3F2/0x3F3 land on. With Haltech CAN on, an Emtron that can send Haltech-format RPM (0x360) would also fill the dash's ECU RPM channel.
 
 **Haltech HT-011310** is only a GPS **speed** pulse module: no position, time or laps.
 
