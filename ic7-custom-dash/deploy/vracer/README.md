@@ -18,7 +18,7 @@ unverified.
 | How does the shared map get VRacer timing? | **Haltech CAN bus** with the native **Lap Timer Module** and **GPS** "Track Modules": the IC02 sends Haltech-module frames 0x4F0-0x4F5 at 1 Mbit/s. |
 | Does that work with the owner's Emtron setup? | **Not as the map does it.** The native track modules only listen on the Haltech CAN bus, NSP refuses Haltech CAN and Third Party CAN together, and the owner's Emtron is on Third Party Generic CAN. Two workable options below. |
 | GPS for a map? | The native GPS decoder gives latitude, longitude, altitude, speed, satellites and accuracies, **no heading and no time**. A position map is QML-feasible with two gauges; prototyped as an add-on. |
-| "Disable when engine off" alarms | **Confirmed: they can never fire** on the owner's map. The gate reads the native RPM channel, which Generic CAN cannot fill. Fix: wire and enable the dash's Tacho Input, or turn the option off. |
+| "Disable when engine off" alarms | **Confirmed: they cannot fire** on the owner's map. The gate needs the native RPM channel (0xE68) above 449. Only the Tacho Input, the Haltech ECU protocol and the third-party ECU protocols write it, and all three are off in that map; Generic CAN never writes it. Fix: wire and enable the dash's Tacho Input, or turn the option off. |
 
 ## 1. Clock
 
@@ -202,10 +202,13 @@ The costs:
 
 - every gauge and alarm that points at a "Third Party Bus Generic CAN" channel must be
   re-pointed;
-- Emtron IDs 0x3E8-0x3EB collide with Haltech broadcast IDs that `CANProtocolEcu` then
-  also decodes (Generic Sensor 5-10, Target Lambda, Gearbox Line Pressure, Injection
-  Stage 3/4, Race Timer, Ignition Angle Bank 1/2). Those channels would show garbage, so
-  either don't use them or move the Emtron IDs.
+- Emtron IDs 0x3E8-0x3EB, 0x3F2 and 0x3F3 collide with Haltech broadcast IDs that
+  `CANProtocolEcu` then also decodes (in the v2.36 `haltech-can-protocol.json`: Generic
+  Sensor 5-10, Target Lambda, the nitrous and water-injection output states, Torque
+  Management Knob, Gearbox Line Pressure, Injection Stage 3/4, Crank Case Pressure, Race
+  Timer, Ignition Angle Bank 1/2, and the front and rear ride-height sensors). Only
+  0x3F4 is free. Those channels would show garbage, so either don't use them or move the
+  Emtron IDs.
 
 The upside: native lap and GPS channels, the stock timing-screen layout, and, if the
 Emtron also sends Haltech-format 0x360 (RPM in bytes 0-1), a native RPM.
@@ -270,21 +273,48 @@ may belong to only one map. `{"version": 1, "maps": []}` is the "off" manifest.
   cmp; ble`).
 - 0xE68 (3688) is `Settings/Trigger/TRIGGER_SYSTEM/RPM` (channel id 384), the native
   ECU RPM.
-- Its only writers are `TachoInput::handle` (0x8e354) and a `can_third_party` ECU-protocol
-  lambda (0xe7674). `CANProtocolEcu` fills it through `haltech-can-protocol.json` (ID 384
-  from 0x360 bytes 0-1).
+- The base register is `data_manager::channels::chan_mem` (GOT entry 0x1d0ab8 ->
+  0x287b24), the same block NSP polls at USB 0x1400 + address. A scan of every function
+  for `[reg, #0xe68]` finds only two stores: `TachoInput::handle` (0x8e354/0x8e36c) and a
+  `can_third_party` protocol lambda (#10, 0xe7674). The other path is the JSON
+  `CanNode::process_frame`, called only by `CANProtocolEcu::handle` and
+  `CANThirdParty::handle`; `haltech-can-protocol.json` maps ID 384 to 0x360 bytes 0-1.
+- Every one of these is switched off by a setting:
+  - `TachoInput::handle` returns without writing unless Tacho Input Enable (setting
+    16357, address 34188) is set.
+  - `CANProtocolEcu::init` (0xe0c20) attaches to the Haltech bus only when HALTECH_BUS
+    (address 12) is 1.
+  - `CANThirdParty::init` (0xe5254) becomes a zombie when
+    `get_dash_can_protocol()` returns 0xff, which it does when THIRD_PARTY_BUS is 0 or
+    CAN_THIRD_PARTY_ECU is None (255).
 - Generic CAN signals write only their own fixed output channels
-  (`GENERIC_CAN_*_SIGNAL_n_OUTPUT`); there is no setting to route one to RPM.
+  (`update_signals_for_frame` 0x750c4 stores at `chan_mem + 0x6250 + 800 * bus +
+  4 * signal`, never 0xe68). No setting routes one to RPM: the signal "OUTPUT" settings
+  only override the unit. `channels_init` zeroes `chan_mem` at start-up, so with no
+  writer the gate reads 0.
 - **In the owner's map, Low Oil Pressure, Low Battery Voltage and Low Oil Temp have the
-  gate on, so they can never fire.** The Tacho Input is disabled (its engine type is 4
-  cylinders), and no ECU protocol is on.
+  gate on, so they cannot fire.** In `KFC-screen-5-restored.ic7-2-36-0.nexmap`:
+  Tacho Input Enable 0 (engine type 4 cylinders), HALTECH_BUS 0, THIRD_PARTY_BUS 1 with
+  protocol None (255), Third Party Generic CAN on. The gated alarms are:
+  - Alarm 4 Low Oil Pressure: Third Party Generic CAN Ch5 (signal 4), below 1703
+    (170.3 kPa abs, about 10 psi gauge);
+  - Alarm 6 Low Battery Voltage: Device Battery Voltage (setting 387, the dash's own
+    supply input), below 12000 (12.0 V);
+  - Alarm 9 Low Oil Temp: Third Party Generic CAN Ch9 (signal 8), below 3331
+    (333.1 K, 60 C).
+  All three use only the lower threshold and clear after 5 s.
+- **The captures cannot settle it.** NSP reads ECU RPM at USB 0x2268. It is 0 on every
+  poll in every capture (2,534 polls in `fail.pcapng`), but so is the Emtron RPM signal
+  (USB 0x7c90): all the captures are bench sessions with no CAN traffic. The verdict
+  rests on the code and the map settings above.
 
 **Fixes, best first:**
 
 1. **Wire the Emtron's tacho output (or the ECU tach signal) to the dash's tacho input,
    then enable Functions > Tacho Input with the correct cylinder count.**
-   `TachoInput::handle` then writes RPM to 0xE68 (it runs when Tacho Input Enable,
-   setting 34188, is on and the engine type is set), and the gate works. Check that the
+   `TachoInput::handle` then writes RPM to 0xE68 (it computes RPM when Tacho Input
+   Enable, setting 16357 at address 34188, is on, a period is measured and the engine
+   type is set; with the input enabled but no pulses it writes 0), and the gate works. Check that the
    dash's RPM matches the Emtron's.
 2. Or untick "Disable when engine off" for those three alarms. The cost: Low Oil
    Pressure and Low Battery Voltage alarms with the key on and the engine stopped.

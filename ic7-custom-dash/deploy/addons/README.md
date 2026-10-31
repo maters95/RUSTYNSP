@@ -131,10 +131,12 @@ NSP's **Write Settings and Resources** sends every file in its working
 - **Desktop preview** (not the dash): `python3 scripts/addons_tests/make_fixtures.py`
   then `QML_XHR_ALLOW_FILE_READ=1 qmlscene ic7-custom-dash/deploy/addons/preview/Preview.qml`.
   It drives the real stock-derived components with the sample manifests.
-- **NSP and the emulator do not show these add-ons.** The emulator publishes a fixed set
-  of components (`main.qml`, `HalImage.qml`, `HalSplash.qml`, `HalAlarmPopup.qml`) and
-  NSP's renderer re-extracts stock components from the map definition. On those you
-  will see stock indicators and gauges; that is expected.
+- **NSP does not show these add-ons, and the emulator is unproven for them.** NSP's
+  renderer re-extracts stock components from the map definition, so it shows stock
+  indicators and gauges; that is expected. The emulator now installs every member of
+  a transferred NEX, add-on files included, into its renderer tree
+  (`ic7-emulator/tests/test_dash_layout.py`), but whether its Windows renderer then
+  draws the add-ons with uploaded manifests has not been tested.
 
 ## Build
 

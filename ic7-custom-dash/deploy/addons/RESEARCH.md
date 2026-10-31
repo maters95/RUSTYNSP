@@ -52,11 +52,12 @@
 >    llvmpipe are exact in every state except one `HalCircularClassic` state, which
 >    differs by one anti-aliased pixel by one LSB; stock-vs-stock renders are exact, so
 >    the extra invisible node is the likely cause. The pixel test allows at most that.
-> 10. **The emulator and NSP cannot preview these add-ons** as they stand: the emulator
->    publishes a fixed list of sidecars (`main.qml`, `HalImage.qml`, `HalSplash.qml`,
->    `HalAlarmPopup.qml`) and NSP's renderer re-extracts stock components from the HDEF.
->    Changing either is out of scope (paths owned by the main work), so validation is the
->    desktop + QEMU tests and a desktop preview scene.
+> 10. **NSP cannot preview these add-ons**: its renderer re-extracts stock components from
+>    the HDEF. When this was written the emulator published a fixed list of sidecars
+>    (`main.qml`, `HalImage.qml`, `HalSplash.qml`, `HalAlarmPopup.qml`); it now installs
+>    every NEX member, add-on files included, into its renderer tree, but add-on drawing
+>    there is untested. Validation is the desktop + QEMU tests and a desktop preview
+>    scene.
 > 11. **Disk-cache precaution.** Qt 5.9.6 reuses compiled QML whenever path and mtime
 >    match. The add-on builder gives every replaced/added member a content-derived mtime
 >    that no stock or base member uses (same scheme as the main builder). The main work

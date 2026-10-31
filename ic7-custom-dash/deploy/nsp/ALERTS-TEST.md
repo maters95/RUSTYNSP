@@ -78,7 +78,8 @@ for acceptance testing. Do not mix this DLL/NEX pair into an older test bundle.
    setting on an alarm's page, right-click the alarm in the tree and choose
    **Alarm Appearance...**, or use **Setup > Dash Alarm Appearance** (next to
    **Dash Images Library**). The first two preselect that alarm. These entries
-   appear only for an iC-7 v2.36 map.
+   appear only for an iC-7 map (NSP checks the product and variant, not the
+   firmware version), so use a v2.36 map.
 3. Opening from an alarm page/tree edits that alarm only, keeps other alarms'
    appearances intact and locks the Message column. No manual matching is needed
    in this contextual editor. The bulk menu editor still matches the exact,
@@ -285,14 +286,16 @@ driving.
 
 Verified locally for the current candidate: x86 DLL build with zero compiler
 errors (404 existing decompilation warnings), referencing the same 52 assemblies
-as the shipped DLL with nothing removed; **46** Python/.NET regressions (8 need
-PowerShell and were skipped); **76** desktop Qt 5.15 QML checks, including
+as the previous custom DLL (the OEM NSP.dll's 46 are all still referenced);
+**51** Python/.NET regressions passed (59 run, 8 need PowerShell and were
+skipped); **76** desktop Qt 5.15 QML checks, including
 painted splash pixels and a stock banner painted over a full-screen alarm GIF;
 **68** QML checks on the dash's own Qt 5.9.6 under QEMU, including
 markerless native screen switching, alarm z-order in both model orders, a
 missing QtMultimedia, a splash that survives a 4.5 s blocked startup, and
 components loaded from scheme-less absolute paths as the application loads
-them; **132** emulator Python tests with real PyQt5; and an independent
+them; **157** emulator Python tests with real PyQt5 (156 pass at the current
+repository head: one add-on install test has a stale file list); and an independent
 NEX audit with no findings. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.

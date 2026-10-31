@@ -23,8 +23,10 @@ The firmware exposes two write paths NSP already drives, both confined to
 
 - `dash_user_spaces::DashUserResource::user_resource_read_write` with
   `filters_for_resource_type` / `get_resource_path_from_resource_type`.
-  The accepted filters are **images** (`*.png *.jpg *.jpeg *.bmp`) and
-  **fonts** (`*.ttf`) only — nothing else is writable at runtime.
+  The app contains filters for **images** (`*.png`, `*.jpg`, `*.jpeg`,
+  `*.bmp`) and **fonts** (`*.ttf`), but the write handler does not enforce
+  them: in `fail.pcapng` every `.gif` and `.json` upload was acknowledged with
+  status 0, and the owner has played uploaded GIF/MP4 files on the dash.
 - The full-resource NEX path (`res_ic-7.qzip`), which replaces files inside the
   firmware's own resource archive, including the QML in `qml_components_data`.
 
@@ -58,8 +60,8 @@ work already done.
   test map already carries `GoogleSansFlex`, `Roboto` and `eurostile`. A CFW can
   ship bespoke gauge typography through ordinary resource upload — no NEX needed.
   (`DashUserResource` font filter `*.ttf`; `FontManager` in the app.)
-- **Restyled gauges.** The 23 QML components under `user_components` (bar,
-  circular, numeric, retro, indicator, gear, text) can be re-skinned the way
+- **Restyled gauges.** The 21 QML files under `user_components` (bars,
+  circulars, numerics, indicator, text, image, alarm popup, error and template) can be re-skinned the way
   `HalImage` was — colours, needles, tick styling, animated needles, warning
   animations — by replacing their QML in a resource-only NEX.
 - **Richer alert popups.** `HalAlarmPopup` is ours to shape: multi-line banners,
@@ -92,8 +94,9 @@ is compressed, so which are already surfaced must be confirmed in NSP itself.
   full `952×472`, a `360×480` right-hand strip at x=460, and `1280×480` (uC-10).
   Enums exist for `CameraInputRotate`, `CameraInputMirror`, `CameraInputFill`
   and `CameraInputPowerType`, plus `Follow Front When Reversing` and
-  `On When Camera Active`. This is a complete reversing-camera feature; the big
-  unknown is whether this hardware unit has the camera input populated.
+  `On When Camera Active`. **Correction:** the camera is uC-10 only. Its supply
+  pin is only in the uC-10 pin table, and `io::func::run` skips it on the iC-7
+  (variant 11); see `../hardware-audit/REPORT.md`.
 - **Ambient-light auto-brightness and Night mode.** `io::ambient_light_io`
   (ALS, lux→ALS), `enum_for_BrightnessMode`, `enum_for_DayNightSource`
   (`Ambient Light` / `Auto` / `Manual`), `is_night_mode`, `brightness_table`.
@@ -101,21 +104,23 @@ is compressed, so which are already surfaced must be confirmed in NSP itself.
 - **Wi-Fi (and Wi-Fi/BT module).** `UnixWifiModule` runs an access point
   (`hostapd` + `udhcpd`, `192.168.5.2`, `wifi_config_ssid_password`) and
   `WifiComms` does AES-encrypted UDP. `enum_for_WiFiEnable`,
-  `enum_for_WifiBTModuleStatus`. Likely wireless NSP tuning / telemetry; needs
-  the module fitted.
-- **USB stick datalogging.** `/mnt/usb/datalog/log%u`, `g_mass_storage` gadget
-  toggled so the dash exposes its logs as a drive, `datalogger::*`. On-dash
-  logging to a stick, pulled over USB.
+  `enum_for_WifiBTModuleStatus`. **Correction:** dead on the iC-7. The app gates
+  it off for variant 11 and the kernel has no Wi-Fi driver or firmware (see
+  `../hardware-audit/REPORT.md`).
+- **Datalogging.** `/mnt/usb/datalog/log%u`, `g_mass_storage` gadget toggled so
+  the dash exposes its logs as a drive, `datalogger::*`. **Correction:** despite
+  its name, `/mnt/usb` is eMMC partition 4 (`/dev/mmcblk0p4` in the rootfs
+  `fstab`), not a USB stick.
 - **Lap timer / MyLaps race control.** `can_lap_timer::CanLapTimer`,
-  `can::CanMyLaps`, "MyLaps Speedhive" branding, and **28 FIA flag images
-  already in the resource archive** with meanings wired in the app
+  `can::CanMyLaps`, "MyLaps Speedhive" branding, and **25 FIA flag images (plus
+  2 MyLaps logos) already in the resource archive** with meanings wired in the app
   (`Blue Flag`, `Double Yellow Flag`, `Pit Entry Closed/Left/Right`,
   `Pit Lane Speed Limiter`, …). A track-day / race overlay is largely built.
 - **GPS over CAN** (`can_gps::CanGPS`), **CAN keypad** (`can_keypad::CanKeypad`,
   CANopen/LSS), **Output Test** (new in 2.36, per release notes),
-  **odometer / trip reset** (`odometer::reset_trip_meter`), and a built-in
-  **screenshot** path (`take_screenshot_requested`, already reused for component
-  rendering).
+  **odometer / trip reset** (`odometer::reset_trip_meter`). **Correction:** the
+  screenshot path is stubbed in v2.36: `UIMain::handle_take_screenshot`
+  (0x115f80) and `UIScreen::take_screenshot` (0x1190f8) are a bare `bx lr`.
 
 The highest-value NSP.dll work here is a small panel that lets the owner
 configure whichever of camera / night-mode / Wi-Fi / datalog settings exist in
@@ -137,8 +142,8 @@ attempt without a proven recovery path and a bench flash.
   fixed at five (`UIMain` creates exactly five `UIScreen` objects); gauge types
   are a fixed enum; the alarm engine is in the binary. All require editing
   `nic-7` itself.
-- **New ECU CAN protocols.** The 22 `can_protocols/*.json` files in the resource
-  archive are data the app parses, so an added/edited protocol *might* load via a
+- **New ECU CAN protocols.** The 16 `can_protocols/*.json` files (21 files in that
+  folder) in the v2.36 resource archive are data the app parses, so an added/edited protocol *might* load via a
   resource NEX — but the parser's tolerance is unverified and a bad protocol
   could destabilise CAN. Treat as experimental, not Tier 0.
 - **SSH / shell access.** The app actively disables `dropbear`
@@ -149,8 +154,9 @@ attempt without a proven recovery path and a bench flash.
 
 ## Recommendation
 
-1. **Confirm the hardware first.** Camera, Wi-Fi/BT and the ALS are the biggest
-   wins but each depends on the part being fitted. The read-only USB diagnostics
+1. **Confirm the hardware first.** The camera (uC-10 only) and Wi-Fi/BT (gated
+   off on the iC-7) are ruled out by the hardware audit; the ALS remains, and
+   it depends on the part being fitted. The read-only USB diagnostics
    kit and an NSP look at the map's available settings will tell you which of the
    Tier 1 features your unit can actually use before any work goes in.
 2. **Cheapest real wins, no NEX:** custom fonts and additional user images are

@@ -26,7 +26,7 @@ same file as r3's.
 
 ## Stage 0: preparation (no dash connected)
 
-1. Download the r3 kit and check its SHA-256 against the table (`Get-FileHash`
+1. Download the r4 kit and check its SHA-256 against the table (`Get-FileHash`
    in PowerShell). Extract it into a new, empty folder.
 2. Keep these backups:
    - the original `Dash-V2-36-0-Release.nex` from Haltech, for rollback;

@@ -11,7 +11,8 @@ physical dash during desktop/emulator setup; nothing here flashes it automatical
 
 - **NSP alarm appearance UI follows NSP's own conventions.** Open it from
   **Setup > Dash Alarm Appearance** or the alarm page's **Alarm
-  Appearance...** button (iC-7 v2.36 maps only). Rule names longer than 20
+  Appearance...** button (iC-7 maps only: NSP checks the product and variant,
+  not the firmware version, so open a v2.36 map). Rule names longer than 20
   characters, containing `"` or padded with spaces are rejected, because the
   dash sends at most 20 characters; rules that match no alarm in the map ask
   for confirmation; unsaved edits prompt before closing; prompts use NSP's
@@ -21,15 +22,20 @@ physical dash during desktop/emulator setup; nothing here flashes it automatical
   a half-written map as complete.
 - **Emulator engine simulation (off by default, labelled SIMULATION).** The
   workbench **Engine simulation** tab drives your Emtron Generic CAN signals
-  through the dash's own decode, so NSP's gauges, live data, raw CAN view and
-  your map's alarms behave as with a running engine. Presets include low oil
+  through the dash's own decode and evaluates your map's alarms in the
+  emulator. Known defect: it writes the channels 0x1400 below the USB address
+  NSP reads them from, so NSP's gauges, live data, raw CAN view and alarm
+  states do not show the simulated values; use the emulator's own alarm
+  output (see `ic7-emulator/README.md`, Engine simulation). Presets include low oil
   pressure, overheat, over-rev, low fuel pressure and low battery; per-signal
   holds and CAN faults are available. The emulator now also works offline after
   its first setup and reports a busy COM port clearly.
 - **Check your "Disable when engine off" alarms.** On the dash that option
-  needs the ECU RPM channel above 449 rpm, which Generic CAN does not fill, so
-  Low Oil Pressure, Low Battery Voltage and Low Oil Temp may never fire with
-  only Generic CAN. The emulator's low-oil and battery presets feed that channel
+  needs the ECU RPM channel above 449 rpm. Only the Tacho Input or an ECU
+  protocol writes that channel, never Generic CAN, and both are off in your
+  map, so Low Oil Pressure, Low Battery Voltage and Low Oil Temp cannot fire.
+  Enable the Tacho Input (wired to a tach signal) or untick the option. The
+  emulator's low-oil and battery presets feed that channel
   so you can see the alarm; clear **Feed ECU RPM channel** to see what the
   real dash would do.
 
@@ -134,11 +140,11 @@ popup on other screens; do not restrict safety alarms such as oil pressure.
 
 | Check | Result |
 |---|---|
-| NSP build | 0 errors; 404 existing decompilation warnings; same 52 referenced assemblies as the shipped DLL, none removed |
+| NSP build | 0 errors; 404 existing decompilation warnings; the same 52 referenced assemblies as the previous custom DLL (the OEM NSP.dll references 46, all still referenced) |
 | NSP/.NET regression and UI-convention tests | 51 passed; 8 skipped (need PowerShell) |
 | Desktop QML (Qt 5.15) | 76 passed, including painted splash pixels and a stock banner painted over a full-screen alarm GIF |
 | Dash Qt 5.9.6 under QEMU | 68 passed, including alarm z-order in both orders, markerless screen switching, missing QtMultimedia, a 4.5 s blocked startup and application-style scheme-less component paths |
-| Emulator Python tests | 157 passed, including capture conformance (36,450 exchanges, 0 differences) and engine-simulation alarms |
+| Emulator Python tests | 157 passed when r4 was packaged, including capture conformance (36,450 exchanges, 0 differences) and engine-simulation alarms. At the current repository head 156 pass: one add-on install test still lists the earlier add-on NEX's files (it is skipped in the kit) |
 | NEX audit vs stock | 326 stock files unchanged, none removed; 3 QML changed, 1 added, all with fresh non-stock mtimes; wrapper/HDEF identical; all imports present on the dash |
 | `fail.pcapng` decode | all resources and the NEX body acknowledged complete |
 

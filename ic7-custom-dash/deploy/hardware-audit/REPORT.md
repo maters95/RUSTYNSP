@@ -15,8 +15,10 @@ in [`evidence/`](evidence/).
   - Two observations (§2.4): F1, resource cost in every HalImage, and F2,
     the splash covering the alarm popup at boot. F2 is kept by owner
     decision.
-- **Add-on NEX (`1f6e36c7…8167`): correct.** It inherits F1 and F2 from its
-  r3 base.
+- **Add-on NEX: correct.** It inherits F1 and F2 from its r3 base. This audit
+  examined the earlier add-on build `1f6e36c7…8167` (5 added files); the
+  current one, `e1ca76e7…c59f`, also adds `Ic7Clock.qml` and `Ic7TrackMap.qml`,
+  and its counts below were re-checked on 2026-10-31.
 
 ## 2. NEX correctness
 
@@ -32,7 +34,7 @@ dash sysroot.
 | ic-7.hdef | b89bdab9…a715 | identical | identical |
 | Wrapper words 0-6 | 2,0,0,0x25000000,0x80,0x4000,0xfa0 | identical | identical |
 | Wrapper bytes 28-44 | a9dfc896…9954 | stock copy | stock copy |
-| Tar | 339 entries (329 files) | 340: 326 identical, 3 changed, 1 added, 0 removed, order kept | 345 |
+| Tar | 339 entries (329 files) | 340: 326 identical, 3 changed, 1 added, 0 removed, order kept | 347 (337 files: 322 identical, 7 changed, 8 added) |
 | New mtimes | stock 1790648083/84 | 1767313730, 1710892354, 1711391189, 1759212789 (unique) | unique |
 
 - **The 16-byte wrapper field** matches no MD5 of the body or the plaintext,
@@ -122,7 +124,8 @@ Low-risk observations, needing no change:
 
 - **Base:** main, HalSplash, HalImage and HalAlarmPopup are identical to r3.
 - **Gauges:** the 4 changed gauges are stock plus `IC7-ADDON` blocks.
-- **Added files:** the 5 added files equal `deploy/addons/qml`.
+- **Added files:** the 7 add-on files (besides r3's HalSplash) equal
+  `deploy/addons/qml`.
 - **Imports:** all exist on the dash, and common.js is a stock member.
 - **Package:** the wrapper, HDEF and manifest are identical to r3.
 - **Audit report:** its "does not match maintained source" lines are expected,

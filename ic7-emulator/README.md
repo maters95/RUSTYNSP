@@ -43,13 +43,35 @@ native viewer status and `engine-simulation.json` in exported logs.
 (Intel or Motorola bits, sign-extended), computes `raw * multiplier + offset`
 in float32, converts it with the unit's `convert_from_float_*` (for example
 psi gauge to 0.1 kPa abs, C to 0.1 K, km/h x10, lambda x1000) and stores a
-32-bit channel at `0x6250 + 800 * bus + 4 * signal` (Haltech, Vehicle, Third
-Party buses; the owner's Emtron is Third Party, `0x6890`). NSP polls
-`0x1400-0x7fe4` (captures: `0x1400`/`0x4800` x13312 and `0x7c00` x996), so its
-gauges and live views read those channels, and the renderer gets the same
-block. A frame unheard for 2 s sets its signals to Device Time Out
-(`0x80000004`). NSP's raw CAN view writes a CAN id to the bus's realtime id
-(`0x6bb8 + 12 * bus`) and reads the frame's 8 bytes from `0x6bb0 + 12 * bus`.
+32-bit channel at `chan_mem + 0x6250 + 800 * bus + 4 * signal` (Haltech, Vehicle,
+Third Party buses; the owner's Emtron is Third Party, `0x6890`, which is the
+definition address of `GENERIC_CAN_THIRD_PARTY_SIGNAL_0_OUTPUT`). A frame
+unheard for 2 s sets its signals to Device Time Out (`0x80000004`). The ELF
+compares received ids with a per-bus realtime id at `chan_mem + 0x6bb8 + 12 *
+bus` and stores the frame's 8 bytes at `chan_mem + 0x6bb0 + 12 * bus`.
+
+**USB addresses are channel addresses plus 0x1400.** The dash maps
+`chan_mem` at USB address `0x1400` (memory-space table at `0x1cf1e8`: start
+`0x1400`, `channel_space_read`/`channel_space_write`, writes clamped at
+`0x6be4`), and NSP adds `as[33].Be = 5120` to every channel address
+(`nsp_src/A/F.cs`, `nsp_src/A/E.cs` line 619). NSP's polls `0x1400`/`0x4800`
+x13312 and `0x7c00` x996 therefore cover channel addresses `0x0000-0x6be4`.
+The captures confirm it: Device Battery Voltage (definition address `0x3cf8`)
+reads 9.9-13.8 V at USB `0x5014` while USB `0x3cf8` holds a constant
+`0x80000014`, and NSP's screen switch writes Active Screen (`0x57e4`) at USB
+`0x6be4`. So NSP reads the owner's Emtron RPM at USB `0x7c90` and the ECU RPM
+(`0xe68`) at USB `0x2268`.
+
+**Known defect (not fixed):** `engine_sim.py` writes its channels at the bare
+channel address in USB space (`RPM_CHANNEL = 0x0e68`, `BATTERY_CHANNEL =
+0x3cf8`, `ALARM_ACTIVE = 0x5818`, Generic CAN at `0x6250 + ...`), 0x1400 below
+where NSP and its renderer read them, and its alarm evaluation reads the map's
+alarm channels at the same bare addresses. The emulator's own alarm
+evaluation, popup message and native viewer are consistent with each other,
+but NSP's gauges, live data, raw CAN view and alarm states do not show the
+simulated values at the right channels. Minimal fix: add `0x1400` to every
+channel address `engine_sim.py` reads or writes (and to the addresses in
+`tests/test_engine_sim.py`).
 The map's Generic CAN settings (frame ids/enables at `0x20000 + 478552 + 180 *
 bus`, signals at `479092 + 4200 * bus`, floats stored big-endian) define the
 frames; `emtron_can.json` is the fallback when the map has none.
@@ -58,16 +80,19 @@ frames; `emtron_can.json` is the fallback when the map has none.
 25 alarms (`ALARMS_COMP_n_*`), upper (`value > on`) and lower (`value < on`)
 thresholds, enable flags, *Disable Alarm When Engine Off* (the ECU RPM channel
 `0xe68` must exceed 449 rpm), *Clear After Seconds* (counted from activation),
-manual clear mode, the alarm-active channels at `0x5818 + 4n` that NSP polls,
+manual clear mode, the alarm-active channels at `0x5818 + 4n` (NSP polls them
+at USB `0x6c18 + 4n`; see the defect above),
 and the popup message `draw_alarms` sends with `reInitAlarmScreen` (names cut
 to 20, `compute_color_string` colours, height 60). On Windows, NSP's
 `dash_virtual.exe` contains the same alarm module and evaluates the forwarded
 channels itself; the native viewer shows the emulator's evaluation.
 
-Finding for the owner's map: the engine-off gate reads the ECU RPM channel,
-which Generic CAN does not fill, so *Low Oil Pressure*, *Low Battery Voltage*
-and *Low Oil Temp* (all gated) would never fire on the real dash with only
-Generic CAN. The `low-oil-pressure` and `battery-low` presets therefore feed
+Finding for the owner's map: the engine-off gate reads the ECU RPM channel
+(`chan_mem + 0xe68`), which Generic CAN never writes. In that map the Tacho
+Input is disabled, the Haltech CAN bus is off and the third-party protocol is
+None, so nothing writes it and it stays 0: *Low Oil Pressure*, *Low Battery
+Voltage* and *Low Oil Temp* (all gated) cannot fire on the real dash. See
+`ic7-custom-dash/deploy/vracer/README.md` for the evidence. The `low-oil-pressure` and `battery-low` presets therefore feed
 that channel (**Feed ECU RPM channel**); clear it to see the real-dash result.
 Lower thresholds also fire on channel error codes, as on the dash, so a CAN
 timeout raises *Low Oil Pressure* when the gate passes.
@@ -331,7 +356,7 @@ and requires the DirectShow **dsengine** player; `wmfengine` alone is not a
 video-player backend. Missing multimedia/GIF dependencies produce an explicit
 startup error, not an Image-only fallback.
 
-Validated on Linux with real PyQt5: 157 Python tests (25 for the engine simulation) (including capture conformance and the 3-level manifest acceptance test), including a real Qt 5.15
+Validated on Linux with real PyQt5: 157 Python tests (25 for the engine simulation; including capture conformance and the 3-level manifest acceptance test). A fresh run on 2026-10-31 at the repository head: 156 passed and 1 failed, because `test_addon_nex_installs_generically_into_the_renderer_tree` still lists the add-on NEX's earlier 5 added files, not the current 7 (`Ic7Clock.qml` and `Ic7TrackMap.qml` were added later). In the kit, which has no add-on NEX, that test is skipped. The suite includes a real Qt 5.15
 test of staged GIF and MP4 playback, muting, timeout/unloading, and two startups
 per format, plus a shared GIF alert preview over HTTP with rendered-pixel
 verification. Browser tests cover MP4/alias playback and splash-to-layout handoff.

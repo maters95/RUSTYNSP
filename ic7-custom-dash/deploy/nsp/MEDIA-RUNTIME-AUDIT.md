@@ -175,7 +175,8 @@ flash (`ic7 real flash cfw.pcapng`) and a stock Haltech update
   the application answering is the one being restarted.
 - **The missing `0x000f` burst is expected for an animated splash.** In both
   good captures, after the settings write NSP uploads a 1,152,054-byte BMP
-  to `0x70400000` and then writes `0x000f` about 65 times while the dash patches
+  to `0x70400000` and then writes `0x000f` repeatedly (65 times in the custom
+flash, 78 in the stock update) while the dash patches
   its kernel boot logo. With a GIF/MP4 splash selected, the rebuilt NSP skips
   that static kernel-logo update and sends the media as user resources instead,
   so neither step appears. The early kernel logo therefore keeps its previous
@@ -272,9 +273,10 @@ runtime.
 
 ## Verification Boundary
 
-The Qt 5.9.6 ARM QML suite passed 11 tests under QEMU, including GIF frame
-advance, MP4 looping, source switching, decode errors and playback position.
-The desktop Qt suite passed 15 tests, including comparisons of changing GIF
+At the time of the original screen-media audit, the Qt 5.9.6 ARM QML suite
+passed 11 tests under QEMU, including GIF frame advance, MP4 looping, source
+switching, decode errors and playback position, and the desktop Qt suite passed
+15 tests (the current suites have 68 and 76; see `FINAL-START-HERE.md`), including comparisons of changing GIF
 and MP4 **rendered pixels**. Headless ARM pixel capture is not reliable and is
 not represented as a passing physical rendering check.
 Those automated checks verify the QML component against the

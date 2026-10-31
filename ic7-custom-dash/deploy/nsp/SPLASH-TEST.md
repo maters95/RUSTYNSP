@@ -22,8 +22,8 @@ the Windows resourcefix alone.
 - The resource-only NEX retains the working `HalImage.qml`, replaces the stock
   root QML, and adds `HalSplash.qml`. It leaves the application executable,
   kernel, bootloader and existing kernel-logo tools unchanged.
-- Startup media plays muted over a black background for at most **three
-  seconds**, then its player is destroyed and the normal dash is revealed.
+- Startup media plays muted over a black background for at most **3.3
+  seconds** (3300 ms, the QML maximum and the value NSP writes), then its player is destroyed and the normal dash is revealed.
   Missing configuration skips the overlay; invalid configuration/media is
   logged and releases it. Gauges continue loading underneath.
 - **This is the Qt/application stage of startup.** The earliest kernel logo
@@ -107,7 +107,8 @@ setting; it does not have a separate whole-map-upload-complete signal.
    and select it. The startup manifest is stored in both the working map and
    NSP's renderer resource cache. Save/Save As normally; upload the resources
    to the emulator. No desktop map reopen is required to persist the selection.
-   On an iC-7 v2.36 map, importing media over 4 MB, or an animated GIF whose
+   On an iC-7 map (NSP checks the product and variant, not the version),
+   importing media over 4 MB, or an animated GIF whose
    frames exceed the 860 x 480 canvas, asks for confirmation first. This is an
    advisory limit; playback cost on the dash has not been measured.
 2. Trigger the existing **Reboot** action in NSP. Confirm a fresh GIF splash,
@@ -168,15 +169,17 @@ The NEX output directory must be new. Packaging uses
 `--test-map` pointing at an existing map. The map is authenticated with the
 existing inspector and included unchanged, never rewritten.
 
-Verified locally: the x86 DLL builds with zero compiler errors; 25 desktop
-QML checks pass (including rendered media pixels); 21 ARM Qt 5.9.6/QEMU checks
-pass; and 18 focused Python/.NET regression tests pass. Production root-QML
-tests exercise the real relative resource paths and repeated startup/handoff.
-The decoded candidate preserves all 337 other stock resource members and the
-original resource wrapper. Windows GUI operation and physical startup timing
+Verified locally for the current r3/r4 candidate (fresh run, 2026-10-31): the
+x86 DLL builds with zero compiler errors; 76 desktop QML checks pass (including
+rendered media pixels); 68 ARM Qt 5.9.6/QEMU checks pass; and 51 Python/.NET
+regression tests pass (8 more need PowerShell and are skipped). Production
+root-QML tests exercise the real relative resource paths and repeated
+startup/handoff. The decoded candidate preserves the 336 other stock resource
+members (326 files plus directories) and the original resource wrapper. Windows GUI operation and physical startup timing
 still need the desktop/bench checks above.
 
-The emulator additionally passes 88 Python tests using real PyQt5, browser
+The emulator suite has 157 Python tests using real PyQt5 (156 pass at the
+current repository head; one add-on install test has a stale file list), browser
 checks and ZIP integrity checks. Its staged renderer uses the exact shared
 QML, tested with real Qt 5.15 GIF/MP4 playback, muting, unloading and two
 startups per format. The selected manifest survives playback and repeated

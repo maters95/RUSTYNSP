@@ -3817,6 +3817,7 @@ internal class Form23 : Form
 	}
 
 	// Alarm appearance, splash and screen-media manifests exist only for the iC-7 v2.36 resource NEX.
+	// The check below is the iC-7 product (framework 21) and variant (11) only; it does not check the firmware version.
 	internal static bool SupportsDashMedia(Framework framework)
 	{
 		return framework != null && framework.awZ == 21 && framework.awz == 11;
