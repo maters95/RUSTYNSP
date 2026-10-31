@@ -8,7 +8,7 @@ keep the capture or screenshots.
 
 | Use | File | SHA-256 |
 |---|---|---|
-| Kit (r5) | `dist/ic7-final-windows-test-2026-10-31-r5.zip` | `37659bceb20efc3355264a7d3412afdf59f370b145a13c5bec0e46b02ef7180d` |
+| Kit (r6) | `dist/ic7-final-windows-test-2026-10-31-r6.zip` | `28ad7ae5bc545c44d9e4a73a2c00aaadb0b9fee5d57f64281b5f2251940e8185` |
 | NEX (inside the kit) | `NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex` | `dec4e3bf0651c468dc31adac3f8e791ce48c458ae7feee192d72e56404874d3c` |
 
 **Do not flash** any earlier custom NEX:
@@ -21,12 +21,12 @@ The folder path is the proven cause of the failed flash. The fresh QML
 timestamps are only a precaution: your earlier GIF/MP4 screen flash shows the
 dash does not reuse its QML cache across updates.
 
-Delete the older kits so they cannot be mixed up with r5. The r5 NEX is the
+Delete the older kits so they cannot be mixed up with r6. The r6 NEX is the
 same file as r3's.
 
 ## Stage 0: preparation (no dash connected)
 
-1. Download the r5 kit and check its SHA-256 against the table (`Get-FileHash`
+1. Download the r6 kit and check its SHA-256 against the table (`Get-FileHash`
    in PowerShell). Extract it into a new, empty folder.
 2. Keep these backups:
    - the original `Dash-V2-36-0-Release.nex` from Haltech, for rollback;
@@ -46,7 +46,7 @@ same file as r3's.
    Use a new destination outside the official install.
 2. Launch NSP from that folder. If it fails to start or shows errors, **stop**:
    the rebuilt DLL has not yet been run on Windows by anyone.
-3. Open `KFC-screen-5-restored.ic7-2-36-0.nexmap` and check:
+3. Open `KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap` and check:
    - **KFC LIMITER → Appearance:** the GIF animates, **GIF only** is ticked,
      Screens is `5`, and screen 5 shows behind it.
    - **Startup image:** your splash GIF is selected.

@@ -30,6 +30,6 @@ with `python scripts/make-test-variants.py` and check it with
   compare against.
 
 The complete Windows test package (NEX, this DLL, the emulator and guides) is
-`dist/ic7-final-windows-test-2026-10-31-r5.zip`; its NEX and DLL are the
+`dist/ic7-final-windows-test-2026-10-31-r6.zip`; its NEX and DLL are the
 variant 1 files. These folders are for
 swapping files on a setup that already exists.

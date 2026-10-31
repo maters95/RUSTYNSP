@@ -1,0 +1,16 @@
+{
+  "source": "KFC-screen-5-restored.ic7-2-36-0.nexmap",
+  "source_sha256": "72c33d2ffe47aa414435e685367828b15213f0b2946bea800133ab782c49002d",
+  "output": "KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap",
+  "output_sha256": "0d6b2033a278b59c1bba492ce0168ac3e125ebdca72529b0b53a4178cc493058",
+  "map_settings_byte_identical": true,
+  "unchanged_entries": 46,
+  "replaced": [
+    {
+      "name": "user_resources/images/kfc_colonel_limiter_860.gif",
+      "old_sha256": "638bddb3b201f947098957eb05245cf6a35779287632517c755e169e23139e42",
+      "new_sha256": "c0c5ce9b4da9f22a51f5e60f396cf6c20d073f384a154131fc9838c1040d6439",
+      "bytes": 1182685
+    }
+  ]
+}

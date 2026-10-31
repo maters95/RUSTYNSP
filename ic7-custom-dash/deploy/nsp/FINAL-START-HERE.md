@@ -1,13 +1,22 @@
-# iC-7 Windows test package - 2026-10-31, revision 5
+# iC-7 Windows test package - 2026-10-31, revision 6
 
 This package combines the rebuilt NSP DLL, the Windows emulator/workbench, the
 resource-only v2.36 NEX, your restored KFC map, samples and setup scripts. It
-supersedes r4, r3, r2 and every earlier kit. The NEX is the same as r3/r4; r2 and
+supersedes r5, r4, r3, r2 and every earlier kit. The NEX is the same as r3-r5; r2 and
 earlier NEX files must not be flashed (see below). Use this clean package instead of mixing files from earlier downloads.
 This is a TEST package, not a verified physical-flash release. Disconnect the
 physical dash during desktop/emulator setup; nothing here flashes it automatically.
 
-## What changed since r3
+## What changed since r5
+
+- **Your map's KFC LIMITER GIF is fixed.** Its first 40 ms frame was partly
+  transparent, so the screen behind the alarm flashed through on every loop.
+  `NSP-test-kit\map\KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap` is your map with
+  only that GIF replaced (same name, loop length unchanged); every setting and
+  every other resource is byte-identical. Write resources after opening it so
+  the dash gets the new GIF. The NEX and NSP DLL are unchanged from r5.
+
+## What changed in r4 and r5
 
 - **NSP alarm appearance UI follows NSP's own conventions.** Open it from
   **Setup > Dash Alarm Appearance** or the alarm page's **Alarm
@@ -76,7 +85,7 @@ the official install. Do not copy this DLL into the official install.
 ## 2. Check the map in NSP
 
 Launch NSP from the new destination and open
-`NSP-test-kit\map\KFC-screen-5-restored.ic7-2-36-0.nexmap`.
+`NSP-test-kit\map\KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap`.
 Open **Setup > Dash Alarm Appearance** and select KFC LIMITER (or **Alarm
 Appearance...** on its alarm page). Confirm the GIF, **GIF only** and
 Screens `5`; the preview should show screen 5 behind it. Apply -> OK -> Save.

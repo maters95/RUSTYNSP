@@ -12,11 +12,12 @@ application, the stock firmware, your maps and your USB captures.
 
 | Purpose | File | SHA-256 |
 |---|---|---|
-| **Windows test kit (use this)** | `dist/ic7-final-windows-test-2026-10-31-r5.zip` | `37659bce…180d` |
+| **Windows test kit (use this, r6)** | `dist/ic7-final-windows-test-2026-10-31-r6.zip` | `28ad7ae5…8185` |
 | NEX to flash (inside the kit) | `NSP-test-kit/firmware/ic7-2.36-screen-alarms-experimental.nex` | `dec4e3bf…4d3c` |
 | Step-by-step test and flash plan | `ic7-custom-dash/deploy/nsp/TEST-AND-FLASH-PLAN.md` (the kit's START-HERE is `FINAL-START-HERE.md`) | |
 | Swap-in files plus a stock base | `test-variants/` (README inside) | `SHA256SUMS` |
-| Fixed KFC alarm GIF | `ic7-custom-dash/deploy/demo-video/fixed-media/kfc_colonel_limiter_860.gif` | |
+| Your map with the fixed KFC GIF (also in the kit) | `dist/ic7-maps/KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap` | `0d6b2033…3058` |
+| Fixed KFC alarm GIF on its own | `ic7-custom-dash/deploy/demo-video/fixed-media/kfc_colonel_limiter_860.gif` | `c0c5ce9b…6439` |
 | Demo videos | `ic7-custom-dash/deploy/demo-video/ic7-demo.mp4` (captioned), `ic7-demo-clean.mp4` | |
 
 **Never flash** these earlier custom NEX files:
@@ -77,7 +78,7 @@ It adds:
      - **The CR-V screen's big RPM dial reads 0.**
    - **KFC LIMITER does fire.** It watches Generic CAN channel 1 (above 7,900) and isn't gated, so all 14 LEDs go solid red through its own LED setting.
    - **Fix:** wire the Emtron's tacho output to the dash Tacho Input and enable **Functions > Tacho Input** (4 cylinders). That fixes all four problems at once. Until then, untick "Disable when engine off" on those three alarms.
-2. **The KFC GIF has a partly transparent first frame.** The screen behind flashes through on every loop. Replace the file in NSP's user resources with the fixed copy above (same name), then write resources.
+2. **The KFC GIF had a partly transparent first frame.** The screen behind flashed through on every loop. **Fixed in r6:** the kit's map (`KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap`) carries the corrected GIF, with the same name and nothing else changed. Open that map in NSP and write resources.
 3. **Your shift lights**, from the map and the dash code:
    - 14 LEDs, lighting from the outside in: green at 6,600, 6,800 and 7,000; yellow at 7,200, 7,400 and 7,600; red at 7,800.
    - This firmware never flashes shift lights.
@@ -112,13 +113,13 @@ Full report: `ic7-custom-dash/deploy/hardware-audit/REPORT.md`.
 ## 5. Experimental add-ons (separate NEX, opt-in)
 
 - **NEX:** `ic7-custom-dash/build-addons-experimental-236/ic7-2.36-addons-experimental.nex` (`e1ca76e7…`). Also in `test-variants/2-addons-experimental/`.
-- **Base:** it's r5's NEX plus four add-ons:
+- **Base:** it's the r3-r6 NEX plus four add-ons:
   1. **Animated indicators:** GIF/MP4 when an indicator is on (`ic7_indicators.json`).
   2. **Value-driven images:** gear and fuel graphics (same file).
   3. **Warning effects:** flash or pulse on Numeric, Horizontal 1 bar and Classic circular gauges (`ic7_gauge_fx.json`).
   4. **Clock** (`ic7_clock.json`) and **GPS track map** (`ic7_track_map.json`).
 - **Behaviour:** with no settings file, everything draws as stock. Turn add-ons off by uploading the "off" files (`make-addon-manifests.py --off`) and power-cycling, because NSP never deletes files from the dash.
-- **Unproven:** QML reading `.json` on the real dash. r5 proves it first.
+- **Unproven:** QML reading `.json` on the real dash. The r6 flash proves it first.
 
 Docs: `ic7-custom-dash/deploy/addons/README.md`, `RESEARCH.md`.
 
@@ -196,9 +197,9 @@ It's a simulation, not a recording.
 ## 9. Your next steps, in order
 
 1. **Wire and enable the Tacho Input,** or for now untick "Disable when engine off" on Low Oil Pressure, Low Battery Voltage and Low Oil Temp. This is a safety step, needed whatever else you do.
-2. **Replace the KFC GIF** in NSP's user resources with `fixed-media/kfc_colonel_limiter_860.gif`.
+2. **Use the r6 map** (`KFC-screen-5-gif-fixed.ic7-2-36-0.nexmap`); it already has the fixed KFC GIF.
 3. **NSP on Windows, with the dash disconnected:**
-   - Extract the r5 kit and check its SHA-256.
+   - Extract the r6 kit and check its SHA-256.
    - Run `setup-native-media.ps1` into a new folder, open your map, and check **Setup > Dash Alarm Appearance** (KFC LIMITER, GIF only, screen 5) and the splash selection.
    - **Stop and report** if NSP errors: nobody has run this DLL on Windows yet.
 4. **Emulator:**
@@ -207,7 +208,7 @@ It's a simulation, not a recording.
    - If anything fails, use **Export Logs**.
 5. **Flash the dash:**
    - Use bench power and keep backups (`test-variants/0-base-stock`).
-   - Start a USB capture, flash r5, upload the map, then do a **full power cycle**.
+   - Start a USB capture, flash the r6 NEX, open the r6 map and write its settings and resources, then do a **full power cycle**.
    - Run checks D1–D5 from the plan. **Never interrupt an update.**
 6. **Report back** for each check:
    - pass or fail, and what you saw;
