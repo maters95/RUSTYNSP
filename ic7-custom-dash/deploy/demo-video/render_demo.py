@@ -394,7 +394,7 @@ def render(args):
                        f"part {part_index + 1}: {label}",
                        f"{phase}  |  simulated RPM {rpm_can:.0f}" if isinstance(rpm_can, (int, float))
                        else f"{phase}"]
-            frame = house.compose(panel, led_colours, caption)
+            frame = house.compose(panel, led_colours, [] if args.clean else caption)
             ffmpeg.stdin.write(frame.tobytes())
             if frame_index % 15 == 0:
                 log.append({"part": part_index + 1, "t": round(t, 2), "screen": dash.active + 1,
@@ -437,6 +437,8 @@ def main():
     parser.add_argument("--rev-limit", type=float, default=8050,
                         help="ECU rev limit (ASSUMPTION; not in the dash map; between KFC LIMITER 7900 and Overrev 8200)")
     parser.add_argument("--no-variant", action="store_true")
+    parser.add_argument("--clean", action="store_true",
+                        help="No caption text in the frame (for sharing; the README states it is a simulation)")
     parser.add_argument("--crf", type=int, default=24)
     render(parser.parse_args())
 

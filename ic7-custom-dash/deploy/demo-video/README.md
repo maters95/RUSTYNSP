@@ -150,3 +150,9 @@ xvfb-run -a -s "-screen 0 1280x1024x24" python3 render_demo.py \
 The repository contains no raw map and no extracted user images. Those are
 read from the map at render time, and the only place they appear is in the
 video frames.
+
+## Clean copy
+
+`ic7-demo-clean.mp4` is the same render with no caption text in the frame
+(`render_demo.py --clean`). It is still a simulation rendered from the map and
+firmware QML, not a recording; say so if you share it.
