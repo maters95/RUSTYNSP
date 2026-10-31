@@ -87,7 +87,7 @@ class CanCodingTests(unittest.TestCase):
         self.assertEqual(sorted(frame.can_id for frame in layout.frames),
                          sorted(frame.can_id for frame in reference.frames))
         signals = {signal.name: signal for signal in layout.signals}
-        self.assertEqual(signals["RPM"].channel, 0x6890)
+        self.assertEqual(signals["RPM"].channel, 0x7C90)
         self.assertEqual(signals["OIL PRES"].units, 773)
         self.assertAlmostEqual(signals["MAP"].multiplier, 0.0145038, places=6)
         self.assertAlmostEqual(signals["MAP"].offset, -14.696, places=3)
@@ -178,7 +178,8 @@ class DashBehaviourTests(unittest.TestCase):
         # NSP sees the alarm-active channel and the low oil channel through its normal live-data polling.
         polled = self.read_packet(0x4800, 13312)
         self.assertEqual(struct.unpack_from("<i", polled, E.ALARM_ACTIVE + 12 - 0x4800)[0], 1)
-        oil = struct.unpack_from("<i", polled, 0x6890 + 4 * 4 - 0x4800)[0]
+        # Third Party Generic CAN channels sit in NSP's third poll block (0x7C00, 996 bytes).
+        oil = struct.unpack_from("<i", self.read_packet(0x7C00, 996), 0x7C90 + 4 * 4 - 0x7C00)[0]
         self.assertLess(oil, 1703)   # below the map's Low Oil Pressure threshold (10 psi)
         self.assertGreater(int32(self.device, E.RPM_CHANNEL), 449)
         # The renderer receives the dash's own popup message.
@@ -209,15 +210,15 @@ class DashBehaviourTests(unittest.TestCase):
     def test_frame_dropout_times_out_like_the_dash(self):
         simulation = self.device.start_engine_sim("idle", threaded=False)
         run(simulation, self.clock, 1)
-        self.assertGreater(int32(self.device, 0x6890), 600)
+        self.assertGreater(int32(self.device, 0x7C90), 600)
         simulation.inject("frame_dropout", "RPM", 10)
         run(simulation, self.clock, 1.5)
-        self.assertGreater(int32(self.device, 0x6890), 600, "still within the 2 s receive timeout")
+        self.assertGreater(int32(self.device, 0x7C90), 600, "still within the 2 s receive timeout")
         run(simulation, self.clock, 1)
-        self.assertEqual(int32(self.device, 0x6890) & 0xFFFFFFFF, E.DEVICE_TIME_OUT)
-        self.assertGreater(int32(self.device, 0x6890 + 4 * 4), 0, "other frames keep updating")
+        self.assertEqual(int32(self.device, 0x7C90) & 0xFFFFFFFF, E.DEVICE_TIME_OUT)
+        self.assertGreater(int32(self.device, 0x7C90 + 4 * 4), 0, "other frames keep updating")
         run(simulation, self.clock, 8)
-        self.assertGreater(int32(self.device, 0x6890), 600, "recovers when frames return")
+        self.assertGreater(int32(self.device, 0x7C90), 600, "recovers when frames return")
 
     def test_signal_dropout_stuck_and_hold(self):
         simulation = self.device.start_engine_sim("track-lap", threaded=False)
@@ -227,24 +228,24 @@ class DashBehaviourTests(unittest.TestCase):
         self.assertEqual(simulation.status()["signals"]["OIL PRES"]["raw"], 0)
         simulation.inject("stuck", "RPM", 5)
         run(simulation, self.clock, 0.2)
-        first = int32(self.device, 0x6890)
+        first = int32(self.device, 0x7C90)
         run(simulation, self.clock, 3)
-        self.assertEqual(int32(self.device, 0x6890), first)
+        self.assertEqual(int32(self.device, 0x7C90), first)
         simulation.set_override("ENG TEMP", 120.0)
         run(simulation, self.clock, 0.2)
-        self.assertEqual(int32(self.device, 0x6890 + 8), 120 * 10 + 2731)
+        self.assertEqual(int32(self.device, 0x7C90 + 8), 120 * 10 + 2731)
 
     def test_can_timeout_and_no_frames(self):
         scenario = E.preset("idle")
         scenario["faults"] = [{"type": "no_frames", "start": 0, "duration": 3}]
         simulation = self.device.start_engine_sim(scenario, threaded=False)
         run(simulation, self.clock, 2.5)
-        self.assertEqual(int32(self.device, 0x6890) & 0xFFFFFFFF, E.NO_SIGNAL)
+        self.assertEqual(int32(self.device, 0x7C90) & 0xFFFFFFFF, E.NO_SIGNAL)
         run(simulation, self.clock, 1)
-        self.assertGreater(int32(self.device, 0x6890), 600)
+        self.assertGreater(int32(self.device, 0x7C90), 600)
         simulation.inject("can_timeout", None, 30)
         run(simulation, self.clock, 2.1)
-        self.assertTrue(all(int32(self.device, 0x6890 + 4 * index) & 0xFFFFFFFF == E.DEVICE_TIME_OUT
+        self.assertTrue(all(int32(self.device, 0x7C90 + 4 * index) & 0xFFFFFFFF == E.DEVICE_TIME_OUT
                             for index in range(23)))
 
     @unittest.skipUnless(LAYOUT is not None, "emtron_can.json is required")
@@ -254,7 +255,7 @@ class DashBehaviourTests(unittest.TestCase):
         simulation = self.device.start_engine_sim("idle", threaded=False)
         self.assertIn("emtron_can.json", simulation.layout_now.source)
         run(simulation, self.clock, 0.5)
-        self.assertGreater(int32(self.device, 0x6890), 600)   # ENGINE_SPEED, the first signal
+        self.assertGreater(int32(self.device, 0x7C90), 600)   # ENGINE_SPEED, the first signal
 
     def test_raw_can_view_follows_nsps_realtime_id(self):
         simulation = self.device.start_engine_sim("idle", threaded=False)
@@ -270,7 +271,7 @@ class DashBehaviourTests(unittest.TestCase):
         run(simulation, self.clock, 2)
         self.device.stop_engine_sim()
         self.assertEqual(self.device.memory.read(E.RPM_CHANNEL, 4), rpm_before)
-        self.assertEqual(int32(self.device, 0x6890) & 0xFFFFFFFF, E.DEVICE_TIME_OUT)
+        self.assertEqual(int32(self.device, 0x7C90) & 0xFFFFFFFF, E.DEVICE_TIME_OUT)
         self.assertEqual(int32(self.device, E.ALARM_ACTIVE + 12), 0)
         self.assertNotIn("engine_simulation", self.device.display_state())
 

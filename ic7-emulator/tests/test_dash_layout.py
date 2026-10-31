@@ -210,7 +210,8 @@ Item {
 
     @unittest.skipUnless(ADDON_NEX.is_file(), "the add-on NEX build is required")
     def test_addon_nex_installs_generically_into_the_renderer_tree(self):
-        added = ["Ic7IndicatorAddon.qml", "Ic7GaugeFx.qml", "Ic7AddonMedia.qml", "Ic7AddonVideo.qml", "ic7addons.js"]
+        added = ["Ic7IndicatorAddon.qml", "Ic7GaugeFx.qml", "Ic7AddonMedia.qml", "Ic7AddonVideo.qml",
+                 "Ic7Clock.qml", "Ic7TrackMap.qml", "ic7addons.js"]
         replaced = ["HalIndicator.qml", "HalNumeric.qml", "HalBarHorizontal1.qml", "HalCircularClassic.qml"]
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

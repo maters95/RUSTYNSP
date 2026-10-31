@@ -29,6 +29,7 @@ with `python scripts/make-test-variants.py` and check it with
 - `NSP-previous-custom-build.dll`: the custom DLL that the binding checks
   compare against.
 
-The full NEX for the r4 kit (the Windows test package with the emulator) is
-in `dist/ic7-final-windows-test-2026-10-30-r4.zip`. These folders are for
+The complete Windows test package (NEX, this DLL, the emulator and guides) is
+`dist/ic7-final-windows-test-2026-10-31-r5.zip`; its NEX and DLL are the
+variant 1 files. These folders are for
 swapping files on a setup that already exists.

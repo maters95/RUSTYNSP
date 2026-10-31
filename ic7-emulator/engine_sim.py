@@ -28,9 +28,13 @@ import time
 
 SETTINGS_BASE = 0x20000
 LIVE_START, LIVE_END = 0x1400, 0x7FE4
-RPM_CHANNEL = 0x0E68            # setting 384 RPM (TRIGGER_SYSTEM), the alarm module's engine gate
-BATTERY_CHANNEL = 0x3CF8        # setting 387 "Device Battery Voltage" (the dash's own supply input)
-ALARM_ACTIVE = 0x5818           # settings 60005-60029 "Current state of alarm N"
+# The definition gives live channels as offsets into the dash's chan_mem; NSP reads chan_mem
+# through USB address 0x1400 + offset (memory space 33 base 5120; battery voltage at 0x3CF8 is
+# polled at 0x5014 in the captures). Every channel address below is the USB address.
+CHANNEL_BASE = 0x1400
+RPM_CHANNEL = CHANNEL_BASE + 0x0E68      # setting 384 RPM (TRIGGER_SYSTEM), the alarm module's engine gate
+BATTERY_CHANNEL = CHANNEL_BASE + 0x3CF8  # setting 387 "Device Battery Voltage" (the dash's own supply input)
+ALARM_ACTIVE = CHANNEL_BASE + 0x5818     # settings 60005-60029 "Current state of alarm N"
 ALARM_COUNT = 25
 ALARM_STRIDE = 76
 ALARM_BASE = 476564             # ALARMS_COMP_0_NAME (MRAM offset)
@@ -77,7 +81,8 @@ def _bus(index, name, nsp_bus):
                      479092 + 4200 * index, 479492 + 4200 * index, 480492 + 4200 * index,
                      480692 + 4200 * index, 480892 + 4200 * index, 481092 + 4200 * index,
                      481292 + 4200 * index, 482092 + 4200 * index, 482892 + 4200 * index,
-                     0x6250 + 800 * index, 0x6BB0 + 12 * index, 0x6BB8 + 12 * index)
+                     CHANNEL_BASE + 0x6250 + 800 * index, CHANNEL_BASE + 0x6BB0 + 12 * index,
+                     CHANNEL_BASE + 0x6BB8 + 12 * index)
 
 
 # GENERIC_CAN_HALTECH_*, GENERIC_CAN_VEHICLE_*, GENERIC_CAN_THIRD_PARTY_* in the v2.36 definition.
@@ -340,12 +345,12 @@ def default_layout_path():
 
 
 def load_channel_table(path=CHANNEL_TABLE):
-    """{setting id: (address, name, long name)} for the dash's live channels."""
+    """{setting id: (USB address, name, long name)} for the dash's live channels."""
     try:
         table = json.loads(Path(path).read_text(encoding="utf-8"))["channels"]
     except (OSError, ValueError, KeyError):
         return {}
-    return {int(key): (value[0], value[1], value[2]) for key, value in table.items()}
+    return {int(key): (CHANNEL_BASE + value[0], value[1], value[2]) for key, value in table.items()}
 
 
 # --- Engine model -------------------------------------------------------------------------

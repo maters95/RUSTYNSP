@@ -294,8 +294,7 @@ painted splash pixels and a stock banner painted over a full-screen alarm GIF;
 markerless native screen switching, alarm z-order in both model orders, a
 missing QtMultimedia, a splash that survives a 4.5 s blocked startup, and
 components loaded from scheme-less absolute paths as the application loads
-them; **157** emulator Python tests with real PyQt5 (156 pass at the current
-repository head: one add-on install test has a stale file list); and an independent
+them; **157** emulator Python tests with real PyQt5, all passing; and an independent
 NEX audit with no findings. ZIP hashes and all packaged QML bytes are
 checked against the tested sources. Windows Forms editor interaction remains
 an on-PC validation step, not a result of the Linux cross-build.

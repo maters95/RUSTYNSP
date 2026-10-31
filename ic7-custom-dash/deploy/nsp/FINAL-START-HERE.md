@@ -1,8 +1,8 @@
-# iC-7 Windows test package - 2026-10-30, revision 4
+# iC-7 Windows test package - 2026-10-31, revision 5
 
 This package combines the rebuilt NSP DLL, the Windows emulator/workbench, the
 resource-only v2.36 NEX, your restored KFC map, samples and setup scripts. It
-supersedes r3, r2 and every earlier kit. The NEX is the same as r3; r2 and
+supersedes r4, r3, r2 and every earlier kit. The NEX is the same as r3/r4; r2 and
 earlier NEX files must not be flashed (see below). Use this clean package instead of mixing files from earlier downloads.
 This is a TEST package, not a verified physical-flash release. Disconnect the
 physical dash during desktop/emulator setup; nothing here flashes it automatically.
@@ -22,11 +22,9 @@ physical dash during desktop/emulator setup; nothing here flashes it automatical
   a half-written map as complete.
 - **Emulator engine simulation (off by default, labelled SIMULATION).** The
   workbench **Engine simulation** tab drives your Emtron Generic CAN signals
-  through the dash's own decode and evaluates your map's alarms in the
-  emulator. Known defect: it writes the channels 0x1400 below the USB address
-  NSP reads them from, so NSP's gauges, live data, raw CAN view and alarm
-  states do not show the simulated values; use the emulator's own alarm
-  output (see `ic7-emulator/README.md`, Engine simulation). Presets include low oil
+  through the dash's own decode, at the USB addresses NSP polls, so NSP's
+  gauges, live data, raw CAN view and alarm states, and your map's alarms,
+  behave as with a running engine. Presets include low oil
   pressure, overheat, over-rev, low fuel pressure and low battery; per-signal
   holds and CAN faults are available. The emulator now also works offline after
   its first setup and reports a busy COM port clearly.
@@ -144,7 +142,7 @@ popup on other screens; do not restrict safety alarms such as oil pressure.
 | NSP/.NET regression and UI-convention tests | 51 passed; 8 skipped (need PowerShell) |
 | Desktop QML (Qt 5.15) | 76 passed, including painted splash pixels and a stock banner painted over a full-screen alarm GIF |
 | Dash Qt 5.9.6 under QEMU | 68 passed, including alarm z-order in both orders, markerless screen switching, missing QtMultimedia, a 4.5 s blocked startup and application-style scheme-less component paths |
-| Emulator Python tests | 157 passed when r4 was packaged, including capture conformance (36,450 exchanges, 0 differences) and engine-simulation alarms. At the current repository head 156 pass: one add-on install test still lists the earlier add-on NEX's files (it is skipped in the kit) |
+| Emulator Python tests | 157 passed, including capture conformance (36,450 exchanges, 0 differences), engine-simulation alarms read back through NSP's own poll blocks, and the add-on NEX installing all its files |
 | NEX audit vs stock | 326 stock files unchanged, none removed; 3 QML changed, 1 added, all with fresh non-stock mtimes; wrapper/HDEF identical; all imports present on the dash |
 | `fail.pcapng` decode | all resources and the NEX body acknowledged complete |
 

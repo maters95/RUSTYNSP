@@ -178,8 +178,7 @@ startup/handoff. The decoded candidate preserves the 336 other stock resource
 members (326 files plus directories) and the original resource wrapper. Windows GUI operation and physical startup timing
 still need the desktop/bench checks above.
 
-The emulator suite has 157 Python tests using real PyQt5 (156 pass at the
-current repository head; one add-on install test has a stale file list), browser
+The emulator suite has 157 Python tests using real PyQt5 (all pass), browser
 checks and ZIP integrity checks. Its staged renderer uses the exact shared
 QML, tested with real Qt 5.15 GIF/MP4 playback, muting, unloading and two
 startups per format. The selected manifest survives playback and repeated

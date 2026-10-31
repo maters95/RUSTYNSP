@@ -79,11 +79,13 @@ with the matching [GIF-only resource candidate](dist/ic7-gif-only-mapfix.zip).
 
 ## Screen Alarms, Splash and Real-Dash Fixes (2026-10-30)
 
-Use the [combined Windows test kit, revision 4](dist/ic7-final-windows-test-2026-10-30-r4.zip)
-(SHA-256 `c1f3ae0e2da6582383f148f73d6ed9a7e6f091b806e7f7b3fcc6bafb71afe3be`) and its `START-HERE.md`. It
-carries the same NEX as r3 with the reviewed NSP DLL (NSP-convention alarm
-appearance UI, 20-character name validation) and the emulator's opt-in Generic
-CAN engine simulation. It supersedes r3, r2 (NEX `3f6d26f1…`, which must not
+Use the [combined Windows test kit, revision 5](dist/ic7-final-windows-test-2026-10-31-r5.zip)
+(SHA-256 `37659bceb20efc3355264a7d3412afdf59f370b145a13c5bec0e46b02ef7180d`) and its `START-HERE.md`. It
+carries the same NEX as r3 and the same reviewed NSP DLL as r4 (NSP-convention
+alarm appearance UI, 20-character name validation), with the emulator's opt-in
+Generic CAN engine simulation now writing at the USB addresses NSP polls, and
+the accuracy-reviewed guides. Interchangeable files for swap testing, with a
+stock base, are in [`test-variants/`](test-variants/). It supersedes r4, r3, r2 (NEX `3f6d26f1…`, which must not
 be flashed), the first 2026-10-30 kit and the 2026-10-29 kits.
 Its NEX is `build-cfw-screen-alarms-r3-236` (SHA-256 `dec4e3bf…`). It combines
 main's native **Alarm appearance** editor and screen-restricted alarms with:
