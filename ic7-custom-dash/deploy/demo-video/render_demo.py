@@ -322,6 +322,12 @@ def render(args):
     work.mkdir(parents=True, exist_ok=True)
     entries, settings, written = mapdata.load(args.map, cache=work / "settings-cache.json")
     staged = stage_dash.stage(work / "dash", entries)
+    for override in args.resource:
+        # Replace an uploaded image with a corrected copy (e.g. a re-exported GIF) before rendering.
+        target = staged["user_resources"] / "images" / override.name
+        if not target.is_file():
+            raise SystemExit(f"--resource {override.name}: the map has no such image")
+        target.write_bytes(override.read_bytes())
     channels = engine_sim.load_channel_table()
     app = QGuiApplication.instance() or QGuiApplication(sys.argv)
     house = housing_module.make_housing(args.housing, args.geometry)
@@ -437,6 +443,8 @@ def main():
     parser.add_argument("--rev-limit", type=float, default=8050,
                         help="ECU rev limit (ASSUMPTION; not in the dash map; between KFC LIMITER 7900 and Overrev 8200)")
     parser.add_argument("--no-variant", action="store_true")
+    parser.add_argument("--resource", type=Path, action="append", default=[],
+                        help="Use this file in place of the map's image of the same name")
     parser.add_argument("--clean", action="store_true",
                         help="No caption text in the frame (for sharing; the README states it is a simulation)")
     parser.add_argument("--crf", type=int, default=24)

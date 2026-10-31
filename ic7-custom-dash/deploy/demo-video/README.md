@@ -156,3 +156,14 @@ video frames.
 `ic7-demo-clean.mp4` is the same render with no caption text in the frame
 (`render_demo.py --clean`). It is still a simulation rendered from the map and
 firmware QML, not a recording; say so if you share it.
+
+## KFC GIF first-frame fix
+
+The map's `kfc_colonel_limiter_860.gif` starts with a 40 ms frame that is
+partly transparent (24,045 pixels around the Colonel), so each loop briefly
+showed the screen behind the alarm banner. `fixed-media/kfc_colonel_limiter_860.gif`
+drops that frame and adds its 40 ms to the next one, so the loop length stays
+1.28 s; no frame has transparency. Both videos are rendered with it
+(`--resource fixed-media/kfc_colonel_limiter_860.gif`). To fix the real dash,
+replace the GIF in NSP's user resources with this file and write resources
+again (same name, so the alarm rule needs no change).
